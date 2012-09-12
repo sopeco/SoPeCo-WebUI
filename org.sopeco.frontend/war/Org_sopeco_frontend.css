@@ -1,0 +1,28 @@
+html, body {
+	height: 100%;
+	width: 100%;
+	margin: 0 !important;
+}
+
+/*************************************/
+.spc-seperator {
+	background-color: lightGrey;
+	width: 1px;
+	display: block;
+	margin: 0 12px;
+	overflow: hidden;
+	color: lightGrey;
+	border-left: 1px solid lightGrey;
+}
+.topFilterPanel > * {
+	 float: left;
+}
+.topFilterPanel {
+}
+.selectDatabaseDialog .applyButton {
+	float: right;
+}
+.warning-label {
+	font-weight: bold;
+	margin-left: 16px;
+}

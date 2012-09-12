@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+              http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	version="2.5" xmlns="http://java.sun.com/xml/ns/javaee">
+
+	<!-- Servlets -->
+
+	<!-- Default page to serve -->
+	<welcome-file-list>
+		<welcome-file>Org_sopeco_frontend.html</welcome-file>
+	</welcome-file-list>
+
+
+	<servlet>
+		<servlet-name>databaseManagerRPC</servlet-name>
+		<servlet-class>org.sopeco.frontend.server.rpc.DatabaseManagerRPCImpl
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>databaseManagerRPC</servlet-name>
+		<url-pattern>/org_sopeco_frontend/databaseManagerRPC</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>startupService</servlet-name>
+		<servlet-class>org.sopeco.frontend.server.rpc.StartupServiceImpl
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>startupService</servlet-name>
+		<url-pattern>/org_sopeco_frontend/startupService</url-pattern>
+	</servlet-mapping>
+</web-app>

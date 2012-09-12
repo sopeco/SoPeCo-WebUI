@@ -1,0 +1,2 @@
+serviceClass: org.sopeco.frontend.client.rpc.StartupService
+path: 1224FB82F60C7AD48CBFA694ABE784B1.gwt.rpc
