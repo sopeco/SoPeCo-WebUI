@@ -1,7 +1,12 @@
 package org.sopeco.frontend.client.layout.dialog;
 
+import org.sopeco.frontend.client.helper.handler.NumbersOnlyHandler;
+import org.sopeco.frontend.client.layout.TopFilterPanel;
+import org.sopeco.frontend.client.layout.popups.Loader;
+import org.sopeco.frontend.client.layout.popups.Message;
 import org.sopeco.frontend.client.rpc.DatabaseManagerRPC;
 import org.sopeco.frontend.client.rpc.DatabaseManagerRPCAsync;
+import org.sopeco.frontend.shared.definitions.DatabaseDefinition;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -23,13 +28,17 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class SelectDBDialog extends DialogBox {
 
+	private TopFilterPanel parentPanel;
+	
 	private DatabaseManagerRPCAsync dbManagerRPC;
 	private TextBox textboxDbName, textboxHost, textboxPort, textboxPasswd;
 	private Button btnAdd;
 
-	public SelectDBDialog() {
+	public SelectDBDialog(TopFilterPanel parentPanel) {
 		super(false, true);
 
+		this.parentPanel = parentPanel;
+		
 		initializeGui();
 
 		dbManagerRPC = GWT.create(DatabaseManagerRPC.class);
@@ -69,6 +78,8 @@ public class SelectDBDialog extends DialogBox {
 		grid.setWidget(2, 0, lblPort);
 
 		textboxPort = new TextBox();
+		textboxPort.addKeyPressHandler(new NumbersOnlyHandler());
+		textboxPort.addChangeHandler(new NumbersOnlyHandler());
 		grid.setWidget(2, 1, textboxPort);
 
 		Label lblPassword = new Label("Password");
@@ -102,7 +113,8 @@ public class SelectDBDialog extends DialogBox {
 		});
 		btnCancel.setWidth("150px");
 
-		for (TextBox tb : new TextBox[] { textboxDbName, textboxHost }) {
+		for (TextBox tb : new TextBox[] { textboxDbName, textboxHost,
+				textboxPort, textboxPasswd }) {
 			TextfieldHandler tfHandler = new TextfieldHandler();
 			tb.addChangeHandler(tfHandler);
 			tb.addKeyUpHandler(tfHandler);
@@ -120,14 +132,27 @@ public class SelectDBDialog extends DialogBox {
 	 * adding a new database
 	 */
 	private void addNewDatabase() {
-		dbManagerRPC.addDatabase(new AsyncCallback<Boolean>() {
+		DatabaseDefinition newDb = new DatabaseDefinition();
+
+		newDb.setName(textboxDbName.getText());
+		newDb.setHost(textboxDbName.getText());
+		newDb.setPort(textboxDbName.getText());
+		newDb.setPassword(textboxDbName.getText());
+
+		Loader.showLoader();
+
+		dbManagerRPC.addDatabase(newDb, new AsyncCallback<Boolean>() {
 			@Override
 			public void onFailure(Throwable caught) {
-
+				Loader.hideLoader();
+				Message.error("Database was not added");
 			}
 
 			@Override
 			public void onSuccess(Boolean result) {
+				Loader.hideLoader();
+				close();
+				parentPanel.updateDatabaseList();
 			}
 		});
 	}
@@ -163,7 +188,21 @@ public class SelectDBDialog extends DialogBox {
 		}
 
 		private void event() {
-			btnAdd.setEnabled(true);
+			if (check())
+				btnAdd.setEnabled(true);
+			else
+				btnAdd.setEnabled(false);
+		}
+
+		private boolean check() {
+			if (textboxDbName.getText().trim().length() <= 0)
+				return false;
+			if (textboxHost.getText().trim().length() <= 0)
+				return false;
+			if (textboxPort.getText().trim().length() <= 0)
+				return false;
+
+			return true;
 		}
 	}
 }

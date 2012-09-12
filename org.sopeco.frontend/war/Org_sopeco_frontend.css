@@ -26,3 +26,8 @@ html, body {
 	font-weight: bold;
 	margin-left: 16px;
 }
+
+.sopeco-imageButton {
+	padding-bottom:0px !important;
+	padding-right:5px !important;
+}

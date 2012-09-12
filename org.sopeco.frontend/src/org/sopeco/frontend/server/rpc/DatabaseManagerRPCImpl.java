@@ -3,6 +3,8 @@ package org.sopeco.frontend.server.rpc;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.management.RuntimeErrorException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sopeco.config.Configuration;
@@ -21,69 +23,40 @@ public class DatabaseManagerRPCImpl extends RemoteServiceServlet implements
 	private static final Logger logger = LoggerFactory.getLogger(DatabaseManagerRPCImpl.class);
 	private static final long serialVersionUID = 1L;
 
-	private static IMetaDataPersistenceProvider metaProvider;
+	private static IMetaDataPersistenceProvider metaDataPersistenceProvider;
 
 	private List<DatabaseInstanceToDefinition> databaseList;
 
 	/*
+	 * 
+	 */
+	private static IMetaDataPersistenceProvider getMetaProvider () {
+		if ( metaDataPersistenceProvider == null ) {
+			metaDataPersistenceProvider = PersistenceProviderFactory.getMetaDataPersistenceProvider();
+		}
+		
+		return metaDataPersistenceProvider;
+	}
+	
+	/*
 	 * get a list of all databases
 	 */
 	public List<DatabaseDefinition> getAllDatabases() {
-
 		logger.debug("loading databases");
 
-		/*
-		 * 
-		 * Configuration.getSingleton().getProperty(arg0);
-		 * Configuration.getSingleton
-		 * ().setProperty("sopeco.config.persistence.server.host",
-		 * "deqkal276.qkal.sap.corp") PersistenceConfiguration c; c.get
-		 * 
-		 * 
-		 * IMetaDataPersistenceProvider provider =
-		 * PersistenceProviderFactory.getMetaDataPersistenceProvider(); // //
-		 * provider.loadAllDatabaseInstances().get(0).; // // DatabaseInstance
-		 * // provider.st // // // IPersistenceProvider provider2 =
-		 * PersistenceProviderFactory.getPersistenceProvider(); provider2.
-		 */
-
-		if (metaProvider == null)
-			metaProvider = PersistenceProviderFactory.getMetaDataPersistenceProvider();
-
-		List<DatabaseInstance> list = null;
 		try {
-			list = metaProvider.loadAllDatabaseInstances();
-
-		} catch (DataNotFoundException e1) {
-
-			e1.printStackTrace();
+			List<DatabaseInstance> instances = getMetaProvider().loadAllDatabaseInstances();
+			
+			List<DatabaseDefinition> returnList = new ArrayList<DatabaseDefinition>();
+			
+			for ( DatabaseInstance instance : instances) {
+				returnList.add( databaseInstanceToDefinition(instance) );
+			}
+			
+			return returnList;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
-
-		// IMetaDataPersistenceProvider provider =
-		// PersistenceProviderFactory.getMetaDataPersistenceProvider();
-		/*
-		 * List<DatabaseDefinition> returnList = new
-		 * ArrayList<DatabaseDefinition>();
-		 * 
-		 * try { // returnList = provider.loadAllDatabaseInstances();
-		 * DatabaseInstance b = new DatabaseInstance("asdasd", "asdasd");
-		 * DatabaseDefinition dd = new DatabaseDefinition();
-		 * dd.setName("test1"); returnList.add(dd);
-		 * 
-		 * } catch (Exception e) { throw new RuntimeException(e); }
-		 */
-		/*
-		 * DatabaseDefinition d = new DatabaseDefinition(); d.setName("test1");
-		 * DatabaseDefinition d2 = new DatabaseDefinition();
-		 * d2.setName("test2");
-		 * 
-		 * returnList.add(d); returnList.add(d2);
-		 */
-		//createDummyDatabases();
-
-		createDatabaseList(list);
-
-		return getDatabaseDefinitionList();
 	}
 
 	List<DatabaseInstance> dummyList;
@@ -132,20 +105,6 @@ public class DatabaseManagerRPCImpl extends RemoteServiceServlet implements
 	}
 
 	/*
-	 * addding a database
-	 */
-	public boolean addDatabase() {
-		logger.debug("database added");
-
-		DatabaseInstance newDatabase = new DatabaseInstance("new database", "");
-
-		metaProvider.store(newDatabase);
-		dummyList.add(newDatabase);
-
-		return true;
-	}
-
-	/*
 	 * removing the specific database
 	 */
 	public boolean removeDatabase(DatabaseDefinition databaseDefinition) {
@@ -158,23 +117,50 @@ public class DatabaseManagerRPCImpl extends RemoteServiceServlet implements
 	 */
 	@Override
 	public boolean updateDatabase(DatabaseDefinition databaseDefinition) {
-		DatabaseInstanceToDefinition instanceToDefinition = null;
-
-		for (DatabaseInstanceToDefinition dbITD : databaseList) {
-			if (dbITD.getId() == databaseDefinition.getId())
-				instanceToDefinition = dbITD;
-		}
-
-		if (instanceToDefinition == null)
-			return false;
-
-		instanceToDefinition.setDefinition(databaseDefinition);
-
-		metaProvider.store(instanceToDefinition.getInstance());
+//		DatabaseInstanceToDefinition instanceToDefinition = null;
+//
+//		for (DatabaseInstanceToDefinition dbITD : databaseList) {
+//			if (dbITD.getId() == databaseDefinition.getId())
+//				instanceToDefinition = dbITD;
+//		}
+//
+//		if (instanceToDefinition == null)
+//			return false;
+//
+//		instanceToDefinition.setDefinition(databaseDefinition);
+//
+//		//metaProvider.store(instanceToDefinition.getInstance());
 
 		return true;
 	}
 
+	/*
+	 * add a new database to the database..
+	 */
+	@Override
+	public boolean addDatabase(DatabaseDefinition dbDefinition) {
+		DatabaseInstance instance = new DatabaseInstance();
+
+		instance.setDbName(dbDefinition.getName());
+		instance.setConnectionUrl(dbDefinition.getHost());
+		
+		getMetaProvider().store(instance);
+		
+		return true;
+	}
+	
+	/*
+	 * create DatabaseDefinition object from DatabaseInstance object
+	 */
+	private DatabaseDefinition databaseInstanceToDefinition ( DatabaseInstance instance ) {
+		DatabaseDefinition definition = new DatabaseDefinition();
+		
+		definition.setName(instance.getDbName());
+		definition.setHost(instance.getConnectionUrl());
+		
+		return definition;
+	}
+	
 	/*
 	 * class to associate databaseDefinition and databaseInstances
 	 */
@@ -199,13 +185,13 @@ public class DatabaseManagerRPCImpl extends RemoteServiceServlet implements
 		public DatabaseDefinition createDefinition() {
 			DatabaseDefinition definition = new DatabaseDefinition();
 			definition.setName(instance.getDbName());
-			definition.setConnectionURL(instance.getConnectionUrl());
+			definition.setHost(instance.getConnectionUrl());
 			definition.setId(id);
 			return definition;
 		}
 
 		public void setDefinition(DatabaseDefinition definition) {
-			instance.setConnectionUrl(definition.getConnectionURL());
+			instance.setConnectionUrl(definition.getHost());
 			instance.setDbName(definition.getName());
 		}
 	}

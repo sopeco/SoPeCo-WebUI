@@ -1,6 +1,7 @@
 package org.sopeco.frontend.client;
 
 import org.sopeco.frontend.client.layout.MainPanel;
+import org.sopeco.frontend.client.layout.popups.Message;
 import org.sopeco.frontend.client.rpc.StartupService;
 import org.sopeco.frontend.client.rpc.StartupServiceAsync;
 
@@ -39,12 +40,12 @@ public class Org_sopeco_frontend implements EntryPoint {
 		startup.start(new AsyncCallback<Boolean>() {
 			@Override
 			public void onSuccess(Boolean result) {
-				GWT.log("start passed");
+				GWT.log("startup passed");
 			}
 			
 			@Override
 			public void onFailure(Throwable caught) {
-				GWT.log("start failed");
+				Message.error("Error at startup");
 			}
 		});
 	}
