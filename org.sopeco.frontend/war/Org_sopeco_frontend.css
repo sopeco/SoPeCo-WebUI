@@ -4,6 +4,14 @@ html, body {
 	margin: 0 !important;
 }
 
+.gwt-DecoratorPanel {
+    table-layout: fixed;
+}
+.gwt-DecoratorPanel .topLeft,
+.gwt-DecoratorPanel .topRight {
+    width: 5px;
+}
+
 /*************************************/
 .spc-seperator {
 	background-color: lightGrey;

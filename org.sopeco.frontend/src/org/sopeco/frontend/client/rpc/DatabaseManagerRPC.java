@@ -16,7 +16,5 @@ public interface DatabaseManagerRPC extends RemoteService {
 	boolean addDatabase (DatabaseDefinition databaseDefinition);
 	
 	boolean removeDatabase ( DatabaseDefinition databaseDefinition );
-	
-	boolean updateDatabase ( DatabaseDefinition databaseDefinition );
 
 }

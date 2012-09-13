@@ -12,10 +12,7 @@ public interface DatabaseManagerRPCAsync {
 
 	void removeDatabase(DatabaseDefinition databaseDefinition,
 			AsyncCallback<Boolean> callback);
-
-	void updateDatabase(DatabaseDefinition databaseDefinition,
-			AsyncCallback<Boolean> callback);
-
+	
 	void addDatabase(DatabaseDefinition databaseDefinition,
 			AsyncCallback<Boolean> callback);
 

@@ -31,4 +31,24 @@
 		<servlet-name>startupService</servlet-name>
 		<url-pattern>/org_sopeco_frontend/startupService</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>systemDetailsRPC</servlet-name>
+		<servlet-class>org.sopeco.frontend.server.rpc.SystemDetailsRPCImpl
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>systemDetailsRPC</servlet-name>
+		<url-pattern>/org_sopeco_frontend/systemDetailsRPC</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>pushRPC</servlet-name>
+		<servlet-class>org.sopeco.frontend.server.rpc.PushRPCImpl
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>pushRPC</servlet-name>
+		<url-pattern>/org_sopeco_frontend/pushRPC</url-pattern>
+	</servlet-mapping>
 </web-app>

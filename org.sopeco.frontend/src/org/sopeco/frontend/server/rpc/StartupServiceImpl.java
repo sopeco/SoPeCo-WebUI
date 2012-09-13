@@ -1,7 +1,5 @@
 package org.sopeco.frontend.server.rpc;
 
-import java.io.File;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sopeco.config.Configuration;
@@ -31,7 +29,6 @@ public class StartupServiceImpl extends RemoteServiceServlet implements
 
 	private void load() {
 		loaded = true;
-
 
 		try {
 			Configuration.getSingleton().loadConfiguration(this.getClass().getClassLoader(), CONFIGURATION_FILE);
