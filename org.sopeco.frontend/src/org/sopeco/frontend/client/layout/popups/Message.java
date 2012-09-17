@@ -16,8 +16,8 @@ public class Message extends DialogBox implements CloseHandler {
 	private static Message current;
 	private static List<Message> queue = new ArrayList<Message>();
 
-	private final static int ERROR = 1;
-	private final static int WARNING = 2;
+	private static final int ERROR = 1;
+	private static final int WARNING = 2;
 
 	private Message(String text, int type) {
 		super(true, true);
@@ -33,6 +33,7 @@ public class Message extends DialogBox implements CloseHandler {
 		case ERROR:
 			image = new Image("images/stop.png");
 			break;
+		default:
 		case WARNING:
 			image = new Image("images/alert.png");
 			break;

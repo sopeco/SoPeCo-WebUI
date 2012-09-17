@@ -2,7 +2,6 @@ package org.sopeco.frontend.client.layout;
 
 import java.util.List;
 
-import org.sopeco.frontend.client.layout.dialog.AddDBDialog;
 import org.sopeco.frontend.client.layout.dialog.AddScenarioDialog;
 import org.sopeco.frontend.client.layout.popups.Confirmation;
 import org.sopeco.frontend.client.layout.popups.Loader;
@@ -63,8 +62,9 @@ public class TopFilterPanel extends DecoratorPanel implements ChangeHandler {
 		HorizontalPanel horizontalPanel = new HorizontalPanel();
 		horizontalPanel.setSpacing(10);
 		horizontalPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
-		floatlPanel.add(horizontalPanel);
-
+//		floatlPanel.add(horizontalPanel);
+		floatlPanel.add(new Label("connected to account XXX"));
+		
 		Label lblSelectDatabase = new Label("select database:");
 		horizontalPanel.add(lblSelectDatabase);
 		lblSelectDatabase.setWidth("110px");
@@ -78,9 +78,9 @@ public class TopFilterPanel extends DecoratorPanel implements ChangeHandler {
 		Button btnAddDatabase = new Button("<img src=\"images/db_add.png\" />");
 		btnAddDatabase.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				AddDBDialog selectDBDialog = new AddDBDialog(thisPanel);
-
-				selectDBDialog.center();
+//				AddDBDialog selectDBDialog = new AddDBDialog(thisPanel);
+//
+//				selectDBDialog.center();
 			}
 		});
 		btnAddDatabase.setStyleName("sopeco-imageButton", true);

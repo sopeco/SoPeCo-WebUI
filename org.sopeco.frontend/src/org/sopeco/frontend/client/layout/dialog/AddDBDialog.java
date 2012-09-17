@@ -2,12 +2,12 @@ package org.sopeco.frontend.client.layout.dialog;
 
 import org.sopeco.frontend.client.helper.SystemDetails;
 import org.sopeco.frontend.client.helper.handler.NumbersOnlyHandler;
+import org.sopeco.frontend.client.layout.LoginBox;
 import org.sopeco.frontend.client.layout.TopFilterPanel;
 import org.sopeco.frontend.client.layout.popups.Loader;
 import org.sopeco.frontend.client.layout.popups.Message;
 import org.sopeco.frontend.client.rpc.DatabaseManagerRPC;
 import org.sopeco.frontend.client.rpc.DatabaseManagerRPCAsync;
-import org.sopeco.frontend.shared.definitions.DatabaseDefinition;
 import org.sopeco.persistence.metadata.entities.DatabaseInstance;
 
 import com.google.gwt.core.client.GWT;
@@ -30,13 +30,13 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class AddDBDialog extends DialogBox {
 
-	private TopFilterPanel parentPanel;
+	private LoginBox parentPanel;
 	
 	private DatabaseManagerRPCAsync dbManagerRPC;
 	private TextBox textboxDbName, textboxHost, textboxPort, textboxPasswd;
 	private Button btnAdd;
 
-	public AddDBDialog(TopFilterPanel parentPanel) {
+	public AddDBDialog(LoginBox parentPanel) {
 		super(false, true);
 
 		this.parentPanel = parentPanel;
@@ -164,7 +164,7 @@ public class AddDBDialog extends DialogBox {
 			public void onSuccess(Boolean result) {
 				Loader.hideLoader();
 				close();
-				parentPanel.updateDatabaseList(true);
+				parentPanel.loadDatabaseList();
 			}
 		});
 	}

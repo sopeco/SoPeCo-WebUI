@@ -7,15 +7,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sopeco.frontend.client.rpc.DatabaseManagerRPC;
 import org.sopeco.frontend.server.db.FlexiblePersistenceProviderFactory;
-import org.sopeco.frontend.shared.definitions.DatabaseDefinition;
 import org.sopeco.persistence.IMetaDataPersistenceProvider;
 import org.sopeco.persistence.IPersistenceProvider;
 import org.sopeco.persistence.PersistenceProviderFactory;
-import org.sopeco.persistence.config.PersistenceConfiguration;
-import org.sopeco.persistence.dataset.DataSetAggregated;
-import org.sopeco.persistence.dataset.DataSetInputColumn;
-import org.sopeco.persistence.dataset.DataSetObservationColumn;
-import org.sopeco.persistence.dataset.DataSetRow;
 import org.sopeco.persistence.dataset.DataSetRowBuilder;
 import org.sopeco.persistence.exceptions.DataNotFoundException;
 import org.sopeco.persistence.metadata.entities.DatabaseInstance;
@@ -59,7 +53,10 @@ public class DatabaseManagerRPCImpl extends RemoteServiceServlet implements Data
 			// }
 
 			return instances;
-		} catch (Exception e) {
+		} catch (DataNotFoundException e) {
+			return new ArrayList<DatabaseInstance>();
+		}
+		catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -91,6 +88,11 @@ public class DatabaseManagerRPCImpl extends RemoteServiceServlet implements Data
 	public boolean addDatabase(DatabaseInstance dbInstance, String passwd) {
 		logger.debug("adding new database");
 
+		String dbName = dbInstance.getDbName();
+		
+		dbName = dbName.replaceAll("[^a-zA-Z0-9]", "_");
+		dbInstance.setDbName(dbName);
+		
 		if (dbInstance.isProtectedByPassword()) {
 			FlexiblePersistenceProviderFactory.createPersistenceProvider(dbInstance.getHost(), dbInstance.getPort(),
 					dbInstance.getDbName(), passwd);
@@ -182,7 +184,7 @@ public class DatabaseManagerRPCImpl extends RemoteServiceServlet implements Data
 			DataSetRowBuilder rb = new DataSetRowBuilder();
 
 
-//				provider.store(rb.createDataSet("myId"));
+				provider.store(rb.createDataSet("myId"));
 				
 				logger.debug("test load: " + provider.loadDataSet("myId").getID());
 			

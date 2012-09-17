@@ -13,12 +13,17 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootPanel;
 
+/**
+ * Entry class of this webapplication.
+ * @author D059149
+ *
+ */
 public class Org_sopeco_frontend implements EntryPoint {
 
 	private MainPanel mainPanel;
 
 	public void onModuleLoad() {
-		pushServer();
+		startup();
 
 		initialize();
 		
@@ -26,8 +31,8 @@ public class Org_sopeco_frontend implements EntryPoint {
 
 		ServerPush.start();
 		
-//		LoginBox box = new LoginBox();
-//		box.center();
+		LoginBox box = new LoginBox();
+		box.center();
 	}
 
 	private void initialize() {
@@ -43,7 +48,7 @@ public class Org_sopeco_frontend implements EntryPoint {
 		return mainPanel;
 	}
 
-	private void pushServer() {
+	private void startup() {
 		StartupServiceAsync startup = GWT.create(StartupService.class);
 
 		startup.start(new AsyncCallback<Boolean>() {

@@ -9,8 +9,8 @@ public class PushRPCImpl extends RemoteServiceServlet implements PushRPC {
 
 	private static final long serialVersionUID = 1L;
 	private static PushPackage send;
-	private static Object notify = new Object();
-	private final static int TIMEOUT = 30000;
+	private static final Object notify = new Object();
+	private static final int TIMEOUT = 30000;
 
 	public PushPackage push() {
 

@@ -1,17 +1,22 @@
 package org.sopeco.frontend.client.layout.popups;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.DialogBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.VerticalPanel;
 
-public class Loader extends DialogBox {
+/**
+ * Class for the loading dialog.
+ * 
+ * @author Marius Oehler
+ * 
+ */
+public final class Loader extends DialogBox {
 
 	private static int count = 0;
 	private static Loader loader;
-	
+
 	private Loader(String text) {
 		super(false, true);
 
@@ -33,25 +38,30 @@ public class Loader extends DialogBox {
 	public static void showLoader() {
 		showLoader("loading");
 	}
-	
-	public static void showLoader(String txt) {
-		if ( loader == null )
+
+	public static void showLoader(final String txt) {
+		if (loader == null) {
 			loader = new Loader(txt);
-		
+		}
+
 		count++;
-		
-		if (!loader.isShowing())
+
+		if (!loader.isShowing()) {
 			loader.center();
+		}
 	}
 
 	public static void hideLoader() {
-		if ( loader == null || count <= 0 )
+		if (loader == null || count <= 0) {
 			return;
-		
+		}
+
 		count--;
-		
-		if (count <= 0)
+
+		if (count <= 0) {
 			loader.hide();
+			loader = null;
+		}
 	}
 
 }

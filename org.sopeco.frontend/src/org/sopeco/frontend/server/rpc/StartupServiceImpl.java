@@ -6,6 +6,12 @@ import org.sopeco.frontend.client.rpc.StartupService;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
+/**
+ * Class which loading all important server-settings etc.
+ * 
+ * @author Marius Oehler
+ *
+ */
 public class StartupServiceImpl extends RemoteServiceServlet implements
 		StartupService {
 
@@ -19,8 +25,9 @@ public class StartupServiceImpl extends RemoteServiceServlet implements
 
 	@Override
 	public boolean start() {
-		if (!loaded)
+		if (!loaded) {
 			load();
+		}
 
 		return false;
 	}
@@ -28,11 +35,11 @@ public class StartupServiceImpl extends RemoteServiceServlet implements
 	private void load() {
 		loaded = true;
 
-//		try {
-//			Configuration.getSingleton().loadConfiguration(this.getClass().getClassLoader(), CONFIGURATION_FILE);
-//		} catch (ConfigurationException e) {
-//			throw new RuntimeException(e);
-//		}
+		try {
+			Configuration.getSingleton().loadConfiguration(this.getClass().getClassLoader(), CONFIGURATION_FILE);
+		} catch (ConfigurationException e) {
+			throw new RuntimeException(e);
+		}
 
 	}
 }
