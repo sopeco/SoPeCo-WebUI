@@ -1,5 +1,6 @@
 package org.sopeco.frontend.client.layout.popups;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -10,8 +11,8 @@ public class Loader extends DialogBox {
 
 	private static int count = 0;
 	private static Loader loader;
-
-	private Loader() {
+	
+	private Loader(String text) {
 		super(false, true);
 
 		VerticalPanel verticalPanel = new VerticalPanel();
@@ -20,7 +21,7 @@ public class Loader extends DialogBox {
 		setWidget(verticalPanel);
 		verticalPanel.setSize("100%", "100%");
 
-		Label lblLoading = new Label("loading");
+		Label lblLoading = new Label(text);
 		verticalPanel.add(lblLoading);
 
 		Image image = new Image("images/loading.gif");
@@ -30,11 +31,15 @@ public class Loader extends DialogBox {
 	}
 
 	public static void showLoader() {
+		showLoader("loading");
+	}
+	
+	public static void showLoader(String txt) {
 		if ( loader == null )
-			loader = new Loader();
+			loader = new Loader(txt);
 		
 		count++;
-
+		
 		if (!loader.isShowing())
 			loader.center();
 	}
@@ -44,7 +49,7 @@ public class Loader extends DialogBox {
 			return;
 		
 		count--;
-
+		
 		if (count <= 0)
 			loader.hide();
 	}

@@ -51,4 +51,14 @@
 		<servlet-name>pushRPC</servlet-name>
 		<url-pattern>/org_sopeco_frontend/pushRPC</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>scenarioManagerRPC</servlet-name>
+		<servlet-class>org.sopeco.frontend.server.rpc.ScenarioManagerRPCImpl
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>scenarioManagerRPC</servlet-name>
+		<url-pattern>/org_sopeco_frontend/scenarioManagerRPC</url-pattern>
+	</servlet-mapping>
 </web-app>

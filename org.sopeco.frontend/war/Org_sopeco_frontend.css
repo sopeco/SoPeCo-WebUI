@@ -1,15 +1,15 @@
-html, body {
+html,body {
 	height: 100%;
 	width: 100%;
 	margin: 0 !important;
 }
 
 .gwt-DecoratorPanel {
-    table-layout: fixed;
+	table-layout: fixed;
 }
-.gwt-DecoratorPanel .topLeft,
-.gwt-DecoratorPanel .topRight {
-    width: 5px;
+
+.gwt-DecoratorPanel .topLeft,.gwt-DecoratorPanel .topRight {
+	width: 5px;
 }
 
 /*************************************/
@@ -22,20 +22,35 @@ html, body {
 	color: lightGrey;
 	border-left: 1px solid lightGrey;
 }
-.topFilterPanel > * {
-	 float: left;
+
+.topFilterPanel>* {
+	float: left;
 }
+
 .topFilterPanel {
+	
 }
+
 .selectDatabaseDialog .applyButton {
 	float: right;
 }
+
 .warning-label {
 	font-weight: bold;
 	margin-left: 16px;
 }
 
 .sopeco-imageButton {
-	padding-bottom:0px !important;
-	padding-right:5px !important;
+	padding-bottom: 0px !important;
+	padding-right: 5px !important;
+}
+
+.sopeco-notification-bottom {
+	height: 60px;
+	left: 8px !important;
+	position: absolute;
+}
+
+.sopeco-notification-bottom .gwt-HTML{
+	margin: 0 16px !important;
 }

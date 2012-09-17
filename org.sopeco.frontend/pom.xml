@@ -67,6 +67,7 @@
 							<directory>war</directory>
 
 							<includes>
+								<include>**/images/*</include>
 								<include>**/*.css</include>
 								<include>**/*.html</include>
 							</includes>
@@ -100,12 +101,6 @@
 				</configuration>
 			</plugin>
 
-
-
-
-
-
-
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>tomcat-maven-plugin</artifactId>
@@ -115,7 +110,15 @@
 					<server>${tomcat.server.name}</server>
 				</configuration>
 			</plugin>
- 
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>2.9.1</version>
+				<configuration>
+					<configLocation>checkstyle-sopeco.config.xml</configLocation>
+				</configuration>
+			</plugin>
 
 		</plugins>
 	</build>
@@ -141,6 +144,14 @@
 			<artifactId>org.sopeco.persistence</artifactId>
 			<version>0.3.0-SNAPSHOT</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.sopeco.core</groupId>
+			<artifactId>org.sopeco.persistence</artifactId>
+			<version>0.3.0-SNAPSHOT</version>
+			<classifier>sources</classifier>
+		</dependency>
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>

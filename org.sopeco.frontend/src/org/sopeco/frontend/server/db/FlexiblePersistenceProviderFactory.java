@@ -28,7 +28,7 @@ public class FlexiblePersistenceProviderFactory extends PersistenceProviderFacto
 		Object [] hpn = {host,port,dbName};
 		logger.debug("Creating a new persistence provider for {}:{}/{}", hpn);
 		persistenceProviderInstance = createJPAPersistenceProvider();
-
+		
 		return persistenceProviderInstance;
 	}
 }

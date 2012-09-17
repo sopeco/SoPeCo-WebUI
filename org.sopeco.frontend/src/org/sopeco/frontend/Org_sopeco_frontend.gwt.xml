@@ -14,7 +14,7 @@
 	<!-- Other module inherits -->
 	<!-- <inherits name='org.sopeco.config.Configuration' />
 	<inherits name='org.sopeco.config.exception.ConfigurationException' />-->
-	<!-- <inherits name='org.sopeco.persistence.persistence' /> -->
+	<inherits name='org.sopeco.persistence' />
 	
 	<!-- Specify the app entry point class. -->
 	<entry-point class='org.sopeco.frontend.client.Org_sopeco_frontend' />

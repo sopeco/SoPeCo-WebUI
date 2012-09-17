@@ -2,6 +2,7 @@ package org.sopeco.frontend.client;
 
 import org.sopeco.frontend.client.helper.ServerPush;
 import org.sopeco.frontend.client.helper.SystemDetails;
+import org.sopeco.frontend.client.layout.LoginBox;
 import org.sopeco.frontend.client.layout.MainPanel;
 import org.sopeco.frontend.client.layout.popups.Message;
 import org.sopeco.frontend.client.rpc.StartupService;
@@ -20,15 +21,18 @@ public class Org_sopeco_frontend implements EntryPoint {
 		pushServer();
 
 		initialize();
-
+		
 		SystemDetails.load();
 
-		//ServerPush.start();
+		ServerPush.start();
+		
+//		LoginBox box = new LoginBox();
+//		box.center();
 	}
 
 	private void initialize() {
 		RootPanel rootPanel = RootPanel.get();
-
+		
 		rootPanel.add(getMainPanel());
 	}
 

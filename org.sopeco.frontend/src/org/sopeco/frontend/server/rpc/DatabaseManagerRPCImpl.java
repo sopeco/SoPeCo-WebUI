@@ -3,7 +3,6 @@ package org.sopeco.frontend.server.rpc;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tools.ant.types.FlexInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sopeco.frontend.client.rpc.DatabaseManagerRPC;
@@ -13,12 +12,17 @@ import org.sopeco.persistence.IMetaDataPersistenceProvider;
 import org.sopeco.persistence.IPersistenceProvider;
 import org.sopeco.persistence.PersistenceProviderFactory;
 import org.sopeco.persistence.config.PersistenceConfiguration;
+import org.sopeco.persistence.dataset.DataSetAggregated;
+import org.sopeco.persistence.dataset.DataSetInputColumn;
+import org.sopeco.persistence.dataset.DataSetObservationColumn;
+import org.sopeco.persistence.dataset.DataSetRow;
+import org.sopeco.persistence.dataset.DataSetRowBuilder;
+import org.sopeco.persistence.exceptions.DataNotFoundException;
 import org.sopeco.persistence.metadata.entities.DatabaseInstance;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
-public class DatabaseManagerRPCImpl extends RemoteServiceServlet implements
-		DatabaseManagerRPC {
+public class DatabaseManagerRPCImpl extends RemoteServiceServlet implements DatabaseManagerRPC {
 
 	private static final Logger logger = LoggerFactory.getLogger(DatabaseManagerRPCImpl.class);
 	private static final long serialVersionUID = 1L;
@@ -41,19 +45,20 @@ public class DatabaseManagerRPCImpl extends RemoteServiceServlet implements
 	/*
 	 * get a list of all databases
 	 */
-	public List<DatabaseDefinition> getAllDatabases() {
+	public List<DatabaseInstance> getAllDatabases() {
 		logger.debug("loading databases");
 
 		try {
 			List<DatabaseInstance> instances = getMetaProvider().loadAllDatabaseInstances();
 
-			List<DatabaseDefinition> returnList = new ArrayList<DatabaseDefinition>();
+			// List<DatabaseDefinition> returnList = new
+			// ArrayList<DatabaseDefinition>();
+			//
+			// for (DatabaseInstance instance : instances) {
+			// returnList.add(databaseInstanceToDefinition(instance));
+			// }
 
-			for (DatabaseInstance instance : instances) {
-				returnList.add(databaseInstanceToDefinition(instance));
-			}
-			
-			return returnList;
+			return instances;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -62,73 +67,129 @@ public class DatabaseManagerRPCImpl extends RemoteServiceServlet implements
 	/*
 	 * removing the specific database
 	 */
-	public boolean removeDatabase(DatabaseDefinition dbDefinition) {
-		logger.debug("deleting database " + dbDefinition.getName());
+	public boolean removeDatabase(DatabaseInstance dbDefinition) {
+		logger.debug("deleting database " + dbDefinition.getDbName());
 
 		try {
-			List<DatabaseInstance> instances = getMetaProvider().loadAllDatabaseInstances();
+			DatabaseInstance dbInstance = getRealInstance(dbDefinition);
 
-			for (DatabaseInstance dbInstance : instances) {
-				if (instanceEqualsDefinition(dbDefinition, dbInstance)) {
-					getMetaProvider().remove(dbInstance);
-					return true;
-				}
+			if (dbInstance != null) {
+				getMetaProvider().remove(dbInstance);
+				return true;
 			}
 
-			throw new Exception("can't find database " + dbDefinition.getName()
-					+ " '" + dbDefinition.getHost() + "'");
+			throw new Exception("can't find database " + dbDefinition.getDbName() + " '" + dbDefinition.getHost() + "'");
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-
 	/**
-	 * @param 
+	 * @param
 	 * 
 	 */
-	public boolean addDatabase(DatabaseDefinition dbDefinition) {
+	public boolean addDatabase(DatabaseInstance dbInstance, String passwd) {
 		logger.debug("adding new database");
-		DatabaseInstance instance = new DatabaseInstance();
 
-		if ( dbDefinition.getPassword().isEmpty() )
-			FlexiblePersistenceProviderFactory.createPersistenceProvider(dbDefinition.getHost(), dbDefinition.getPort(), dbDefinition.getName());
-		else
-			FlexiblePersistenceProviderFactory.createPersistenceProvider(dbDefinition.getHost(), dbDefinition.getPort(), dbDefinition.getName(), dbDefinition.getPassword());
-		
-		String connectionUrl = PersistenceConfiguration.getSingleton().getServerUrl();
-		
-		instance.setDbName(dbDefinition.getName());
-		instance.setConnectionUrl(connectionUrl);
+		if (dbInstance.isProtectedByPassword()) {
+			FlexiblePersistenceProviderFactory.createPersistenceProvider(dbInstance.getHost(), dbInstance.getPort(),
+					dbInstance.getDbName(), passwd);
+		} else {
+			FlexiblePersistenceProviderFactory.createPersistenceProvider(dbInstance.getHost(), dbInstance.getPort(),
+					dbInstance.getDbName());
+		}
 
-		getMetaProvider().store(instance);
+		getMetaProvider().store(dbInstance);
 
-		//
 		return true;
 	}
 
-	/*
-	 * create DatabaseDefinition object from DatabaseInstance object
+	/**
+	 * Get the databaseInstacen object of the database which is equals to the
+	 * committed databaseInstance
+	 * 
+	 * @param DatabaseInstance
+	 *            search
+	 * @return DatabaseInstance result
 	 */
-	private DatabaseDefinition databaseInstanceToDefinition(DatabaseInstance instance) {
-		DatabaseDefinition definition = new DatabaseDefinition();
+	private DatabaseInstance getRealInstance(DatabaseInstance instance) {
+		try {
+			List<DatabaseInstance> instances = getMetaProvider().loadAllDatabaseInstances();
 
-		definition.setName(instance.getDbName());
-		definition.setHost(instance.getConnectionUrl());
+			for (DatabaseInstance dbInstance : instances) {
+				if (instanceEqual(instance, dbInstance)) {
+					return dbInstance;
+				}
+			}
 
-		return definition;
+			return null;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
-	/*
-	 * check if the committed databases are equal
+	/**
+	 * Are the instances equal?
+	 * 
+	 * @param instance
+	 *            one
+	 * @param instance
+	 *            two
+	 * @return true if they are equal
 	 */
-	private boolean instanceEqualsDefinition(DatabaseDefinition definition, DatabaseInstance instance) {
-		if ( !definition.getName().equals(instance.getDbName()) )
+	public boolean instanceEqual(DatabaseInstance i1, DatabaseInstance i2) {
+		if (!i1.getDbName().equals(i2.getDbName()))
 			return false;
-		
-		if ( !definition.getHost().equals(instance.getConnectionUrl()) )
+		if (!i1.getHost().equals(i2.getHost()))
 			return false;
-		
+		if (!i1.getId().equals(i2.getId()))
+			return false;
+		if (!i1.getPort().equals(i2.getPort()))
+			return false;
+		if (!i1.getUser().equals(i2.getUser()))
+			return false;
+		if (i1.isProtectedByPassword() != i2.isProtectedByPassword())
+			return false;
+
+		return true;
+	}
+
+	/**
+	 * 
+	 */
+	@Override
+	public boolean selectDatabase(DatabaseInstance databaseInstance, String passwd) {
+		DatabaseInstance dbInstance = getRealInstance(databaseInstance);
+
+		if (dbInstance == null || databaseInstance == null)
+			return false;
+
+		logger.debug("selected database: " + dbInstance.getDbName());
+		logger.debug("    host: " + dbInstance.getHost());
+		logger.debug("    is pw protected: " + dbInstance.isProtectedByPassword());
+
+		if (dbInstance.isProtectedByPassword()) {
+			FlexiblePersistenceProviderFactory.createPersistenceProvider(dbInstance.getHost(), dbInstance.getPort(),
+					dbInstance.getDbName(), passwd);
+		} else {
+			FlexiblePersistenceProviderFactory.createPersistenceProvider(dbInstance.getHost(), dbInstance.getPort(),
+					dbInstance.getDbName());
+		}
+
+		IPersistenceProvider provider = PersistenceProviderFactory.getPersistenceProvider();
+
+		try {
+			DataSetRowBuilder rb = new DataSetRowBuilder();
+
+
+//				provider.store(rb.createDataSet("myId"));
+				
+				logger.debug("test load: " + provider.loadDataSet("myId").getID());
+			
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+
 		return true;
 	}
 }

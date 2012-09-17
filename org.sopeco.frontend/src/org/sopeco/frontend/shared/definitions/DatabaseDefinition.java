@@ -7,10 +7,11 @@ public class DatabaseDefinition implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private int id;
-	private String name;
-	private String host;
-	private String port;
-	private String password;
+	private String name = "";
+	private String host = "";
+	private String port = "";
+	private String password = "";
+	private boolean isPasswordProtected = false;
 	
 	public int getId() {
 		return id;
@@ -50,5 +51,13 @@ public class DatabaseDefinition implements Serializable {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public boolean isPasswordProtected() {
+		return isPasswordProtected;
+	}
+
+	public void setPasswordProtected(boolean isPasswordProtected) {
+		this.isPasswordProtected = isPasswordProtected;
 	}
 }

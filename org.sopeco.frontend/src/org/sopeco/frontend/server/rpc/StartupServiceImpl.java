@@ -1,7 +1,5 @@
 package org.sopeco.frontend.server.rpc;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.sopeco.config.Configuration;
 import org.sopeco.config.exception.ConfigurationException;
 import org.sopeco.frontend.client.rpc.StartupService;
@@ -11,8 +9,8 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 public class StartupServiceImpl extends RemoteServiceServlet implements
 		StartupService {
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(StartupServiceImpl.class);
+//	private static final Logger logger = LoggerFactory
+//			.getLogger(StartupServiceImpl.class);
 
 	private static final long serialVersionUID = 1L;
 	private final String CONFIGURATION_FILE = "sopeco-gui.conf";
@@ -30,11 +28,11 @@ public class StartupServiceImpl extends RemoteServiceServlet implements
 	private void load() {
 		loaded = true;
 
-		try {
-			Configuration.getSingleton().loadConfiguration(this.getClass().getClassLoader(), CONFIGURATION_FILE);
-		} catch (ConfigurationException e) {
-			throw new RuntimeException(e);
-		}
+//		try {
+//			Configuration.getSingleton().loadConfiguration(this.getClass().getClassLoader(), CONFIGURATION_FILE);
+//		} catch (ConfigurationException e) {
+//			throw new RuntimeException(e);
+//		}
 
 	}
 }

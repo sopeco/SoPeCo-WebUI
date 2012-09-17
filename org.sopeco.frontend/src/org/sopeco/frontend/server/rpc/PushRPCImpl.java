@@ -1,25 +1,46 @@
 package org.sopeco.frontend.server.rpc;
 
 import org.sopeco.frontend.client.rpc.PushRPC;
+import org.sopeco.frontend.shared.definitions.PushPackage;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 public class PushRPCImpl extends RemoteServiceServlet implements PushRPC {
 
 	private static final long serialVersionUID = 1L;
+	private static PushPackage send;
+	private static Object notify = new Object();
+	private final static int TIMEOUT = 30000;
 
-	public int push() {
-		
+	public PushPackage push() {
+
 		try {
-			Thread.sleep(5000);
+			send = new PushPackage(Type.IDLE);
 			
-			return (int)(Math.random()*2);
-			
+			synchronized (notify) {
+				notify.wait(TIMEOUT);
+			}
+			return send;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-		
-		//return PushRPC.ERROR;
 	}
 
+	/**
+	 * Sends a pushPackage to the frontend
+	 * @param integer
+	 */
+	public static void push(PushPackage pushPackage) {
+		send = pushPackage;
+
+		synchronized (notify) {
+			notify.notifyAll();
+		}
+	}
+
+	public static void pushMessage ( String message ) {
+		PushPackage pushPackage = new PushPackage(Type.MESSAGE);
+		pushPackage.setPiggyback(message);
+		push(pushPackage);
+	}
 }

@@ -8,6 +8,7 @@ import org.sopeco.frontend.client.layout.popups.Message;
 import org.sopeco.frontend.client.rpc.DatabaseManagerRPC;
 import org.sopeco.frontend.client.rpc.DatabaseManagerRPCAsync;
 import org.sopeco.frontend.shared.definitions.DatabaseDefinition;
+import org.sopeco.persistence.metadata.entities.DatabaseInstance;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -135,20 +136,28 @@ public class AddDBDialog extends DialogBox {
 	 * adding a new database
 	 */
 	private void addNewDatabase() {
-		DatabaseDefinition newDb = new DatabaseDefinition();
+		DatabaseInstance newDb = new DatabaseInstance();
 
-		newDb.setName(textboxDbName.getText());
-		newDb.setHost(textboxDbName.getText());
-		newDb.setPort(textboxDbName.getText());
-		newDb.setPassword(textboxDbName.getText());
-
+		newDb.setDbName(textboxDbName.getText());
+		newDb.setHost(textboxHost.getText());
+		newDb.setPort(textboxPort.getText());
+		String passwd;
+		
+		if ( textboxPasswd.getText().isEmpty() ) {
+			newDb.setProtectedByPassword(false);
+			passwd = "";
+		} else {
+			newDb.setProtectedByPassword(true);
+			passwd = textboxPasswd.getText();
+		}
+		
 		Loader.showLoader();
 
-		dbManagerRPC.addDatabase(newDb, new AsyncCallback<Boolean>() {
+		dbManagerRPC.addDatabase(newDb, passwd, new AsyncCallback<Boolean>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				Loader.hideLoader();
-				Message.error("Database was not added");
+				Message.error("Database was not added: " + caught.getMessage());
 			}
 
 			@Override
