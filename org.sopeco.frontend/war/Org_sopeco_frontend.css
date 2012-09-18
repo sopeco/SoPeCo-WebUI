@@ -13,15 +13,7 @@ html,body {
 }
 
 /*************************************/
-.spc-seperator {
-	background-color: lightGrey;
-	width: 1px;
-	display: block;
-	margin: 0 12px;
-	overflow: hidden;
-	color: lightGrey;
-	border-left: 1px solid lightGrey;
-}
+
 
 .topFilterPanel>* {
 	float: left;
@@ -30,6 +22,7 @@ html,body {
 .topFilterPanel {
 	
 }
+
 
 .selectDatabaseDialog .applyButton {
 	float: right;

@@ -8,7 +8,7 @@
 
 	<!-- Default page to serve -->
 	<welcome-file-list>
-		<welcome-file>Org_sopeco_frontend.html</welcome-file>
+		<welcome-file>sopeco_frontend.html</welcome-file>
 	</welcome-file-list>
 
 
@@ -19,7 +19,7 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>databaseManagerRPC</servlet-name>
-		<url-pattern>/org_sopeco_frontend/databaseManagerRPC</url-pattern>
+		<url-pattern>/sopeco_frontend/databaseManagerRPC</url-pattern>
 	</servlet-mapping>
 
 	<servlet>
@@ -29,7 +29,7 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>startupService</servlet-name>
-		<url-pattern>/org_sopeco_frontend/startupService</url-pattern>
+		<url-pattern>/sopeco_frontend/startupService</url-pattern>
 	</servlet-mapping>
 	
 	<servlet>
@@ -39,7 +39,7 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>systemDetailsRPC</servlet-name>
-		<url-pattern>/org_sopeco_frontend/systemDetailsRPC</url-pattern>
+		<url-pattern>/sopeco_frontend/systemDetailsRPC</url-pattern>
 	</servlet-mapping>
 	
 	<servlet>
@@ -49,7 +49,7 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>pushRPC</servlet-name>
-		<url-pattern>/org_sopeco_frontend/pushRPC</url-pattern>
+		<url-pattern>/sopeco_frontend/pushRPC</url-pattern>
 	</servlet-mapping>
 	
 	<servlet>
@@ -59,6 +59,6 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>scenarioManagerRPC</servlet-name>
-		<url-pattern>/org_sopeco_frontend/scenarioManagerRPC</url-pattern>
+		<url-pattern>/sopeco_frontend/scenarioManagerRPC</url-pattern>
 	</servlet-mapping>
 </web-app>

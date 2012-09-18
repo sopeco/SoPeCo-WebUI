@@ -12,6 +12,7 @@ import org.sopeco.persistence.IPersistenceProvider;
 import org.sopeco.persistence.PersistenceProviderFactory;
 import org.sopeco.persistence.dataset.DataSetRowBuilder;
 import org.sopeco.persistence.exceptions.DataNotFoundException;
+import org.sopeco.persistence.exceptions.WrongCredentialsException;
 import org.sopeco.persistence.metadata.entities.DatabaseInstance;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -55,8 +56,7 @@ public class DatabaseManagerRPCImpl extends RemoteServiceServlet implements Data
 			return instances;
 		} catch (DataNotFoundException e) {
 			return new ArrayList<DatabaseInstance>();
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -89,10 +89,10 @@ public class DatabaseManagerRPCImpl extends RemoteServiceServlet implements Data
 		logger.debug("adding new database");
 
 		String dbName = dbInstance.getDbName();
-		
+
 		dbName = dbName.replaceAll("[^a-zA-Z0-9]", "_");
 		dbInstance.setDbName(dbName);
-		
+
 		if (dbInstance.isProtectedByPassword()) {
 			FlexiblePersistenceProviderFactory.createPersistenceProvider(dbInstance.getHost(), dbInstance.getPort(),
 					dbInstance.getDbName(), passwd);
@@ -140,18 +140,24 @@ public class DatabaseManagerRPCImpl extends RemoteServiceServlet implements Data
 	 * @return true if they are equal
 	 */
 	public boolean instanceEqual(DatabaseInstance i1, DatabaseInstance i2) {
-		if (!i1.getDbName().equals(i2.getDbName()))
+		if (!i1.getDbName().equals(i2.getDbName())) {
 			return false;
-		if (!i1.getHost().equals(i2.getHost()))
+		}
+		if (!i1.getHost().equals(i2.getHost())) {
 			return false;
-		if (!i1.getId().equals(i2.getId()))
+		}
+		if (!i1.getId().equals(i2.getId())) {
 			return false;
-		if (!i1.getPort().equals(i2.getPort()))
+		}
+		if (!i1.getPort().equals(i2.getPort())) {
 			return false;
-		if (!i1.getUser().equals(i2.getUser()))
+		}
+		if (!i1.getUser().equals(i2.getUser())) {
 			return false;
-		if (i1.isProtectedByPassword() != i2.isProtectedByPassword())
+		}
+		if (i1.isProtectedByPassword() != i2.isProtectedByPassword()) {
 			return false;
+		}
 
 		return true;
 	}
@@ -163,19 +169,26 @@ public class DatabaseManagerRPCImpl extends RemoteServiceServlet implements Data
 	public boolean selectDatabase(DatabaseInstance databaseInstance, String passwd) {
 		DatabaseInstance dbInstance = getRealInstance(databaseInstance);
 
-		if (dbInstance == null || databaseInstance == null)
+		if (dbInstance == null || databaseInstance == null) {
 			return false;
+		}
 
 		logger.debug("selected database: " + dbInstance.getDbName());
 		logger.debug("    host: " + dbInstance.getHost());
 		logger.debug("    is pw protected: " + dbInstance.isProtectedByPassword());
 
-		if (dbInstance.isProtectedByPassword()) {
-			FlexiblePersistenceProviderFactory.createPersistenceProvider(dbInstance.getHost(), dbInstance.getPort(),
-					dbInstance.getDbName(), passwd);
-		} else {
-			FlexiblePersistenceProviderFactory.createPersistenceProvider(dbInstance.getHost(), dbInstance.getPort(),
-					dbInstance.getDbName());
+		try {
+			if (dbInstance.isProtectedByPassword()) {
+				FlexiblePersistenceProviderFactory.createPersistenceProvider(dbInstance.getHost(),
+						dbInstance.getPort(), dbInstance.getDbName(), passwd);
+			} else {
+				FlexiblePersistenceProviderFactory.createPersistenceProvider(dbInstance.getHost(),
+						dbInstance.getPort(), dbInstance.getDbName());
+			}
+		} catch (WrongCredentialsException e) {
+			logger.warn(e.getMessage());
+			
+			return false;
 		}
 
 		IPersistenceProvider provider = PersistenceProviderFactory.getPersistenceProvider();
@@ -183,11 +196,10 @@ public class DatabaseManagerRPCImpl extends RemoteServiceServlet implements Data
 		try {
 			DataSetRowBuilder rb = new DataSetRowBuilder();
 
+			provider.store(rb.createDataSet("myId"));
 
-				provider.store(rb.createDataSet("myId"));
-				
-				logger.debug("test load: " + provider.loadDataSet("myId").getID());
-			
+			logger.debug("test load: " + provider.loadDataSet("myId").getID());
+
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module rename-to='org_sopeco_frontend'>
+<module rename-to='sopeco_frontend'>
 	<!-- Inherit the core Web Toolkit stuff. -->
 	<inherits name='com.google.gwt.user.User' />
 
@@ -11,13 +11,15 @@
 	<!-- <inherits name='com.google.gwt.user.theme.chrome.Chrome'/> -->
 	<!--<inherits name='com.google.gwt.user.theme.dark.Dark'/> -->
 
+	<stylesheet src="../frontend_style.css" />
+
 	<!-- Other module inherits -->
 	<!-- <inherits name='org.sopeco.config.Configuration' />
 	<inherits name='org.sopeco.config.exception.ConfigurationException' />-->
 	<inherits name='org.sopeco.persistence' />
 	
 	<!-- Specify the app entry point class. -->
-	<entry-point class='org.sopeco.frontend.client.Org_sopeco_frontend' />
+	<entry-point class='org.sopeco.frontend.client.FrontendEntryPoint' />
 
 	<!-- Specify the paths for translatable code -->
 	<source path='client' />

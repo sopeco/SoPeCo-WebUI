@@ -9,15 +9,15 @@ public class PushPackage implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private Type type;
 	private String piggyback;
-	
-	public PushPackage () {
+
+	public PushPackage() {
 	}
-	
-	public PushPackage (Type type) {
+
+	public PushPackage(Type type) {
 		this.type = type;
 	}
-	
-	public Type getType () {
+
+	public Type getType() {
 		return type;
 	}
 
@@ -31,5 +31,5 @@ public class PushPackage implements Serializable {
 
 	public void setType(Type type) {
 		this.type = type;
-	}	
+	}
 }

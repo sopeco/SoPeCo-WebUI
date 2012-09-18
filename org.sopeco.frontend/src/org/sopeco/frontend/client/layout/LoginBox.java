@@ -2,6 +2,7 @@ package org.sopeco.frontend.client.layout;
 
 import java.util.List;
 
+import org.sopeco.frontend.client.FrontendEntryPoint;
 import org.sopeco.frontend.client.helper.DBManager;
 import org.sopeco.frontend.client.helper.INotifyHandler;
 import org.sopeco.frontend.client.layout.dialog.AddDBDialog;
@@ -15,6 +16,7 @@ import org.sopeco.persistence.metadata.entities.DatabaseInstance;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
@@ -28,13 +30,18 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class LoginBox extends DialogBox implements ClickHandler {
 
+	private static final String COOKIE_DATABSE = "selected_database";
+
 	private ListBox listboxDatabases;
 	private LoginBox myself;
+
+	private FrontendEntryPoint parentModule;
 	
-	public LoginBox() {
+	public LoginBox(FrontendEntryPoint parent) {
 		super(false, true);
-		
+
 		myself = this;
+		parentModule = parent;
 
 		initialize();
 
@@ -123,6 +130,15 @@ public class LoginBox extends DialogBox implements ClickHandler {
 
 			listboxDatabases.addItem(name);
 		}
+
+		String cookie = Cookies.getCookie(COOKIE_DATABSE);
+		if (cookie != null) {
+			for (int i = 0; i < databases.size() && i < listboxDatabases.getItemCount() - 1; i++) {
+				if (databases.get(i).getDbName().equals(cookie)) {
+					listboxDatabases.setSelectedIndex(i + 1);
+				}
+			}
+		}
 	}
 
 	public void loadDatabaseList() {
@@ -161,6 +177,8 @@ public class LoginBox extends DialogBox implements ClickHandler {
 			return;
 		}
 
+		Cookies.setCookie(COOKIE_DATABSE, instance.getDbName());
+
 		if (instance.isProtectedByPassword()) {
 			TextInput.doInput(TextInput.ICO_PASSWORD, "Insert database password for '" + instance.getDbName() + "'",
 					"Database password:", new TextInputOkHandler() {
@@ -175,7 +193,7 @@ public class LoginBox extends DialogBox implements ClickHandler {
 
 	}
 
-	private void switchDatabaseRequest(DatabaseInstance instance, String password) {
+	private void switchDatabaseRequest(final DatabaseInstance instance, final String password) {
 		Loader.showLoader();
 		DBManager.getDbManager().selectDatabase(instance, password, new AsyncCallback<Boolean>() {
 			@Override
@@ -187,23 +205,28 @@ public class LoginBox extends DialogBox implements ClickHandler {
 
 			@Override
 			public void onSuccess(Boolean result) {
-
-				hide();
-
 				Loader.hideLoader();
+
+				if (result) {
+					hide();
+					
+					parentModule.initializeMainView(instance);
+				} else {
+					Message.error("Could not connect to database. User name or password are wrong.");
+				}
 			}
 		});
 	}
-	
+
 	private void deleteSelectedDatabase() {
 		int selectedIndex = listboxDatabases.getSelectedIndex();
 
-		if (selectedIndex <= 0 ) {
+		if (selectedIndex <= 0) {
 			return;
 		}
 
 		selectedIndex--;
-		
+
 		final DatabaseInstance instance = DBManager.getLoadedDatabases().get(selectedIndex);
 
 		if (instance == null) {

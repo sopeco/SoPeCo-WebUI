@@ -4,6 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sopeco.persistence.EntityFactory;
 import org.sopeco.persistence.entities.definition.ConstantValueAssignment;
+import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
+import org.sopeco.persistence.entities.definition.ExperimentTerminationCondition;
 import org.sopeco.persistence.entities.definition.MeasurementSpecification;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 
@@ -92,6 +94,106 @@ public class MeasurementSpecificationBuilder {
 				return specification.getInitializationAssignemts().remove(cva);
 			}
 		}
+
+		return false;
+	}
+
+	/**
+	 * Adds a new experiment series definition to the specification.
+	 * 
+	 * @param name
+	 *            experiment name
+	 * @param termination
+	 *            terminition condition
+	 * @return if adding was successful: the created experimentSeriesDefinition
+	 *         object else null
+	 */
+	public ExperimentSeriesDefinition addExperimentSeries(String name, ExperimentTerminationCondition termination) {
+		ExperimentSeriesDefinition experiment = EntityFactory.createExperimentSeriesDefinition(name, termination);
+
+		if (addExperimentSeries(experiment)) {
+			return experiment;
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * Adds the given exp. series def. object to the specification.
+	 * 
+	 * @param experiment
+	 *            esd object which will be added
+	 * @return true if the adding was successful; false if a experiment with the
+	 *         given name already exists
+	 */
+	public boolean addExperimentSeries(ExperimentSeriesDefinition experiment) {
+		LOGGER.debug("adding new experiementSeriesDefinition '" + experiment.getName() + "' to specification '"
+				+ specification.getName() + "'");
+
+		for (ExperimentSeriesDefinition expDefinition : specification.getExperimentSeriesDefinitions()) {
+			if (expDefinition.getName().equals(experiment.getName())) {
+				LOGGER.warn("adding failed. there is already a experiementSeriesDefinition called '"
+						+ experiment.getName() + " in specification '" + specification.getName() + "'");
+
+				return false;
+			}
+		}
+
+		return specification.getExperimentSeriesDefinitions().add(experiment);
+	}
+
+	/**
+	 * Return the ExpSeriesDef with the given name.
+	 * 
+	 * @param name
+	 *            name of the ExpSeries
+	 * @return the found experimentSeries. if no expSeries with the given name
+	 *         was found, it returns null
+	 */
+	public ExperimentSeriesDefinition getExperimentSeries(String name) {
+		for (ExperimentSeriesDefinition expDefinition : specification.getExperimentSeriesDefinitions()) {
+			if (expDefinition.getName().equals(name)) {
+				LOGGER.debug("experiment called '" + name + " was found in specification '" + specification.getName()
+						+ "'");
+
+				return expDefinition;
+			}
+		}
+
+		LOGGER.warn("specification '" + specification.getName() + "' has no experiment called '" + name + "'");
+
+		return null;
+	}
+
+	/**
+	 * Removes the given experiment from the specification.
+	 * 
+	 * @param expDefinition
+	 *            experimentSeries which will be removed
+	 * @return true if the removal was successful
+	 */
+	public boolean removeExperimentSeries(ExperimentSeriesDefinition expDefinition) {
+		return removeExperimentSeries(expDefinition.getName());
+	}
+
+	/**
+	 * Removes the experiment, which has the given name, from the specification.
+	 * 
+	 * @param name
+	 *            name of the experimentSeries which will be removed
+	 * @return true if the removal was successful
+	 */
+	public boolean removeExperimentSeries(String name) {
+		LOGGER.debug("removing the experiment '" + name + "' from the specification '" + specification.getName() + "'");
+
+		for (ExperimentSeriesDefinition expDefinition : specification.getExperimentSeriesDefinitions()) {
+			if (expDefinition.getName().equals(name)) {
+				return specification.getExperimentSeriesDefinitions().remove(expDefinition);
+			}
+		}
+
+		LOGGER.warn("can't remove exp. '" + name + "' because nothing was found in spec. '" + specification.getName()
+				+ "'");
 
 		return false;
 	}

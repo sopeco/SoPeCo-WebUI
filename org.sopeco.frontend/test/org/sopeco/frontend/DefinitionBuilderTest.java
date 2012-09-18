@@ -11,6 +11,8 @@ import org.sopeco.frontend.server.model.MeasurementSpecificationBuilder;
 import org.sopeco.frontend.server.model.ScenarioDefinitionBuilder;
 import org.sopeco.persistence.EntityFactory;
 import org.sopeco.persistence.entities.definition.ConstantValueAssignment;
+import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
+import org.sopeco.persistence.entities.definition.ExperimentTerminationCondition;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.entities.definition.ParameterNamespace;
 import org.sopeco.persistence.entities.definition.ParameterRole;
@@ -202,5 +204,32 @@ public class DefinitionBuilderTest {
 		assertTrue(builder.removeInitialAssignment(cva));
 
 		assertEquals(builder.getBuiltSpecification().getInitializationAssignemts().size(), 0);
+	}
+
+	@Test
+	public void addExperimentSeriesDefinition() {
+		MeasurementSpecificationBuilder builder = new MeasurementSpecificationBuilder(TESTNAME);
+
+		ExperimentTerminationCondition terminition = EntityFactory.createTimeOutTerminationCondition(10);
+
+		assertEquals(builder.getBuiltSpecification().getExperimentSeriesDefinitions().size(), 0);
+
+		ExperimentSeriesDefinition def = builder.addExperimentSeries(TESTNAME, terminition);
+
+		assertEquals(builder.getBuiltSpecification().getExperimentSeriesDefinitions().size(), 1);
+		assertEquals(def, builder.getBuiltSpecification().getExperimentSeriesDefinitions().get(0));
+
+		assertFalse(builder.addExperimentSeries(def));
+		assertNull(builder.addExperimentSeries(TESTNAME, terminition));
+
+		assertEquals(builder.getBuiltSpecification().getExperimentSeriesDefinitions().size(), 1);
+		
+		assertFalse(builder.removeExperimentSeries("no exp"));
+
+		assertNull(builder.getExperimentSeries("abcd"));
+		ExperimentSeriesDefinition defGet = builder.getExperimentSeries(TESTNAME);
+		assertTrue(builder.removeExperimentSeries(defGet));
+
+		assertEquals(builder.getBuiltSpecification().getExperimentSeriesDefinitions().size(), 0);
 	}
 }
