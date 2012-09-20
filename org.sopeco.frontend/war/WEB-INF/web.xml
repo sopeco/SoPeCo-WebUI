@@ -61,4 +61,5 @@
 		<servlet-name>scenarioManagerRPC</servlet-name>
 		<url-pattern>/sopeco_frontend/scenarioManagerRPC</url-pattern>
 	</servlet-mapping>
+	
 </web-app>

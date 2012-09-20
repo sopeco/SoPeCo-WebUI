@@ -70,6 +70,7 @@
 								<include>**/images/*</include>
 								<include>**/*.css</include>
 								<include>**/*.html</include>
+								<include>**/rsc/lang/*</include>
 							</includes>
 						</resource>
 						<resource>

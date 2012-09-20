@@ -28,7 +28,7 @@ public class DBManager {
 	 * 
 	 */
 	public static void loadDatabases(INotifyHandler<List<DatabaseInstance>> notify) {
-		
+
 		getDbManager().getAllDatabases(new LoadingDbHandler(notify));
 
 	}

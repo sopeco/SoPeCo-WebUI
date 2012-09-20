@@ -2,8 +2,14 @@ package org.sopeco.frontend.client.layout.popups;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 
+/**
+ * Handler for the OK Button of the {@link TextInput} Dialog.
+ * 
+ * @author Marius Oehler
+ * 
+ */
 public interface TextInputOkHandler {
 
-	public void onClick(ClickEvent event, String input);
+	void onInput(ClickEvent event, String input);
 
 }

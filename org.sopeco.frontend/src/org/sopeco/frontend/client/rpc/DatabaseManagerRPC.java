@@ -48,4 +48,6 @@ public interface DatabaseManagerRPC extends RemoteService {
 	 * @return true if succeeded
 	 */
 	boolean selectDatabase(DatabaseInstance databaseInstance, String passwd);
+	
+	boolean checkPassword(DatabaseInstance databaseInstance, String passwd);
 }

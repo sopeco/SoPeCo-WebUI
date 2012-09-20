@@ -11,11 +11,13 @@ import org.sopeco.frontend.client.layout.popups.Loader;
 import org.sopeco.frontend.client.layout.popups.Message;
 import org.sopeco.frontend.client.layout.popups.TextInput;
 import org.sopeco.frontend.client.layout.popups.TextInputOkHandler;
+import org.sopeco.frontend.shared.rsc.R;
 import org.sopeco.persistence.metadata.entities.DatabaseInstance;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
@@ -34,9 +36,10 @@ public class LoginBox extends DialogBox implements ClickHandler {
 
 	private ListBox listboxDatabases;
 	private LoginBox myself;
+	private Button btnConnect;
 
 	private FrontendEntryPoint parentModule;
-	
+
 	public LoginBox(FrontendEntryPoint parent) {
 		super(false, true);
 
@@ -70,9 +73,11 @@ public class LoginBox extends DialogBox implements ClickHandler {
 
 		Image image = new Image("images/database.png");
 		verticalPanel_1.add(image);
-		image.setWidth("");
+		image.setHeight("128px");
 
-		HTML htmlNewHtml = new HTML("<b style=\"margin-left:12px\">Select Account for SoPeCo Web-FrontEnd</b>", true);
+		R.get("");
+
+		HTML htmlNewHtml = new HTML("<b style=\"margin-left:12px\">" + R.get("select_account_login") + "</b>", true);
 		verticalPanel_1.add(htmlNewHtml);
 
 		HorizontalPanel horizontalPanel = new HorizontalPanel();
@@ -82,7 +87,7 @@ public class LoginBox extends DialogBox implements ClickHandler {
 		verticalPanel.add(horizontalPanel);
 
 		listboxDatabases = new ListBox();
-		listboxDatabases.addItem("--SELECT--");
+		listboxDatabases.addItem(R.get("select"));
 		listboxDatabases.setSelectedIndex(0);
 		horizontalPanel.add(listboxDatabases);
 		listboxDatabases.setSize("200px", "");
@@ -109,7 +114,7 @@ public class LoginBox extends DialogBox implements ClickHandler {
 			}
 		});
 
-		Button btnConnect = new Button("connect");
+		btnConnect = new Button(R.get("connect"));
 		btnConnect.addClickHandler(this);
 		verticalPanel.add(btnConnect);
 		btnConnect.setWidth("100%");
@@ -119,7 +124,7 @@ public class LoginBox extends DialogBox implements ClickHandler {
 	private void setDatabaseList(List<DatabaseInstance> databases) {
 		listboxDatabases.clear();
 
-		listboxDatabases.addItem("--SELECT--");
+		listboxDatabases.addItem(R.get("select"));
 
 		for (DatabaseInstance dbInstance : databases) {
 			String name = dbInstance.getDbName();
@@ -149,8 +154,15 @@ public class LoginBox extends DialogBox implements ClickHandler {
 			public void call(boolean success, List<DatabaseInstance> result) {
 				if (success) {
 					setDatabaseList(result);
+
+					// TODO
+					if (FrontendEntryPoint.DEVELOPMENT) {
+						btnConnect.fireEvent(new ClickEvent() {
+						});
+					}
+
 				} else {
-					Message.error("Failed loading accounts..");
+					Message.error(R.get("faild_loading_accounts"));
 				}
 
 				Loader.hideLoader();
@@ -165,7 +177,7 @@ public class LoginBox extends DialogBox implements ClickHandler {
 		int selectedIndex = listboxDatabases.getSelectedIndex();
 
 		if (selectedIndex <= 0) {
-			Message.warning("Please select a account.");
+			Message.warning(R.get("select_account"));
 			return;
 		}
 
@@ -180,10 +192,11 @@ public class LoginBox extends DialogBox implements ClickHandler {
 		Cookies.setCookie(COOKIE_DATABSE, instance.getDbName());
 
 		if (instance.isProtectedByPassword()) {
-			TextInput.doInput(TextInput.ICO_PASSWORD, "Insert database password for '" + instance.getDbName() + "'",
-					"Database password:", new TextInputOkHandler() {
+			TextInput.doInput(TextInput.ICO_PASSWORD,
+					R.get("insert_db_passwd_for") + " '" + instance.getDbName() + "'", R.get("db_passwd") + ":",
+					new TextInputOkHandler() {
 						@Override
-						public void onClick(ClickEvent event, String input) {
+						public void onInput(ClickEvent event, String input) {
 							switchDatabaseRequest(instance, input);
 						}
 					});
@@ -209,10 +222,10 @@ public class LoginBox extends DialogBox implements ClickHandler {
 
 				if (result) {
 					hide();
-					
+
 					parentModule.initializeMainView(instance);
 				} else {
-					Message.error("Could not connect to database. User name or password are wrong.");
+					Message.error(R.get("wrong_db_credentials"));
 				}
 			}
 		});
@@ -233,6 +246,35 @@ public class LoginBox extends DialogBox implements ClickHandler {
 			return;
 		}
 
+		if (instance.isProtectedByPassword()) {
+			TextInput.doInput(TextInput.ICO_PASSWORD, R.get("pw_remove_db"), R.get("db_passwd") + ":",
+					new TextInputOkHandler() {
+						@Override
+						public void onInput(ClickEvent event, String input) {
+							DBManager.getDbManager().checkPassword(instance, input, new AsyncCallback<Boolean>() {
+								@Override
+								public void onSuccess(Boolean result) {
+									if (result) {
+										deleteDatabase(instance);
+									} else {
+										Message.error(R.get("wrong_pw_cant_remove_db"));
+									}
+								}
+
+								@Override
+								public void onFailure(Throwable caught) {
+									Message.error(caught.getMessage());
+								}
+							});
+						}
+					});
+		} else {
+			deleteDatabase(instance);
+		}
+
+	}
+
+	private void deleteDatabase(final DatabaseInstance instance) {
 		ClickHandler deleteConfirmed = new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -243,7 +285,7 @@ public class LoginBox extends DialogBox implements ClickHandler {
 					public void onFailure(Throwable caught) {
 						Loader.hideLoader();
 
-						Message.error("Can't delete selected database");
+						Message.error(R.get("cant_delete_db"));
 					}
 
 					@Override
@@ -256,9 +298,8 @@ public class LoginBox extends DialogBox implements ClickHandler {
 			}
 		};
 
-		String confText = "Are you sure you want to delete the database <b>'" + instance.getDbName() + "'</b>?";
+		String confText = R.get("sure_delete_db") + " <b>'" + instance.getDbName() + "'</b>?";
 
 		Confirmation.confirm(confText, deleteConfirmed);
 	}
-
 }

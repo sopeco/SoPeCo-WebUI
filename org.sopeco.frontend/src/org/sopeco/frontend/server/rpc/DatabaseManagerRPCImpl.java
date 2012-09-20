@@ -17,14 +17,18 @@ import org.sopeco.persistence.metadata.entities.DatabaseInstance;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
+/**
+ * RPC Class for the access on the databases.
+ * 
+ * @author Marius Oehler
+ * 
+ */
 public class DatabaseManagerRPCImpl extends RemoteServiceServlet implements DatabaseManagerRPC {
 
-	private static final Logger logger = LoggerFactory.getLogger(DatabaseManagerRPCImpl.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseManagerRPCImpl.class);
 	private static final long serialVersionUID = 1L;
 
 	private static IMetaDataPersistenceProvider metaDataPersistenceProvider;
-
-	// private List<DatabaseInstanceToDefinition> databaseList;
 
 	/*
 	 * 
@@ -37,23 +41,16 @@ public class DatabaseManagerRPCImpl extends RemoteServiceServlet implements Data
 		return metaDataPersistenceProvider;
 	}
 
-	/*
-	 * get a list of all databases
+	/**
+	 * Returns the databases which are stored in the meta database.
+	 * 
+	 * @return List of database instances
 	 */
 	public List<DatabaseInstance> getAllDatabases() {
-		logger.debug("loading databases");
+		LOGGER.debug("loading databases");
 
 		try {
-			List<DatabaseInstance> instances = getMetaProvider().loadAllDatabaseInstances();
-
-			// List<DatabaseDefinition> returnList = new
-			// ArrayList<DatabaseDefinition>();
-			//
-			// for (DatabaseInstance instance : instances) {
-			// returnList.add(databaseInstanceToDefinition(instance));
-			// }
-
-			return instances;
+			return getMetaProvider().loadAllDatabaseInstances();
 		} catch (DataNotFoundException e) {
 			return new ArrayList<DatabaseInstance>();
 		} catch (Exception e) {
@@ -61,11 +58,15 @@ public class DatabaseManagerRPCImpl extends RemoteServiceServlet implements Data
 		}
 	}
 
-	/*
-	 * removing the specific database
+	/**
+	 * Removing the specific database.
+	 * 
+	 * @param dbDefinition
+	 *            database which will be removed
+	 * @return true if the removal was successful
 	 */
 	public boolean removeDatabase(DatabaseInstance dbDefinition) {
-		logger.debug("deleting database " + dbDefinition.getDbName());
+		LOGGER.debug("deleting database " + dbDefinition.getDbName());
 
 		try {
 			DatabaseInstance dbInstance = getRealInstance(dbDefinition);
@@ -86,7 +87,7 @@ public class DatabaseManagerRPCImpl extends RemoteServiceServlet implements Data
 	 * 
 	 */
 	public boolean addDatabase(DatabaseInstance dbInstance, String passwd) {
-		logger.debug("adding new database");
+		LOGGER.debug("adding new database");
 
 		String dbName = dbInstance.getDbName();
 
@@ -173,9 +174,9 @@ public class DatabaseManagerRPCImpl extends RemoteServiceServlet implements Data
 			return false;
 		}
 
-		logger.debug("selected database: " + dbInstance.getDbName());
-		logger.debug("    host: " + dbInstance.getHost());
-		logger.debug("    is pw protected: " + dbInstance.isProtectedByPassword());
+		LOGGER.debug("selected database: " + dbInstance.getDbName());
+		LOGGER.debug("    host: " + dbInstance.getHost());
+		LOGGER.debug("    is pw protected: " + dbInstance.isProtectedByPassword());
 
 		try {
 			if (dbInstance.isProtectedByPassword()) {
@@ -186,8 +187,8 @@ public class DatabaseManagerRPCImpl extends RemoteServiceServlet implements Data
 						dbInstance.getPort(), dbInstance.getDbName());
 			}
 		} catch (WrongCredentialsException e) {
-			logger.warn(e.getMessage());
-			
+			LOGGER.warn(e.getMessage());
+
 			return false;
 		}
 
@@ -198,10 +199,39 @@ public class DatabaseManagerRPCImpl extends RemoteServiceServlet implements Data
 
 			provider.store(rb.createDataSet("myId"));
 
-			logger.debug("test load: " + provider.loadDataSet("myId").getID());
+			LOGGER.debug("test load: " + provider.loadDataSet("myId").getID());
 
 		} catch (Exception e) {
 			throw new RuntimeException(e);
+		}
+
+		return true;
+	}
+
+	/**
+	 * Checks if the database accepts the given password.
+	 * 
+	 * @param instance
+	 *            database which should be checked
+	 * 
+	 * @param passwd
+	 *            password for the database
+	 * 
+	 * @return true if password is correct
+	 */
+	@Override
+	public boolean checkPassword(DatabaseInstance instance, String passwd) {
+		if (!instance.isProtectedByPassword()) {
+			return true;
+		}
+
+		try {
+			FlexiblePersistenceProviderFactory.createPersistenceProvider(instance.getHost(), instance.getPort(),
+					instance.getDbName(), passwd);
+		} catch (WrongCredentialsException e) {
+			LOGGER.warn(e.getMessage());
+
+			return false;
 		}
 
 		return true;

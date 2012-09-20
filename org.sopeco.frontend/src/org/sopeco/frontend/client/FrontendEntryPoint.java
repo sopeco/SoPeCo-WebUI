@@ -7,10 +7,12 @@ import org.sopeco.frontend.client.layout.MainLayoutPanel;
 import org.sopeco.frontend.client.layout.popups.Message;
 import org.sopeco.frontend.client.rpc.StartupService;
 import org.sopeco.frontend.client.rpc.StartupServiceAsync;
+import org.sopeco.frontend.shared.rsc.R;
 import org.sopeco.persistence.metadata.entities.DatabaseInstance;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 
@@ -26,12 +28,31 @@ public class FrontendEntryPoint implements EntryPoint {
 
 	private DatabaseInstance connectedDatabase;
 
+	public static final boolean DEVELOPMENT = false;
+
 	/**
 	 * will be executed at the start of the application.
 	 */
 	public void onModuleLoad() {
+		loadFirstStep();
+		
 		startup();
+	}
 
+	private void loadFirstStep() {
+		Timer waitForLang = new Timer() {
+			@Override
+			public void run() {
+				if ( R.loadLangFile() ) {
+					loadSecondStep();
+					cancel();
+				}
+			}
+		};
+		waitForLang.scheduleRepeating(5);
+	}
+
+	private void loadSecondStep() {
 		SystemDetails.load();
 
 		ServerPush.start();

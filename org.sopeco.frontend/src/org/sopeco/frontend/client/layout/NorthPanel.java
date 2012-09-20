@@ -2,19 +2,19 @@ package org.sopeco.frontend.client.layout;
 
 import org.sopeco.frontend.client.layout.dialog.AddScenarioDialog;
 import org.sopeco.frontend.client.layout.popups.Loader;
-import org.sopeco.frontend.client.rpc.ScenarioManagerRPC;
-import org.sopeco.frontend.client.rpc.ScenarioManagerRPCAsync;
+import org.sopeco.frontend.client.layout.popups.Message;
+import org.sopeco.frontend.client.rpc.RPC;
+import org.sopeco.frontend.shared.rsc.R;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -25,8 +25,6 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  */
 public class NorthPanel extends FlowPanel {
-
-	private ScenarioManagerRPCAsync scenarioManager;
 
 	private ListBox listboxScenarios;
 	private HTML connectedToText;
@@ -40,8 +38,6 @@ public class NorthPanel extends FlowPanel {
 	public NorthPanel(MainLayoutPanel parent) {
 		parentPanel = parent;
 
-		scenarioManager = GWT.create(ScenarioManagerRPC.class);
-
 		initialize();
 	}
 
@@ -51,20 +47,20 @@ public class NorthPanel extends FlowPanel {
 	private void initialize() {
 		setSize("100%", PANEL_HEIGHT + "em");
 
-		HorizontalPanel horizontalPanel_2 = new HorizontalPanel();
-		horizontalPanel_2.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
-		add(horizontalPanel_2);
-		horizontalPanel_2.addStyleName("north_hPanel");
-		horizontalPanel_2.setHeight(PANEL_HEIGHT + "em");
+		HorizontalPanel mainHoPanel = new HorizontalPanel();
+		mainHoPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+		add(mainHoPanel);
+		mainHoPanel.addStyleName("north_hPanel");
 
-		HorizontalPanel horizontalPanel_3 = new HorizontalPanel();
-		horizontalPanel_2.add(horizontalPanel_3);
-		// floatlPanel.add(horizontalPanel);
-		connectedToText = new HTML("connected to account XXX");
-		horizontalPanel_3.add(connectedToText);
+		HorizontalPanel firstHoPanel = new HorizontalPanel();
+		firstHoPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+		mainHoPanel.add(firstHoPanel);
+		connectedToText = new HTML();
+		firstHoPanel.add(connectedToText);
+		firstHoPanel.addStyleName("tabStyle");
 
-		Anchor anchorChangeAccount = new Anchor("change account");
-		horizontalPanel_3.add(anchorChangeAccount);
+		Anchor anchorChangeAccount = new Anchor(R.get("change_account"));
+		firstHoPanel.add(anchorChangeAccount);
 		anchorChangeAccount.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -72,48 +68,70 @@ public class NorthPanel extends FlowPanel {
 			}
 		});
 
-		HTML htmlNewHtml = new HTML("", true);
-		horizontalPanel_2.add(htmlNewHtml);
-		htmlNewHtml.setStyleName("spc-seperator");
-		htmlNewHtml.setHeight("2em");
+		HorizontalPanel secondHoPanel = new HorizontalPanel();
+		mainHoPanel.add(secondHoPanel);
+		secondHoPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+		secondHoPanel.addStyleName("tabStyle");
 
-		HorizontalPanel horizontalPanel_1 = new HorizontalPanel();
-		horizontalPanel_2.add(horizontalPanel_1);
-		horizontalPanel_1.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
-		horizontalPanel_1.setHeight("");
-
-		Label lblSelectScenario = new Label("select scenario");
-		horizontalPanel_1.add(lblSelectScenario);
+		HTML htmlSelectScenario = new HTML(R.get("scenario_select"));
+		secondHoPanel.add(htmlSelectScenario);
 
 		listboxScenarios = new ListBox();
-		listboxScenarios.setEnabled(false);
-		horizontalPanel_1.add(listboxScenarios);
+		secondHoPanel.add(listboxScenarios);
 		listboxScenarios.setSize("120px", "2em");
 		listboxScenarios.setVisibleItemCount(1);
+		listboxScenarios.addItem(" ---");
 
-		Button btnAddScenario = new Button("<img src=\"images/add.png\" />");
-		btnAddScenario.addClickHandler(new ClickHandler() {
+		// OptGroupElement group = Document.get().createOptGroupElement();
+		// group.setLabel("scenarios");
+		// OptionElement element = Document.get().createOptionElement();
+		// element.setInnerText("label");
+		// element.setValue("val");
+		// group.appendChild(element);
+		//
+		// SelectElement sel = listboxScenarios.getElement().cast();
+		// sel.appendChild(group);
+
+		// Button btnAddScenario = new Button("<img src=\"images/add.png\" />");
+		// btnAddScenario.addClickHandler(new ClickHandler() {
+		// public void onClick(ClickEvent event) {
+		// AddScenarioDialog addScenario = new AddScenarioDialog();
+		//
+		// addScenario.center();
+		// }
+		// });
+		// btnAddScenario.setStyleName("sopeco-imageButton", true);
+		// // horizontalPanel_1.add(btnAddScenario);
+		// btnAddScenario.setHeight("2em");
+		//
+		// Button btnRemoveScenario = new
+		// Button("<img src=\"images/remove.png\" />");
+		// btnRemoveScenario.addClickHandler(new ClickHandler() {
+		// public void onClick(ClickEvent event) {
+		//
+		// }
+		// });
+		// btnRemoveScenario.setStyleName("sopeco-imageButton", true);
+		// // horizontalPanel_1.add(btnRemoveScenario);
+		// btnRemoveScenario.setHeight("2em");
+
+		Anchor addScenario = new Anchor(R.get("scenario_add"));
+		secondHoPanel.add(addScenario);
+
+		addScenario.addClickHandler(new ClickHandler() {
+			@Override
 			public void onClick(ClickEvent event) {
 				AddScenarioDialog addScenario = new AddScenarioDialog();
-
 				addScenario.center();
 			}
 		});
-		btnAddScenario.setStyleName("sopeco-imageButton", true);
-		horizontalPanel_1.add(btnAddScenario);
-		btnAddScenario.setHeight("2em");
 
-		Button btnRemoveScenario = new Button("<img src=\"images/remove.png\" />");
-		btnRemoveScenario.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
+		Anchor removeScenario = new Anchor(R.get("scenario_remove"));
 
-			}
-		});
-		btnRemoveScenario.setStyleName("sopeco-imageButton", true);
-		horizontalPanel_1.add(btnRemoveScenario);
-		btnRemoveScenario.setHeight("2em");
+		secondHoPanel.add(removeScenario);
 
-		for (Widget w : new Widget[] { lblSelectScenario, btnRemoveScenario, btnAddScenario, anchorChangeAccount }) {
+		for (Widget w : new Widget[] { htmlSelectScenario, anchorChangeAccount, listboxScenarios, addScenario,
+				removeScenario, secondHoPanel }) {
 			w.addStyleName("hDefaultMargin");
 		}
 
@@ -129,16 +147,50 @@ public class NorthPanel extends FlowPanel {
 	 *            name of the current database
 	 */
 	public void setConnectedAccountName(String name) {
-		connectedToText.setHTML("connected to: <b>" + name + "</b>");
+		connectedToText.setHTML(R.get("connected_to") + ": <b>" + name + "</b>");
 	}
 
 	/**
-	 * updating the scenario list
+	 * Starts the update process of the scenario list.
 	 */
 	private void updateScenarioList() {
 		GWT.log("update scenariolist");
 		Loader.showLoader();
 
-		Loader.hideLoader();
+		RPC.getScenarioManager().getScenarioNames(new AsyncCallback<String[]>() {
+			@Override
+			public void onSuccess(String[] result) {
+				updateScenarioList(result);
+				Loader.hideLoader();
+			}
+
+			@Override
+			public void onFailure(Throwable caught) {
+				Message.error(caught.getMessage());
+				Loader.hideLoader();
+			}
+		});
+	}
+
+	/**
+	 * Updates the scenario listbox with the given names.
+	 * 
+	 * @param names
+	 *            the scenario names
+	 */
+	private void updateScenarioList(String[] names) {
+		listboxScenarios.clear();
+
+		if (names == null || names.length == 0) {
+			listboxScenarios.addItem(R.get("no_scenarios"));
+			listboxScenarios.setEnabled(false);
+		} else {
+			listboxScenarios.addItem(R.get("select"));
+			listboxScenarios.setEnabled(true);
+
+			for (String name : names) {
+				listboxScenarios.addItem(name);
+			}
+		}
 	}
 }
