@@ -16,4 +16,6 @@ public interface ScenarioManagerRPCAsync {
 	 */
 	void getScenarioNames(AsyncCallback<String[]> callback);
 
+	void addScenario(String name, AsyncCallback<Boolean> callback);
+
 }

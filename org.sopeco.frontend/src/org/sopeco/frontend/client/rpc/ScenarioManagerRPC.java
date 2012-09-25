@@ -18,4 +18,5 @@ public interface ScenarioManagerRPC extends RemoteService {
 	 */
 	String[] getScenarioNames();
 
+	boolean addScenario(String name);
 }

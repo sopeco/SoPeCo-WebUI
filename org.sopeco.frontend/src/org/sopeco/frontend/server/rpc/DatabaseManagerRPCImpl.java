@@ -3,6 +3,8 @@ package org.sopeco.frontend.server.rpc;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sopeco.frontend.client.rpc.DatabaseManagerRPC;
@@ -10,7 +12,6 @@ import org.sopeco.frontend.server.db.FlexiblePersistenceProviderFactory;
 import org.sopeco.persistence.IMetaDataPersistenceProvider;
 import org.sopeco.persistence.IPersistenceProvider;
 import org.sopeco.persistence.PersistenceProviderFactory;
-import org.sopeco.persistence.dataset.DataSetRowBuilder;
 import org.sopeco.persistence.exceptions.DataNotFoundException;
 import org.sopeco.persistence.exceptions.WrongCredentialsException;
 import org.sopeco.persistence.metadata.entities.DatabaseInstance;
@@ -28,17 +29,20 @@ public class DatabaseManagerRPCImpl extends RemoteServiceServlet implements Data
 	private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseManagerRPCImpl.class);
 	private static final long serialVersionUID = 1L;
 
-	private static IMetaDataPersistenceProvider metaDataPersistenceProvider;
-
-	/*
+	/**
+	 * Stores the persistence provider in a session attribute.
 	 * 
+	 * @param session
+	 *            current session
+	 * @return IMetaDataPersistenceProvider
 	 */
-	private static IMetaDataPersistenceProvider getMetaProvider() {
-		if (metaDataPersistenceProvider == null) {
-			metaDataPersistenceProvider = PersistenceProviderFactory.getMetaDataPersistenceProvider();
+	private static IMetaDataPersistenceProvider getMetaProvider(HttpSession session) {
+		if (session.getAttribute("metaPersistenceProvider") == null) {
+			session.setAttribute("metaPersistenceProvider", PersistenceProviderFactory.getInstance()
+					.getMetaDataPersistenceProvider(session.getId()));
 		}
 
-		return metaDataPersistenceProvider;
+		return (IMetaDataPersistenceProvider) session.getAttribute("metaPersistenceProvider");
 	}
 
 	/**
@@ -50,7 +54,7 @@ public class DatabaseManagerRPCImpl extends RemoteServiceServlet implements Data
 		LOGGER.debug("loading databases");
 
 		try {
-			return getMetaProvider().loadAllDatabaseInstances();
+			return getMetaProvider(getThreadLocalRequest().getSession()).loadAllDatabaseInstances();
 		} catch (DataNotFoundException e) {
 			return new ArrayList<DatabaseInstance>();
 		} catch (Exception e) {
@@ -72,7 +76,7 @@ public class DatabaseManagerRPCImpl extends RemoteServiceServlet implements Data
 			DatabaseInstance dbInstance = getRealInstance(dbDefinition);
 
 			if (dbInstance != null) {
-				getMetaProvider().remove(dbInstance);
+				getMetaProvider(getThreadLocalRequest().getSession()).remove(dbInstance);
 				return true;
 			}
 
@@ -95,14 +99,14 @@ public class DatabaseManagerRPCImpl extends RemoteServiceServlet implements Data
 		dbInstance.setDbName(dbName);
 
 		if (dbInstance.isProtectedByPassword()) {
-			FlexiblePersistenceProviderFactory.createPersistenceProvider(dbInstance.getHost(), dbInstance.getPort(),
-					dbInstance.getDbName(), passwd);
+			FlexiblePersistenceProviderFactory.createPersistenceProvider(getThreadLocalRequest().getSession(),
+					dbInstance.getHost(), dbInstance.getPort(), dbInstance.getDbName(), passwd);
 		} else {
-			FlexiblePersistenceProviderFactory.createPersistenceProvider(dbInstance.getHost(), dbInstance.getPort(),
-					dbInstance.getDbName());
+			FlexiblePersistenceProviderFactory.createPersistenceProvider(getThreadLocalRequest().getSession(),
+					dbInstance.getHost(), dbInstance.getPort(), dbInstance.getDbName());
 		}
 
-		getMetaProvider().store(dbInstance);
+		getMetaProvider(getThreadLocalRequest().getSession()).store(dbInstance);
 
 		return true;
 	}
@@ -117,7 +121,8 @@ public class DatabaseManagerRPCImpl extends RemoteServiceServlet implements Data
 	 */
 	private DatabaseInstance getRealInstance(DatabaseInstance instance) {
 		try {
-			List<DatabaseInstance> instances = getMetaProvider().loadAllDatabaseInstances();
+			List<DatabaseInstance> instances = getMetaProvider(getThreadLocalRequest().getSession())
+					.loadAllDatabaseInstances();
 
 			for (DatabaseInstance dbInstance : instances) {
 				if (instanceEqual(instance, dbInstance)) {
@@ -178,32 +183,27 @@ public class DatabaseManagerRPCImpl extends RemoteServiceServlet implements Data
 		LOGGER.debug("    host: " + dbInstance.getHost());
 		LOGGER.debug("    is pw protected: " + dbInstance.isProtectedByPassword());
 
+		IPersistenceProvider dbConnection = null;
+
 		try {
 			if (dbInstance.isProtectedByPassword()) {
-				FlexiblePersistenceProviderFactory.createPersistenceProvider(dbInstance.getHost(),
-						dbInstance.getPort(), dbInstance.getDbName(), passwd);
+				dbConnection = FlexiblePersistenceProviderFactory.createPersistenceProvider(getThreadLocalRequest()
+						.getSession(), dbInstance.getHost(), dbInstance.getPort(), dbInstance.getDbName(), passwd);
 			} else {
-				FlexiblePersistenceProviderFactory.createPersistenceProvider(dbInstance.getHost(),
-						dbInstance.getPort(), dbInstance.getDbName());
+				dbConnection = FlexiblePersistenceProviderFactory.createPersistenceProvider(getThreadLocalRequest()
+						.getSession(), dbInstance.getHost(), dbInstance.getPort(), dbInstance.getDbName());
 			}
 		} catch (WrongCredentialsException e) {
 			LOGGER.warn(e.getMessage());
-
 			return false;
 		}
 
-		IPersistenceProvider provider = PersistenceProviderFactory.getPersistenceProvider();
-
-		try {
-			DataSetRowBuilder rb = new DataSetRowBuilder();
-
-			provider.store(rb.createDataSet("myId"));
-
-			LOGGER.debug("test load: " + provider.loadDataSet("myId").getID());
-
-		} catch (Exception e) {
-			throw new RuntimeException(e);
+		if (dbConnection == null) {
+			LOGGER.warn("Can't connect to database..");
+			return false;
 		}
+
+		getThreadLocalRequest().getSession().setAttribute(SessionAttribute.DatabaseConnection.name(), dbConnection);
 
 		return true;
 	}
@@ -226,8 +226,8 @@ public class DatabaseManagerRPCImpl extends RemoteServiceServlet implements Data
 		}
 
 		try {
-			FlexiblePersistenceProviderFactory.createPersistenceProvider(instance.getHost(), instance.getPort(),
-					instance.getDbName(), passwd);
+			FlexiblePersistenceProviderFactory.createPersistenceProvider(getThreadLocalRequest().getSession(),
+					instance.getHost(), instance.getPort(), instance.getDbName(), passwd);
 		} catch (WrongCredentialsException e) {
 			LOGGER.warn(e.getMessage());
 

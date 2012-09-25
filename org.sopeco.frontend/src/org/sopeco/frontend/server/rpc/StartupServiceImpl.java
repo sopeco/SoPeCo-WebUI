@@ -12,13 +12,11 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
  * Class which loading all important server-settings etc.
  * 
  * @author Marius Oehler
- *
+ * 
  */
-public class StartupServiceImpl extends RemoteServiceServlet implements
-		StartupService {
+public class StartupServiceImpl extends RemoteServiceServlet implements StartupService {
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(StartupServiceImpl.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(StartupServiceImpl.class);
 
 	private static final long serialVersionUID = 1L;
 	private final String CONFIGURATION_FILE = "sopeco-gui.conf";
@@ -28,10 +26,10 @@ public class StartupServiceImpl extends RemoteServiceServlet implements
 	@Override
 	public boolean start() {
 		if (!loaded) {
-			logger.debug("loading");
+			LOGGER.debug("loading");
 			load();
 		} else {
-			logger.debug("already loaded");
+			LOGGER.debug("already loaded");
 		}
 
 		return false;
@@ -41,7 +39,8 @@ public class StartupServiceImpl extends RemoteServiceServlet implements
 		loaded = true;
 
 		try {
-			Configuration.getSingleton().loadConfiguration(this.getClass().getClassLoader(), CONFIGURATION_FILE);
+			Configuration.getSessionSingleton(getThreadLocalRequest().getSession().getId()).loadConfiguration(
+					this.getClass().getClassLoader(), CONFIGURATION_FILE);
 		} catch (ConfigurationException e) {
 			throw new RuntimeException(e);
 		}

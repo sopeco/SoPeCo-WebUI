@@ -1,11 +1,17 @@
 package org.sopeco.frontend.client.layout.dialog;
 
+import org.sopeco.frontend.client.layout.NorthPanel;
+import org.sopeco.frontend.client.layout.popups.Loader;
+import org.sopeco.frontend.client.layout.popups.Message;
+import org.sopeco.frontend.client.rpc.RPC;
+
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.Grid;
@@ -17,15 +23,18 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 /**
  * 
  * @author Marius Oehler
- *
+ * 
  */
 public class AddScenarioDialog extends DialogBox {
 
 	private Button btnAdd;
 	private TextBox textboxName;
+	private NorthPanel parentPanel;
 
-	public AddScenarioDialog() {
+	public AddScenarioDialog(NorthPanel parent) {
 		super(false, true);
+
+		this.parentPanel = parent;
 
 		initialize();
 	}
@@ -101,6 +110,27 @@ public class AddScenarioDialog extends DialogBox {
 	}
 
 	private void addNewScenario() {
+
+		String scenarioName = textboxName.getText();
+
+		if (scenarioName.isEmpty()) {
+			return;
+		}
+
+		Loader.showLoader();
+		RPC.getScenarioManager().addScenario(scenarioName, new AsyncCallback<Boolean>() {
+			@Override
+			public void onSuccess(Boolean result) {
+				parentPanel.updateScenarioList();
+				Loader.hideLoader();
+			}
+
+			@Override
+			public void onFailure(Throwable caught) {
+				Loader.hideLoader();
+				Message.error("Failed adding new scenario.");
+			}
+		});
 
 		hide();
 	}

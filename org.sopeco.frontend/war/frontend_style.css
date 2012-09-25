@@ -9,20 +9,205 @@
 	margin-left: 1em;
 }
 
+.nPanel {
+	background-color: #333;
+	border-bottom: 1px solid black;
+	margin-top: -1px;
+	padding-top: 0.2em;
+	height: 2.8em;
+}
+
 .north_hPanel {
 	margin-left: 1em;
 }
 
 .north_hPanel .tabStyle {
 	vertical-align: middle;
-	background-color: #EEE;
-	border-radius: 0 0 .5em .5em;
-	padding:0 1em;
-	border: 1px solid lightgray;
+	/*background-color: #EEE;
+	border-radius: 0 0 .5em .5em;*/
+	padding: 0 1em;
+	/*border: 1px solid lightgray;
 	border-top: 0;
-	box-shadow: 0px 0px 6px lightBlue;
+	box-shadow: 0px 0px 6px lightBlue;*/
+	color: #AAA;
+}
+
+.north_hPanel .tabStyle b {
+	color: white;
 }
 
 .north_hPanel .tabStyle td {
-	height: 2.3em;
+	height: 3em;
+}
+
+.north_hPanel .gwt-Anchor {
+	color: #ACF;
+	font-weight: bold;
+}
+
+.north_hPanel .disabled {
+	color: #789 !important;
+	text-decoration: none !important;
+}
+
+#mainNavigation {
+	border-right: 1px solid #CCC;
+	background-color: #fafafa
+}
+
+#mainNavigation .tlEntry {
+	padding: 0.8em 2em;
+	display: block;
+	font-weight: bold;
+	text-decoration: none;
+	position: relative;
+	overflow: hidden;
+	color: #666;
+	cursor: pointer;
+	margin: 0.2em 0;
+}
+
+#mainNavigation .tlEntry:hover {
+	color: #222;
+}
+
+#mainNavigation .tlEntry.marked {
+	color: #06C;
+	cursor: default;
+}
+
+#mainNavigation .tlEntry .marker {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 5px;
+	background-color: transparent;
+	display: block;
+	height: 100%;
+}
+
+#mainNavigation .tlEntry.marked .marker {
+	background-color: #06C !important;
+}
+
+#mainNavigation .tlEntry:hover .marker {
+	background-color: #BBB;
+}
+
+#mainNavigation .slEntry {
+	padding: 0.8em 1em 0.8em 3.5em;
+	color: #666;
+	font-weight: bold;
+	position: relative;
+	overflow: hidden;
+	margin: 0.2em 0;
+}
+
+#mainNavigation .slEntry:hover {
+	color: #222;
+	cursor: pointer;
+}
+
+#mainNavigation .slEntry.marked {
+	color: #06C;
+	cursor: default;
+}
+
+#mainNavigation .slEntry .marker {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 5px;
+	background-color: transparent;
+	display: block;
+	height: 100%;
+}
+
+#mainNavigation .slEntry .marker.second {
+	left: 10px;
+}
+
+#mainNavigation .slEntry:hover .marker {
+	background-color: #BBB;
+}
+
+#mainNavigation .slEntry:hover .marker.second {
+	background-color: #EEE;
+}
+
+#mainNavigation .slEntry.marked .marker {
+	background-color: #06C;
+}
+
+#mainNavigation .slEntry.marked .marker.second {
+	background-color: #68F;
+}
+
+/*  ********************  */
+/*    environmentPanel    */
+/*  ********************  */
+#mecSliderPanel {
+	background-color: #fafafa;
+	border-left: 1px solid #CCC;
+	border-bottom: 1px solid #CCC;
+	text-align: center;
+	padding: 0.5em 0 0;
+}
+
+#mecSliderPanel {
+	background-color: #eee;
+	cursor: pointer;
+}
+
+#mecSliderPanel.down {
+	border-top: 1px solid #CCC;
+}
+
+#mecSliderPanel .slideText {
+	color: #666;
+	padding-bottom: 0.4em;
+}
+
+#mecSliderPanel .slideText {
+	color: #333;
+}
+
+#mecPanel {
+	display: block;
+	overflow: hidden;
+}
+
+#mecPanel .gwt-Button {
+	padding: 2px 25px;
+}
+
+#mecPanel .headline {
+	padding: 0.5em;
+	border-bottom: 1px solid #CCC;
+	color: #333;
+	font-weight: bold;
+}
+
+#mecPanel select {
+	width: 400px;
+	padding: 4px;
+	border: 1px solid #aaa;
+}
+
+#mecPanel input[type="text"] {
+	width: 390px;
+	padding: 4px;
+}
+
+#mecGrid .description {
+	font-weight: bold;
+	color: #333;
+}
+
+#mecPanel .actionline {
+	border-bottom: 0;
+	border-top: 1px solid #CCC;
+	margin-top: 0.5em;
+	padding-bottom: 0;
+	color: #933;
 }

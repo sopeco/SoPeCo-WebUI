@@ -57,34 +57,37 @@ public final class R {
 		isLoading = true;
 
 		try {
-			new RequestBuilder(RequestBuilder.GET, DEFAULT_LANG).sendRequest("", new RequestCallback() {
-				@Override
-				public void onResponseReceived(Request req, Response resp) {
-					String content = resp.getText();
+			new RequestBuilder(RequestBuilder.GET, DEFAULT_LANG + "?" + Math.random()).sendRequest("",
+					new RequestCallback() {
+						@Override
+						public void onResponseReceived(Request req, Response resp) {
+							String content = resp.getText();
 
-					for (String row : content.split(LINESEPERATOR)) {
-						if (row.isEmpty()) {
-							continue;
+							for (String row : content.split(LINESEPERATOR)) {
+								if (row.isEmpty()) {
+									continue;
+								}
+
+								row = row.replaceAll("[\\r]", "");
+
+								String[] pair = row.split(PAIRSEPERATOR);
+
+								if (pair == null || pair.length != 2) {
+									continue;
+								}
+
+								langMap.put(pair[0], pair[1]);
+							}
+
+							loaded = true;
+							isLoading = false;
 						}
 
-						String[] pair = row.split(PAIRSEPERATOR);
-
-						if (pair == null || pair.length != 2) {
-							continue;
+						@Override
+						public void onError(Request res, Throwable throwable) {
+							throw new RuntimeException(throwable);
 						}
-
-						langMap.put(pair[0], pair[1]);
-					}
-
-					loaded = true;
-					isLoading = false;
-				}
-
-				@Override
-				public void onError(Request res, Throwable throwable) {
-					throw new RuntimeException(throwable);
-				}
-			});
+					});
 		} catch (RequestException e) {
 			throw new RuntimeException(e);
 		}

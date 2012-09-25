@@ -33,7 +33,7 @@ public class NorthPanel extends FlowPanel {
 	/**
 	 * The height of this panel in EM.
 	 */
-	public static final String PANEL_HEIGHT = "2.5";
+	public static final String PANEL_HEIGHT = "3";
 
 	public NorthPanel(MainLayoutPanel parent) {
 		parentPanel = parent;
@@ -45,7 +45,8 @@ public class NorthPanel extends FlowPanel {
 	 * initialize the user interface.
 	 */
 	private void initialize() {
-		setSize("100%", PANEL_HEIGHT + "em");
+		setSize("100%", "2.8em"); // .nPanel in CSS Style
+		addStyleName("nPanel");
 
 		HorizontalPanel mainHoPanel = new HorizontalPanel();
 		mainHoPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
@@ -73,61 +74,30 @@ public class NorthPanel extends FlowPanel {
 		secondHoPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
 		secondHoPanel.addStyleName("tabStyle");
 
-		HTML htmlSelectScenario = new HTML(R.get("scenario_select"));
+		HTML htmlSelectScenario = new HTML(R.get("scenario_select") + ":");
 		secondHoPanel.add(htmlSelectScenario);
 
 		listboxScenarios = new ListBox();
 		secondHoPanel.add(listboxScenarios);
-		listboxScenarios.setSize("120px", "2em");
+		listboxScenarios.setSize("120px", "1.8em");
 		listboxScenarios.setVisibleItemCount(1);
 		listboxScenarios.addItem(" ---");
-
-		// OptGroupElement group = Document.get().createOptGroupElement();
-		// group.setLabel("scenarios");
-		// OptionElement element = Document.get().createOptionElement();
-		// element.setInnerText("label");
-		// element.setValue("val");
-		// group.appendChild(element);
-		//
-		// SelectElement sel = listboxScenarios.getElement().cast();
-		// sel.appendChild(group);
-
-		// Button btnAddScenario = new Button("<img src=\"images/add.png\" />");
-		// btnAddScenario.addClickHandler(new ClickHandler() {
-		// public void onClick(ClickEvent event) {
-		// AddScenarioDialog addScenario = new AddScenarioDialog();
-		//
-		// addScenario.center();
-		// }
-		// });
-		// btnAddScenario.setStyleName("sopeco-imageButton", true);
-		// // horizontalPanel_1.add(btnAddScenario);
-		// btnAddScenario.setHeight("2em");
-		//
-		// Button btnRemoveScenario = new
-		// Button("<img src=\"images/remove.png\" />");
-		// btnRemoveScenario.addClickHandler(new ClickHandler() {
-		// public void onClick(ClickEvent event) {
-		//
-		// }
-		// });
-		// btnRemoveScenario.setStyleName("sopeco-imageButton", true);
-		// // horizontalPanel_1.add(btnRemoveScenario);
-		// btnRemoveScenario.setHeight("2em");
 
 		Anchor addScenario = new Anchor(R.get("scenario_add"));
 		secondHoPanel.add(addScenario);
 
+		final NorthPanel mySelf = this;
+
 		addScenario.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				AddScenarioDialog addScenario = new AddScenarioDialog();
+				AddScenarioDialog addScenario = new AddScenarioDialog(mySelf);
 				addScenario.center();
 			}
 		});
 
 		Anchor removeScenario = new Anchor(R.get("scenario_remove"));
-
+		removeScenario.addStyleName("disabled");
 		secondHoPanel.add(removeScenario);
 
 		for (Widget w : new Widget[] { htmlSelectScenario, anchorChangeAccount, listboxScenarios, addScenario,
@@ -153,7 +123,7 @@ public class NorthPanel extends FlowPanel {
 	/**
 	 * Starts the update process of the scenario list.
 	 */
-	private void updateScenarioList() {
+	public void updateScenarioList() {
 		GWT.log("update scenariolist");
 		Loader.showLoader();
 

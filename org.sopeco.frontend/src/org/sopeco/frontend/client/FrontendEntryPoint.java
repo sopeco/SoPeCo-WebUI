@@ -28,7 +28,8 @@ public class FrontendEntryPoint implements EntryPoint {
 
 	private DatabaseInstance connectedDatabase;
 
-	public static final boolean DEVELOPMENT = false;
+	// Fast login
+	public static final boolean DEVELOPMENT = true;
 
 	/**
 	 * will be executed at the start of the application.
