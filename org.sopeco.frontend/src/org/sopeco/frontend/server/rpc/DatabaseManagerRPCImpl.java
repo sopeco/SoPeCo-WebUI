@@ -9,9 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sopeco.frontend.client.rpc.DatabaseManagerRPC;
 import org.sopeco.frontend.server.db.FlexiblePersistenceProviderFactory;
-import org.sopeco.persistence.IMetaDataPersistenceProvider;
+import org.sopeco.frontend.server.db.PersistenceProvider;
+import org.sopeco.frontend.server.db.UIPersistenceProviderFactory;
 import org.sopeco.persistence.IPersistenceProvider;
-import org.sopeco.persistence.PersistenceProviderFactory;
 import org.sopeco.persistence.exceptions.DataNotFoundException;
 import org.sopeco.persistence.exceptions.WrongCredentialsException;
 import org.sopeco.persistence.metadata.entities.DatabaseInstance;
@@ -29,21 +29,24 @@ public class DatabaseManagerRPCImpl extends RemoteServiceServlet implements Data
 	private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseManagerRPCImpl.class);
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * Stores the persistence provider in a session attribute.
-	 * 
-	 * @param session
-	 *            current session
-	 * @return IMetaDataPersistenceProvider
-	 */
-	private static IMetaDataPersistenceProvider getMetaProvider(HttpSession session) {
-		if (session.getAttribute("metaPersistenceProvider") == null) {
-			session.setAttribute("metaPersistenceProvider", PersistenceProviderFactory.getInstance()
-					.getMetaDataPersistenceProvider(session.getId()));
-		}
-
-		return (IMetaDataPersistenceProvider) session.getAttribute("metaPersistenceProvider");
-	}
+	// /**
+	// * Stores the persistence provider in a session attribute.
+	// *
+	// * @param session
+	// * current session
+	// * @return IMetaDataPersistenceProvider
+	// */
+	// private static IMetaDataPersistenceProvider getMetaProvider(HttpSession
+	// session) {
+	// if (session.getAttribute("metaPersistenceProvider") == null) {
+	// session.setAttribute("metaPersistenceProvider",
+	// PersistenceProviderFactory.getInstance()
+	// .getMetaDataPersistenceProvider(session.getId()));
+	// }
+	//
+	// return (IMetaDataPersistenceProvider)
+	// session.getAttribute("metaPersistenceProvider");
+	// }
 
 	/**
 	 * Returns the databases which are stored in the meta database.
@@ -54,7 +57,7 @@ public class DatabaseManagerRPCImpl extends RemoteServiceServlet implements Data
 		LOGGER.debug("loading databases");
 
 		try {
-			return getMetaProvider(getThreadLocalRequest().getSession()).loadAllDatabaseInstances();
+			return PersistenceProvider.getMetaProvider(getThreadLocalRequest().getSession()).loadAllDatabaseInstances();
 		} catch (DataNotFoundException e) {
 			return new ArrayList<DatabaseInstance>();
 		} catch (Exception e) {
@@ -76,7 +79,7 @@ public class DatabaseManagerRPCImpl extends RemoteServiceServlet implements Data
 			DatabaseInstance dbInstance = getRealInstance(dbDefinition);
 
 			if (dbInstance != null) {
-				getMetaProvider(getThreadLocalRequest().getSession()).remove(dbInstance);
+				PersistenceProvider.getMetaProvider(getThreadLocalRequest().getSession()).remove(dbInstance);
 				return true;
 			}
 
@@ -106,7 +109,7 @@ public class DatabaseManagerRPCImpl extends RemoteServiceServlet implements Data
 					dbInstance.getHost(), dbInstance.getPort(), dbInstance.getDbName());
 		}
 
-		getMetaProvider(getThreadLocalRequest().getSession()).store(dbInstance);
+		PersistenceProvider.getMetaProvider(getThreadLocalRequest().getSession()).store(dbInstance);
 
 		return true;
 	}
@@ -121,8 +124,8 @@ public class DatabaseManagerRPCImpl extends RemoteServiceServlet implements Data
 	 */
 	private DatabaseInstance getRealInstance(DatabaseInstance instance) {
 		try {
-			List<DatabaseInstance> instances = getMetaProvider(getThreadLocalRequest().getSession())
-					.loadAllDatabaseInstances();
+			List<DatabaseInstance> instances = PersistenceProvider
+					.getMetaProvider(getThreadLocalRequest().getSession()).loadAllDatabaseInstances();
 
 			for (DatabaseInstance dbInstance : instances) {
 				if (instanceEqual(instance, dbInstance)) {
@@ -203,8 +206,16 @@ public class DatabaseManagerRPCImpl extends RemoteServiceServlet implements Data
 			return false;
 		}
 
-		getThreadLocalRequest().getSession().setAttribute(SessionAttribute.DatabaseConnection.name(), dbConnection);
+		HttpSession session = getThreadLocalRequest().getSession();
+		
+		UIPersistenceProviderFactory.createUIPersistenceProvider(session, dbInstance.getHost(), dbInstance.getPort(),
+				dbInstance.getDbName(), passwd);
+		
+		PersistenceProvider.setPersistenceProvider(dbConnection, getThreadLocalRequest().getSession());
 
+		PersistenceProvider.getUIPersistenceProvider(session).store();
+		PersistenceProvider.getUIPersistenceProvider(session).load();
+		
 		return true;
 	}
 

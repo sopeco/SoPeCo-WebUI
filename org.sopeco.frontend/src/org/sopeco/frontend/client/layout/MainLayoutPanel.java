@@ -88,6 +88,10 @@ public class MainLayoutPanel extends DockLayoutPanel {
 		return mainNavigation;
 	}
 
+	public HashMap<Navigation, CenterPanel> getCenterPanels() {
+		return centerPanels;
+	}
+
 	/**
 	 * Returns the parent object.
 	 * 

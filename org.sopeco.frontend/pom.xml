@@ -71,6 +71,7 @@
 								<include>**/*.css</include>
 								<include>**/*.html</include>
 								<include>**/rsc/lang/*</include>
+								
 							</includes>
 						</resource>
 						<resource>
@@ -78,6 +79,13 @@
 							<targetPath>rsc</targetPath>
 							<includes>
 								<include>**/*</include>
+							</includes>
+						</resource>
+						<resource>
+							<directory>persistence</directory>
+							<targetPath>WEB-INF/classes</targetPath>
+							<includes>
+								<include>**/META-INF/*</include>
 							</includes>
 						</resource>
 					</webResources>

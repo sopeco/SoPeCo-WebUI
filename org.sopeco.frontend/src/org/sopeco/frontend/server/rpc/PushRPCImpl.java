@@ -1,46 +1,79 @@
 package org.sopeco.frontend.server.rpc;
 
+import java.util.HashMap;
+
 import org.sopeco.frontend.client.rpc.PushRPC;
 import org.sopeco.frontend.shared.definitions.PushPackage;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
+/**
+ * 
+ * @author Marius Oehler
+ * 
+ */
 public class PushRPCImpl extends RemoteServiceServlet implements PushRPC {
 
 	private static final long serialVersionUID = 1L;
-	private static PushPackage send;
-	private static final Object notify = new Object();
 	private static final int TIMEOUT = 30000;
 
+	private static HashMap<String, Object> waitingMap = new HashMap<String, Object>();
+	private static HashMap<String, PushPackage> packageMap = new HashMap<String, PushPackage>();
+
 	public PushPackage push() {
+		String sId = getThreadLocalRequest().getSession().getId();
 
 		try {
-			send = new PushPackage(Type.IDLE);
-			
-			synchronized (notify) {
-				notify.wait(TIMEOUT);
+			packageMap.put(sId, new PushPackage(Type.IDLE));
+			waitingMap.put(sId, new Object());
+
+			synchronized (waitingMap.get(sId)) {
+				waitingMap.get(sId).wait(TIMEOUT);
 			}
-			return send;
+			return packageMap.get(sId);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
-
+	
 	/**
-	 * Sends a pushPackage to the frontend
-	 * @param integer
+	 * Sends a pushPackage to the frontend (to all connected clients).
+	 * 
+	 * @param pushPackage
+	 *            object, which will be send
 	 */
 	public static void push(PushPackage pushPackage) {
-		send = pushPackage;
-
-		synchronized (notify) {
-			notify.notifyAll();
+		for (String sId : waitingMap.keySet()) {
+			synchronized (waitingMap.get(sId)) {
+				packageMap.put(sId, pushPackage);
+				waitingMap.get(sId).notify();
+			}
+		}
+	}
+	
+	/**
+	 * Sends a pushPackage to the frontend (to all connected clients).
+	 * 
+	 * @param sessionId
+	 *            session of the client
+	 * @param pushPackage
+	 *            object, which will be send
+	 */
+	public static void push(String sessionId, PushPackage pushPackage) {
+		synchronized (waitingMap.get(sessionId)) {
+			packageMap.put(sessionId, pushPackage);
+			waitingMap.get(sessionId).notify();
 		}
 	}
 
-	public static void pushMessage ( String message ) {
+	/**
+	 * Sending Pushpackage with the Type MESSAGE to the client.
+	 * 
+	 * @param message
+	 */
+	public static void pushMessage(String sessionId, String message) {
 		PushPackage pushPackage = new PushPackage(Type.MESSAGE);
 		pushPackage.setPiggyback(message);
-		push(pushPackage);
+		push(sessionId, pushPackage);
 	}
 }

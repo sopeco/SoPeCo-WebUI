@@ -204,10 +204,32 @@
 	color: #333;
 }
 
+#mecGrid img {
+	margin-right: 0.5em;
+	vertical-align: sub;
+}
+
+#mecGrid .statusText {
+	font-weight: bold;
+	color: #333;
+}
+
+#mecGrid .statusText.positive {
+	color: #3A5;
+}
+#mecGrid .statusText.negative {
+	color: #933;
+}
+
 #mecPanel .actionline {
 	border-bottom: 0;
 	border-top: 1px solid #CCC;
 	margin-top: 0.5em;
 	padding-bottom: 0;
 	color: #933;
+	padding-top: 1em;
+}
+
+#mecPanel .actionline button {
+	float: right;
 }

@@ -27,16 +27,19 @@ public class FrontendEntryPoint implements EntryPoint {
 	private MainLayoutPanel mainLayoutPanel;
 
 	private DatabaseInstance connectedDatabase;
+	private static FrontendEntryPoint frontend;
 
 	// Fast login
-	public static final boolean DEVELOPMENT = true;
+	public static final boolean DEVELOPMENT = false;
 
 	/**
 	 * will be executed at the start of the application.
 	 */
 	public void onModuleLoad() {
+		frontend = this;
+
 		loadFirstStep();
-		
+
 		startup();
 	}
 
@@ -44,7 +47,7 @@ public class FrontendEntryPoint implements EntryPoint {
 		Timer waitForLang = new Timer() {
 			@Override
 			public void run() {
-				if ( R.loadLangFile() ) {
+				if (R.loadLangFile()) {
 					loadSecondStep();
 					cancel();
 				}
@@ -134,5 +137,9 @@ public class FrontendEntryPoint implements EntryPoint {
 				Message.error("Error at startup");
 			}
 		});
+	}
+
+	public static FrontendEntryPoint getFrontendEP() {
+		return frontend;
 	}
 }

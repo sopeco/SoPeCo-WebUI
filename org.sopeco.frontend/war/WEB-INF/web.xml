@@ -62,4 +62,14 @@
 		<url-pattern>/sopeco_frontend/scenarioManagerRPC</url-pattern>
 	</servlet-mapping>
 	
+	<servlet>
+		<servlet-name>meControllerRPC</servlet-name>
+		<servlet-class>org.sopeco.frontend.server.rpc.MEControllerRPCImpl
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>meControllerRPC</servlet-name>
+		<url-pattern>/sopeco_frontend/meControllerRPC</url-pattern>
+	</servlet-mapping>
+	
 </web-app>

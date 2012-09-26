@@ -1,5 +1,8 @@
 package org.sopeco.frontend.client.helper;
 
+import org.sopeco.frontend.client.FrontendEntryPoint;
+import org.sopeco.frontend.client.layout.MainNavigation.Navigation;
+import org.sopeco.frontend.client.layout.center.EnvironmentPanel;
 import org.sopeco.frontend.client.layout.popups.Message;
 import org.sopeco.frontend.client.layout.popups.Notification;
 import org.sopeco.frontend.client.rpc.PushRPC;
@@ -64,8 +67,13 @@ public class ServerPush {
 			Notification.show("Error");
 			break;
 		case MESSAGE:
-			String message = (String)pushPackage.getPiggyback();
+			String message = (String) pushPackage.getPiggyback();
 			Notification.show(message);
+			break;
+		case NEW_MEC_AVAILABLE:
+			EnvironmentPanel envPanel = (EnvironmentPanel) FrontendEntryPoint.getFrontendEP().getMainLayoutPanel(false)
+					.getCenterPanels().get(Navigation.Environment);
+			envPanel.addMEControllerUrl(pushPackage.getPiggyback());
 			break;
 		default:
 			Message.warning("unknown parameter");

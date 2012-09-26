@@ -2,7 +2,12 @@ package org.sopeco.frontend.server.rpc;
 
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.sopeco.frontend.client.rpc.ScenarioManagerRPC;
+import org.sopeco.frontend.server.db.PersistenceProvider;
 import org.sopeco.frontend.server.model.ScenarioDefinitionBuilder;
 import org.sopeco.persistence.IPersistenceProvider;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
@@ -19,14 +24,16 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
  */
 public class ScenarioManagerRPCImpl extends RemoteServiceServlet implements ScenarioManagerRPC {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(ScenarioManagerRPCImpl.class);
 	private static final long serialVersionUID = 1L;
 
 	@Override
 	public String[] getScenarioNames() {
-		IPersistenceProvider dbCon = (IPersistenceProvider) getThreadLocalRequest().getSession().getAttribute(
-				SessionAttribute.DatabaseConnection.name());
+		HttpSession session = getThreadLocalRequest().getSession();
+		IPersistenceProvider dbCon = PersistenceProvider.getPersistenceProvider(session);
 
 		if (dbCon == null) {
+			LOGGER.warn("No database connection found.");
 			return null;
 		}
 
@@ -50,18 +57,19 @@ public class ScenarioManagerRPCImpl extends RemoteServiceServlet implements Scen
 	public boolean addScenario(String name) {
 
 		name = name.replaceAll("[^a-zA-Z0-9_]", "_");
-		
+
 		ScenarioDefinition emptyScenario = ScenarioDefinitionBuilder.buildEmptyScenario(name);
 
-		IPersistenceProvider dbCon = (IPersistenceProvider) getThreadLocalRequest().getSession().getAttribute(
-				SessionAttribute.DatabaseConnection.name());
+		HttpSession session = getThreadLocalRequest().getSession();
+		IPersistenceProvider dbCon = PersistenceProvider.getPersistenceProvider(session);
 
 		if (dbCon == null) {
+			LOGGER.warn("No database connection found.");
 			return false;
 		}
-		
+
 		dbCon.store(emptyScenario);
-		
+
 		return true;
 	}
 
