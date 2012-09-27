@@ -199,6 +199,11 @@
 	padding: 4px;
 }
 
+#mecPanel .invalid {
+	color: #A00;
+	background-color: #FFF6F6;
+}
+
 #mecGrid .description {
 	font-weight: bold;
 	color: #333;
@@ -217,8 +222,13 @@
 #mecGrid .statusText.positive {
 	color: #3A5;
 }
+
 #mecGrid .statusText.negative {
 	color: #933;
+}
+
+#mecGrid .statusText.warning {
+	color: #C70;
 }
 
 #mecPanel .actionline {
@@ -232,4 +242,42 @@
 
 #mecPanel .actionline button {
 	float: right;
+}
+
+#medTreePanel {
+	display: block;
+	height: 100%;
+}
+
+.frontendTree {
+	
+}
+
+.frontendTree .treeItem {
+	margin-left: 1.5em;
+	position: relative;
+	margin-top: 3px;
+}
+
+.frontendTree>.treeItem {
+	margin-left: 1px;
+}
+
+.frontendTree .treeItem .linePanel {
+	padding: 0.5em 1em;
+	color: #333;
+	font-weight: bold;
+}
+
+.frontendTree .treeItem .linePanel:hover {
+	background-color: #f8f8f8;
+}
+
+.frontendTree .treeItem .linePanel>div {
+	margin-left: 2em;
+}
+
+.frontendTree .treeItem .linePanel>img {
+	cursor: pointer;
+	float: left;
 }

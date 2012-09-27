@@ -11,6 +11,7 @@ import org.sopeco.frontend.client.rpc.DatabaseManagerRPC;
 import org.sopeco.frontend.server.db.FlexiblePersistenceProviderFactory;
 import org.sopeco.frontend.server.db.PersistenceProvider;
 import org.sopeco.frontend.server.db.UIPersistenceProviderFactory;
+import org.sopeco.frontend.server.user.UserInfo;
 import org.sopeco.persistence.IPersistenceProvider;
 import org.sopeco.persistence.exceptions.DataNotFoundException;
 import org.sopeco.persistence.exceptions.WrongCredentialsException;
@@ -207,15 +208,15 @@ public class DatabaseManagerRPCImpl extends RemoteServiceServlet implements Data
 		}
 
 		HttpSession session = getThreadLocalRequest().getSession();
-		
+
+		UserInfo.setSessionToDb(session.getId(), dbInstance.getId());
+
+		// create UIPProvider. It will be stored in the given session!
 		UIPersistenceProviderFactory.createUIPersistenceProvider(session, dbInstance.getHost(), dbInstance.getPort(),
 				dbInstance.getDbName(), passwd);
-		
+
 		PersistenceProvider.setPersistenceProvider(dbConnection, getThreadLocalRequest().getSession());
 
-		PersistenceProvider.getUIPersistenceProvider(session).store();
-		PersistenceProvider.getUIPersistenceProvider(session).load();
-		
 		return true;
 	}
 

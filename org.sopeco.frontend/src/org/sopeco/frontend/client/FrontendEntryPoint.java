@@ -59,8 +59,6 @@ public class FrontendEntryPoint implements EntryPoint {
 	private void loadSecondStep() {
 		SystemDetails.load();
 
-		ServerPush.start();
-
 		changeDatabase();
 	}
 
@@ -76,6 +74,8 @@ public class FrontendEntryPoint implements EntryPoint {
 		RootLayoutPanel rootLayoutPanel = RootLayoutPanel.get();
 
 		rootLayoutPanel.add(getMainLayoutPanel(true));
+		
+		ServerPush.start();
 	}
 
 	/**

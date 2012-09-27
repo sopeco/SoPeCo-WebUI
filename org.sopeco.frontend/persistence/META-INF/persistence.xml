@@ -5,6 +5,7 @@
 	<persistence-unit name="sopeco-frontend" transaction-type="RESOURCE_LOCAL">
 		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
 		<class>org.sopeco.frontend.server.db.entities.Test</class>
+		<class>org.sopeco.frontend.server.db.entities.MEControllerUrl</class>
 		<properties>
 			
 			<property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.EmbeddedDriver" />

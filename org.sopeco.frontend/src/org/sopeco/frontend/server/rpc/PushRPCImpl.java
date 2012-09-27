@@ -3,6 +3,7 @@ package org.sopeco.frontend.server.rpc;
 import java.util.HashMap;
 
 import org.sopeco.frontend.client.rpc.PushRPC;
+import org.sopeco.frontend.server.user.UserInfo;
 import org.sopeco.frontend.shared.definitions.PushPackage;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -35,14 +36,14 @@ public class PushRPCImpl extends RemoteServiceServlet implements PushRPC {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	/**
 	 * Sends a pushPackage to the frontend (to all connected clients).
 	 * 
 	 * @param pushPackage
 	 *            object, which will be send
 	 */
-	public static void push(PushPackage pushPackage) {
+	public static void pushToAll(PushPackage pushPackage) {
 		for (String sId : waitingMap.keySet()) {
 			synchronized (waitingMap.get(sId)) {
 				packageMap.put(sId, pushPackage);
@@ -50,9 +51,27 @@ public class PushRPCImpl extends RemoteServiceServlet implements PushRPC {
 			}
 		}
 	}
-	
+
 	/**
-	 * Sends a pushPackage to the frontend (to all connected clients).
+	 * Sends the package to all users, which are connected to the given
+	 * database.
+	 * 
+	 * @param pushPackage
+	 */
+	public static void pushToCODB(String databaseName, PushPackage pushPackage) {
+		for (String sId : UserInfo.getSessionsOnDatabase(databaseName)) {
+			// for (String sId : waitingMap.keySet()) {
+
+			synchronized (waitingMap.get(sId)) {
+				packageMap.put(sId, pushPackage);
+				waitingMap.get(sId).notify();
+			}
+		}
+	}
+
+	/**
+	 * Sends a pushPackage to the frontend (to the client with the given session
+	 * id).
 	 * 
 	 * @param sessionId
 	 *            session of the client

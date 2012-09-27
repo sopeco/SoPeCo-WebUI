@@ -92,11 +92,17 @@ public class MeasurementEnvironmentBuilder {
 		ParameterNamespace currentNamespace = definiton.getRoot();
 
 		for (int i = 0; i < nodes.length - 1; i++) {
+			boolean found = false;
 			for (ParameterNamespace ns : currentNamespace.getChildren()) {
 				if (ns.getName().equals(nodes[i])) {
 					currentNamespace = ns;
+					found = true;
 					break;
 				}
+			}
+
+			if (found) {
+				continue;
 			}
 
 			currentNamespace = addNamespace(nodes[i], currentNamespace);
@@ -296,5 +302,15 @@ public class MeasurementEnvironmentBuilder {
 	 */
 	public MeasurementEnvironmentDefinition getMEDefinition() {
 		return definiton;
+	}
+
+	/**
+	 * Creates an empty MEnvironmentDefinition.
+	 * 
+	 * @return
+	 */
+	public static MeasurementEnvironmentDefinition createBlankEnvironmentDefinition() {
+		MeasurementEnvironmentBuilder builder = new MeasurementEnvironmentBuilder();
+		return builder.getMEDefinition();
 	}
 }
