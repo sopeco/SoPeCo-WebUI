@@ -506,6 +506,10 @@ public class EnvironmentPanel extends CenterPanel {
 					radioDropDown.setEnabled(false);
 					radioDropDown.setValue(false);
 					radioTextField.setValue(true);
+					
+					if ( mecTextBox.getText().isEmpty() ) {
+						checkStatusBtn.setEnabled(false);
+					}
 				} else {
 					mecDropDown.setEnabled(true);
 					radioDropDown.setEnabled(true);

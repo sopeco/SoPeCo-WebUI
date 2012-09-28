@@ -1,5 +1,7 @@
 package org.sopeco.frontend.client.widget;
 
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.FlowPanel;
 
 /**
@@ -9,16 +11,23 @@ import com.google.gwt.user.client.ui.FlowPanel;
  */
 public class FrontendTree extends FlowPanel {
 
-	private NamespaceTreeItem rootItem;
+	private FrontendTreeItem rootItem;
 
 	public FrontendTree() {
 		addStyleName("frontendTree");
 	}
 
-	public void setRoot(NamespaceTreeItem item) {
+	public void setRoot(FrontendTreeItem item) {
 		rootItem = item;
-		
+
 		add(rootItem);
+
+		addClearElement();
 	}
 
+	private void addClearElement() {
+		Element clearDiv = DOM.createDiv();
+		clearDiv.addClassName("clear");
+		getElement().appendChild(clearDiv);
+	}
 }

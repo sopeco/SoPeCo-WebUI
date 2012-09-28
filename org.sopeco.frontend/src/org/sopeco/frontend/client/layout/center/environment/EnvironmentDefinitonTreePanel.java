@@ -2,8 +2,9 @@ package org.sopeco.frontend.client.layout.center.environment;
 
 import org.sopeco.frontend.client.layout.popups.Message;
 import org.sopeco.frontend.client.rpc.RPC;
+import org.sopeco.frontend.client.widget.EnvironmentTreeItem;
 import org.sopeco.frontend.client.widget.FrontendTree;
-import org.sopeco.frontend.client.widget.NamespaceTreeItem;
+import org.sopeco.frontend.client.widget.FrontendTreeItem;
 import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
 import org.sopeco.persistence.entities.definition.ParameterNamespace;
 
@@ -58,16 +59,16 @@ public class EnvironmentDefinitonTreePanel extends FlowPanel {
 
 		ParameterNamespace root = currentEnvironmentDefinition.getRoot();
 
-		NamespaceTreeItem rootItem = new NamespaceTreeItem(root.getName());
+		EnvironmentTreeItem rootItem = new EnvironmentTreeItem(root.getName());
 
 		addPNS(root, rootItem);
 
 		frontendTree.setRoot(rootItem);
 	}
 
-	private void addPNS(ParameterNamespace namespace, NamespaceTreeItem nsTItem) {
+	private void addPNS(ParameterNamespace namespace, EnvironmentTreeItem nsTItem) {
 		for (ParameterNamespace pns : namespace.getChildren()) {
-			NamespaceTreeItem treeItem = new NamespaceTreeItem(pns.getName());
+			EnvironmentTreeItem treeItem = new EnvironmentTreeItem(pns.getName());
 			nsTItem.addItem(treeItem);
 
 			if (pns.getChildren().size() > 0) {

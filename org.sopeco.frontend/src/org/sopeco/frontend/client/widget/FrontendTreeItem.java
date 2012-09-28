@@ -3,10 +3,12 @@ package org.sopeco.frontend.client.widget;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
 
@@ -16,20 +18,22 @@ import com.google.gwt.user.client.ui.Image;
  * @author Marius Oehler
  * 
  */
-public class NamespaceTreeItem extends FlowPanel implements ClickHandler {
+public class FrontendTreeItem extends FlowPanel implements ClickHandler {
 
 	private static final String IMG_COLLAPSE = "images/tree_minus.png";
 	private static final String IMG_EXPAND = "images/tree_plus.png";
 
 	private String currentText;
-	private HTML htmlText;
-	private FlowPanel linePanel;
-	private List<NamespaceTreeItem> children;
-	private boolean expanded;
-	private Image img;
-	private NamespaceTreeItem parent;
+	protected HTML htmlText;
+	protected FlowPanel linePanel;
+	protected List<FrontendTreeItem> children;
+	private boolean expanded, focusable;
+	protected Image img;
+	protected FrontendTreeItem parentItem;
+	private FocusPanel lineFocusPanel;
+	protected Element clearLine;
 
-	public NamespaceTreeItem(String html) {
+	public FrontendTreeItem(String html) {
 		initialize();
 
 		currentText = html;
@@ -42,7 +46,7 @@ public class NamespaceTreeItem extends FlowPanel implements ClickHandler {
 	 * 
 	 * @param item
 	 */
-	public void addItem(NamespaceTreeItem item) {
+	public void addItem(FrontendTreeItem item) {
 		item.setParentItem(this);
 		children.add(item);
 
@@ -52,13 +56,12 @@ public class NamespaceTreeItem extends FlowPanel implements ClickHandler {
 	/**
 	 * Return the parent item.
 	 */
-	public NamespaceTreeItem getParentItem() {
-		return parent;
+	public FrontendTreeItem getParentItem() {
+		return parentItem;
 	}
 
 	@Override
 	public void onClick(ClickEvent event) {
-		GWT.log("test");
 		if (expanded) {
 			setExpanded(false);
 		} else {
@@ -71,7 +74,7 @@ public class NamespaceTreeItem extends FlowPanel implements ClickHandler {
 	 * 
 	 * @param item
 	 */
-	public void removeItem(NamespaceTreeItem item) {
+	public void removeItem(FrontendTreeItem item) {
 		item.setParentItem(null);
 		children.remove(item);
 
@@ -90,6 +93,15 @@ public class NamespaceTreeItem extends FlowPanel implements ClickHandler {
 	}
 
 	/**
+	 * Is the element focusable.
+	 * 
+	 * @param focus
+	 */
+	public void setFocusable(boolean focus) {
+		focusable = focus;
+	}
+
+	/**
 	 * Set the html text of this item.
 	 * 
 	 * @param html
@@ -99,10 +111,15 @@ public class NamespaceTreeItem extends FlowPanel implements ClickHandler {
 		htmlText.setHTML(currentText);
 	}
 
-	private void initialize() {
+	protected void initialize() {
 		htmlText = new HTML();
 		expanded = true;
-		children = new ArrayList<NamespaceTreeItem>();
+		focusable = false;
+		children = new ArrayList<FrontendTreeItem>();
+		lineFocusPanel = new FocusPanel();
+
+		clearLine = DOM.createDiv();
+		clearLine.addClassName("clear");
 
 		linePanel = new FlowPanel();
 		linePanel.addStyleName("linePanel");
@@ -114,31 +131,47 @@ public class NamespaceTreeItem extends FlowPanel implements ClickHandler {
 		addStyleName("treeItem");
 	}
 
-	private void refresh() {
+	protected void refresh() {
 		clear();
 
 		updateImage();
 
 		htmlText.setText(currentText);
 
+		refreshLinePanel();
+
+		addElementsToPanel();
+
+	}
+
+	protected void refreshLinePanel() {
 		linePanel.clear();
 		if (children.size() > 0) {
 			linePanel.add(img);
 		}
 		linePanel.add(htmlText);
+		linePanel.getElement().appendChild(clearLine);
+	}
 
-		// Adding the Elements
-		add(linePanel);
+	protected void addElementsToPanel() {
+		lineFocusPanel.clear();
+		if (focusable) {
+			lineFocusPanel.add(linePanel);
+			add(lineFocusPanel);
+		} else {
+			add(linePanel);
+		}
 
 		if (expanded) {
-			for (NamespaceTreeItem item : children) {
+			for (FrontendTreeItem item : children) {
+				item.refresh();
 				add(item);
 			}
 		}
 	}
 
-	private void setParentItem(NamespaceTreeItem item) {
-		parent = item;
+	private void setParentItem(FrontendTreeItem item) {
+		parentItem = item;
 	}
 
 	private void updateImage() {
@@ -147,5 +180,32 @@ public class NamespaceTreeItem extends FlowPanel implements ClickHandler {
 		} else {
 			img.setUrl(IMG_EXPAND);
 		}
+	}
+
+	public String getPath() {
+		if (parentItem != null) {
+			return parentItem.getPath() + "/" + currentText;
+		}
+		return currentText;
+	}
+
+	/**
+	 * Removes this item from the parent element.
+	 */
+	public void remove() {
+		parentItem.removeItem(this);
+		parentItem = null;
+	}
+
+	/**
+	 * Removes the given item from the children list.
+	 * 
+	 * @param item
+	 *            child, which will be removed
+	 */
+	public void removeChild(FrontendTreeItem item) {
+		children.remove(item);
+
+		refresh();
 	}
 }

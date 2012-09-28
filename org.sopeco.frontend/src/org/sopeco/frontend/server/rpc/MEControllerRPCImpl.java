@@ -139,9 +139,11 @@ public class MEControllerRPCImpl extends RemoteServiceServlet implements MEContr
 			MeasurementEnvironmentDefinition med = meCotnroller.getMEDefinition();
 
 			MeasurementEnvironmentBuilder b = new MeasurementEnvironmentBuilder();
-			b.addNamespaces("test/hallo");
-			b.addNamespaces("test/hallo2");
-			b.addNamespaces("test2/hey/yep");
+			b.addNamespaces("input/user_count");
+			b.addNamespaces("input/user_activity");
+			b.addNamespaces("input/parameter_n");
+			b.addNamespaces("output/response_time");
+			b.addNamespaces("output/throughput");
 			
 			return b.getMEDefinition();
 		} catch (URISyntaxException e) {

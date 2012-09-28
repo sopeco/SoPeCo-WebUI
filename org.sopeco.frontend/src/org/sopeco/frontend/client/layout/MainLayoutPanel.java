@@ -12,6 +12,7 @@ import org.sopeco.frontend.client.layout.center.SpecificationPanel;
 
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
+import com.google.gwt.user.client.ui.ScrollPanel;
 
 /**
  * The main-layout of the web-application.
@@ -24,6 +25,7 @@ public class MainLayoutPanel extends DockLayoutPanel {
 	private NorthPanel topFilterPanel;
 	private MainNavigation mainNavigation;
 	private FrontendEntryPoint parentModule;
+	private ScrollPanel centerScrollPanel;
 
 	private Navigation currentCenterPanel;
 	private HashMap<Navigation, CenterPanel> centerPanels = new HashMap<Navigation, CenterPanel>();
@@ -40,6 +42,8 @@ public class MainLayoutPanel extends DockLayoutPanel {
 	 * Initialize the main layout
 	 */
 	private void initialize() {
+		centerScrollPanel = new ScrollPanel();
+
 		addNorth(getTopFilterPanel(), Float.parseFloat(NorthPanel.PANEL_HEIGHT));
 		addWest(getMainNavigation(), Float.parseFloat(MainNavigation.PANEL_WIDTH));
 
@@ -61,10 +65,12 @@ public class MainLayoutPanel extends DockLayoutPanel {
 		if (getCenter() != null) {
 			remove(getCenter());
 		}
-
 		currentCenterPanel = type;
 
-		add(centerPanels.get(type));
+		centerScrollPanel.clear();
+		centerScrollPanel.add(centerPanels.get(type));
+
+		add(centerScrollPanel);
 	}
 
 	/**

@@ -274,10 +274,31 @@
 }
 
 .frontendTree .treeItem .linePanel>div {
-	margin-left: 2em;
+	margin-left: 1em;
+	float: left;
 }
 
 .frontendTree .treeItem .linePanel>img {
 	cursor: pointer;
 	float: left;
+}
+
+.frontendTree .treeItem .linePanel>.actionPanel {
+	display: none;
+	float: right;
+}
+
+.frontendTree .treeItem .linePanel:hover>.actionPanel {
+	display: block;
+}
+
+.frontendTree .treeItem .linePanel>.actionPanel>img {
+	vertical-align: sub;
+	cursor: pointer;
+	margin-right: 0.7em;
+}
+
+.clear {
+	float: none !important;
+	clear: both !important;
 }
