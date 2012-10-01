@@ -9,6 +9,29 @@
 	margin-left: 1em;
 }
 
+#topWarning {
+	background-color: #E65;
+	text-align: center;
+	padding: 0.5em;
+	color: white;
+	font-weight: bold;
+	position: fixed;
+	width: 100%;
+	border-bottom: 1px solid;
+	z-index: 999;
+}
+
+h3 {
+	border-bottom: 1px solid #CCC;
+	padding: 0.1em;
+	color: #333;
+}
+
+p {
+	font-weight: bold;
+	color: #333;
+}
+
 .nPanel {
 	background-color: #333;
 	border-bottom: 1px solid black;
@@ -267,25 +290,58 @@
 	padding: 0.5em 1em;
 	color: #333;
 	font-weight: bold;
+	height: 22px;
 }
 
 .frontendTree .treeItem .linePanel:hover {
 	background-color: #f8f8f8;
 }
 
-.frontendTree .treeItem .linePanel>div {
-	margin-left: 1em;
+.frontendTree .treeItem .linePanel>.leftDiv {
+	margin-left: 1.5em;
 	float: left;
+	padding-top: 2px;
+	cursor: pointer;
+}
+
+.frontendTree .treeItem .linePanel>.typeSeperator {
+	margin-left: 1em;
+	cursor: default;
+}
+
+.frontendTree .treeItem .linePanel>.listboxType {
+	display: none;
+	float: left;
+	border: 1px solid #AAA;
+	color: #333;
+	padding: 0 0 0 .5em;
+	margin: 0 0 0 1em;
+}
+
+.frontendTree .treeItem .linePanel>input {
+	float: left;
+	display: none;
+	margin: 0;
+	margin-left: 1.5em;
+	padding: 0 0.5em;
 }
 
 .frontendTree .treeItem .linePanel>img {
 	cursor: pointer;
-	float: left;
+	/* float: left; */
+	position: absolute;
+	left: 0.5em;
+}
+
+.frontendTree .treeItem .linePanel>.parameterImg {
+	margin-top: 2px;
+	cursor: default;
 }
 
 .frontendTree .treeItem .linePanel>.actionPanel {
 	display: none;
 	float: right;
+	margin-top: 2px;
 }
 
 .frontendTree .treeItem .linePanel:hover>.actionPanel {
@@ -296,6 +352,10 @@
 	vertical-align: sub;
 	cursor: pointer;
 	margin-right: 0.7em;
+}
+
+.frontendTree .treeItem .linePanel>.editableParameter {
+	color: #aaa;
 }
 
 .clear {

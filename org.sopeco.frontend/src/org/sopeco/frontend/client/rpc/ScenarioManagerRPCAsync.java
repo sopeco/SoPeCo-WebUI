@@ -18,4 +18,6 @@ public interface ScenarioManagerRPCAsync {
 
 	void addScenario(String name, AsyncCallback<Boolean> callback);
 
+	void removeScenario(String name, AsyncCallback<Boolean> callback);
+
 }

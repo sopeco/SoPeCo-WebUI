@@ -29,7 +29,7 @@ public class MainNavigation extends FlowPanel {
 	 *
 	 */
 	public enum Navigation {
-		Environment, Specification, Execute, Result, Other
+		Environment, Specification, Execute, Result, Other, NoScenario
 	}
 
 	private TLEntry acitveEntry;

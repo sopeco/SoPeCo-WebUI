@@ -2,10 +2,11 @@ package org.sopeco.frontend.client.layout.center.environment;
 
 import org.sopeco.frontend.client.layout.popups.Message;
 import org.sopeco.frontend.client.rpc.RPC;
+import org.sopeco.frontend.client.widget.EParameterTreeItem;
 import org.sopeco.frontend.client.widget.EnvironmentTreeItem;
 import org.sopeco.frontend.client.widget.FrontendTree;
-import org.sopeco.frontend.client.widget.FrontendTreeItem;
 import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
+import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.entities.definition.ParameterNamespace;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -69,11 +70,19 @@ public class EnvironmentDefinitonTreePanel extends FlowPanel {
 	private void addPNS(ParameterNamespace namespace, EnvironmentTreeItem nsTItem) {
 		for (ParameterNamespace pns : namespace.getChildren()) {
 			EnvironmentTreeItem treeItem = new EnvironmentTreeItem(pns.getName());
-			nsTItem.addItem(treeItem);
+
+			for (ParameterDefinition parameter : pns.getAllParameters()) {
+				EParameterTreeItem pItem = new EParameterTreeItem(parameter.getName(), parameter.getType(),
+						parameter.getRole());
+
+				treeItem.addItem(pItem);
+			}
 
 			if (pns.getChildren().size() > 0) {
 				addPNS(pns, treeItem);
 			}
+
+			nsTItem.addItem(treeItem);
 		}
 	}
 

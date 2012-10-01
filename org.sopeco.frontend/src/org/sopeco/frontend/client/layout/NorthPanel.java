@@ -1,12 +1,15 @@
 package org.sopeco.frontend.client.layout;
 
 import org.sopeco.frontend.client.layout.dialog.AddScenarioDialog;
+import org.sopeco.frontend.client.layout.popups.Confirmation;
 import org.sopeco.frontend.client.layout.popups.Loader;
 import org.sopeco.frontend.client.layout.popups.Message;
 import org.sopeco.frontend.client.rpc.RPC;
 import org.sopeco.frontend.shared.rsc.R;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -28,6 +31,8 @@ public class NorthPanel extends FlowPanel {
 
 	private ListBox listboxScenarios;
 	private HTML connectedToText;
+	private boolean scenariosAvailable = false;
+	private Anchor addScenario, removeScenario;
 
 	private MainLayoutPanel parentPanel;
 	/**
@@ -82,8 +87,14 @@ public class NorthPanel extends FlowPanel {
 		listboxScenarios.setSize("120px", "1.8em");
 		listboxScenarios.setVisibleItemCount(1);
 		listboxScenarios.addItem(" ---");
+		listboxScenarios.addChangeHandler(new ChangeHandler() {
+			@Override
+			public void onChange(ChangeEvent event) {
+				parentPanel.createNewCenterPanels();
+			}
+		});
 
-		Anchor addScenario = new Anchor(R.get("scenario_add"));
+		addScenario = new Anchor(R.get("scenario_add"));
 		secondHoPanel.add(addScenario);
 
 		final NorthPanel mySelf = this;
@@ -91,14 +102,38 @@ public class NorthPanel extends FlowPanel {
 		addScenario.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				AddScenarioDialog addScenario = new AddScenarioDialog(mySelf);
-				addScenario.center();
+				AddScenarioDialog addScenarioDialog = new AddScenarioDialog(mySelf);
+				addScenarioDialog.center();
 			}
 		});
 
-		Anchor removeScenario = new Anchor(R.get("scenario_remove"));
-		removeScenario.addStyleName("disabled");
+		removeScenario = new Anchor(R.get("scenario_remove"));
 		secondHoPanel.add(removeScenario);
+		removeScenario.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				String msg = R.get("confRemoveScenario") + " <b>'"
+						+ listboxScenarios.getItemText(listboxScenarios.getSelectedIndex()) + "'</b>?";
+
+				Confirmation.confirm(msg, new ClickHandler() {
+					@Override
+					public void onClick(ClickEvent event) {
+						String name = listboxScenarios.getItemText(listboxScenarios.getSelectedIndex());
+						RPC.getScenarioManager().removeScenario(name, new AsyncCallback<Boolean>() {
+							@Override
+							public void onFailure(Throwable caught) {
+								Message.error(caught.getMessage());
+							}
+
+							@Override
+							public void onSuccess(Boolean result) {
+								updateScenarioList();
+							}
+						});
+					}
+				});
+			}
+		});
 
 		for (Widget w : new Widget[] { htmlSelectScenario, anchorChangeAccount, listboxScenarios, addScenario,
 				removeScenario, secondHoPanel }) {
@@ -154,13 +189,34 @@ public class NorthPanel extends FlowPanel {
 		if (names == null || names.length == 0) {
 			listboxScenarios.addItem(R.get("no_scenarios"));
 			listboxScenarios.setEnabled(false);
+			scenariosAvailable = false;
+			removeScenario.setEnabled(false);
+			removeScenario.addStyleName("disabled");
 		} else {
-			listboxScenarios.addItem(R.get("select"));
 			listboxScenarios.setEnabled(true);
+			scenariosAvailable = true;
+			removeScenario.setEnabled(true);
+			removeScenario.removeStyleName("disabled");
 
 			for (String name : names) {
 				listboxScenarios.addItem(name);
 			}
+
 		}
+
+		parentPanel.createNewCenterPanels();
+	}
+
+	/**
+	 * Retuns the selected item.
+	 * 
+	 * @return selected scenario name
+	 */
+	public String getSelectedScenario() {
+		if (!scenariosAvailable) {
+			return "";
+		}
+
+		return listboxScenarios.getItemText(listboxScenarios.getSelectedIndex());
 	}
 }

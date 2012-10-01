@@ -221,6 +221,8 @@ public class EnvironmentPanel extends CenterPanel {
 				radioTextField.setValue(false);
 				mecTextBox.removeStyleName("invalid");
 				resetStatus();
+
+				runControllerCheck();
 			}
 		});
 
@@ -322,66 +324,70 @@ public class EnvironmentPanel extends CenterPanel {
 		return new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				String image = "<img src=\"images/loader_circle.gif\" />";
-				statusText.setHTML(image + R.get("checking") + "..");
-
-				clearStatusText();
-
-				getMEButton.setEnabled(false);
-
-				checkStatusBtn.setEnabled(false);
-
-				String url = getControllerUrl();
-
-				if (url.isEmpty()) {
-					checkStatusBtn.setEnabled(true);
-					statusText.setHTML(R.get("unknown"));
-					return;
-				}
-
-				RPC.getMEControllerRPC().checkControllerStatus(url, new AsyncCallback<Integer>() {
-					@Override
-					public void onSuccess(Integer result) {
-						String text = "";
-						String textClass = "";
-						if (result == MEControllerRPC.STATUS_ONLINE) {
-							text = R.get("online");
-							textClass = "positive";
-							setGetMEButtonStatus(true);
-						} else if (result == MEControllerRPC.STATUS_OFFLINE) {
-							text = R.get("offline");
-							textClass = "negative";
-							setGetMEButtonStatus(false);
-						} else if (result == MEControllerRPC.NO_VALID_MEC_URL) {
-							text = R.get("invalidUrl");
-							textClass = "negative";
-							setGetMEButtonStatus(false);
-						} else if (result == MEControllerRPC.STATUS_ONLINE_NO_META) {
-							text = R.get("controllerHasNoInfos");
-							textClass = "warning";
-							setGetMEButtonStatus(false);
-						} else {
-							text = R.get("unknown");
-							setGetMEButtonStatus(false);
-						}
-
-						statusText.setHTML(text);
-						if (!textClass.isEmpty()) {
-							statusText.addStyleName(textClass);
-						}
-
-						checkStatusBtn.setEnabled(true);
-					}
-
-					@Override
-					public void onFailure(Throwable caught) {
-						checkStatusBtn.setEnabled(true);
-						setGetMEButtonStatus(false);
-						Message.error(caught.getMessage());
-					}
-				});
+				runControllerCheck();
 			}
 		};
+	}
+
+	private void runControllerCheck() {
+		String image = "<img src=\"images/loader_circle.gif\" />";
+		statusText.setHTML(image + R.get("checking") + "..");
+
+		clearStatusText();
+
+		getMEButton.setEnabled(false);
+
+		checkStatusBtn.setEnabled(false);
+
+		String url = getControllerUrl();
+
+		if (url.isEmpty()) {
+			checkStatusBtn.setEnabled(true);
+			statusText.setHTML(R.get("unknown"));
+			return;
+		}
+
+		RPC.getMEControllerRPC().checkControllerStatus(url, new AsyncCallback<Integer>() {
+			@Override
+			public void onSuccess(Integer result) {
+				String text = "";
+				String textClass = "";
+				if (result == MEControllerRPC.STATUS_ONLINE) {
+					text = R.get("online");
+					textClass = "positive";
+					setGetMEButtonStatus(true);
+				} else if (result == MEControllerRPC.STATUS_OFFLINE) {
+					text = R.get("offline");
+					textClass = "negative";
+					setGetMEButtonStatus(false);
+				} else if (result == MEControllerRPC.NO_VALID_MEC_URL) {
+					text = R.get("invalidUrl");
+					textClass = "negative";
+					setGetMEButtonStatus(false);
+				} else if (result == MEControllerRPC.STATUS_ONLINE_NO_META) {
+					text = R.get("controllerHasNoInfos");
+					textClass = "warning";
+					setGetMEButtonStatus(false);
+				} else {
+					text = R.get("unknown");
+					setGetMEButtonStatus(false);
+				}
+
+				statusText.setHTML(text);
+				if (!textClass.isEmpty()) {
+					statusText.addStyleName(textClass);
+				}
+
+				checkStatusBtn.setEnabled(true);
+			}
+
+			@Override
+			public void onFailure(Throwable caught) {
+				checkStatusBtn.setEnabled(true);
+				setGetMEButtonStatus(false);
+				Message.error(caught.getMessage());
+			}
+		});
 	}
 
 	private void setGetMEButtonStatus(boolean status) {
@@ -422,6 +428,10 @@ public class EnvironmentPanel extends CenterPanel {
 				radioTextField.setValue(true);
 
 				checkTextfieldInput();
+
+				if (checkStatusBtn.isEnabled()) {
+					runControllerCheck();
+				}
 			}
 		};
 	}
@@ -461,7 +471,7 @@ public class EnvironmentPanel extends CenterPanel {
 							public void onSuccess(MeasurementEnvironmentDefinition result) {
 								Loader.hideLoader();
 								slideMEPanelUp();
-								
+
 								edTreePanel.setEnvironmentDefiniton(result);
 							}
 
@@ -506,8 +516,8 @@ public class EnvironmentPanel extends CenterPanel {
 					radioDropDown.setEnabled(false);
 					radioDropDown.setValue(false);
 					radioTextField.setValue(true);
-					
-					if ( mecTextBox.getText().isEmpty() ) {
+
+					if (mecTextBox.getText().isEmpty()) {
 						checkStatusBtn.setEnabled(false);
 					}
 				} else {
@@ -524,7 +534,8 @@ public class EnvironmentPanel extends CenterPanel {
 						mecDropDown.addItem(mec);
 					}
 				}
-				// Loader.hideLoader();
+
+				runControllerCheck();
 			}
 		});
 	}

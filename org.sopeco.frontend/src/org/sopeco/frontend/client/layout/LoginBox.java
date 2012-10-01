@@ -5,6 +5,8 @@ import java.util.List;
 import org.sopeco.frontend.client.FrontendEntryPoint;
 import org.sopeco.frontend.client.helper.DBManager;
 import org.sopeco.frontend.client.helper.INotifyHandler;
+import org.sopeco.frontend.client.helper.serverstatus.Deactivatable;
+import org.sopeco.frontend.client.helper.serverstatus.Serverstatus;
 import org.sopeco.frontend.client.layout.dialog.AddDBDialog;
 import org.sopeco.frontend.client.layout.popups.Confirmation;
 import org.sopeco.frontend.client.layout.popups.Loader;
@@ -17,7 +19,6 @@ import org.sopeco.persistence.metadata.entities.DatabaseInstance;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
@@ -30,13 +31,18 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-public class LoginBox extends DialogBox implements ClickHandler {
+/**
+ * 
+ * @author Marius Oehler
+ * 
+ */
+public class LoginBox extends DialogBox implements ClickHandler, Deactivatable {
 
 	private static final String COOKIE_DATABSE = "selected_database";
 
 	private ListBox listboxDatabases;
 	private LoginBox myself;
-	private Button btnConnect;
+	private Button btnConnect, btnAddDb, btnRemoveDb;
 
 	private FrontendEntryPoint parentModule;
 
@@ -45,6 +51,8 @@ public class LoginBox extends DialogBox implements ClickHandler {
 
 		myself = this;
 		parentModule = parent;
+
+		Serverstatus.register(this);
 
 		initialize();
 
@@ -87,13 +95,14 @@ public class LoginBox extends DialogBox implements ClickHandler {
 		verticalPanel.add(horizontalPanel);
 
 		listboxDatabases = new ListBox();
-		listboxDatabases.addItem(R.get("select"));
+		listboxDatabases.addItem(R.get("no_accounts"));
+		listboxDatabases.setEnabled(false);
 		listboxDatabases.setSelectedIndex(0);
 		horizontalPanel.add(listboxDatabases);
 		listboxDatabases.setSize("200px", "");
 		listboxDatabases.setVisibleItemCount(1);
 
-		Button btnAddDb = new Button("<img src=\"images/db_add.png\" />");
+		btnAddDb = new Button("<img src=\"images/db_add.png\" />");
 		btnAddDb.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -105,7 +114,7 @@ public class LoginBox extends DialogBox implements ClickHandler {
 		horizontalPanel.add(btnAddDb);
 		btnAddDb.setStyleName("sopeco-imageButton", true);
 
-		Button btnRemoveDb = new Button("<img src=\"images/db_remove.png\" />");
+		btnRemoveDb = new Button("<img src=\"images/db_remove.png\" />");
 		horizontalPanel.add(btnRemoveDb);
 		btnRemoveDb.addClickHandler(new ClickHandler() {
 			@Override
@@ -124,23 +133,31 @@ public class LoginBox extends DialogBox implements ClickHandler {
 	private void setDatabaseList(List<DatabaseInstance> databases) {
 		listboxDatabases.clear();
 
-		listboxDatabases.addItem(R.get("select"));
+		if (databases.isEmpty()) {
+			listboxDatabases.setEnabled(false);
+			btnRemoveDb.setEnabled(false);
+			
+			listboxDatabases.addItem(R.get("no_accounts"));
+		} else {
+			listboxDatabases.setEnabled(true);
+			btnRemoveDb.setEnabled(true);
+			
+			for (DatabaseInstance dbInstance : databases) {
+				String name = dbInstance.getDbName();
 
-		for (DatabaseInstance dbInstance : databases) {
-			String name = dbInstance.getDbName();
+				if (dbInstance.isProtectedByPassword()) {
+					name = "* " + name;
+				}
 
-			if (dbInstance.isProtectedByPassword()) {
-				name = "* " + name;
+				listboxDatabases.addItem(name);
 			}
 
-			listboxDatabases.addItem(name);
-		}
-
-		String cookie = Cookies.getCookie(COOKIE_DATABSE);
-		if (cookie != null) {
-			for (int i = 0; i < databases.size() && i < listboxDatabases.getItemCount() - 1; i++) {
-				if (databases.get(i).getDbName().equals(cookie)) {
-					listboxDatabases.setSelectedIndex(i + 1);
+			String cookie = Cookies.getCookie(COOKIE_DATABSE);
+			if (cookie != null) {
+				for (int i = 0; i < databases.size() && i < listboxDatabases.getItemCount(); i++) {
+					if (databases.get(i).getDbName().equals(cookie)) {
+						listboxDatabases.setSelectedIndex(i);
+					}
 				}
 			}
 		}
@@ -162,6 +179,8 @@ public class LoginBox extends DialogBox implements ClickHandler {
 					}
 
 				} else {
+					Serverstatus.setOffline();
+
 					Message.error(R.get("faild_loading_accounts"));
 				}
 
@@ -176,12 +195,10 @@ public class LoginBox extends DialogBox implements ClickHandler {
 
 		int selectedIndex = listboxDatabases.getSelectedIndex();
 
-		if (selectedIndex <= 0) {
+		if (selectedIndex < 0) {
 			Message.warning(R.get("select_account"));
 			return;
 		}
-
-		selectedIndex--;
 
 		final DatabaseInstance instance = DBManager.getLoadedDatabases().get(selectedIndex);
 
@@ -234,11 +251,9 @@ public class LoginBox extends DialogBox implements ClickHandler {
 	private void deleteSelectedDatabase() {
 		int selectedIndex = listboxDatabases.getSelectedIndex();
 
-		if (selectedIndex <= 0) {
+		if (selectedIndex < 0) {
 			return;
 		}
-
-		selectedIndex--;
 
 		final DatabaseInstance instance = DBManager.getLoadedDatabases().get(selectedIndex);
 
@@ -301,5 +316,21 @@ public class LoginBox extends DialogBox implements ClickHandler {
 		String confText = R.get("sure_delete_db") + " <b>'" + instance.getDbName() + "'</b>?";
 
 		Confirmation.confirm(confText, deleteConfirmed);
+	}
+
+	@Override
+	public void goOffline() {
+		btnAddDb.setEnabled(false);
+		btnRemoveDb.setEnabled(false);
+		btnConnect.setEnabled(false);
+		listboxDatabases.setEnabled(false);
+	}
+
+	@Override
+	public void goOnline() {
+		btnAddDb.setEnabled(true);
+		btnRemoveDb.setEnabled(true);
+		btnConnect.setEnabled(true);
+		listboxDatabases.setEnabled(true);
 	}
 }

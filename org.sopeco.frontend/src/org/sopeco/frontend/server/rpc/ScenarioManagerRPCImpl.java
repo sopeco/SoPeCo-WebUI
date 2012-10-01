@@ -73,4 +73,25 @@ public class ScenarioManagerRPCImpl extends RemoteServiceServlet implements Scen
 		return true;
 	}
 
+	@Override
+	public boolean removeScenario(String name) {
+		if (!name.matches("[a-zA-Z0-9_]+")) {
+			return false;
+		}
+
+		HttpSession session = getThreadLocalRequest().getSession();
+		IPersistenceProvider dbCon = PersistenceProvider.getPersistenceProvider(session);
+
+		try {
+			ScenarioDefinition definition = dbCon.loadScenarioDefinition(name);
+
+			dbCon.remove(definition);
+
+			return true;
+		} catch (DataNotFoundException e) {
+			LOGGER.warn("Scenario '{}' not found.", name);
+			return false;
+		}
+	}
+
 }

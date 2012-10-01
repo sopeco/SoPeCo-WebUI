@@ -23,7 +23,7 @@ public class FrontendTreeItem extends FlowPanel implements ClickHandler {
 	private static final String IMG_COLLAPSE = "images/tree_minus.png";
 	private static final String IMG_EXPAND = "images/tree_plus.png";
 
-	private String currentText;
+	protected String currentText;
 	protected HTML htmlText;
 	protected FlowPanel linePanel;
 	protected List<FrontendTreeItem> children;
@@ -39,6 +39,15 @@ public class FrontendTreeItem extends FlowPanel implements ClickHandler {
 		currentText = html;
 
 		refresh();
+	}
+
+	/**
+	 * Returns the current displayed text.
+	 * 
+	 * @return
+	 */
+	public String getText() {
+		return currentText;
 	}
 
 	/**
@@ -113,6 +122,8 @@ public class FrontendTreeItem extends FlowPanel implements ClickHandler {
 
 	protected void initialize() {
 		htmlText = new HTML();
+		htmlText.addStyleName("leftDiv");
+
 		expanded = true;
 		focusable = false;
 		children = new ArrayList<FrontendTreeItem>();

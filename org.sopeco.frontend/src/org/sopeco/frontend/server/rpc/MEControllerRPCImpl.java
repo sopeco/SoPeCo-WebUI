@@ -62,6 +62,7 @@ public class MEControllerRPCImpl extends RemoteServiceServlet implements MEContr
 	@Override
 	public int checkControllerStatus(String url) {
 		if (!checkUrlIsValid(url) || url == null) {
+			LOGGER.debug("Controller-Status: NO_VALID_MEC_URL");
 			return MEControllerRPC.NO_VALID_MEC_URL;
 		}
 
@@ -79,8 +80,10 @@ public class MEControllerRPCImpl extends RemoteServiceServlet implements MEContr
 			MeasurementEnvironmentDefinition med = meCotnroller.getMEDefinition();
 
 			if (med == null) {
+				LOGGER.debug("Controller-Status: STATUS_ONLINE_NO_META");
 				return MEControllerRPC.STATUS_ONLINE_NO_META;
 			} else {
+				LOGGER.debug("Controller-Status: STATUS_ONLINE");
 				return MEControllerRPC.STATUS_ONLINE;
 			}
 
@@ -91,6 +94,7 @@ public class MEControllerRPCImpl extends RemoteServiceServlet implements MEContr
 			LOGGER.error(e.getMessage());
 			throw new IllegalStateException(e);
 		} catch (IllegalStateException x) {
+			LOGGER.debug("Controller-Status: STATUS_OFFLINE");
 			return MEControllerRPC.STATUS_OFFLINE;
 		}
 	}
@@ -138,14 +142,11 @@ public class MEControllerRPCImpl extends RemoteServiceServlet implements MEContr
 
 			MeasurementEnvironmentDefinition med = meCotnroller.getMEDefinition();
 
-			MeasurementEnvironmentBuilder b = new MeasurementEnvironmentBuilder();
-			b.addNamespaces("input/user_count");
-			b.addNamespaces("input/user_activity");
-			b.addNamespaces("input/parameter_n");
-			b.addNamespaces("output/response_time");
-			b.addNamespaces("output/throughput");
-			
-			return b.getMEDefinition();
+			if (med.getRoot().getName().isEmpty()) {
+				med.getRoot().setName("root");
+			}
+
+			return med;
 		} catch (URISyntaxException e) {
 			LOGGER.error(e.getMessage());
 			throw new IllegalStateException(e);
