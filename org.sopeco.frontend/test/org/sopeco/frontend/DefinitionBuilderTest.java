@@ -45,13 +45,13 @@ public class DefinitionBuilderTest {
 
 	@Test
 	public void buildMEDefinition() {
-		MeasurementEnvironmentBuilder builder = new MeasurementEnvironmentBuilder();
-		assertEquals(builder.getRootNamespace().getName(), "root");
+		ScenarioDefinitionBuilder builder = new ScenarioDefinitionBuilder();
+		assertEquals(builder.getMEDefinition().getRoot().getName(), "root");
 	}
 
 	@Test
 	public void addParameterNamespaceToME() {
-		MeasurementEnvironmentBuilder builder = new MeasurementEnvironmentBuilder();
+		MeasurementEnvironmentBuilder builder = new ScenarioDefinitionBuilder().getEnvironmentBuilder();
 
 		ParameterNamespace newNamespace = builder.addNamespace(TESTNAME);
 
@@ -82,7 +82,7 @@ public class DefinitionBuilderTest {
 
 	@Test
 	public void removeParameterNamespaceOfME() {
-		MeasurementEnvironmentBuilder builder = new MeasurementEnvironmentBuilder();
+		MeasurementEnvironmentBuilder builder = new ScenarioDefinitionBuilder().getEnvironmentBuilder();
 		ParameterNamespace newNamespace = builder.addNamespace(TESTNAME);
 		ParameterNamespace newSecond = builder.addNamespace(TESTNAME + "2", newNamespace);
 
@@ -110,9 +110,12 @@ public class DefinitionBuilderTest {
 
 	@Test
 	public void testAddingAndRemovingByPath() {
-		MeasurementEnvironmentBuilder builder = new MeasurementEnvironmentBuilder();
+		MeasurementEnvironmentBuilder builder = new ScenarioDefinitionBuilder().getEnvironmentBuilder();
 
 		builder.addNamespaces("first/second/third");
+		assertNull(builder.getNamespace("root/first/second/third"));
+		
+		builder.addNamespaces("root/first/second/third");
 
 		assertNull(builder.getNamespace("root/first/second/thi"));
 		assertNull(builder.getNamespace("rt/first/second/third"));
@@ -126,7 +129,7 @@ public class DefinitionBuilderTest {
 
 	@Test
 	public void addParameterDefinition() {
-		MeasurementEnvironmentBuilder builder = new MeasurementEnvironmentBuilder();
+		MeasurementEnvironmentBuilder builder = new ScenarioDefinitionBuilder().getEnvironmentBuilder();
 
 		ParameterNamespace newNamespace = builder.addNamespace(TESTNAME);
 
@@ -146,7 +149,7 @@ public class DefinitionBuilderTest {
 
 	@Test
 	public void removingParameter() {
-		MeasurementEnvironmentBuilder builder = new MeasurementEnvironmentBuilder();
+		MeasurementEnvironmentBuilder builder = new ScenarioDefinitionBuilder().getEnvironmentBuilder();
 
 		ParameterNamespace newNamespace = builder.addNamespace(TESTNAME);
 
@@ -223,7 +226,7 @@ public class DefinitionBuilderTest {
 		assertNull(builder.addExperimentSeries(TESTNAME, terminition));
 
 		assertEquals(builder.getBuiltSpecification().getExperimentSeriesDefinitions().size(), 1);
-		
+
 		assertFalse(builder.removeExperimentSeries("no exp"));
 
 		assertNull(builder.getExperimentSeries("abcd"));

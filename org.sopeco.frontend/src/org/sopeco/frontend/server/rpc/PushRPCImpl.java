@@ -3,7 +3,8 @@ package org.sopeco.frontend.server.rpc;
 import java.util.HashMap;
 
 import org.sopeco.frontend.client.rpc.PushRPC;
-import org.sopeco.frontend.server.user.UserInfo;
+import org.sopeco.frontend.server.user.User;
+import org.sopeco.frontend.server.user.UserManager;
 import org.sopeco.frontend.shared.definitions.PushPackage;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -58,13 +59,12 @@ public class PushRPCImpl extends RemoteServiceServlet implements PushRPC {
 	 * 
 	 * @param pushPackage
 	 */
-	public static void pushToCODB(String databaseName, PushPackage pushPackage) {
-		for (String sId : UserInfo.getSessionsOnDatabase(databaseName)) {
-			// for (String sId : waitingMap.keySet()) {
+	public static void pushToCODB(String databaseId, PushPackage pushPackage) {
+		for (User u : UserManager.getAllUserOnDatabase(databaseId)) {
 
-			synchronized (waitingMap.get(sId)) {
-				packageMap.put(sId, pushPackage);
-				waitingMap.get(sId).notify();
+			synchronized (waitingMap.get(u.getSessionId())) {
+				packageMap.put(u.getSessionId(), pushPackage);
+				waitingMap.get(u.getSessionId()).notify();
 			}
 		}
 	}

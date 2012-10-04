@@ -25,13 +25,15 @@ public class MeasurementEnvironmentBuilder {
 	 */
 	private static final String DELIMITER = "/";
 	private static final Logger LOGGER = LoggerFactory.getLogger(MeasurementEnvironmentBuilder.class);
-	private MeasurementEnvironmentDefinition definiton;
+
+	private ScenarioDefinitionBuilder scenarioBuilder;
 	private ParameterNamespace lastCreatedNamespace = null;
 
-	public MeasurementEnvironmentBuilder() {
+	public MeasurementEnvironmentBuilder(ScenarioDefinitionBuilder sBuilder) {
 		LOGGER.debug("Creating a MeasurementEnvironmentBuilder");
 
-		definiton = new MeasurementEnvironmentDefinition();
+		scenarioBuilder = sBuilder;
+		scenarioBuilder.setMEDefinition(new MeasurementEnvironmentDefinition());
 
 		setRootNamespace();
 	}
@@ -66,7 +68,7 @@ public class MeasurementEnvironmentBuilder {
 	 * @return The new namespace
 	 */
 	public ParameterNamespace addNamespace(String name) {
-		return addNamespace(name, definiton.getRoot());
+		return addNamespace(name, scenarioBuilder.getMEDefinition().getRoot());
 	}
 
 	/**
@@ -89,9 +91,15 @@ public class MeasurementEnvironmentBuilder {
 			return null;
 		}
 
-		ParameterNamespace currentNamespace = definiton.getRoot();
+		if (nodes.length == 1 || !nodes[0].equals(scenarioBuilder.getMEDefinition().getRoot().getName())) {
+			LOGGER.warn("cant add an other root");
 
-		for (int i = 0; i < nodes.length - 1; i++) {
+			return scenarioBuilder.getMEDefinition().getRoot();
+		}
+
+		ParameterNamespace currentNamespace = scenarioBuilder.getMEDefinition().getRoot();
+
+		for (int i = 1; i < nodes.length - 1; i++) {
 			boolean found = false;
 			for (ParameterNamespace ns : currentNamespace.getChildren()) {
 				if (ns.getName().equals(nodes[i])) {
@@ -168,7 +176,7 @@ public class MeasurementEnvironmentBuilder {
 
 		ParameterNamespace rootNamespace = EntityFactory.createNamespace(ROOTNAME);
 
-		definiton.setRoot(rootNamespace);
+		scenarioBuilder.getMEDefinition().setRoot(rootNamespace);
 	}
 
 	/**
@@ -177,7 +185,7 @@ public class MeasurementEnvironmentBuilder {
 	 * @return root namespace.
 	 */
 	public ParameterNamespace getRootNamespace() {
-		return definiton.getRoot();
+		return scenarioBuilder.getMEDefinition().getRoot();
 	}
 
 	/**
@@ -205,24 +213,52 @@ public class MeasurementEnvironmentBuilder {
 			LOGGER.warn("first namespace must be the root namespace");
 			return null;
 		} else if (nodes.length == 1) {
-			return definiton.getRoot();
+			return scenarioBuilder.getMEDefinition().getRoot();
 		}
 
-		ParameterNamespace currentNamespace = definiton.getRoot();
+		ParameterNamespace currentNamespace = scenarioBuilder.getMEDefinition().getRoot();
 
 		for (int i = 1; i < nodes.length; i++) {
+			if (currentNamespace.getChildren().size() <= 0) {
+				return null;
+			}
+
+			boolean found = false;
 			for (ParameterNamespace ns : currentNamespace.getChildren()) {
 				if (ns.getName().equals(nodes[i])) {
 					currentNamespace = ns;
+					found = true;
 					break;
 				}
-				return null;
+
 			}
+
+			if (found) {
+				continue;
+			}
+
+			return null;
 		}
 
 		LOGGER.debug("found namespace '" + currentNamespace.getFullName() + "'");
 
 		return currentNamespace;
+	}
+
+	/**
+	 * Search and return the parameter with the given name.
+	 * 
+	 * @param name
+	 * @param namespace
+	 * @return
+	 */
+	public ParameterDefinition getParameter(String name, ParameterNamespace namespace) {
+		for (ParameterDefinition parameter : namespace.getParameters()) {
+			if (parameter.getName().equals(name)) {
+				return parameter;
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -301,7 +337,7 @@ public class MeasurementEnvironmentBuilder {
 	 * @return The build measurement environment definition
 	 */
 	public MeasurementEnvironmentDefinition getMEDefinition() {
-		return definiton;
+		return scenarioBuilder.getMEDefinition();
 	}
 
 	/**
@@ -310,7 +346,17 @@ public class MeasurementEnvironmentBuilder {
 	 * @return
 	 */
 	public static MeasurementEnvironmentDefinition createBlankEnvironmentDefinition() {
-		MeasurementEnvironmentBuilder builder = new MeasurementEnvironmentBuilder();
+		ScenarioDefinitionBuilder builder = new ScenarioDefinitionBuilder();
 		return builder.getMEDefinition();
+	}
+
+	/**
+	 * Renames the given namespace to the given name.
+	 * 
+	 * @param namespace
+	 * @param newName
+	 */
+	public void renameNamespace(ParameterNamespace namespace, String newName) {
+		namespace.setName(newName);
 	}
 }

@@ -1,19 +1,15 @@
-package org.sopeco.frontend.server.rpc;
+package org.sopeco.frontend.server.rpc.scenario;
 
 import java.util.List;
-
-import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sopeco.frontend.client.rpc.ScenarioManagerRPC;
-import org.sopeco.frontend.server.db.PersistenceProvider;
 import org.sopeco.frontend.server.model.ScenarioDefinitionBuilder;
+import org.sopeco.frontend.server.rpc.SuperRemoteServlet;
 import org.sopeco.persistence.IPersistenceProvider;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 import org.sopeco.persistence.exceptions.DataNotFoundException;
-
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 /**
  * Implementation of the ScenarioManagerRPC. The Frontend is getting all
@@ -22,15 +18,15 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
  * @author Marius Oehler
  * 
  */
-public class ScenarioManagerRPCImpl extends RemoteServiceServlet implements ScenarioManagerRPC {
+public class ScenarioManagerRPCImpl extends SuperRemoteServlet implements ScenarioManagerRPC {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ScenarioManagerRPCImpl.class);
 	private static final long serialVersionUID = 1L;
 
 	@Override
 	public String[] getScenarioNames() {
-		HttpSession session = getThreadLocalRequest().getSession();
-		IPersistenceProvider dbCon = PersistenceProvider.getPersistenceProvider(session);
+
+		IPersistenceProvider dbCon = getUser().getCurrentPersistenceProvider();
 
 		if (dbCon == null) {
 			LOGGER.warn("No database connection found.");
@@ -60,8 +56,7 @@ public class ScenarioManagerRPCImpl extends RemoteServiceServlet implements Scen
 
 		ScenarioDefinition emptyScenario = ScenarioDefinitionBuilder.buildEmptyScenario(name);
 
-		HttpSession session = getThreadLocalRequest().getSession();
-		IPersistenceProvider dbCon = PersistenceProvider.getPersistenceProvider(session);
+		IPersistenceProvider dbCon = getUser().getCurrentPersistenceProvider();
 
 		if (dbCon == null) {
 			LOGGER.warn("No database connection found.");
@@ -79,8 +74,7 @@ public class ScenarioManagerRPCImpl extends RemoteServiceServlet implements Scen
 			return false;
 		}
 
-		HttpSession session = getThreadLocalRequest().getSession();
-		IPersistenceProvider dbCon = PersistenceProvider.getPersistenceProvider(session);
+		IPersistenceProvider dbCon = getUser().getCurrentPersistenceProvider();
 
 		try {
 			ScenarioDefinition definition = dbCon.loadScenarioDefinition(name);
@@ -94,4 +88,19 @@ public class ScenarioManagerRPCImpl extends RemoteServiceServlet implements Scen
 		}
 	}
 
+	@Override
+	public boolean switchScenario(String name) {
+		try {
+			ScenarioDefinition definition = getUser().getCurrentPersistenceProvider().loadScenarioDefinition(name);
+
+			ScenarioDefinitionBuilder builder = ScenarioDefinitionBuilder.load(definition);
+
+			getUser().setCurrentScenarioDefinitionBuilder(builder);
+
+			return true;
+		} catch (DataNotFoundException e) {
+			LOGGER.warn("Scenario '{}' not found.", name);
+			return false;
+		}
+	}
 }

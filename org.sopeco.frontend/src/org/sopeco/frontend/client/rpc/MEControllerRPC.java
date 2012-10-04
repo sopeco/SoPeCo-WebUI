@@ -3,6 +3,7 @@ package org.sopeco.frontend.client.rpc;
 import java.util.List;
 
 import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
+import org.sopeco.persistence.entities.definition.ParameterRole;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
@@ -56,7 +57,31 @@ public interface MEControllerRPC extends RemoteService {
 	 */
 	String[] getValidUrlPattern();
 
+	/**
+	 * 
+	 * @param controllerUrl
+	 * @return
+	 */
 	MeasurementEnvironmentDefinition getMEDefinitionFromMEC(String controllerUrl);
-	
+
+	/**
+	 * 
+	 * @return
+	 */
 	MeasurementEnvironmentDefinition getBlankMEDefinition();
+
+	MeasurementEnvironmentDefinition getCurrentMEDefinition();
+
+	boolean addNamespace(String path);
+
+	boolean removeNamespace(String path);
+
+	boolean renameNamespace(String namespacePath, String newName);
+	
+	boolean addParameter(String path, String name, String type, ParameterRole role);
+	
+	boolean removeParameter(String path, String name);
+	
+	boolean updateParameter(String path, String oldName, String newName, String type, ParameterRole role);
+
 }

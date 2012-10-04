@@ -34,7 +34,7 @@ public final class UIPersistenceProviderFactory {
 	 * 
 	 * @return
 	 */
-	public static UIPersistenceProvider createUIPersistenceProvider(HttpSession session, String host, String port,
+	public static UIPersistenceProvider createUIPersistenceProvider( String host, String port,
 			String dbName, String password) {
 
 		databaseHost = host;
@@ -50,9 +50,9 @@ public final class UIPersistenceProviderFactory {
 
 			EntityManagerFactory factory = Persistence.createEntityManagerFactory("sopeco-frontend", configOverrides);
 
-			PersistenceProvider.setUIPersistenceProvider(new UIPersistenceProvider(factory), session);
+//			PersistenceProvider.setUIPersistenceProvider(new UIPersistenceProvider(factory), session);
 
-			return PersistenceProvider.getUIPersistenceProvider(session);
+			return new UIPersistenceProvider(factory);
 		} catch (Exception e) {
 			throw new IllegalArgumentException("Could not create peristence provider!", e);
 		}

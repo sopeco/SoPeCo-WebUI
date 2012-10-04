@@ -21,6 +21,22 @@
 	z-index: 999;
 }
 
+#loadingIndicator {
+	position: fixed;
+	bottom: 6px;
+	right: 6px;
+	z-index: 999;
+	display: none;
+}
+
+#refreshIndicator {
+	position: fixed;
+	bottom: 6px;
+	right: 6px;
+	z-index: 999;
+	display: none;
+}
+
 h3 {
 	border-bottom: 1px solid #CCC;
 	padding: 0.1em;

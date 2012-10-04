@@ -16,7 +16,12 @@ public class NoSpecialCharsHandler implements KeyPressHandler, ChangeHandler {
 
 	@Override
 	public void onKeyPress(KeyPressEvent event) {
-		if (!Character.isLetterOrDigit(event.getCharCode()) && event.getCharCode() != '_') {
+		/*
+		 * KeyCodes: 46: ENTF, 37-40: LEFT UP DOWN RIGHT, 8: BACKSPACE
+		 */
+		if (!Character.isLetterOrDigit(event.getCharCode()) && event.getCharCode() != '_'
+				&& event.getNativeEvent().getKeyCode() != 8 && event.getNativeEvent().getKeyCode() != 46
+				&& (event.getNativeEvent().getKeyCode() < 37 || event.getNativeEvent().getKeyCode() > 40)) {
 			((TextBox) event.getSource()).cancelKey();
 		}
 	}

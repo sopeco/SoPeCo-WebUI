@@ -14,6 +14,7 @@ import org.sopeco.frontend.client.rpc.RPC;
 import org.sopeco.frontend.shared.rsc.R;
 import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -56,6 +57,7 @@ public class EnvironmentPanel extends CenterPanel {
 	private ListBox mecDropDown;
 	private TextBox mecTextBox;
 	private Button checkStatusBtn, getMEButton;
+	private boolean checkAndGet = false;
 
 	private String[] validUrlPatterns;
 
@@ -75,6 +77,10 @@ public class EnvironmentPanel extends CenterPanel {
 		updateMECList(true);
 
 		getValidUrlPattern();
+	}
+
+	public EnvironmentDefinitonTreePanel getEnvironmentDefinitonTreePanel() {
+		return edTreePanel;
 	}
 
 	/**
@@ -356,6 +362,10 @@ public class EnvironmentPanel extends CenterPanel {
 					text = R.get("online");
 					textClass = "positive";
 					setGetMEButtonStatus(true);
+
+					if (checkAndGet) {
+						getMEfromController();
+					}
 				} else if (result == MEControllerRPC.STATUS_OFFLINE) {
 					text = R.get("offline");
 					textClass = "negative";
@@ -379,6 +389,9 @@ public class EnvironmentPanel extends CenterPanel {
 				}
 
 				checkStatusBtn.setEnabled(true);
+
+				checkAndGet = false;
+
 			}
 
 			@Override
@@ -386,6 +399,8 @@ public class EnvironmentPanel extends CenterPanel {
 				checkStatusBtn.setEnabled(true);
 				setGetMEButtonStatus(false);
 				Message.error(caught.getMessage());
+
+				checkAndGet = false;
 			}
 		});
 	}
@@ -463,26 +478,31 @@ public class EnvironmentPanel extends CenterPanel {
 		return new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				Loader.showLoader();
-
-				RPC.getMEControllerRPC().getMEDefinitionFromMEC(getControllerUrl(),
-						new AsyncCallback<MeasurementEnvironmentDefinition>() {
-							@Override
-							public void onSuccess(MeasurementEnvironmentDefinition result) {
-								Loader.hideLoader();
-								slideMEPanelUp();
-
-								edTreePanel.setEnvironmentDefiniton(result);
-							}
-
-							@Override
-							public void onFailure(Throwable caught) {
-								Loader.hideLoader();
-								Message.error(caught.getMessage());
-							}
-						});
+				checkAndGet = true;
+				runControllerCheck();
 			}
 		};
+	}
+
+	private void getMEfromController() {
+		Loader.showLoader();
+
+		RPC.getMEControllerRPC().getMEDefinitionFromMEC(getControllerUrl(),
+				new AsyncCallback<MeasurementEnvironmentDefinition>() {
+					@Override
+					public void onSuccess(MeasurementEnvironmentDefinition result) {
+						Loader.hideLoader();
+						slideMEPanelUp();
+
+						edTreePanel.setEnvironmentDefiniton(result);
+					}
+
+					@Override
+					public void onFailure(Throwable caught) {
+						Loader.hideLoader();
+						Message.error(caught.getMessage());
+					}
+				});
 	}
 
 	private void resetStatus() {

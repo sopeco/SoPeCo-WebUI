@@ -1,6 +1,9 @@
 package org.sopeco.frontend.client.widget;
 
 import org.sopeco.frontend.client.helper.handler.NoSpecialCharsHandler;
+import org.sopeco.frontend.client.layout.popups.Loader;
+import org.sopeco.frontend.client.layout.popups.Message;
+import org.sopeco.frontend.client.rpc.RPC;
 import org.sopeco.frontend.shared.rsc.R;
 import org.sopeco.persistence.dataset.util.ParameterType;
 import org.sopeco.persistence.entities.definition.ParameterRole;
@@ -15,6 +18,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.TextBox;
@@ -27,7 +31,7 @@ import com.google.gwt.user.client.ui.TextBox;
 public class EnvironmentTreeItem extends FrontendTreeItem {
 
 	protected FlowPanel actionPanel;
-	private Image removeNamespace, addNamespace, addParameter;
+	protected Image removeNamespace, addNamespace, addParameter;
 	protected TextBox textboxEdit;
 	private boolean preventBlur = false;
 
@@ -54,7 +58,7 @@ public class EnvironmentTreeItem extends FrontendTreeItem {
 
 		removeNamespace.addClickHandler(getClickHandlerRemove());
 		addNamespace.addClickHandler(getClickHandlerAdd());
-		addParameter.addClickHandler(getClickHandlerAddparameter());
+		addParameter.addClickHandler(getClickHandlerAddParameter());
 
 		removeNamespace.setTitle(R.get("removeNamespace"));
 		addNamespace.setTitle(R.get("addNamespace"));
@@ -120,16 +124,44 @@ public class EnvironmentTreeItem extends FrontendTreeItem {
 		return new BlurHandler() {
 			@Override
 			public void onBlur(BlurEvent event) {
-				if (!preventBlur && !textboxEdit.getText().isEmpty()) {
-					currentText = textboxEdit.getText();
-					htmlText.setHTML(currentText);
-				} else {
-					preventBlur = false;
-				}
-				textboxEdit.getElement().getStyle().setDisplay(Display.NONE);
-				htmlText.getElement().getStyle().setDisplay(Display.BLOCK);
+
+				rename();
+
 			}
 		};
+	}
+
+	protected void applyChanges() {
+		if (!preventBlur && !textboxEdit.getText().isEmpty()) {
+			currentText = textboxEdit.getText();
+			htmlText.setHTML(currentText);
+		} else {
+			preventBlur = false;
+		}
+
+		textboxEdit.getElement().getStyle().setDisplay(Display.NONE);
+		htmlText.getElement().getStyle().setDisplay(Display.BLOCK);
+	}
+
+	protected void rename() {
+		String oldPath = getPath();
+
+		applyChanges();
+
+		Loader.showIcon();
+		RPC.getMEControllerRPC().renameNamespace(oldPath, currentText, new AsyncCallback<Boolean>() {
+			@Override
+			public void onSuccess(Boolean result) {
+				Loader.hideIcon();
+			}
+
+			@Override
+			public void onFailure(Throwable caught) {
+				Message.error(caught.getMessage());
+
+				Loader.hideIcon();
+			}
+		});
 	}
 
 	private KeyDownHandler getTextboxKeyDownHandler() {
@@ -150,9 +182,31 @@ public class EnvironmentTreeItem extends FrontendTreeItem {
 		return new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				remove();
+				removeItem();
 			}
 		};
+	}
+
+	protected void removeItem() {
+		String remNsPath = getPath();
+		GWT.log("new ns: " + remNsPath);
+
+		Loader.showIcon();
+		RPC.getMEControllerRPC().removeNamespace(remNsPath, new AsyncCallback<Boolean>() {
+			@Override
+			public void onSuccess(Boolean result) {
+				remove();
+
+				Loader.hideIcon();
+			}
+
+			@Override
+			public void onFailure(Throwable caught) {
+				Message.error(caught.getMessage());
+
+				Loader.hideIcon();
+			}
+		});
 	}
 
 	private ClickHandler getClickHandlerAdd() {
@@ -167,7 +221,7 @@ public class EnvironmentTreeItem extends FrontendTreeItem {
 					loop = false;
 					String tempName = name;
 					if (counter++ > 0) {
-						tempName += " (" + (counter) + ")";
+						tempName += "_(" + (counter) + ")";
 					}
 
 					for (FrontendTreeItem fti : children) {
@@ -184,11 +238,31 @@ public class EnvironmentTreeItem extends FrontendTreeItem {
 
 				EnvironmentTreeItem newItem = new EnvironmentTreeItem(name);
 				addItem(newItem);
+
+				String newNsPath = getPath() + "/" + name;
+				GWT.log("new ns: " + newNsPath);
+
+				Loader.showIcon();
+				RPC.getMEControllerRPC().addNamespace(newNsPath, new AsyncCallback<Boolean>() {
+					@Override
+					public void onSuccess(Boolean result) {
+						// TODO
+
+						Loader.hideIcon();
+					}
+
+					@Override
+					public void onFailure(Throwable caught) {
+						Message.error(caught.getMessage());
+
+						Loader.hideIcon();
+					}
+				});
 			}
 		};
 	}
 
-	private ClickHandler getClickHandlerAddparameter() {
+	private ClickHandler getClickHandlerAddParameter() {
 		return new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -200,7 +274,7 @@ public class EnvironmentTreeItem extends FrontendTreeItem {
 					loop = false;
 					String tempName = name;
 					if (counter++ > 0) {
-						tempName += " (" + (counter) + ")";
+						tempName += "_(" + (counter) + ")";
 					}
 
 					for (FrontendTreeItem fti : children) {
@@ -215,9 +289,29 @@ public class EnvironmentTreeItem extends FrontendTreeItem {
 					}
 				}
 
-				EParameterTreeItem newItem = new EParameterTreeItem(name, DEFAULT_PARAMETER_TYPE.name(),
-						DEFAULT_PARAMETER_ROLE);
-				addItem(newItem);
+				final String finalName = name;
+
+				Loader.showIcon();
+				RPC.getMEControllerRPC().addParameter(getPath(), finalName, DEFAULT_PARAMETER_TYPE.name(),
+						DEFAULT_PARAMETER_ROLE, new AsyncCallback<Boolean>() {
+							@Override
+							public void onSuccess(Boolean result) {
+								EParameterTreeItem newItem = new EParameterTreeItem(finalName, DEFAULT_PARAMETER_TYPE
+										.name(), DEFAULT_PARAMETER_ROLE);
+
+								addItem(newItem);
+
+								Loader.hideIcon();
+							}
+
+							@Override
+							public void onFailure(Throwable caught) {
+								Message.error(caught.getMessage());
+
+								Loader.hideIcon();
+							}
+						});
+
 			}
 		};
 	}

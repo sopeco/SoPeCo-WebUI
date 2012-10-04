@@ -5,8 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.sopeco.config.Configuration;
 import org.sopeco.config.exception.ConfigurationException;
 import org.sopeco.frontend.client.rpc.StartupService;
-import org.sopeco.frontend.server.db.UIPersistenceProvider;
-import org.sopeco.frontend.server.db.UIPersistenceProviderFactory;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 

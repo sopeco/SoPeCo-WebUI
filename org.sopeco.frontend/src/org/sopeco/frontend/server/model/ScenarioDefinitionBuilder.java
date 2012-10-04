@@ -1,5 +1,6 @@
 package org.sopeco.frontend.server.model;
 
+import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 
 /**
@@ -12,10 +13,12 @@ public class ScenarioDefinitionBuilder {
 
 	private ScenarioDefinition currentBuild;
 	private MeasurementEnvironmentBuilder meBuilder;
+	private MeasurementSpecificationBuilder msBuilder;
 
 	public ScenarioDefinitionBuilder() {
 		currentBuild = new ScenarioDefinition();
-		meBuilder = new MeasurementEnvironmentBuilder();
+		meBuilder = new MeasurementEnvironmentBuilder(this);
+		msBuilder = new MeasurementSpecificationBuilder();
 	}
 
 	/**
@@ -37,12 +40,31 @@ public class ScenarioDefinitionBuilder {
 		return meBuilder;
 	}
 
+	public void setMEDefinition(MeasurementEnvironmentDefinition meDefinition) {
+		currentBuild.setMeasurementEnvironmentDefinition(meDefinition);
+	}
+
+	public MeasurementEnvironmentDefinition getMEDefinition() {
+		return currentBuild.getMeasurementEnvironmentDefinition();
+	}
+
+
+	/**
+	 * Returns the builder for the measurement specification.
+	 * 
+	 * @return the measurement specification builder
+	 */
+	public MeasurementSpecificationBuilder getSpecificationBuilder() {
+		return msBuilder;
+	}
+
 	/**
 	 * Returns the created scenario.
 	 * 
 	 * @return Created scenario
 	 */
 	public ScenarioDefinition getBuiltScenario() {
+
 		return currentBuild;
 	}
 
@@ -55,7 +77,17 @@ public class ScenarioDefinitionBuilder {
 	 */
 	public static ScenarioDefinition buildEmptyScenario(String name) {
 		ScenarioDefinitionBuilder builder = new ScenarioDefinitionBuilder();
+		
 		builder.setScenarioName(name);
+		
 		return builder.getBuiltScenario();
+	}
+
+	public static ScenarioDefinitionBuilder load(ScenarioDefinition definition) {
+		ScenarioDefinitionBuilder builder = new ScenarioDefinitionBuilder();
+
+		builder.currentBuild = definition;
+
+		return builder;
 	}
 }

@@ -9,6 +9,7 @@ import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefiniti
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.entities.definition.ParameterNamespace;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 
@@ -33,21 +34,27 @@ public class EnvironmentDefinitonTreePanel extends FlowPanel {
 	}
 
 	private void updateTree() {
-		if (frontendTree != null) {
-			remove(frontendTree);
-		}
-		generateTree();
+		clear();
+//		if (frontendTree != null) {
+//			remove(frontendTree);
+//		}
+
+		generateTree(false);
 		add(frontendTree);
 	}
 
-	private void generateTree() {
+	public void generateTree(boolean forceUpdate) {
 		frontendTree = new FrontendTree();
 
-		if (currentEnvironmentDefinition == null) {
-			RPC.getMEControllerRPC().getBlankMEDefinition(new AsyncCallback<MeasurementEnvironmentDefinition>() {
+		if (currentEnvironmentDefinition == null || forceUpdate) {
+			RPC.getMEControllerRPC().getCurrentMEDefinition(new AsyncCallback<MeasurementEnvironmentDefinition>() {
 				@Override
 				public void onSuccess(MeasurementEnvironmentDefinition result) {
-					setEnvironmentDefiniton(result);
+					if (result == null) {
+						Message.warning("null");
+					} else {
+						setEnvironmentDefiniton(result);
+					}
 				}
 
 				@Override
@@ -71,9 +78,9 @@ public class EnvironmentDefinitonTreePanel extends FlowPanel {
 		for (ParameterNamespace pns : namespace.getChildren()) {
 			EnvironmentTreeItem treeItem = new EnvironmentTreeItem(pns.getName());
 
-			for (ParameterDefinition parameter : pns.getAllParameters()) {
-				EParameterTreeItem pItem = new EParameterTreeItem(parameter.getName(), parameter.getType(),
-						parameter.getRole());
+			for (ParameterDefinition parameter : pns.getParameters()) {
+				EParameterTreeItem pItem = new EParameterTreeItem(parameter.getName(), parameter.getType()
+						.toUpperCase(), parameter.getRole());
 
 				treeItem.addItem(pItem);
 			}

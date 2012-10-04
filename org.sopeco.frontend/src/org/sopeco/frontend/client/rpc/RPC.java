@@ -14,6 +14,7 @@ public final class RPC {
 
 	private static ScenarioManagerRPCAsync scenarioManager = null;
 	private static MEControllerRPCAsync meController = null;
+	private static SystemDetailsRPCAsync systemDetails = null;
 
 	/**
 	 * Returns a instance of the ScenarioManagerRPCAsync.
@@ -39,5 +40,13 @@ public final class RPC {
 		}
 
 		return meController;
+	}
+
+	public static SystemDetailsRPCAsync getSystemDetailsRPC() {
+		if (systemDetails == null) {
+			systemDetails = GWT.create(SystemDetailsRPC.class);
+		}
+
+		return systemDetails;
 	}
 }

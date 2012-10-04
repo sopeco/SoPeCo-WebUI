@@ -14,7 +14,7 @@
 
 	<servlet>
 		<servlet-name>databaseManagerRPC</servlet-name>
-		<servlet-class>org.sopeco.frontend.server.rpc.DatabaseManagerRPCImpl
+		<servlet-class>org.sopeco.frontend.server.rpc.database.DatabaseManagerRPCImpl
 		</servlet-class>
 	</servlet>
 	<servlet-mapping>
@@ -54,7 +54,7 @@
 	
 	<servlet>
 		<servlet-name>scenarioManagerRPC</servlet-name>
-		<servlet-class>org.sopeco.frontend.server.rpc.ScenarioManagerRPCImpl
+		<servlet-class>org.sopeco.frontend.server.rpc.scenario.ScenarioManagerRPCImpl
 		</servlet-class>
 	</servlet>
 	<servlet-mapping>
@@ -64,7 +64,7 @@
 	
 	<servlet>
 		<servlet-name>meControllerRPC</servlet-name>
-		<servlet-class>org.sopeco.frontend.server.rpc.MEControllerRPCImpl
+		<servlet-class>org.sopeco.frontend.server.rpc.scenario.MEControllerRPCImpl
 		</servlet-class>
 	</servlet>
 	<servlet-mapping>

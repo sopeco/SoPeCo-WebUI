@@ -14,7 +14,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 public interface PushRPC extends RemoteService {
 
 	public static enum Type {
-		ERROR, IDLE, MESSAGE, NEW_MEC_AVAILABLE
+		ERROR, IDLE, MESSAGE, NEW_MEC_AVAILABLE, NEW_ENV_DEFINITION
 	}
 
 	PushPackage push();

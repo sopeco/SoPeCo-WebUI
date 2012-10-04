@@ -3,7 +3,7 @@ package org.sopeco.frontend;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
-import org.sopeco.frontend.server.rpc.DatabaseManagerRPCImpl;
+import org.sopeco.frontend.server.rpc.database.DatabaseManagerRPCImpl;
 import org.sopeco.persistence.metadata.entities.DatabaseInstance;
 
 /**

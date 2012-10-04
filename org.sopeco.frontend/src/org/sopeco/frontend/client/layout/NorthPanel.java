@@ -90,7 +90,7 @@ public class NorthPanel extends FlowPanel {
 		listboxScenarios.addChangeHandler(new ChangeHandler() {
 			@Override
 			public void onChange(ChangeEvent event) {
-				parentPanel.createNewCenterPanels();
+				switchScenario();
 			}
 		});
 
@@ -204,7 +204,7 @@ public class NorthPanel extends FlowPanel {
 
 		}
 
-		parentPanel.createNewCenterPanels();
+		switchScenario();
 	}
 
 	/**
@@ -218,5 +218,32 @@ public class NorthPanel extends FlowPanel {
 		}
 
 		return listboxScenarios.getItemText(listboxScenarios.getSelectedIndex());
+	}
+
+	/**
+	 * 
+	 */
+	private void switchScenario() {
+		String name = getSelectedScenario();
+
+		if (name.isEmpty()) {
+			return;
+		}
+
+		Loader.showLoader();
+		RPC.getScenarioManager().switchScenario(name, new AsyncCallback<Boolean>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				Loader.hideLoader();
+				Message.error(caught.getMessage());
+			}
+
+			@Override
+			public void onSuccess(Boolean result) {
+				parentPanel.createNewCenterPanels();
+
+				Loader.hideLoader();
+			}
+		});
 	}
 }

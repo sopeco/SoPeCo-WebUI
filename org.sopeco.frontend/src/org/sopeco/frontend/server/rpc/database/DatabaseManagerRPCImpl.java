@@ -1,23 +1,21 @@
-package org.sopeco.frontend.server.rpc;
+package org.sopeco.frontend.server.rpc.database;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sopeco.frontend.client.rpc.DatabaseManagerRPC;
 import org.sopeco.frontend.server.db.FlexiblePersistenceProviderFactory;
-import org.sopeco.frontend.server.db.PersistenceProvider;
+import org.sopeco.frontend.server.db.UIPersistenceProvider;
 import org.sopeco.frontend.server.db.UIPersistenceProviderFactory;
-import org.sopeco.frontend.server.user.UserInfo;
+import org.sopeco.frontend.server.rpc.SuperRemoteServlet;
+import org.sopeco.persistence.IMetaDataPersistenceProvider;
 import org.sopeco.persistence.IPersistenceProvider;
+import org.sopeco.persistence.PersistenceProviderFactory;
 import org.sopeco.persistence.exceptions.DataNotFoundException;
 import org.sopeco.persistence.exceptions.WrongCredentialsException;
 import org.sopeco.persistence.metadata.entities.DatabaseInstance;
-
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 /**
  * RPC Class for the access on the databases.
@@ -25,29 +23,22 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
  * @author Marius Oehler
  * 
  */
-public class DatabaseManagerRPCImpl extends RemoteServiceServlet implements DatabaseManagerRPC {
+public class DatabaseManagerRPCImpl extends SuperRemoteServlet implements DatabaseManagerRPC {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseManagerRPCImpl.class);
 	private static final long serialVersionUID = 1L;
 
-	// /**
-	// * Stores the persistence provider in a session attribute.
-	// *
-	// * @param session
-	// * current session
-	// * @return IMetaDataPersistenceProvider
-	// */
-	// private static IMetaDataPersistenceProvider getMetaProvider(HttpSession
-	// session) {
-	// if (session.getAttribute("metaPersistenceProvider") == null) {
-	// session.setAttribute("metaPersistenceProvider",
-	// PersistenceProviderFactory.getInstance()
-	// .getMetaDataPersistenceProvider(session.getId()));
-	// }
-	//
-	// return (IMetaDataPersistenceProvider)
-	// session.getAttribute("metaPersistenceProvider");
-	// }
+	private static final String META_SESSION = "META-SESSION";
+	private static IMetaDataPersistenceProvider metaPersistenceProvider;
+
+	private static IMetaDataPersistenceProvider getMetaProvider() {
+		if (metaPersistenceProvider == null) {
+			metaPersistenceProvider = PersistenceProviderFactory.getInstance().getMetaDataPersistenceProvider(
+					META_SESSION);
+		}
+
+		return metaPersistenceProvider;
+	}
 
 	/**
 	 * Returns the databases which are stored in the meta database.
@@ -58,7 +49,7 @@ public class DatabaseManagerRPCImpl extends RemoteServiceServlet implements Data
 		LOGGER.debug("loading databases");
 
 		try {
-			return PersistenceProvider.getMetaProvider(getThreadLocalRequest().getSession()).loadAllDatabaseInstances();
+			return getMetaProvider().loadAllDatabaseInstances();
 		} catch (DataNotFoundException e) {
 			return new ArrayList<DatabaseInstance>();
 		} catch (Exception e) {
@@ -80,7 +71,7 @@ public class DatabaseManagerRPCImpl extends RemoteServiceServlet implements Data
 			DatabaseInstance dbInstance = getRealInstance(dbDefinition);
 
 			if (dbInstance != null) {
-				PersistenceProvider.getMetaProvider(getThreadLocalRequest().getSession()).remove(dbInstance);
+				getMetaProvider().remove(dbInstance);
 				return true;
 			}
 
@@ -110,7 +101,7 @@ public class DatabaseManagerRPCImpl extends RemoteServiceServlet implements Data
 					dbInstance.getHost(), dbInstance.getPort(), dbInstance.getDbName());
 		}
 
-		PersistenceProvider.getMetaProvider(getThreadLocalRequest().getSession()).store(dbInstance);
+		getMetaProvider().store(dbInstance);
 
 		return true;
 	}
@@ -125,8 +116,7 @@ public class DatabaseManagerRPCImpl extends RemoteServiceServlet implements Data
 	 */
 	private DatabaseInstance getRealInstance(DatabaseInstance instance) {
 		try {
-			List<DatabaseInstance> instances = PersistenceProvider
-					.getMetaProvider(getThreadLocalRequest().getSession()).loadAllDatabaseInstances();
+			List<DatabaseInstance> instances = getMetaProvider().loadAllDatabaseInstances();
 
 			for (DatabaseInstance dbInstance : instances) {
 				if (instanceEqual(instance, dbInstance)) {
@@ -207,15 +197,12 @@ public class DatabaseManagerRPCImpl extends RemoteServiceServlet implements Data
 			return false;
 		}
 
-		HttpSession session = getThreadLocalRequest().getSession();
+		UIPersistenceProvider uiProvider = UIPersistenceProviderFactory.createUIPersistenceProvider(
+				dbInstance.getHost(), dbInstance.getPort(), dbInstance.getDbName(), passwd);
 
-		UserInfo.setSessionToDb(session.getId(), dbInstance.getId());
-
-		// create UIPProvider. It will be stored in the given session!
-		UIPersistenceProviderFactory.createUIPersistenceProvider(session, dbInstance.getHost(), dbInstance.getPort(),
-				dbInstance.getDbName(), passwd);
-
-		PersistenceProvider.setPersistenceProvider(dbConnection, getThreadLocalRequest().getSession());
+		getUser().setCurrentDatabaseId(dbInstance.getId());
+		getUser().setCurrentPersistenceProvider(dbConnection);
+		getUser().setUiPesistenceProvider(uiProvider);
 
 		return true;
 	}

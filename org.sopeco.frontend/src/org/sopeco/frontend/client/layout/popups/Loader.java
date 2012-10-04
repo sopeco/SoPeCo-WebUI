@@ -1,5 +1,7 @@
 package org.sopeco.frontend.client.layout.popups;
 
+import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.Image;
@@ -14,7 +16,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  */
 public final class Loader extends DialogBox {
 
-	private static int count = 0;
+	private static int count = 0, counterIcon = 0;
 	private static Loader loader;
 
 	private Loader(String text) {
@@ -64,4 +66,21 @@ public final class Loader extends DialogBox {
 		}
 	}
 
+	public static void showIcon() {
+		counterIcon++;
+
+		DOM.getElementById("loadingIndicator").getStyle().setDisplay(Display.BLOCK);
+	}
+
+	public static void hideIcon() {
+		if (counterIcon <= 0) {
+			return;
+		}
+
+		counterIcon--;
+
+		if (counterIcon <= 0) {
+			DOM.getElementById("loadingIndicator").getStyle().setDisplay(Display.NONE);
+		}
+	}
 }

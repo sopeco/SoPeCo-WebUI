@@ -1,5 +1,9 @@
 package org.sopeco.frontend.client.widget;
 
+import org.sopeco.frontend.client.layout.popups.Loader;
+import org.sopeco.frontend.client.layout.popups.Message;
+import org.sopeco.frontend.client.rpc.RPC;
+import org.sopeco.frontend.shared.rsc.R;
 import org.sopeco.persistence.dataset.util.ParameterType;
 import org.sopeco.persistence.entities.definition.ParameterRole;
 
@@ -9,6 +13,7 @@ import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
@@ -62,6 +67,8 @@ public class EParameterTreeItem extends EnvironmentTreeItem {
 		for (ParameterType t : ParameterType.values()) {
 			listboxType.addItem(t.name());
 		}
+
+		removeNamespace.setTitle(R.get("removeParameter"));
 	}
 
 	private void extendedInitialize() {
@@ -84,7 +91,19 @@ public class EParameterTreeItem extends EnvironmentTreeItem {
 
 		linePanel.add(roleHTML);
 
+		addActionPanel();
+
 		linePanel.getElement().appendChild(clearLine);
+	}
+
+	protected void addActionPanel() {
+		actionPanel.clear();
+
+		if (parentItem != null) {
+			actionPanel.add(removeNamespace);
+		}
+
+		linePanel.add(actionPanel);
 	}
 
 	private ClickHandler getRoleTextChanger() {
@@ -98,6 +117,8 @@ public class EParameterTreeItem extends EnvironmentTreeItem {
 				}
 
 				roleHTML.setHTML(role.name());
+
+				updateParameter();
 
 				event.preventDefault();
 				event.stopPropagation();
@@ -118,6 +139,8 @@ public class EParameterTreeItem extends EnvironmentTreeItem {
 
 				typeHTML.getElement().getStyle().setDisplay(Display.NONE);
 				listboxType.getElement().getStyle().setDisplay(Display.BLOCK);
+
+				listboxType.setFocus(true);
 			}
 		};
 	}
@@ -131,7 +154,62 @@ public class EParameterTreeItem extends EnvironmentTreeItem {
 
 				listboxType.getElement().getStyle().setDisplay(Display.NONE);
 				typeHTML.getElement().getStyle().setDisplay(Display.BLOCK);
+
+				updateParameter();
 			}
 		};
+	}
+
+	@Override
+	protected void removeItem() {
+		Loader.showIcon();
+		RPC.getMEControllerRPC().removeParameter(parentItem.getPath(), currentText, new AsyncCallback<Boolean>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				Message.error(caught.getMessage());
+				Loader.hideIcon();
+			}
+
+			@Override
+			public void onSuccess(Boolean result) {
+				remove();
+				
+				Loader.hideIcon();
+			}
+		});
+	}
+
+	@Override
+	protected void rename() {
+		GWT.log("rename");
+
+		String oldName = currentText;
+
+		applyChanges();
+
+		updateParameter(oldName, currentText);
+	}
+
+	private void updateParameter() {
+		updateParameter(currentText, currentText);
+	}
+
+	private void updateParameter(String oldName, String newName) {
+		String path = parentItem.getPath();
+
+		Loader.showIcon();
+		RPC.getMEControllerRPC().updateParameter(path, oldName, newName, type, role, new AsyncCallback<Boolean>() {
+			@Override
+			public void onSuccess(Boolean result) {
+				Loader.hideIcon();
+			}
+
+			@Override
+			public void onFailure(Throwable caught) {
+				Message.error(caught.getMessage());
+
+				Loader.hideIcon();
+			}
+		});
 	}
 }

@@ -75,6 +75,12 @@ public class ServerPush {
 					.getCenterPanels().get(Navigation.Environment);
 			envPanel.addMEControllerUrl(pushPackage.getPiggyback());
 			break;
+		case NEW_ENV_DEFINITION:
+			EnvironmentPanel envPanel2 = (EnvironmentPanel) FrontendEntryPoint.getFrontendEP().getMainLayoutPanel(false)
+					.getCenterPanels().get(Navigation.Environment);
+			
+			envPanel2.getEnvironmentDefinitonTreePanel().generateTree(true);
+			break;
 		default:
 			Message.warning("unknown parameter");
 		}
