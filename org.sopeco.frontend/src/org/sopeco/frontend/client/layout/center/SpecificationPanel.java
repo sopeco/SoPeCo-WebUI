@@ -6,7 +6,18 @@ package org.sopeco.frontend.client.layout.center;
  *
  */
 public class SpecificationPanel extends CenterPanel {
+	private String activeSpecification;
+	
 	public SpecificationPanel() {
-		getElement().getStyle().setBackgroundColor("#ACB");
 	}
+
+	public String getActiveSpecification() {
+		return activeSpecification;
+	}
+
+	public void setActiveSpecification(String specification) {
+		this.activeSpecification = specification;
+	}
+	
+	
 }

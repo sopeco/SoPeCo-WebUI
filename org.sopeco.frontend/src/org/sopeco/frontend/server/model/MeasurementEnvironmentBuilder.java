@@ -26,7 +26,18 @@ public class MeasurementEnvironmentBuilder {
 	private static final String DELIMITER = "/";
 	private static final Logger LOGGER = LoggerFactory.getLogger(MeasurementEnvironmentBuilder.class);
 
+	/**
+	 * Creates an empty MEnvironmentDefinition.
+	 * 
+	 * @return
+	 */
+	public static MeasurementEnvironmentDefinition createBlankEnvironmentDefinition() {
+		ScenarioDefinitionBuilder builder = new ScenarioDefinitionBuilder();
+		return builder.getMEDefinition();
+	}
+
 	private ScenarioDefinitionBuilder scenarioBuilder;
+
 	private ParameterNamespace lastCreatedNamespace = null;
 
 	public MeasurementEnvironmentBuilder(ScenarioDefinitionBuilder sBuilder) {
@@ -36,6 +47,17 @@ public class MeasurementEnvironmentBuilder {
 		scenarioBuilder.setMEDefinition(new MeasurementEnvironmentDefinition());
 
 		setRootNamespace();
+	}
+
+	/**
+	 * Adds a new namespace to the root namespace.
+	 * 
+	 * @param name
+	 *            Name of the new namespace
+	 * @return The new namespace
+	 */
+	public ParameterNamespace addNamespace(String name) {
+		return addNamespace(name, scenarioBuilder.getMEDefinition().getRoot());
 	}
 
 	/**
@@ -58,17 +80,6 @@ public class MeasurementEnvironmentBuilder {
 		lastCreatedNamespace = newNamepsace;
 
 		return newNamepsace;
-	}
-
-	/**
-	 * Adds a new namespace to the root namespace.
-	 * 
-	 * @param name
-	 *            Name of the new namespace
-	 * @return The new namespace
-	 */
-	public ParameterNamespace addNamespace(String name) {
-		return addNamespace(name, scenarioBuilder.getMEDefinition().getRoot());
 	}
 
 	/**
@@ -122,70 +133,49 @@ public class MeasurementEnvironmentBuilder {
 	}
 
 	/**
-	 * Removes a namespace and all children from the ME.
+	 * Adding a new parameter to the last created namespace.
 	 * 
+	 * @param name
+	 *            name of the new parameter
+	 * @param type
+	 *            type of the new parameter
+	 * @param role
+	 *            role of the new parameter
+	 */
+	public void addParameter(String name, String type, ParameterRole role) {
+		addParameter(name, type, role, lastCreatedNamespace);
+	}
+
+	/**
+	 * Adding a new parameter to the given namespace.
+	 * 
+	 * @param name
+	 *            name of the new parameter
+	 * @param type
+	 *            type of the new parameter
+	 * @param role
+	 *            role of the new parameter
 	 * @param namespace
-	 *            namespace which will be removed
-	 * @return was the removal successful
+	 *            namespace where the parameter will be added
 	 */
-	public boolean removeNamespace(ParameterNamespace namespace) {
-		return removeNamespace(namespace, false);
+	public ParameterDefinition addParameter(String name, String type, ParameterRole role, ParameterNamespace namespace) {
+		LOGGER.debug("adding new parameter '" + name + "' to namespace '" + namespace.getFullName() + "'");
+
+		ParameterDefinition newParameter = EntityFactory.createParameterDefinition(name, type, role);
+
+		newParameter.setNamespace(namespace);
+		namespace.getParameters().add(newParameter);
+
+		return newParameter;
 	}
 
 	/**
-	 * Removes a namespace from the ME.
+	 * Returns the build definition.
 	 * 
-	 * @param namespace
-	 *            namespace which will be removed
-	 * @param appendChildrenToParent
-	 *            should the child namespaces are removed or attached to the
-	 *            parent
-	 * @return was the removal successful
+	 * @return The build measurement environment definition
 	 */
-	public boolean removeNamespace(ParameterNamespace namespace, boolean appendChildrenToParent) {
-		LOGGER.debug("removing namespace '" + namespace.getFullName() + "' // appendChildrenToParent: "
-				+ appendChildrenToParent);
-
-		if (namespace.getName().equals(ROOTNAME) || namespace.getParent() == null) {
-			LOGGER.warn("root namespace can not be removed.");
-			return false;
-		}
-
-		if (appendChildrenToParent) {
-			for (ParameterNamespace child : namespace.getChildren()) {
-				child.setParent(namespace.getParent());
-				namespace.getParent().getChildren().add(child);
-			}
-			namespace.getChildren().clear();
-		}
-
-		namespace.getParent().getChildren().remove(namespace);
-
-		if (namespace == lastCreatedNamespace) {
-			lastCreatedNamespace = null;
-		}
-
-		return true;
-	}
-
-	/**
-	 * Setting the root namespace to defaut.
-	 */
-	private void setRootNamespace() {
-		LOGGER.debug("Setting the default root namespace.");
-
-		ParameterNamespace rootNamespace = EntityFactory.createNamespace(ROOTNAME);
-
-		scenarioBuilder.getMEDefinition().setRoot(rootNamespace);
-	}
-
-	/**
-	 * Returns the root namespace of the measurement environment.
-	 * 
-	 * @return root namespace.
-	 */
-	public ParameterNamespace getRootNamespace() {
-		return scenarioBuilder.getMEDefinition().getRoot();
+	public MeasurementEnvironmentDefinition getMEDefinition() {
+		return scenarioBuilder.getMEDefinition();
 	}
 
 	/**
@@ -209,7 +199,7 @@ public class MeasurementEnvironmentBuilder {
 			return null;
 		}
 
-		if (!nodes[0].equals(ROOTNAME)) {
+		if (!nodes[0].equals(getRootNamespace().getName())) {
 			LOGGER.warn("first namespace must be the root namespace");
 			return null;
 		} else if (nodes.length == 1) {
@@ -262,40 +252,75 @@ public class MeasurementEnvironmentBuilder {
 	}
 
 	/**
-	 * Adding a new parameter to the last created namespace.
+	 * Returns the root namespace of the measurement environment.
 	 * 
-	 * @param name
-	 *            name of the new parameter
-	 * @param type
-	 *            type of the new parameter
-	 * @param role
-	 *            role of the new parameter
+	 * @return root namespace.
 	 */
-	public void addParameter(String name, String type, ParameterRole role) {
-		addParameter(name, type, role, lastCreatedNamespace);
+	public ParameterNamespace getRootNamespace() {
+		return scenarioBuilder.getMEDefinition().getRoot();
 	}
 
 	/**
-	 * Adding a new parameter to the given namespace.
+	 * Removes a namespace and all children from the ME.
 	 * 
-	 * @param name
-	 *            name of the new parameter
-	 * @param type
-	 *            type of the new parameter
-	 * @param role
-	 *            role of the new parameter
 	 * @param namespace
-	 *            namespace where the parameter will be added
+	 *            namespace which will be removed
+	 * @return was the removal successful
 	 */
-	public ParameterDefinition addParameter(String name, String type, ParameterRole role, ParameterNamespace namespace) {
-		LOGGER.debug("adding new parameter '" + name + "' to namespace '" + namespace.getFullName() + "'");
+	public boolean removeNamespace(ParameterNamespace namespace) {
+		return removeNamespace(namespace, false);
+	}
 
-		ParameterDefinition newParameter = EntityFactory.createParameterDefinition(name, type, role);
+	/**
+	 * Removes a namespace from the ME.
+	 * 
+	 * @param namespace
+	 *            namespace which will be removed
+	 * @param appendChildrenToParent
+	 *            should the child namespaces are removed or attached to the
+	 *            parent
+	 * @return was the removal successful
+	 */
+	public boolean removeNamespace(ParameterNamespace namespace, boolean appendChildrenToParent) {
+		LOGGER.debug("removing namespace '" + namespace.getFullName() + "' // appendChildrenToParent: "
+				+ appendChildrenToParent);
 
-		newParameter.setNamespace(namespace);
-		namespace.getParameters().add(newParameter);
+		if (namespace.getName().equals(ROOTNAME) || namespace.getParent() == null) {
+			LOGGER.warn("root namespace can not be removed.");
+			return false;
+		}
 
-		return newParameter;
+		if (appendChildrenToParent) {
+			for (ParameterNamespace child : namespace.getChildren()) {
+				child.setParent(namespace.getParent());
+				namespace.getParent().getChildren().add(child);
+			}
+			namespace.getChildren().clear();
+		}
+
+		namespace.getParent().getChildren().remove(namespace);
+
+		if (namespace == lastCreatedNamespace) {
+			lastCreatedNamespace = null;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Removes the given parameter.
+	 * 
+	 * @param parameter
+	 *            parameter you want to remove
+	 * @return was the parameter successful removed
+	 */
+	public boolean removeParameter(ParameterDefinition parameter) {
+		LOGGER.debug("removing parameter '" + parameter.getName() + "' from namespace '"
+				+ parameter.getNamespace().getFullName() + "'");
+
+		ParameterNamespace parent = parameter.getNamespace();
+
+		return parent.getParameters().remove(parameter);
 	}
 
 	/**
@@ -316,41 +341,6 @@ public class MeasurementEnvironmentBuilder {
 	}
 
 	/**
-	 * Removes the given parameter.
-	 * 
-	 * @param parameter
-	 *            parameter you want to remove
-	 * @return was the parameter successful removed
-	 */
-	public boolean removeParameter(ParameterDefinition parameter) {
-		LOGGER.debug("removing parameter '" + parameter.getName() + "' from namespace '"
-				+ parameter.getNamespace().getFullName() + "'");
-
-		ParameterNamespace parent = parameter.getNamespace();
-
-		return parent.getParameters().remove(parameter);
-	}
-
-	/**
-	 * Returns the build definition.
-	 * 
-	 * @return The build measurement environment definition
-	 */
-	public MeasurementEnvironmentDefinition getMEDefinition() {
-		return scenarioBuilder.getMEDefinition();
-	}
-
-	/**
-	 * Creates an empty MEnvironmentDefinition.
-	 * 
-	 * @return
-	 */
-	public static MeasurementEnvironmentDefinition createBlankEnvironmentDefinition() {
-		ScenarioDefinitionBuilder builder = new ScenarioDefinitionBuilder();
-		return builder.getMEDefinition();
-	}
-
-	/**
 	 * Renames the given namespace to the given name.
 	 * 
 	 * @param namespace
@@ -358,5 +348,16 @@ public class MeasurementEnvironmentBuilder {
 	 */
 	public void renameNamespace(ParameterNamespace namespace, String newName) {
 		namespace.setName(newName);
+	}
+
+	/**
+	 * Setting the root namespace to defaut.
+	 */
+	private void setRootNamespace() {
+		LOGGER.debug("Setting the default root namespace.");
+
+		ParameterNamespace rootNamespace = EntityFactory.createNamespace(ROOTNAME);
+
+		scenarioBuilder.getMEDefinition().setRoot(rootNamespace);
 	}
 }

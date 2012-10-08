@@ -1,3 +1,11 @@
+.gwt-PopupPanelGlass {
+	z-index: 998;
+}
+
+.gwt-DialogBox {
+	z-index: 999;
+}
+
 .spc-seperator {
 	width: 0px;
 	display: block;
@@ -91,7 +99,8 @@ p {
 
 #mainNavigation {
 	border-right: 1px solid #CCC;
-	background-color: #fafafa
+	background-color: #fafafa;
+	overflow: visible !important;
 }
 
 #mainNavigation .tlEntry {
@@ -100,7 +109,6 @@ p {
 	font-weight: bold;
 	text-decoration: none;
 	position: relative;
-	overflow: hidden;
 	color: #666;
 	cursor: pointer;
 	margin: 0.2em 0;
@@ -372,6 +380,59 @@ p {
 
 .frontendTree .treeItem .linePanel>.editableParameter {
 	color: #aaa;
+}
+
+.tlEntry #changeSpecImage {
+	display: none;
+}
+
+.tlEntry.marked #changeSpecImage {
+	position: absolute;
+	display: block;
+	top: 9px;
+	right: 6px;
+	border: 1px solid #AAA;
+	border-radius: 3px;
+	background-color: #EEE;
+	padding: 1px;
+	cursor: pointer;
+}
+
+.tlEntry.marked #changeSpecImage:hover {
+	background-color: #FFF;
+}
+
+#changeSpecPanel {
+	background-color: #FAFAFA;
+	width: 160px;
+	position: absolute;
+	left: 15em;
+	top: 2px;
+	border: 1px solid #CCC;
+	border-left: 1px dotted #E1E1E1;
+	display: none;
+	z-index: 2;
+	box-shadow: 3px 5px 11px -5px #CCC;
+}
+
+#changeSpecPanel td {
+	padding: 8px;
+	color: #666;
+}
+
+#changeSpecPanel td:hover {
+	padding: 8px;
+	color: #333;
+	cursor: pointer;
+}
+
+#changeSpecPanel td>div.marked {
+	color: #06C;
+	cursor: default;
+}
+
+#changeSpecPanel td>div {
+	white-space: nowrap;
 }
 
 .clear {

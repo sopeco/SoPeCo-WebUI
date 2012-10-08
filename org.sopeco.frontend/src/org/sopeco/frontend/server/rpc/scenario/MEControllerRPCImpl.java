@@ -325,6 +325,8 @@ public class MEControllerRPCImpl extends SuperRemoteServlet implements MEControl
 				continue;
 			}
 
+			LOGGER.debug("push '{}' to user {}", myScenario, u.getSessionId());
+			
 			if (u.getCurrentScenarioDefinitionBuilder().getBuiltScenario().getScenarioName().equals(myScenario)) {
 
 				try {

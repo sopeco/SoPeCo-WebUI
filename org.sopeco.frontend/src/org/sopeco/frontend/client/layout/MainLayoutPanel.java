@@ -3,8 +3,8 @@ package org.sopeco.frontend.client.layout;
 import java.util.HashMap;
 
 import org.sopeco.frontend.client.FrontendEntryPoint;
-import org.sopeco.frontend.client.layout.MainNavigation.Navigation;
 import org.sopeco.frontend.client.layout.center.CenterPanel;
+import org.sopeco.frontend.client.layout.center.CenterType;
 import org.sopeco.frontend.client.layout.center.EnvironmentPanel;
 import org.sopeco.frontend.client.layout.center.ExecutePanel;
 import org.sopeco.frontend.client.layout.center.NoScenario;
@@ -24,12 +24,12 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 public class MainLayoutPanel extends DockLayoutPanel {
 
 	private NorthPanel northPanel;
-	private MainNavigation mainNavigation;
+	private Navigation mainNavigation;
 	private FrontendEntryPoint parentModule;
 	private ScrollPanel centerScrollPanel;
 
-	private Navigation currentCenterPanel;
-	private HashMap<Navigation, CenterPanel> centerPanels = new HashMap<Navigation, CenterPanel>();
+	private CenterType currentCenterPanel;
+	private HashMap<CenterType, CenterPanel> centerPanels = new HashMap<CenterType, CenterPanel>();
 
 	public MainLayoutPanel(FrontendEntryPoint parent) {
 		super(Unit.EM);
@@ -45,12 +45,12 @@ public class MainLayoutPanel extends DockLayoutPanel {
 	private void initialize() {
 		centerScrollPanel = new ScrollPanel();
 
-		addNorth(getTopFilterPanel(), Float.parseFloat(NorthPanel.PANEL_HEIGHT));
-		addWest(getMainNavigation(), Float.parseFloat(MainNavigation.PANEL_WIDTH));
+		addNorth(getNorthPanel(), Float.parseFloat(NorthPanel.PANEL_HEIGHT));
+		addWest(getMainNavigation(), Float.parseFloat(Navigation.PANEL_WIDTH));
 
 		getWidgetContainerElement(getMainNavigation()).setId("mainNavigation");
 
-		currentCenterPanel = Navigation.Environment;
+		currentCenterPanel = CenterType.Environment;
 		
 		createNewCenterPanels();
 	}
@@ -60,7 +60,7 @@ public class MainLayoutPanel extends DockLayoutPanel {
 	 * 
 	 * @return
 	 */
-	public Navigation getCenterType() {
+	public CenterType getCenterType() {
 		return currentCenterPanel;
 	}
 
@@ -68,10 +68,10 @@ public class MainLayoutPanel extends DockLayoutPanel {
 	 * Creates new center panel for the main layout and updates the current panel.
 	 */
 	public void createNewCenterPanels() {
-		centerPanels.put(Navigation.Environment, new EnvironmentPanel());
-		centerPanels.put(Navigation.Specification, new SpecificationPanel());
-		centerPanels.put(Navigation.Execute, new ExecutePanel());
-		centerPanels.put(Navigation.Result, new ResultPanel());
+		centerPanels.put(CenterType.Environment, new EnvironmentPanel());
+		centerPanels.put(CenterType.Specification, new SpecificationPanel());
+		centerPanels.put(CenterType.Execute, new ExecutePanel());
+		centerPanels.put(CenterType.Result, new ResultPanel());
 
 		updateCenterPanel();
 	}
@@ -88,14 +88,14 @@ public class MainLayoutPanel extends DockLayoutPanel {
 	 * 
 	 * @param type
 	 */
-	public void updateCenterPanel(Navigation type) {
+	public void updateCenterPanel(CenterType type) {
 		if (getCenter() != null) {
 			remove(getCenter());
 		}
 		currentCenterPanel = type;
 		centerScrollPanel.clear();
 
-		if (northPanel.getSelectedScenario().isEmpty() || type == Navigation.NoScenario) {
+		if (northPanel.getSelectedScenario().isEmpty() || type == CenterType.NoScenario) {
 			add(new NoScenario());
 			return;
 		}
@@ -109,7 +109,7 @@ public class MainLayoutPanel extends DockLayoutPanel {
 	 * 
 	 * @return see description
 	 */
-	private NorthPanel getTopFilterPanel() {
+	private NorthPanel getNorthPanel() {
 		if (northPanel == null) {
 			northPanel = new NorthPanel(this);
 		}
@@ -117,15 +117,15 @@ public class MainLayoutPanel extends DockLayoutPanel {
 		return northPanel;
 	}
 
-	private MainNavigation getMainNavigation() {
+	private Navigation getMainNavigation() {
 		if (mainNavigation == null) {
-			mainNavigation = new MainNavigation(this);
+			mainNavigation = new Navigation(this);
 		}
 
 		return mainNavigation;
 	}
 
-	public HashMap<Navigation, CenterPanel> getCenterPanels() {
+	public HashMap<CenterType, CenterPanel> getCenterPanels() {
 		return centerPanels;
 	}
 

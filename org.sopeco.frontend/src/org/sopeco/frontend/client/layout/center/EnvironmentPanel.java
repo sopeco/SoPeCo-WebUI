@@ -5,16 +5,15 @@ import java.util.List;
 import org.sopeco.frontend.client.animation.ICompleteHandler;
 import org.sopeco.frontend.client.animation.SlideDown;
 import org.sopeco.frontend.client.animation.SlideUp;
-import org.sopeco.frontend.client.layout.ClickPanel;
 import org.sopeco.frontend.client.layout.center.environment.EnvironmentDefinitonTreePanel;
 import org.sopeco.frontend.client.layout.popups.Loader;
 import org.sopeco.frontend.client.layout.popups.Message;
 import org.sopeco.frontend.client.rpc.MEControllerRPC;
 import org.sopeco.frontend.client.rpc.RPC;
+import org.sopeco.frontend.client.widget.ClickPanel;
 import org.sopeco.frontend.shared.rsc.R;
 import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;

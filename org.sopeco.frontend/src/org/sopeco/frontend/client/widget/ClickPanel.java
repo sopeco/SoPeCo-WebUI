@@ -1,12 +1,12 @@
-package org.sopeco.frontend.client.layout;
+package org.sopeco.frontend.client.widget;
 
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.user.client.ui.FocusPanel;
 
 /**
- * FocusPanel without focus feature. Only a wrapper for eg. Horizontalpanel to
- * attach a clickhandler.
+ * FocusPanel without focus feature. Only a wrapper for eg. HorizontalPanel to
+ * attach a ClickHandler.
  * 
  * @author Marius Oehler
  * 
