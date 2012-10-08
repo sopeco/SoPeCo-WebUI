@@ -1,11 +1,11 @@
-package org.sopeco.frontend.client.layout.center;
+package org.sopeco.frontend.client.layout.center.environment;
 
 import java.util.List;
 
 import org.sopeco.frontend.client.animation.ICompleteHandler;
 import org.sopeco.frontend.client.animation.SlideDown;
 import org.sopeco.frontend.client.animation.SlideUp;
-import org.sopeco.frontend.client.layout.center.environment.EnvironmentDefinitonTreePanel;
+import org.sopeco.frontend.client.layout.center.CenterPanel;
 import org.sopeco.frontend.client.layout.popups.Loader;
 import org.sopeco.frontend.client.layout.popups.Message;
 import org.sopeco.frontend.client.rpc.MEControllerRPC;

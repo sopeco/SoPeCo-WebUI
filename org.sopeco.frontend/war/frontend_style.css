@@ -13,6 +13,15 @@
 	overflow: hidden;
 }
 
+.spc-TextBox {
+	padding: 4px;
+}
+
+.spc-Label {
+	font-weight: bold;
+	color: #333;
+}
+
 .hDefaultMargin {
 	margin-left: 1em;
 }
@@ -404,13 +413,11 @@ p {
 
 #changeSpecPanel {
 	background-color: #FAFAFA;
-	width: 160px;
 	position: absolute;
 	left: 15em;
 	top: 2px;
 	border: 1px solid #CCC;
 	border-left: 1px dotted #E1E1E1;
-	display: none;
 	z-index: 2;
 	box-shadow: 3px 5px 11px -5px #CCC;
 }
@@ -433,6 +440,12 @@ p {
 
 #changeSpecPanel td>div {
 	white-space: nowrap;
+}
+
+#specificationTopPanel {
+	border-bottom: 1px solid #ccc;
+	width: 100%;
+	padding: 1em;
 }
 
 .clear {

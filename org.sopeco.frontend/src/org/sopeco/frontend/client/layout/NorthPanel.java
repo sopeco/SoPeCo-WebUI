@@ -1,5 +1,7 @@
 package org.sopeco.frontend.client.layout;
 
+import org.sopeco.frontend.client.layout.center.CenterType;
+import org.sopeco.frontend.client.layout.center.specification.SpecificationController;
 import org.sopeco.frontend.client.layout.dialog.AddScenarioDialog;
 import org.sopeco.frontend.client.layout.popups.Confirmation;
 import org.sopeco.frontend.client.layout.popups.Loader;
@@ -242,6 +244,8 @@ public class NorthPanel extends FlowPanel {
 			public void onSuccess(Boolean result) {
 				parentPanel.createNewCenterPanels();
 
+				((SpecificationController) parentPanel.getCenterController(CenterType.Specification)).loadSpecificationNames();
+				
 				Loader.hideLoader();
 			}
 		});

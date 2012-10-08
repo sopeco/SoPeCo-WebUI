@@ -18,7 +18,7 @@ public class ScenarioDefinitionBuilder {
 	public ScenarioDefinitionBuilder() {
 		currentBuild = new ScenarioDefinition();
 		meBuilder = new MeasurementEnvironmentBuilder(this);
-		msBuilder = new MeasurementSpecificationBuilder();
+		msBuilder = new MeasurementSpecificationBuilder(this);
 	}
 
 	/**
@@ -48,9 +48,12 @@ public class ScenarioDefinitionBuilder {
 		return currentBuild.getMeasurementEnvironmentDefinition();
 	}
 
+	public MeasurementSpecificationBuilder addNewMeasurementSpecification() {
+		return new MeasurementSpecificationBuilder(this);
+	}
 
 	/**
-	 * Returns the builder for the measurement specification.
+	 * Returns the builder for the default measurement specification.
 	 * 
 	 * @return the measurement specification builder
 	 */
@@ -77,9 +80,9 @@ public class ScenarioDefinitionBuilder {
 	 */
 	public static ScenarioDefinition buildEmptyScenario(String name) {
 		ScenarioDefinitionBuilder builder = new ScenarioDefinitionBuilder();
-		
+
 		builder.setScenarioName(name);
-		
+
 		return builder.getBuiltScenario();
 	}
 

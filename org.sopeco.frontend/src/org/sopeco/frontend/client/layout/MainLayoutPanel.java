@@ -3,13 +3,15 @@ package org.sopeco.frontend.client.layout;
 import java.util.HashMap;
 
 import org.sopeco.frontend.client.FrontendEntryPoint;
-import org.sopeco.frontend.client.layout.center.CenterPanel;
 import org.sopeco.frontend.client.layout.center.CenterType;
-import org.sopeco.frontend.client.layout.center.EnvironmentPanel;
-import org.sopeco.frontend.client.layout.center.ExecutePanel;
+import org.sopeco.frontend.client.layout.center.ICenterController;
 import org.sopeco.frontend.client.layout.center.NoScenario;
-import org.sopeco.frontend.client.layout.center.ResultPanel;
-import org.sopeco.frontend.client.layout.center.SpecificationPanel;
+import org.sopeco.frontend.client.layout.center.environment.EnvironmentController;
+import org.sopeco.frontend.client.layout.center.execute.ExecuteController;
+import org.sopeco.frontend.client.layout.center.result.ResultController;
+import org.sopeco.frontend.client.layout.center.specification.SpecificationController;
+import org.sopeco.frontend.client.layout.navigation.NavigationController;
+import org.sopeco.frontend.client.layout.navigation.NavigationView;
 
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
@@ -21,22 +23,42 @@ import com.google.gwt.user.client.ui.ScrollPanel;
  * @author Marius Oehler
  * 
  */
-public class MainLayoutPanel extends DockLayoutPanel {
+public final class MainLayoutPanel extends DockLayoutPanel {
+
+	private static MainLayoutPanel singletonLayoutPanel;
 
 	private NorthPanel northPanel;
-	private Navigation mainNavigation;
+	private NavigationController navigationController;
 	private FrontendEntryPoint parentModule;
 	private ScrollPanel centerScrollPanel;
 
 	private CenterType currentCenterPanel;
-	private HashMap<CenterType, CenterPanel> centerPanels = new HashMap<CenterType, CenterPanel>();
+	private HashMap<CenterType, ICenterController> centerController = new HashMap<CenterType, ICenterController>();
 
-	public MainLayoutPanel(FrontendEntryPoint parent) {
+	private MainLayoutPanel(FrontendEntryPoint parent) {
 		super(Unit.EM);
 
 		parentModule = parent;
 
 		initialize();
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public static MainLayoutPanel get() {
+		if (singletonLayoutPanel == null) {
+			singletonLayoutPanel = new MainLayoutPanel(FrontendEntryPoint.getFrontendEP());
+		}
+		return singletonLayoutPanel;
+	}
+
+	public static void destroy() {
+		if (singletonLayoutPanel != null) {
+			singletonLayoutPanel = null;
+			// TODO
+		}
 	}
 
 	/**
@@ -46,12 +68,18 @@ public class MainLayoutPanel extends DockLayoutPanel {
 		centerScrollPanel = new ScrollPanel();
 
 		addNorth(getNorthPanel(), Float.parseFloat(NorthPanel.PANEL_HEIGHT));
-		addWest(getMainNavigation(), Float.parseFloat(Navigation.PANEL_WIDTH));
+		addWest(getNavigationController().getView(), Float.parseFloat(NavigationView.PANEL_WIDTH));
 
-		getWidgetContainerElement(getMainNavigation()).setId("mainNavigation");
+		getWidgetContainerElement(getNavigationController().getView()).setId("mainNavigation");
 
-		currentCenterPanel = CenterType.Environment;
-		
+		centerController.put(CenterType.Environment, new EnvironmentController());
+		centerController.put(CenterType.Specification, new SpecificationController());
+		centerController.put(CenterType.Execute, new ExecuteController());
+		centerController.put(CenterType.Result, new ResultController());
+
+		currentCenterPanel = CenterType.Specification;
+		getNavigationController().setCurrentCenterType(currentCenterPanel);
+
 		createNewCenterPanels();
 	}
 
@@ -65,13 +93,13 @@ public class MainLayoutPanel extends DockLayoutPanel {
 	}
 
 	/**
-	 * Creates new center panel for the main layout and updates the current panel.
+	 * Creates new center panel for the main layout and updates the current
+	 * panel.
 	 */
 	public void createNewCenterPanels() {
-		centerPanels.put(CenterType.Environment, new EnvironmentPanel());
-		centerPanels.put(CenterType.Specification, new SpecificationPanel());
-		centerPanels.put(CenterType.Execute, new ExecutePanel());
-		centerPanels.put(CenterType.Result, new ResultPanel());
+		for (ICenterController controller : centerController.values()) {
+			controller.reset();
+		}
 
 		updateCenterPanel();
 	}
@@ -95,12 +123,14 @@ public class MainLayoutPanel extends DockLayoutPanel {
 		currentCenterPanel = type;
 		centerScrollPanel.clear();
 
+		getNavigationController().setCurrentCenterType(type);
+
 		if (northPanel.getSelectedScenario().isEmpty() || type == CenterType.NoScenario) {
 			add(new NoScenario());
 			return;
 		}
 
-		centerScrollPanel.add(centerPanels.get(type));
+		centerScrollPanel.add(centerController.get(type).getView());
 		add(centerScrollPanel);
 	}
 
@@ -117,16 +147,20 @@ public class MainLayoutPanel extends DockLayoutPanel {
 		return northPanel;
 	}
 
-	private Navigation getMainNavigation() {
-		if (mainNavigation == null) {
-			mainNavigation = new Navigation(this);
+	/**
+	 * 
+	 * @return
+	 */
+	public NavigationController getNavigationController() {
+		if (navigationController == null) {
+			navigationController = new NavigationController(this);
 		}
 
-		return mainNavigation;
+		return navigationController;
 	}
 
-	public HashMap<CenterType, CenterPanel> getCenterPanels() {
-		return centerPanels;
+	public ICenterController getCenterController(CenterType type) {
+		return centerController.get(type);
 	}
 
 	/**

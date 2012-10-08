@@ -166,8 +166,9 @@ public class DefinitionBuilderTest {
 
 	@Test
 	public void buildSpecification() {
-		MeasurementSpecificationBuilder builder = new MeasurementSpecificationBuilder(TESTNAME);
-		MeasurementSpecificationBuilder builder2 = new MeasurementSpecificationBuilder();
+		ScenarioDefinitionBuilder sdb = new ScenarioDefinitionBuilder();
+		MeasurementSpecificationBuilder builder = new MeasurementSpecificationBuilder(sdb, TESTNAME);
+		MeasurementSpecificationBuilder builder2 = new MeasurementSpecificationBuilder(sdb);
 		builder2.setName(TESTNAME);
 
 		assertEquals(builder.getBuiltSpecification().getName(), TESTNAME);
@@ -176,7 +177,9 @@ public class DefinitionBuilderTest {
 
 	@Test
 	public void addInitAssignments() {
-		MeasurementSpecificationBuilder builder = new MeasurementSpecificationBuilder(TESTNAME);
+		ScenarioDefinitionBuilder sdb = new ScenarioDefinitionBuilder();
+		
+		MeasurementSpecificationBuilder builder = new MeasurementSpecificationBuilder(sdb, TESTNAME);
 
 		ParameterDefinition para = EntityFactory.createParameterDefinition("First", "FirstType", ParameterRole.INPUT);
 
@@ -211,7 +214,9 @@ public class DefinitionBuilderTest {
 
 	@Test
 	public void addExperimentSeriesDefinition() {
-		MeasurementSpecificationBuilder builder = new MeasurementSpecificationBuilder(TESTNAME);
+		ScenarioDefinitionBuilder sdb = new ScenarioDefinitionBuilder();
+		
+		MeasurementSpecificationBuilder builder = new MeasurementSpecificationBuilder(sdb, TESTNAME);
 
 		ExperimentTerminationCondition terminition = EntityFactory.createTimeOutTerminationCondition(10);
 

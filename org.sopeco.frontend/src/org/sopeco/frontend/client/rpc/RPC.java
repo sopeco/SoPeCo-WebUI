@@ -3,6 +3,7 @@ package org.sopeco.frontend.client.rpc;
 import com.google.gwt.core.client.GWT;
 
 /**
+ * This class stores instances of all remote services.
  * 
  * @author Marius Oehler
  * 
@@ -15,6 +16,7 @@ public final class RPC {
 	private static ScenarioManagerRPCAsync scenarioManager = null;
 	private static MEControllerRPCAsync meController = null;
 	private static SystemDetailsRPCAsync systemDetails = null;
+	private static MSpecificationRPCAsync specificationRPC = null;
 
 	/**
 	 * Returns a instance of the ScenarioManagerRPCAsync.
@@ -42,11 +44,29 @@ public final class RPC {
 		return meController;
 	}
 
+	/**
+	 * Returns a instance of the SystemDetailsRPCAsync.
+	 * 
+	 * @return
+	 */
 	public static SystemDetailsRPCAsync getSystemDetailsRPC() {
 		if (systemDetails == null) {
 			systemDetails = GWT.create(SystemDetailsRPC.class);
 		}
 
 		return systemDetails;
+	}
+
+	/**
+	 * Returns a instance of the MSpecificationRPCAsync.
+	 * 
+	 * @return
+	 */
+	public static MSpecificationRPCAsync getMSpecificationRPC() {
+		if (specificationRPC == null) {
+			specificationRPC = GWT.create(MSpecificationRPC.class);
+		}
+
+		return specificationRPC;
 	}
 }

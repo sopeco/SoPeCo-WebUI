@@ -1,8 +1,9 @@
 package org.sopeco.frontend.client.helper;
 
 import org.sopeco.frontend.client.FrontendEntryPoint;
+import org.sopeco.frontend.client.layout.MainLayoutPanel;
 import org.sopeco.frontend.client.layout.center.CenterType;
-import org.sopeco.frontend.client.layout.center.EnvironmentPanel;
+import org.sopeco.frontend.client.layout.center.environment.EnvironmentPanel;
 import org.sopeco.frontend.client.layout.popups.Message;
 import org.sopeco.frontend.client.layout.popups.Notification;
 import org.sopeco.frontend.client.rpc.PushRPC;
@@ -60,7 +61,7 @@ public class ServerPush {
 	private static void execute(PushPackage pushPackage) {
 		switch (pushPackage.getType()) {
 		case IDLE:
-//			Notification.show("Idle");
+			// Notification.show("Idle");
 			break;
 		case ERROR:
 			Notification.show("Error");
@@ -70,14 +71,14 @@ public class ServerPush {
 			Notification.show(message);
 			break;
 		case NEW_MEC_AVAILABLE:
-			EnvironmentPanel envPanel = (EnvironmentPanel) FrontendEntryPoint.getFrontendEP().getMainLayoutPanel(false)
-					.getCenterPanels().get(CenterType.Environment);
+			EnvironmentPanel envPanel = (EnvironmentPanel) MainLayoutPanel.get()
+					.getCenterController(CenterType.Environment).getView();
 			envPanel.addMEControllerUrl(pushPackage.getPiggyback());
 			break;
 		case NEW_ENV_DEFINITION:
-			EnvironmentPanel envPanel2 = (EnvironmentPanel) FrontendEntryPoint.getFrontendEP().getMainLayoutPanel(false)
-					.getCenterPanels().get(CenterType.Environment);
-			
+			EnvironmentPanel envPanel2 = (EnvironmentPanel) MainLayoutPanel.get()
+					.getCenterController(CenterType.Environment).getView();
+
 			envPanel2.getEnvironmentDefinitonTreePanel().generateTree(true);
 			break;
 		default:

@@ -19,15 +19,19 @@ public class MeasurementSpecificationBuilder {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(MeasurementSpecificationBuilder.class);
 	private MeasurementSpecification specification;
+	private ScenarioDefinitionBuilder scenarioBuilder;
 
-	public MeasurementSpecificationBuilder() {
-		this("");
+	public MeasurementSpecificationBuilder(ScenarioDefinitionBuilder sBuilder) {
+		this(sBuilder, "MeasurementSpecification");
 	}
 
-	public MeasurementSpecificationBuilder(String specName) {
+	public MeasurementSpecificationBuilder(ScenarioDefinitionBuilder sBuilder, String specName) {
 		LOGGER.debug("Creating MeasurementSpecificationBuilder '" + specName + "'");
 
+		scenarioBuilder = sBuilder;
+		
 		specification = EntityFactory.createMeasurementSpecification(specName);
+		scenarioBuilder.getBuiltScenario().getMeasurementSpecifications().add(specification);
 	}
 
 	/**

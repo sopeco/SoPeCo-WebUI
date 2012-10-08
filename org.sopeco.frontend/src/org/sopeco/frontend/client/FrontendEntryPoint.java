@@ -71,9 +71,10 @@ public class FrontendEntryPoint implements EntryPoint {
 	public void initializeMainView(DatabaseInstance newConnectedDatabase) {
 		connectedDatabase = newConnectedDatabase;
 
-		RootLayoutPanel rootLayoutPanel = RootLayoutPanel.get();
+		MainLayoutPanel.destroy();
 
-		rootLayoutPanel.add(getMainLayoutPanel(true));
+		RootLayoutPanel rootLayoutPanel = RootLayoutPanel.get();
+		rootLayoutPanel.add(MainLayoutPanel.get());
 
 		ServerPush.start();
 	}
@@ -104,12 +105,12 @@ public class FrontendEntryPoint implements EntryPoint {
 	 *            should it be recreated
 	 * @return the main layout panel
 	 */
-	public MainLayoutPanel getMainLayoutPanel(boolean createNew) {
-		if (mainLayoutPanel == null || createNew) {
-			mainLayoutPanel = new MainLayoutPanel(this);
-		}
-		return mainLayoutPanel;
-	}
+	// public MainLayoutPanel getMainLayoutPanel(boolean createNew) {
+	// if (mainLayoutPanel == null || createNew) {
+	// mainLayoutPanel = new MainLayoutPanel(this);
+	// }
+	// return mainLayoutPanel;
+	// }
 
 	/**
 	 * returns the database instance of the current connection/session.

@@ -1,2 +1,0 @@
-serviceClass: org.sopeco.frontend.client.rpc.DatabaseManagerRPC
-path: 4423E4561A3BCE63103806BCC54DA514.gwt.rpc
