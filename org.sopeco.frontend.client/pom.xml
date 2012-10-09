@@ -1,0 +1,35 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>org.sopeco.frontend.client</artifactId>
+	<packaging>war</packaging>
+	<name>SoPeCo Frontend Client</name>
+
+
+	<parent>
+		<groupId>org.sopeco.frontend</groupId>
+		<artifactId>org.sopeco.frontend.parent</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>../org.sopeco.frontend.parent</relativePath>
+	</parent>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.sopeco.frontend</groupId>
+			<artifactId>org.sopeco.frontend.rpc</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.sopeco.frontend</groupId>
+			<artifactId>org.sopeco.frontend.server</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.sopeco.frontend</groupId>
+			<artifactId>org.sopeco.frontend.rpc</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<classifier>sources</classifier>
+		</dependency>
+	</dependencies>
+
+</project>
