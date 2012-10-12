@@ -2,7 +2,7 @@ package org.sopeco.frontend.client.layout.center.specification;
 
 import java.util.List;
 
-import org.sopeco.frontend.client.FrontendEntryPoint;
+import org.apache.commons.math3.distribution.CauchyDistribution;
 import org.sopeco.frontend.client.layout.MainLayoutPanel;
 import org.sopeco.frontend.client.layout.center.CenterPanel;
 import org.sopeco.frontend.client.layout.center.ICenterController;
@@ -11,6 +11,8 @@ import org.sopeco.frontend.client.layout.popups.Message;
 import org.sopeco.frontend.client.rpc.RPC;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -21,6 +23,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class SpecificationController implements ICenterController {
 
 	private SpecificationView view;
+	private AssignmentController assignmentController;
 	private String currentSpecificationName;
 	private List<String> specificationNames;
 
@@ -30,7 +33,16 @@ public class SpecificationController implements ICenterController {
 
 	@Override
 	public void reset() {
-		view = new SpecificationView();
+		if (assignmentController == null) {
+			assignmentController = new AssignmentController();
+		} else {
+			assignmentController.reset();
+		}
+
+		view = new SpecificationView(assignmentController.getAssignmentView());
+
+		addExistingAssignments();
+		addRenameSpecificationHandler();
 	}
 
 	@Override
@@ -39,10 +51,38 @@ public class SpecificationController implements ICenterController {
 	}
 
 	/**
+	 * Adds to the textbox of the specification name a blureHandler, which
+	 * renames the selected specification on blur.
+	 */
+	private void addRenameSpecificationHandler() {
+		view.getSpecificationNameTextbox().addBlurHandler(new BlurHandler() {
+			@Override
+			public void onBlur(BlurEvent event) {
+				final String textboxName = view.getSpecificationNameTextbox().getText();
+
+				if (!textboxName.equals(currentSpecificationName)) {
+					RPC.getMSpecificationRPC().renameWorkingSpecification(textboxName, new AsyncCallback<Boolean>() {
+						@Override
+						public void onFailure(Throwable caught) {
+							Message.error(caught.getMessage());
+						}
+
+						@Override
+						public void onSuccess(Boolean result) {
+							loadSpecificationNames(textboxName);
+						}
+					});
+				}
+			}
+		});
+	}
+
+	/**
+	 * Sets the current specification name to the given name.
 	 * 
 	 * @param name
 	 */
-	public void setCurrentSpecificationName(String name) {
+	private void setCurrentSpecificationName(String name) {
 		GWT.log("Set new currentSpecificationName: " + name);
 		MainLayoutPanel.get().getNavigationController().setActiveSpecification(name);
 		currentSpecificationName = name;
@@ -51,26 +91,77 @@ public class SpecificationController implements ICenterController {
 	}
 
 	/**
+	 * Adding the initial assignment of the current model to the
+	 * assignmenListPanel.
+	 */
+	private void addExistingAssignments() {
+		AssignmentItem ai = new AssignmentItem("name.space.", "test", "STRING");
+		AssignmentItem ai2 = new AssignmentItem("name.asdasdas.", "adsadsd", "INTEGER");
+		AssignmentItem ai3 = new AssignmentItem("name.aasd.", "addasd", "STRING");
+
+		assignmentController.addAssignment(ai);
+		assignmentController.addAssignment(ai2);
+		assignmentController.addAssignment(ai3);
+	}
+
+	/**
+	 * Creates a new specification.
+	 */
+	public void createSpecification(final String specificationName) {
+		Loader.showLoader();
+		RPC.getMSpecificationRPC().createSpecification(specificationName, new AsyncCallback<Boolean>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				Loader.hideLoader();
+				Message.error(caught.getMessage());
+			}
+
+			@Override
+			public void onSuccess(Boolean result) {
+				Loader.hideLoader();
+				if (!result) {
+					Message.error("errorAtAddingSpec");
+				}
+
+				MainLayoutPanel.get().getNavigationController().addSpecifications(specificationName);
+				changeWorkingSpecification(specificationName);
+			}
+		});
+
+	}
+
+	/**
+	 * Returns the name of the currentSpecification.
 	 * 
-	 * @return
+	 * @return name
 	 */
 	public String getCurrentSpecificationName() {
 		return currentSpecificationName;
 	}
 
 	/**
-	 * 
+	 * Loading the specification names of the current scenario.
 	 */
 	public void loadSpecificationNames() {
-		Loader.showLoader();
-		RPC.getMSpecificationRPC().getAllSpecificationNames(getLoadSpecificationNamesCallback());
+		loadSpecificationNames(null);
 	}
 
 	/**
-	 * 
-	 * @return
+	 * Loading the specification names of the current scenario and set the given
+	 * specificationName as workingSpecification.
 	 */
-	private AsyncCallback<List<String>> getLoadSpecificationNamesCallback() {
+	public void loadSpecificationNames(String selectSpecification) {
+		Loader.showLoader();
+		RPC.getMSpecificationRPC().getAllSpecificationNames(getLoadSpecificationNamesCallback(selectSpecification));
+	}
+
+	/**
+	 * Returns the callback, which is called after receiving the specification
+	 * names.
+	 * 
+	 * @return async.callback
+	 */
+	private AsyncCallback<List<String>> getLoadSpecificationNamesCallback(final String selectSpecification) {
 		return new AsyncCallback<List<String>>() {
 			@Override
 			public void onSuccess(List<String> result) {
@@ -84,7 +175,11 @@ public class SpecificationController implements ICenterController {
 						MainLayoutPanel.get().getNavigationController().addSpecifications(sName);
 					}
 
-					setCurrentSpecificationName(result.get(0));
+					if (selectSpecification == null || selectSpecification.isEmpty()) {
+						changeWorkingSpecification(result.get(0));
+					} else {
+						changeWorkingSpecification(selectSpecification);
+					}
 				}
 			}
 
@@ -94,5 +189,26 @@ public class SpecificationController implements ICenterController {
 				Message.error(caught.getMessage());
 			}
 		};
+	}
+
+	/**
+	 * Change the specification to the specification with the given name.
+	 */
+	public void changeWorkingSpecification(final String specification) {
+		RPC.getMSpecificationRPC().setWorkingSpecification(specification, new AsyncCallback<Boolean>() {
+			@Override
+			public void onSuccess(Boolean result) {
+				if (result) {
+					setCurrentSpecificationName(specification);
+				} else {
+					Message.error("Can't change specification to '" + specification + "'");
+				}
+			}
+
+			@Override
+			public void onFailure(Throwable caught) {
+				Message.error(caught.getMessage());
+			}
+		});
 	}
 }

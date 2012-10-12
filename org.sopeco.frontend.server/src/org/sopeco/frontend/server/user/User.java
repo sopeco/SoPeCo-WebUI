@@ -1,8 +1,10 @@
 package org.sopeco.frontend.server.user;
 
 import org.sopeco.frontend.server.db.UIPersistenceProvider;
+import org.sopeco.frontend.server.model.MeasurementSpecificationBuilder;
 import org.sopeco.frontend.server.model.ScenarioDefinitionBuilder;
 import org.sopeco.persistence.IPersistenceProvider;
+import org.sopeco.persistence.entities.definition.MeasurementSpecification;
 
 /**
  * 
@@ -15,6 +17,7 @@ public class User {
 
 	private ScenarioDefinitionBuilder currentScenarioDefinitionBuilder;
 
+	private String workingSpecification;
 	private String currentDatabaseId;
 	private IPersistenceProvider currentPersistenceProvider;
 	private UIPersistenceProvider uiPesistenceProvider;
@@ -62,7 +65,26 @@ public class User {
 	}
 
 	// *******************************************************************************************************
-	
+
+	public String getWorkingSpecification() {
+		return workingSpecification;
+	}
+
+	/**
+	 * Set the current specification, which is in the builder as default/working
+	 * spec.
+	 * 
+	 * @param workingSpecification
+	 */
+	public void setWorkingSpecification(String workingSpecification) {
+		this.workingSpecification = workingSpecification;
+
+		MeasurementSpecification specification = getCurrentScenarioDefinitionBuilder().getMeasurementSpecification(workingSpecification);
+		MeasurementSpecificationBuilder specificationBuilder = new MeasurementSpecificationBuilder(
+				specification);
+		getCurrentScenarioDefinitionBuilder().setSpecificationBuilder(specificationBuilder);
+	}
+
 	public void storeCurrentScenarioDefinition() {
 		currentPersistenceProvider.store(currentScenarioDefinitionBuilder.getBuiltScenario());
 	}

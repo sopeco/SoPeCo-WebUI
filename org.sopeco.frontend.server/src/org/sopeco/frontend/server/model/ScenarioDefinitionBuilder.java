@@ -1,6 +1,8 @@
 package org.sopeco.frontend.server.model;
 
+import org.apache.derby.impl.sql.compile.GetCurrentConnectionNode;
 import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
+import org.sopeco.persistence.entities.definition.MeasurementSpecification;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 
 /**
@@ -40,16 +42,56 @@ public class ScenarioDefinitionBuilder {
 		return meBuilder;
 	}
 
+	/**
+	 * Sets the current MeasurementEnvironmentDefiniton of the builder.
+	 * 
+	 * @param meDefinition
+	 */
 	public void setMEDefinition(MeasurementEnvironmentDefinition meDefinition) {
 		currentBuild.setMeasurementEnvironmentDefinition(meDefinition);
 	}
 
+	/**
+	 * Returns the current MeasurementEnvironmentDefinition of the builder.
+	 * 
+	 * @return MeasurementEnvironmentDefinition
+	 */
 	public MeasurementEnvironmentDefinition getMEDefinition() {
 		return currentBuild.getMeasurementEnvironmentDefinition();
 	}
 
+	/**
+	 * Adds a new MeasurementSpecification to the current scenario.
+	 * 
+	 * @return
+	 */
 	public MeasurementSpecificationBuilder addNewMeasurementSpecification() {
 		return new MeasurementSpecificationBuilder(this);
+	}
+
+	/**
+	 * Returns the specification with the given name.
+	 * 
+	 * @param name
+	 *            name of the specification
+	 * @return MeasurementSpecification
+	 */
+	public MeasurementSpecification getMeasurementSpecification(String name) {
+		for (MeasurementSpecification ms : getBuiltScenario().getMeasurementSpecifications()) {
+			if (ms.getName().equals(name)) {
+				return ms;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Replacing the current builder with the given builder.
+	 * 
+	 * @param builder
+	 */
+	public void setSpecificationBuilder(MeasurementSpecificationBuilder builder) {
+		msBuilder = builder;
 	}
 
 	/**

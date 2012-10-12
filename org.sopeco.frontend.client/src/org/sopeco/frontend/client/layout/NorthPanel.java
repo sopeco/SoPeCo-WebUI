@@ -20,6 +20,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -30,6 +31,9 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  */
 public class NorthPanel extends FlowPanel {
+
+	private static final String SAP_RESEARCH_LOGO = "images/sap_research.png";
+	private static final String SAP_RESEARCH_LOGO_ID = "sapResearchLogo";
 
 	private ListBox listboxScenarios;
 	private HTML connectedToText;
@@ -57,8 +61,13 @@ public class NorthPanel extends FlowPanel {
 
 		HorizontalPanel mainHoPanel = new HorizontalPanel();
 		mainHoPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
-		add(mainHoPanel);
 		mainHoPanel.addStyleName("north_hPanel");
+		add(mainHoPanel);
+
+		// Adding Logo to the Top
+		Image researchLogo = new Image(SAP_RESEARCH_LOGO);
+		researchLogo.getElement().setId(SAP_RESEARCH_LOGO_ID);
+		getElement().appendChild(researchLogo.getElement());
 
 		HorizontalPanel firstHoPanel = new HorizontalPanel();
 		firstHoPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
@@ -244,8 +253,9 @@ public class NorthPanel extends FlowPanel {
 			public void onSuccess(Boolean result) {
 				parentPanel.createNewCenterPanels();
 
-				((SpecificationController) parentPanel.getCenterController(CenterType.Specification)).loadSpecificationNames();
-				
+				((SpecificationController) parentPanel.getCenterController(CenterType.Specification))
+						.loadSpecificationNames();
+
 				Loader.hideLoader();
 			}
 		});

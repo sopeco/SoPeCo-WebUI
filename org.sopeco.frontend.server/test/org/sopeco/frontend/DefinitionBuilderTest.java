@@ -218,26 +218,26 @@ public class DefinitionBuilderTest {
 		
 		MeasurementSpecificationBuilder builder = new MeasurementSpecificationBuilder(sdb, TESTNAME);
 
-		ExperimentTerminationCondition terminition = EntityFactory.createTimeOutTerminationCondition(10);
-
-		assertEquals(builder.getBuiltSpecification().getExperimentSeriesDefinitions().size(), 0);
-
-		ExperimentSeriesDefinition def = builder.addExperimentSeries(TESTNAME, terminition);
-
-		assertEquals(builder.getBuiltSpecification().getExperimentSeriesDefinitions().size(), 1);
-		assertEquals(def, builder.getBuiltSpecification().getExperimentSeriesDefinitions().get(0));
-
-		assertFalse(builder.addExperimentSeries(def));
-		assertNull(builder.addExperimentSeries(TESTNAME, terminition));
-
-		assertEquals(builder.getBuiltSpecification().getExperimentSeriesDefinitions().size(), 1);
-
-		assertFalse(builder.removeExperimentSeries("no exp"));
-
-		assertNull(builder.getExperimentSeries("abcd"));
-		ExperimentSeriesDefinition defGet = builder.getExperimentSeries(TESTNAME);
-		assertTrue(builder.removeExperimentSeries(defGet));
-
-		assertEquals(builder.getBuiltSpecification().getExperimentSeriesDefinitions().size(), 0);
+//		ExperimentTerminationCondition terminition = EntityFactory.createTimeOutTerminationCondition(10);
+//
+//		assertEquals(builder.getBuiltSpecification().getExperimentSeriesDefinitions().size(), 0);
+//
+//		ExperimentSeriesDefinition def = builder.addExperimentSeries(TESTNAME, terminition);
+//
+//		assertEquals(builder.getBuiltSpecification().getExperimentSeriesDefinitions().size(), 1);
+//		assertEquals(def, builder.getBuiltSpecification().getExperimentSeriesDefinitions().get(0));
+//
+//		assertFalse(builder.addExperimentSeries(def));
+//		assertNull(builder.addExperimentSeries(TESTNAME, terminition));
+//
+//		assertEquals(builder.getBuiltSpecification().getExperimentSeriesDefinitions().size(), 1);
+//
+//		assertFalse(builder.removeExperimentSeries("no exp"));
+//
+//		assertNull(builder.getExperimentSeries("abcd"));
+//		ExperimentSeriesDefinition defGet = builder.getExperimentSeries(TESTNAME);
+//		assertTrue(builder.removeExperimentSeries(defGet));
+//
+//		assertEquals(builder.getBuiltSpecification().getExperimentSeriesDefinitions().size(), 0);
 	}
 }

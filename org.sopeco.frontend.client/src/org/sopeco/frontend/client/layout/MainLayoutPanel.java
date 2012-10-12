@@ -14,7 +14,11 @@ import org.sopeco.frontend.client.layout.navigation.NavigationController;
 import org.sopeco.frontend.client.layout.navigation.NavigationView;
 
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ScrollPanel;
 
 /**
@@ -23,9 +27,10 @@ import com.google.gwt.user.client.ui.ScrollPanel;
  * @author Marius Oehler
  * 
  */
-public final class MainLayoutPanel extends DockLayoutPanel {
+public final class MainLayoutPanel extends DockLayoutPanel implements ValueChangeHandler<String> {
 
 	private static MainLayoutPanel singletonLayoutPanel;
+	private static final CenterType DEFAULT_CENTER_TYPE = CenterType.Specification;
 
 	private NorthPanel northPanel;
 	private NavigationController navigationController;
@@ -65,11 +70,15 @@ public final class MainLayoutPanel extends DockLayoutPanel {
 	 * Initialize the main layout
 	 */
 	private void initialize() {
+//		History.addValueChangeHandler(this);
+//		History.fireCurrentHistoryState();
+
 		centerScrollPanel = new ScrollPanel();
+		currentCenterPanel = DEFAULT_CENTER_TYPE;
 
 		addNorth(getNorthPanel(), Float.parseFloat(NorthPanel.PANEL_HEIGHT));
 		addWest(getNavigationController().getView(), Float.parseFloat(NavigationView.PANEL_WIDTH));
-
+		
 		getWidgetContainerElement(getNavigationController().getView()).setId("mainNavigation");
 
 		centerController.put(CenterType.Environment, new EnvironmentController());
@@ -77,10 +86,15 @@ public final class MainLayoutPanel extends DockLayoutPanel {
 		centerController.put(CenterType.Execute, new ExecuteController());
 		centerController.put(CenterType.Result, new ResultController());
 
-		currentCenterPanel = CenterType.Environment;
 		getNavigationController().setCurrentCenterType(currentCenterPanel);
 
 		createNewCenterPanels();
+	}
+
+	@Override
+	public void onValueChange(ValueChangeEvent<String> event) {
+//		CenterType oldType = CenterType.valueOf(event.getValue());
+//		updateCenterPanel(oldType, false);
 	}
 
 	/**
@@ -117,11 +131,24 @@ public final class MainLayoutPanel extends DockLayoutPanel {
 	 * @param type
 	 */
 	public void updateCenterPanel(CenterType type) {
+		updateCenterPanel(type, true);
+	}
+
+	/**
+	 * Set the current centerPanel to the given type.
+	 * 
+	 * @param type
+	 */
+	public void updateCenterPanel(CenterType type, boolean newHistoryItem) {
 		if (getCenter() != null) {
 			remove(getCenter());
 		}
 		currentCenterPanel = type;
 		centerScrollPanel.clear();
+
+//		if (newHistoryItem) {
+//			History.newItem(type.name());
+//		}
 
 		getNavigationController().setCurrentCenterType(type);
 

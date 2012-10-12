@@ -13,6 +13,7 @@ import org.sopeco.frontend.client.layout.popups.Confirmation;
 import org.sopeco.frontend.client.layout.popups.Loader;
 import org.sopeco.frontend.client.layout.popups.Message;
 import org.sopeco.frontend.client.layout.popups.TextInput;
+import org.sopeco.frontend.client.layout.popups.TextInput.Icon;
 import org.sopeco.frontend.client.layout.popups.TextInputOkHandler;
 import org.sopeco.persistence.metadata.entities.DatabaseInstance;
 
@@ -209,7 +210,7 @@ public class LoginBox extends DialogBox implements ClickHandler, Deactivatable {
 		Cookies.setCookie(COOKIE_DATABSE, instance.getDbName());
 
 		if (instance.isProtectedByPassword()) {
-			TextInput.doInput(TextInput.ICO_PASSWORD,
+			TextInput.doInput(Icon.Password,
 					R.get("insert_db_passwd_for") + " '" + instance.getDbName() + "'", R.get("db_passwd") + ":",
 					new TextInputOkHandler() {
 						@Override
@@ -262,7 +263,7 @@ public class LoginBox extends DialogBox implements ClickHandler, Deactivatable {
 		}
 
 		if (instance.isProtectedByPassword()) {
-			TextInput.doInput(TextInput.ICO_PASSWORD, R.get("pw_remove_db"), R.get("db_passwd") + ":",
+			TextInput.doInput(Icon.Password, R.get("pw_remove_db"), R.get("db_passwd") + ":",
 					new TextInputOkHandler() {
 						@Override
 						public void onInput(ClickEvent event, String input) {

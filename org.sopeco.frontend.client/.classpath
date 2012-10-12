@@ -25,5 +25,7 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.sopeco.frontend.rpc"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.sopeco.frontend.server"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

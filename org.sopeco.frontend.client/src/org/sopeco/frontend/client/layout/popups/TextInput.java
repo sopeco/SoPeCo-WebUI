@@ -24,24 +24,34 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 public final class TextInput extends DialogBox implements KeyPressHandler {
 
 	/**
-	 * Standard icon: notepad.
+	 * Icons for the textinput.
 	 */
-	public static final int ICO_DEFAULT = 0;
-	/**
-	 * Password icon: lock.
-	 */
-	public static final int ICO_PASSWORD = 1;
+	public enum Icon {
+		Default(0), Password(1), Add(2);
+
+		private int value;
+
+		private Icon(int pValue) {
+			this.value = pValue;
+		}
+
+		public int getValue() {
+			return value;
+		}
+	}
+
+	private static final String[] ICON_URLS = new String[] { "images/text.png", "images/lock.png", "images/add_big.png" };
 
 	private TextBox textboxText;
 	private TextInputOkHandler okHandler;
 	private Button btnNewButton;
 
-	private TextInput(int icon, String title, String message, TextInputOkHandler action) {
+	private TextInput(String iconURL, String title, String message, TextInputOkHandler action) {
 		super(false, true);
 
 		okHandler = action;
 
-		initialize(icon, title, message);
+		initialize(iconURL, title, message);
 	}
 
 	/**
@@ -54,7 +64,7 @@ public final class TextInput extends DialogBox implements KeyPressHandler {
 	 * @param message
 	 *            the message in the dialog box
 	 */
-	private void initialize(int icon, String title, String message) {
+	private void initialize(String iconUrl, String title, String message) {
 		setGlassEnabled(true);
 
 		setText(title);
@@ -69,16 +79,7 @@ public final class TextInput extends DialogBox implements KeyPressHandler {
 		horizontalPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
 		verticalPanel.add(horizontalPanel);
 
-		Image image = null;
-		switch (icon) {
-		case ICO_PASSWORD:
-			image = new Image("images/lock.png");
-			break;
-		case ICO_DEFAULT:
-		default:
-			image = new Image("images/text.png");
-		}
-
+		Image image = new Image(iconUrl);
 		horizontalPanel.add(image);
 
 		HorizontalPanel horizontalPanel2 = new HorizontalPanel();
@@ -146,7 +147,7 @@ public final class TextInput extends DialogBox implements KeyPressHandler {
 	 *            the handler of the ok button
 	 */
 	public static void doInput(String title, String message, TextInputOkHandler action) {
-		doInput(ICO_DEFAULT, title, message, action);
+		doInput(Icon.Default, title, message, action);
 	}
 
 	/**
@@ -161,8 +162,15 @@ public final class TextInput extends DialogBox implements KeyPressHandler {
 	 * @param action
 	 *            the handler of the ok button
 	 */
-	public static void doInput(int icon, String title, String message, TextInputOkHandler action) {
-		TextInput input = new TextInput(icon, title, message, action);
+	public static void doInput(Icon icon, String title, String message, TextInputOkHandler action) {
+		TextInput input = new TextInput(ICON_URLS[icon.getValue()], title, message, action);
+
+		input.center();
+		input.setFocus();
+	}
+
+	public static void doInput(String iconUrl, String title, String message, TextInputOkHandler action) {
+		TextInput input = new TextInput(iconUrl, title, message, action);
 
 		input.center();
 		input.setFocus();

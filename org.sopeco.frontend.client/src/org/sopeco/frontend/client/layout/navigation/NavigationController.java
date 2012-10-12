@@ -3,10 +3,14 @@ package org.sopeco.frontend.client.layout.navigation;
 import org.sopeco.frontend.client.layout.MainLayoutPanel;
 import org.sopeco.frontend.client.layout.center.CenterType;
 import org.sopeco.frontend.client.layout.center.specification.SpecificationController;
+import org.sopeco.frontend.client.layout.popups.TextInput;
+import org.sopeco.frontend.client.layout.popups.TextInputOkHandler;
+import org.sopeco.frontend.client.layout.popups.TextInput.Icon;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
 
 /**
@@ -24,12 +28,33 @@ public class NavigationController {
 
 	public NavigationController(MainLayoutPanel parent) {
 		parentLayout = parent;
-
 		view = new NavigationView();
 
 		loadExperiments();
-
 		attachNaviItemClickHandlers();
+		addCreateSpecificationClickHandler();
+	}
+
+	/**
+	 * Add a clickhandler to the "add specification" html-element, which handels
+	 * the adding of new specifications.
+	 */
+	private void addCreateSpecificationClickHandler() {
+		view.getChangeSpecificationPanel().getAddSpecificationHTML().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				view.getChangeSpecificationPanel().setVisible(false);
+
+				TextInput.doInput(Icon.Add, "Add specification", "Name of the new specification:",
+						new TextInputOkHandler() {
+							@Override
+							public void onInput(ClickEvent event, String input) {
+								((SpecificationController) MainLayoutPanel.get().getCenterController(
+										CenterType.Specification)).createSpecification(input);
+							}
+						});
+			}
+		});
 	}
 
 	/**
@@ -85,10 +110,15 @@ public class NavigationController {
 				HTML item = (HTML) event.getSource();
 				String specificationName = item.getText();
 
-				setActiveSpecification(specificationName);
+				if (((SpecificationController) MainLayoutPanel.get().getCenterController(CenterType.Specification))
+						.getCurrentSpecificationName().equals(specificationName)) {
+					view.getChangeSpecificationPanel().setVisible(false);
 
-				((SpecificationController) parentLayout.getCenterController(CenterType.Specification))
-						.setCurrentSpecificationName(specificationName);
+					return;
+				}
+
+				((SpecificationController) MainLayoutPanel.get().getCenterController(CenterType.Specification))
+						.changeWorkingSpecification(specificationName);
 			}
 		};
 	}

@@ -20,4 +20,27 @@ public interface MSpecificationRPC extends RemoteService {
 	 */
 	List<String> getAllSpecificationNames();
 
+	/**
+	 * Set the current working specification to the given specification.
+	 * 
+	 * @param specificationName
+	 * @return
+	 */
+	boolean setWorkingSpecification(String specificationName);
+
+	/**
+	 * Creates a new specification with the given name.
+	 * 
+	 * @param name
+	 * @return
+	 */
+	boolean createSpecification(String name);
+
+	/**
+	 * Renames the working specification to the new name.
+	 * 
+	 * @param newName the new name
+	 * @return 
+	 */
+	boolean renameWorkingSpecification(String newName);
 }

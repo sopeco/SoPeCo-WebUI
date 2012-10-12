@@ -3,6 +3,7 @@ package org.sopeco.frontend.client.widget;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
@@ -14,8 +15,10 @@ import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
+import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
@@ -30,7 +33,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  * @author Marius Oehler
  * 
  */
-public class ComboBox extends FlowPanel {
+public class ComboBox extends FlowPanel implements HasValueChangeHandlers<String> {
 
 	private static final String CCS_CLASS_NAME = "spc-ComboBox";
 	private static final String CCS_DROPDOWN_VIEW_NAME = "spc-ComboBox-DropDownView";
@@ -86,8 +89,40 @@ public class ComboBox extends FlowPanel {
 		itemList.add(focusPanel);
 
 		if (selectedIndex == -1) {
-			setSelectedIndex(0);
+			setSelectedIndex(Math.max(0, itemList.size() - 1));
 		}
+	}
+
+	/**
+	 * Checks if the given String is already in the comboboxlist.
+	 * 
+	 * @param testing
+	 *            string
+	 * @return
+	 */
+	public boolean containsString(String testing) {
+		for (FocusPanel panel : itemList) {
+			if (((Label) panel.getWidget()).getText().equals(testing)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Removes all children from the combobox.
+	 */
+	public void clear() {
+		selectedIndex = -1;
+		itemList.clear();
+		userEditedText = false;
+	}
+
+	/**
+	 * Set the given text to the combobox.
+	 */
+	public void setText(String text) {
+		inputField.setText(text);
 	}
 
 	/**
@@ -129,6 +164,7 @@ public class ComboBox extends FlowPanel {
 				itemList.get(selectedIndex).setFocus(false);
 			}
 			selectedIndex = -1;
+			ValueChangeEvent.fire(ComboBox.this, getText());
 			return;
 		} else if (i < 0 || i >= itemList.size()) {
 			throw new IndexOutOfBoundsException("Index " + i + " is out of the list size of " + itemList.size());
@@ -138,6 +174,7 @@ public class ComboBox extends FlowPanel {
 		Label label = (Label) itemList.get(i).getWidget();
 		inputField.setText(label.getText());
 		userEditedText = false;
+		ValueChangeEvent.fire(ComboBox.this, getText());
 	}
 
 	/**
@@ -246,6 +283,11 @@ public class ComboBox extends FlowPanel {
 		} else {
 			dummyPanel.setFocus(true);
 		}
+	}
+
+	@Override
+	public HandlerRegistration addValueChangeHandler(final ValueChangeHandler<String> handler) {
+		return addHandler(handler, ValueChangeEvent.getType());
 	}
 
 	/**

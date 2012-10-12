@@ -26,6 +26,11 @@
 	margin-left: 1em;
 }
 
+.bold {
+	font-weight: bold;
+	color: #333;
+}
+
 /* ******************************************* */
 /* SOPECO - COMBOBOX */
 .spc-ComboBox {
@@ -40,6 +45,7 @@
 	outline: none;
 	margin: 1px 2px;
 	padding: 3px;
+	background: transparent;
 }
 
 .spc-ComboBox>img {
@@ -136,15 +142,23 @@ p {
 }
 
 .nPanel {
-	background-color: #333;
+	background-color: #234;
 	border-bottom: 1px solid black;
 	margin-top: -1px;
 	padding-top: 0.2em;
 	height: 2.8em;
 }
 
+#sapResearchLogo {
+	float: right;
+	margin: 12px;
+	height: 12px;
+	width: 121px;
+}
+
 .north_hPanel {
 	margin-left: 1em;
+	float: left;
 }
 
 .north_hPanel .tabStyle {
@@ -272,6 +286,52 @@ p {
 /*  ********************  */
 /*    environmentPanel    */
 /*  ********************  */
+#controllerPanel {
+	display: block;
+	overflow: hidden;
+}
+
+#controllerPanel>#contentWrapper {
+	padding: 1em;
+}
+
+#controllerPanel>#contentWrapper>.headline {
+	padding: 0.5em;
+	border-bottom: 1px solid #CCC;
+	color: #333;
+	font-weight: bold;
+}
+
+#controllerPanel>#contentWrapper .gwt-Button {
+	padding: 2px 25px;
+	float: right;
+}
+
+#controllerPanel>#contentWrapper .spc-ComboBox.invalid {
+	background-color: #FFF6F6;
+}
+
+#controllerPanel>#contentWrapper .spc-ComboBox.invalid .gwt-TextBox {
+	color: #A00;
+}
+
+#controllerPanel>#contentWrapper .positive {
+	color: #3A5;
+}
+
+#controllerPanel>#contentWrapper .negative {
+	color: #933;
+}
+
+#controllerPanel>#contentWrapper .warning {
+	color: #C70;
+}
+
+#controllerPanel>#contentWrapper .loadingIndicator {
+	margin: 0 5px 0 10px;
+}
+
+/*  ********************  */
 #mecSliderPanel {
 	background-color: #fafafa;
 	border-left: 1px solid #CCC;
@@ -296,68 +356,6 @@ p {
 
 #mecSliderPanel .slideText {
 	color: #333;
-}
-
-#mecPanel {
-	display: block;
-	overflow: hidden;
-}
-
-#mecPanel .gwt-Button {
-	padding: 2px 25px;
-}
-
-#mecPanel .headline {
-	padding: 0.5em;
-	border-bottom: 1px solid #CCC;
-	color: #333;
-	font-weight: bold;
-}
-
-#mecPanel select {
-	width: 400px;
-	padding: 4px;
-	border: 1px solid #aaa;
-}
-
-#mecPanel .invalid {
-	color: #A00;
-	background-color: #FFF6F6;
-}
-
-#mecGrid .description {
-	font-weight: bold;
-	color: #333;
-}
-
-#mecGrid .statusText {
-	font-weight: bold;
-	color: #333;
-}
-
-#mecGrid .statusText.positive {
-	color: #3A5;
-}
-
-#mecGrid .statusText.negative {
-	color: #933;
-}
-
-#mecGrid .statusText.warning {
-	color: #C70;
-}
-
-#mecPanel .actionline {
-	border-bottom: 0;
-	border-top: 1px solid #CCC;
-	margin-top: 0.5em;
-	padding-bottom: 0;
-	color: #933;
-	padding-top: 1em;
-}
-
-#mecPanel .actionline button {
-	float: right;
 }
 
 #medTreePanel {
@@ -449,6 +447,7 @@ p {
 
 .frontendTree .treeItem .linePanel>.editableParameter {
 	color: #aaa;
+	font-weight: normal;
 }
 
 .tlEntry #changeSpecImage {
@@ -502,6 +501,21 @@ p {
 	white-space: nowrap;
 }
 
+#changeSpecPanel #addSpecification {
+	color: #333;
+	opacity: 0.5;
+	filter: alpha(opacity=50);
+}
+#changeSpecPanel #addSpecification:hover {
+	opacity: 1;
+	filter: alpha(opacity=100);
+}
+#changeSpecPanel #addSpecification>img {
+	vertical-align: middle;
+	margin-right: 1em;
+	margin-bottom: 3px;
+}
+
 #specificationTopPanel {
 	border-bottom: 1px solid #ccc;
 	width: 100%;
@@ -511,4 +525,41 @@ p {
 .clear {
 	float: none !important;
 	clear: both !important;
+}
+
+#assignmentListPanel {
+	padding: 0 1em;
+}
+
+#assignmentListPanel .assignmentItem {
+	margin-bottom: 0.4em;
+	display: block;
+}
+
+#assignmentListPanel .assignmentItem>div {
+	float: left;
+	margin-top: 1px;
+}
+
+#assignmentListPanel .assignmentItem>input {
+	margin: 0 0 0 20px;
+	padding: 2px 8px;
+	float: left;
+}
+
+#assignmentListPanel .assignmentItem .namespace {
+	
+}
+
+#assignmentListPanel .assignmentItem .name {
+	font-weight: bold;
+}
+
+#assignmentListPanel .assignmentItem .type {
+	color: #AAA;
+	text-transform: uppercase;
+}
+
+#environmentTreePanel {
+	
 }

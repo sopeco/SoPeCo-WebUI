@@ -19,19 +19,27 @@ public class MeasurementSpecificationBuilder {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(MeasurementSpecificationBuilder.class);
 	private MeasurementSpecification specification;
-	private ScenarioDefinitionBuilder scenarioBuilder;
+
+	// private ScenarioDefinitionBuilder scenarioBuilder;
 
 	public MeasurementSpecificationBuilder(ScenarioDefinitionBuilder sBuilder) {
 		this(sBuilder, "MeasurementSpecification");
 	}
 
-	public MeasurementSpecificationBuilder(ScenarioDefinitionBuilder sBuilder, String specName) {
-		LOGGER.debug("Creating MeasurementSpecificationBuilder '" + specName + "'");
+	public MeasurementSpecificationBuilder(ScenarioDefinitionBuilder sBuilder,
+			String specName) {
+		LOGGER.debug("Creating MeasurementSpecificationBuilder '" + specName
+				+ "'");
 
-		scenarioBuilder = sBuilder;
-		
+		// scenarioBuilder = sBuilder;
+
 		specification = EntityFactory.createMeasurementSpecification(specName);
-		scenarioBuilder.getBuiltScenario().getMeasurementSpecifications().add(specification);
+		sBuilder.getBuiltScenario().getMeasurementSpecifications().add(specification);
+	}
+
+	public MeasurementSpecificationBuilder(MeasurementSpecification spec) {
+		LOGGER.debug("Creating MeasurementSpecificationBuilder for Spec. '{}'", spec.getName());
+		specification = spec;
 	}
 
 	/**
@@ -57,11 +65,13 @@ public class MeasurementSpecificationBuilder {
 	 * @return was the adding successful
 	 */
 	public boolean addInitAssignment(ConstantValueAssignment cva) {
-		LOGGER.debug("adding parameter '" + cva.getParameter().getFullName() + "' as init assignment");
+		LOGGER.debug("adding parameter '" + cva.getParameter().getFullName()
+				+ "' as init assignment");
 
 		for (ConstantValueAssignment assignment : specification.getInitializationAssignemts()) {
 			if (assignment.getParameter().getFullName().equals(cva.getParameter().getFullName())) {
-				LOGGER.warn("parameter '" + cva.getParameter().getFullName() + "' already in init assignments list!");
+				LOGGER.warn("parameter '" + cva.getParameter().getFullName()
+						+ "' already in init assignments list!");
 				return false;
 			}
 		}
@@ -77,7 +87,8 @@ public class MeasurementSpecificationBuilder {
 	 * @return was the removal successful
 	 */
 	public boolean removeInitialAssignment(ConstantValueAssignment cva) {
-		LOGGER.debug("Removing ConstantValueAssignment '" + cva.getParameter().getFullName()
+		LOGGER.debug("Removing ConstantValueAssignment '"
+				+ cva.getParameter().getFullName()
 				+ "' from init assignment list");
 
 		return specification.getInitializationAssignemts().remove(cva);
@@ -91,7 +102,8 @@ public class MeasurementSpecificationBuilder {
 	 * @return was the removal successful
 	 */
 	public boolean removeInitialAssignment(ParameterDefinition parameter) {
-		LOGGER.debug("Removing parameter '" + parameter.getFullName() + "' from init assignment list");
+		LOGGER.debug("Removing parameter '" + parameter.getFullName()
+				+ "' from init assignment list");
 
 		for (ConstantValueAssignment cva : specification.getInitializationAssignemts()) {
 			if (cva.getParameter() == parameter) {
@@ -131,13 +143,16 @@ public class MeasurementSpecificationBuilder {
 	 *         given name already exists
 	 */
 	public boolean addExperimentSeries(ExperimentSeriesDefinition experiment) {
-		LOGGER.debug("adding new experiementSeriesDefinition '" + experiment.getName() + "' to specification '"
+		LOGGER.debug("adding new experiementSeriesDefinition '"
+				+ experiment.getName() + "' to specification '"
 				+ specification.getName() + "'");
 
 		for (ExperimentSeriesDefinition expDefinition : specification.getExperimentSeriesDefinitions()) {
 			if (expDefinition.getName().equals(experiment.getName())) {
 				LOGGER.warn("adding failed. there is already a experiementSeriesDefinition called '"
-						+ experiment.getName() + " in specification '" + specification.getName() + "'");
+						+ experiment.getName()
+						+ " in specification '"
+						+ specification.getName() + "'");
 
 				return false;
 			}
@@ -157,14 +172,16 @@ public class MeasurementSpecificationBuilder {
 	public ExperimentSeriesDefinition getExperimentSeries(String name) {
 		for (ExperimentSeriesDefinition expDefinition : specification.getExperimentSeriesDefinitions()) {
 			if (expDefinition.getName().equals(name)) {
-				LOGGER.debug("experiment called '" + name + " was found in specification '" + specification.getName()
-						+ "'");
+				LOGGER.debug("experiment called '" + name
+						+ " was found in specification '"
+						+ specification.getName() + "'");
 
 				return expDefinition;
 			}
 		}
 
-		LOGGER.warn("specification '" + specification.getName() + "' has no experiment called '" + name + "'");
+		LOGGER.warn("specification '" + specification.getName()
+				+ "' has no experiment called '" + name + "'");
 
 		return null;
 	}
@@ -188,7 +205,8 @@ public class MeasurementSpecificationBuilder {
 	 * @return true if the removal was successful
 	 */
 	public boolean removeExperimentSeries(String name) {
-		LOGGER.debug("removing the experiment '" + name + "' from the specification '" + specification.getName() + "'");
+		LOGGER.debug("removing the experiment '" + name
+				+ "' from the specification '" + specification.getName() + "'");
 
 		for (ExperimentSeriesDefinition expDefinition : specification.getExperimentSeriesDefinitions()) {
 			if (expDefinition.getName().equals(name)) {
@@ -196,8 +214,9 @@ public class MeasurementSpecificationBuilder {
 			}
 		}
 
-		LOGGER.warn("can't remove exp. '" + name + "' because nothing was found in spec. '" + specification.getName()
-				+ "'");
+		LOGGER.warn("can't remove exp. '" + name
+				+ "' because nothing was found in spec. '"
+				+ specification.getName() + "'");
 
 		return false;
 	}
@@ -209,7 +228,8 @@ public class MeasurementSpecificationBuilder {
 	 *            the new spec. name
 	 */
 	public void setName(String name) {
-		LOGGER.debug("Setting new specification name: '" + specification.getName() + "' -> '" + name + "'");
+		LOGGER.debug("Setting new specification name: '"
+				+ specification.getName() + "' -> '" + name + "'");
 
 		specification.setName(name);
 	}
