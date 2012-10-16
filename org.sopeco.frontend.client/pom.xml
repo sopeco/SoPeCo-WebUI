@@ -16,19 +16,19 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.sopeco.frontend</groupId>
-			<artifactId>org.sopeco.frontend.rpc</artifactId>
+			<artifactId>org.sopeco.frontend.shared</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.sopeco.frontend</groupId>
+			<artifactId>org.sopeco.frontend.shared</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<classifier>sources</classifier>
 		</dependency>
 		<dependency>
 			<groupId>org.sopeco.frontend</groupId>
 			<artifactId>org.sopeco.frontend.server</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.sopeco.frontend</groupId>
-			<artifactId>org.sopeco.frontend.rpc</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-			<classifier>sources</classifier>
 		</dependency>
 	</dependencies>
 

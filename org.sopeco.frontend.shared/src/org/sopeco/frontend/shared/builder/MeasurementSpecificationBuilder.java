@@ -1,8 +1,8 @@
-package org.sopeco.frontend.server.model;
+package org.sopeco.frontend.shared.builder;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.sopeco.persistence.EntityFactory;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.sopeco.persistence.entities.definition.ConstantValueAssignment;
 import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
 import org.sopeco.persistence.entities.definition.ExperimentTerminationCondition;
@@ -17,7 +17,7 @@ import org.sopeco.persistence.entities.definition.ParameterDefinition;
  */
 public class MeasurementSpecificationBuilder {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(MeasurementSpecificationBuilder.class);
+	private static final Logger LOGGER = Logger.getLogger(MeasurementSpecificationBuilder.class.getName());
 	private MeasurementSpecification specification;
 
 	// private ScenarioDefinitionBuilder scenarioBuilder;
@@ -28,17 +28,21 @@ public class MeasurementSpecificationBuilder {
 
 	public MeasurementSpecificationBuilder(ScenarioDefinitionBuilder sBuilder,
 			String specName) {
-		LOGGER.debug("Creating MeasurementSpecificationBuilder '" + specName
+		LOGGER.info("Creating MeasurementSpecificationBuilder '" + specName
 				+ "'");
+		LOGGER.log(Level.FINE, "Creating MeasurementSpecificationBuilder '"
+				+ specName + "'");
 
 		// scenarioBuilder = sBuilder;
 
-		specification = EntityFactory.createMeasurementSpecification(specName);
+		specification = SimpleEntityFactory.createMeasurementSpecification(specName);
 		sBuilder.getBuiltScenario().getMeasurementSpecifications().add(specification);
 	}
 
 	public MeasurementSpecificationBuilder(MeasurementSpecification spec) {
-		LOGGER.debug("Creating MeasurementSpecificationBuilder for Spec. '{}'", spec.getName());
+		LOGGER.info("Creating MeasurementSpecificationBuilder for Spec. '"
+				+ spec.getName() + "'");
+
 		specification = spec;
 	}
 
@@ -52,7 +56,7 @@ public class MeasurementSpecificationBuilder {
 	 * @return was the adding successful
 	 */
 	public boolean addInitAssignment(ParameterDefinition parameter, String value) {
-		ConstantValueAssignment cva = EntityFactory.createConstantValueAssignment(parameter, value);
+		ConstantValueAssignment cva = SimpleEntityFactory.createConstantValueAssignment(parameter, value);
 
 		return addInitAssignment(cva);
 	}
@@ -65,12 +69,12 @@ public class MeasurementSpecificationBuilder {
 	 * @return was the adding successful
 	 */
 	public boolean addInitAssignment(ConstantValueAssignment cva) {
-		LOGGER.debug("adding parameter '" + cva.getParameter().getFullName()
+		LOGGER.info("adding parameter '" + cva.getParameter().getFullName()
 				+ "' as init assignment");
 
 		for (ConstantValueAssignment assignment : specification.getInitializationAssignemts()) {
 			if (assignment.getParameter().getFullName().equals(cva.getParameter().getFullName())) {
-				LOGGER.warn("parameter '" + cva.getParameter().getFullName()
+				LOGGER.warning("parameter '" + cva.getParameter().getFullName()
 						+ "' already in init assignments list!");
 				return false;
 			}
@@ -87,7 +91,7 @@ public class MeasurementSpecificationBuilder {
 	 * @return was the removal successful
 	 */
 	public boolean removeInitialAssignment(ConstantValueAssignment cva) {
-		LOGGER.debug("Removing ConstantValueAssignment '"
+		LOGGER.info("Removing ConstantValueAssignment '"
 				+ cva.getParameter().getFullName()
 				+ "' from init assignment list");
 
@@ -102,7 +106,7 @@ public class MeasurementSpecificationBuilder {
 	 * @return was the removal successful
 	 */
 	public boolean removeInitialAssignment(ParameterDefinition parameter) {
-		LOGGER.debug("Removing parameter '" + parameter.getFullName()
+		LOGGER.info("Removing parameter '" + parameter.getFullName()
 				+ "' from init assignment list");
 
 		for (ConstantValueAssignment cva : specification.getInitializationAssignemts()) {
@@ -125,7 +129,7 @@ public class MeasurementSpecificationBuilder {
 	 *         object else null
 	 */
 	public ExperimentSeriesDefinition addExperimentSeries(String name, ExperimentTerminationCondition termination) {
-		ExperimentSeriesDefinition experiment = EntityFactory.createExperimentSeriesDefinition(name, termination);
+		ExperimentSeriesDefinition experiment = SimpleEntityFactory.createExperimentSeriesDefinition(name, termination);
 
 		if (addExperimentSeries(experiment)) {
 			return experiment;
@@ -143,13 +147,13 @@ public class MeasurementSpecificationBuilder {
 	 *         given name already exists
 	 */
 	public boolean addExperimentSeries(ExperimentSeriesDefinition experiment) {
-		LOGGER.debug("adding new experiementSeriesDefinition '"
+		LOGGER.info("adding new experiementSeriesDefinition '"
 				+ experiment.getName() + "' to specification '"
 				+ specification.getName() + "'");
 
 		for (ExperimentSeriesDefinition expDefinition : specification.getExperimentSeriesDefinitions()) {
 			if (expDefinition.getName().equals(experiment.getName())) {
-				LOGGER.warn("adding failed. there is already a experiementSeriesDefinition called '"
+				LOGGER.warning("adding failed. there is already a experiementSeriesDefinition called '"
 						+ experiment.getName()
 						+ " in specification '"
 						+ specification.getName() + "'");
@@ -172,7 +176,7 @@ public class MeasurementSpecificationBuilder {
 	public ExperimentSeriesDefinition getExperimentSeries(String name) {
 		for (ExperimentSeriesDefinition expDefinition : specification.getExperimentSeriesDefinitions()) {
 			if (expDefinition.getName().equals(name)) {
-				LOGGER.debug("experiment called '" + name
+				LOGGER.info("experiment called '" + name
 						+ " was found in specification '"
 						+ specification.getName() + "'");
 
@@ -180,7 +184,7 @@ public class MeasurementSpecificationBuilder {
 			}
 		}
 
-		LOGGER.warn("specification '" + specification.getName()
+		LOGGER.warning("specification '" + specification.getName()
 				+ "' has no experiment called '" + name + "'");
 
 		return null;
@@ -205,7 +209,7 @@ public class MeasurementSpecificationBuilder {
 	 * @return true if the removal was successful
 	 */
 	public boolean removeExperimentSeries(String name) {
-		LOGGER.debug("removing the experiment '" + name
+		LOGGER.info("removing the experiment '" + name
 				+ "' from the specification '" + specification.getName() + "'");
 
 		for (ExperimentSeriesDefinition expDefinition : specification.getExperimentSeriesDefinitions()) {
@@ -214,7 +218,7 @@ public class MeasurementSpecificationBuilder {
 			}
 		}
 
-		LOGGER.warn("can't remove exp. '" + name
+		LOGGER.warning("can't remove exp. '" + name
 				+ "' because nothing was found in spec. '"
 				+ specification.getName() + "'");
 
@@ -228,7 +232,7 @@ public class MeasurementSpecificationBuilder {
 	 *            the new spec. name
 	 */
 	public void setName(String name) {
-		LOGGER.debug("Setting new specification name: '"
+		LOGGER.info("Setting new specification name: '"
 				+ specification.getName() + "' -> '" + name + "'");
 
 		specification.setName(name);

@@ -1,12 +1,15 @@
 package org.sopeco.frontend.client.layout;
 
 import org.sopeco.frontend.client.R;
+import org.sopeco.frontend.client.event.EventControl;
+import org.sopeco.frontend.client.event.ScenarioChangedEvent;
 import org.sopeco.frontend.client.layout.center.CenterType;
 import org.sopeco.frontend.client.layout.center.specification.SpecificationController;
 import org.sopeco.frontend.client.layout.dialog.AddScenarioDialog;
 import org.sopeco.frontend.client.layout.popups.Confirmation;
 import org.sopeco.frontend.client.layout.popups.Loader;
 import org.sopeco.frontend.client.layout.popups.Message;
+import org.sopeco.frontend.client.model.ScenarioManager;
 import org.sopeco.frontend.client.rpc.RPC;
 
 import com.google.gwt.core.client.GWT;
@@ -241,23 +244,26 @@ public class NorthPanel extends FlowPanel {
 			return;
 		}
 
-		Loader.showLoader();
-		RPC.getScenarioManager().switchScenario(name, new AsyncCallback<Boolean>() {
-			@Override
-			public void onFailure(Throwable caught) {
-				Loader.hideLoader();
-				Message.error(caught.getMessage());
-			}
-
-			@Override
-			public void onSuccess(Boolean result) {
-				parentPanel.createNewCenterPanels();
-
-				((SpecificationController) parentPanel.getCenterController(CenterType.Specification))
-						.loadSpecificationNames();
-
-				Loader.hideLoader();
-			}
-		});
+		EventControl.get().fireEvent(new ScenarioChangedEvent(name));
+//		ScenarioManager.get().switchScenario(name);
+		
+//		Loader.showLoader();
+//		RPC.getScenarioManager().switchScenario(name, new AsyncCallback<Boolean>() {
+//			@Override
+//			public void onFailure(Throwable caught) {
+//				Loader.hideLoader();
+//				Message.error(caught.getMessage());
+//			}
+//
+//			@Override
+//			public void onSuccess(Boolean result) {
+//				parentPanel.createNewCenterPanels();
+//
+//				((SpecificationController) parentPanel.getCenterController(CenterType.Specification))
+//						.loadSpecificationNames();
+//
+//				Loader.hideLoader();
+//			}
+//		});
 	}
 }

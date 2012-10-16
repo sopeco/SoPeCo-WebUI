@@ -1,5 +1,7 @@
 package org.sopeco.frontend.client.rpc;
 
+import org.sopeco.persistence.entities.definition.ScenarioDefinition;
+
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -23,4 +25,8 @@ public interface ScenarioManagerRPC extends RemoteService {
 	boolean removeScenario(String name);
 
 	boolean switchScenario(String name);
+	
+	ScenarioDefinition getCurrentScenarioDefinition();
+	
+	boolean storeScenarioDefinition(ScenarioDefinition definition);
 }

@@ -5,8 +5,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sopeco.frontend.client.rpc.ScenarioManagerRPC;
-import org.sopeco.frontend.server.model.ScenarioDefinitionBuilder;
 import org.sopeco.frontend.server.rpc.SuperRemoteServlet;
+import org.sopeco.frontend.shared.builder.ScenarioDefinitionBuilder;
 import org.sopeco.persistence.IPersistenceProvider;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 import org.sopeco.persistence.exceptions.DataNotFoundException;
@@ -18,7 +18,8 @@ import org.sopeco.persistence.exceptions.DataNotFoundException;
  * @author Marius Oehler
  * 
  */
-public class ScenarioManagerRPCImpl extends SuperRemoteServlet implements ScenarioManagerRPC {
+public class ScenarioManagerRPCImpl extends SuperRemoteServlet implements
+		ScenarioManagerRPC {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ScenarioManagerRPCImpl.class);
 	private static final long serialVersionUID = 1L;
@@ -102,5 +103,23 @@ public class ScenarioManagerRPCImpl extends SuperRemoteServlet implements Scenar
 			LOGGER.warn("Scenario '{}' not found.", name);
 			return false;
 		}
+	}
+
+	@Override
+	public ScenarioDefinition getCurrentScenarioDefinition() {
+		return getUser().getCurrentScenarioDefinitionBuilder().getBuiltScenario();
+	}
+
+	@Override
+	public boolean storeScenarioDefinition(ScenarioDefinition definition) {
+		ScenarioDefinition current = getUser().getCurrentScenarioDefinitionBuilder().getBuiltScenario();
+
+		current.setScenarioName(definition.getScenarioName());
+		current.setMeasurementEnvironmentDefinition(definition.getMeasurementEnvironmentDefinition());
+		current.getMeasurementSpecifications().clear();
+		current.getMeasurementSpecifications().addAll(definition.getMeasurementSpecifications());
+
+		getUser().storeCurrentScenarioDefinition();
+		return true;
 	}
 }

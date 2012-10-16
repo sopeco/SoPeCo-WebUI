@@ -5,6 +5,7 @@ import org.sopeco.frontend.client.R;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.ScrollPanel;
 
 /**
  * 
@@ -14,7 +15,8 @@ import com.google.gwt.user.client.ui.FlowPanel;
 class AssignmentView extends FlowPanel {
 
 	private static final String ASSIGNMENT_PANEL_ID = "assignmentListPanel";
-
+	private static final String ASSIGNMENT_PANEL_WRAPPER_ID = "assignmentListPanelWrapper";
+	
 	public AssignmentView() {
 		initialize();
 	}
@@ -29,5 +31,11 @@ class AssignmentView extends FlowPanel {
 		headline.setInnerHTML(R.get("initAssignments"));
 
 		getElement().appendChild(headline);
+	}
+
+	public ScrollPanel getInScrollPanel() {
+		ScrollPanel panel = new ScrollPanel(this);
+		panel.getElement().setId(ASSIGNMENT_PANEL_WRAPPER_ID);
+		return panel;
 	}
 }

@@ -6,7 +6,6 @@ import org.sopeco.frontend.client.R;
 import org.sopeco.frontend.client.animation.ICompleteHandler;
 import org.sopeco.frontend.client.animation.SlideDown;
 import org.sopeco.frontend.client.animation.SlideUp;
-import org.sopeco.frontend.client.layout.center.CenterPanel;
 import org.sopeco.frontend.client.layout.center.ICenterController;
 import org.sopeco.frontend.client.layout.center.environment.EnvironmentView.ControllerStatus;
 import org.sopeco.frontend.client.layout.popups.Loader;
@@ -22,6 +21,8 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * 
@@ -44,8 +45,8 @@ public class EnvironmentController implements ICenterController, ClickHandler, V
 	}
 
 	@Override
-	public CenterPanel getView() {
-		return view;
+	public Widget getView() {
+		return new ScrollPanel(view);
 	}
 
 	@Override

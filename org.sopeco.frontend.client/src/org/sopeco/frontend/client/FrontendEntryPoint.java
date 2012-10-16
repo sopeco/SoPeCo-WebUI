@@ -5,15 +5,13 @@ import org.sopeco.frontend.client.helper.SystemDetails;
 import org.sopeco.frontend.client.layout.LoginBox;
 import org.sopeco.frontend.client.layout.MainLayoutPanel;
 import org.sopeco.frontend.client.layout.popups.Message;
+import org.sopeco.frontend.client.model.ScenarioManager;
 import org.sopeco.frontend.client.rpc.StartupService;
 import org.sopeco.frontend.client.rpc.StartupServiceAsync;
 import org.sopeco.persistence.metadata.entities.DatabaseInstance;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
@@ -25,8 +23,6 @@ import com.google.gwt.user.client.ui.RootLayoutPanel;
  * 
  */
 public class FrontendEntryPoint implements EntryPoint {
-
-	private MainLayoutPanel mainLayoutPanel;
 
 	private DatabaseInstance connectedDatabase;
 	private static FrontendEntryPoint frontend;
@@ -43,8 +39,6 @@ public class FrontendEntryPoint implements EntryPoint {
 		loadFirstStep();
 
 		startup();
-
-		
 	}
 
 	private void loadFirstStep() {
@@ -75,12 +69,13 @@ public class FrontendEntryPoint implements EntryPoint {
 	public void initializeMainView(DatabaseInstance newConnectedDatabase) {
 		connectedDatabase = newConnectedDatabase;
 
+		ScenarioManager.clear();
 		MainLayoutPanel.destroy();
 
 		RootLayoutPanel rootLayoutPanel = RootLayoutPanel.get();
 		rootLayoutPanel.add(MainLayoutPanel.get());
 
-		ServerPush.start();
+//		ServerPush.start();
 	}
 
 	/**

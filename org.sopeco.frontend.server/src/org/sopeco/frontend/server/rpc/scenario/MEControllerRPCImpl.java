@@ -13,12 +13,12 @@ import org.sopeco.engine.measurementenvironment.rmi.RmiMEConnector;
 import org.sopeco.frontend.client.rpc.MEControllerRPC;
 import org.sopeco.frontend.client.rpc.PushRPC.Type;
 import org.sopeco.frontend.server.db.entities.MEControllerUrl;
-import org.sopeco.frontend.server.model.MeasurementEnvironmentBuilder;
-import org.sopeco.frontend.server.model.ScenarioDefinitionBuilder;
 import org.sopeco.frontend.server.rpc.PushRPCImpl;
 import org.sopeco.frontend.server.rpc.SuperRemoteServlet;
 import org.sopeco.frontend.server.user.User;
 import org.sopeco.frontend.server.user.UserManager;
+import org.sopeco.frontend.shared.builder.MeasurementEnvironmentBuilder;
+import org.sopeco.frontend.shared.builder.ScenarioDefinitionBuilder;
 import org.sopeco.frontend.shared.definitions.PushPackage;
 import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
@@ -315,33 +315,33 @@ public class MEControllerRPCImpl extends SuperRemoteServlet implements MEControl
 	}
 
 	private void pushNotice() {
-		LOGGER.debug("push updateParameter");
-		PushPackage pp = new PushPackage(Type.NEW_ENV_DEFINITION);
-
-		String database = getUser().getCurrentDatabaseId();
-		String myScenario = getUser().getCurrentScenarioDefinitionBuilder().getBuiltScenario().getScenarioName();
-		for (User u : UserManager.getAllUserOnDatabase(database)) {
-			if (u == getUser()) {
-				continue;
-			}
-
-			LOGGER.debug("push '{}' to user {}", myScenario, u.getSessionId());
-			
-			if (u.getCurrentScenarioDefinitionBuilder().getBuiltScenario().getScenarioName().equals(myScenario)) {
-
-				try {
-					ScenarioDefinition def = u.getCurrentPersistenceProvider().loadScenarioDefinition(
-							u.getCurrentScenarioDefinitionBuilder().getBuiltScenario().getScenarioName());
-					ScenarioDefinitionBuilder builder = ScenarioDefinitionBuilder.load(def);
-					u.setCurrentScenarioDefinitionBuilder(builder);
-
-					PushRPCImpl.push(u.getSessionId(), pp);
-					LOGGER.debug("environment changed pushed to user {}", u.getSessionId());
-				} catch (DataNotFoundException e) {
-					LOGGER.warn("no scenario definition found");
-				}
-
-			}
-		}
+//		LOGGER.debug("push updateParameter");
+//		PushPackage pp = new PushPackage(Type.NEW_ENV_DEFINITION);
+//
+//		String database = getUser().getCurrentDatabaseId();
+//		String myScenario = getUser().getCurrentScenarioDefinitionBuilder().getBuiltScenario().getScenarioName();
+//		for (User u : UserManager.getAllUserOnDatabase(database)) {
+//			if (u == getUser()) {
+//				continue;
+//			}
+//
+//			LOGGER.debug("push '{}' to user {}", myScenario, u.getSessionId());
+//			
+//			if (u.getCurrentScenarioDefinitionBuilder().getBuiltScenario().getScenarioName().equals(myScenario)) {
+//
+//				try {
+//					ScenarioDefinition def = u.getCurrentPersistenceProvider().loadScenarioDefinition(
+//							u.getCurrentScenarioDefinitionBuilder().getBuiltScenario().getScenarioName());
+//					ScenarioDefinitionBuilder builder = ScenarioDefinitionBuilder.load(def);
+//					u.setCurrentScenarioDefinitionBuilder(builder);
+//
+//					PushRPCImpl.push(u.getSessionId(), pp);
+//					LOGGER.debug("environment changed pushed to user {}", u.getSessionId());
+//				} catch (DataNotFoundException e) {
+//					LOGGER.warn("no scenario definition found");
+//				}
+//
+//			}
+//		}
 	}
 }

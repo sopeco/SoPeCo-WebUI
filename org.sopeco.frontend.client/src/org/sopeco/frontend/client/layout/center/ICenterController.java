@@ -1,5 +1,7 @@
 package org.sopeco.frontend.client.layout.center;
 
+import com.google.gwt.user.client.ui.Widget;
+
 /**
  * 
  * @author Marius Oehler
@@ -7,6 +9,6 @@ package org.sopeco.frontend.client.layout.center;
  */
 public interface ICenterController {
 
-	CenterPanel getView();
+	Widget getView();
 	void reset();
 }

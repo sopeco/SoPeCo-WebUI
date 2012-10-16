@@ -1,16 +1,22 @@
 package org.sopeco.frontend.client.layout.navigation;
 
+import org.sopeco.frontend.client.event.EventControl;
+import org.sopeco.frontend.client.event.ScenarioLoadedEvent;
+import org.sopeco.frontend.client.event.SpecificationChangedEvent;
+import org.sopeco.frontend.client.event.handler.ScenarioLoadedEventHandler;
+import org.sopeco.frontend.client.event.handler.SpecificationChangedEventHandler;
 import org.sopeco.frontend.client.layout.MainLayoutPanel;
 import org.sopeco.frontend.client.layout.center.CenterType;
 import org.sopeco.frontend.client.layout.center.specification.SpecificationController;
 import org.sopeco.frontend.client.layout.popups.TextInput;
-import org.sopeco.frontend.client.layout.popups.TextInputOkHandler;
 import org.sopeco.frontend.client.layout.popups.TextInput.Icon;
+import org.sopeco.frontend.client.layout.popups.TextInputOkHandler;
+import org.sopeco.frontend.client.model.ScenarioManager;
+import org.sopeco.persistence.entities.definition.MeasurementSpecification;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
 
 /**
@@ -33,6 +39,33 @@ public class NavigationController {
 		loadExperiments();
 		attachNaviItemClickHandlers();
 		addCreateSpecificationClickHandler();
+
+		// Events
+		EventControl.get().addHandler(ScenarioLoadedEvent.TYPE, new ScenarioLoadedEventHandler() {
+			@Override
+			public void onScenarioLoadedEvent(ScenarioLoadedEvent scenarioLoadedEvent) {
+				updateSpecifications();
+			}
+		});
+
+		EventControl.get().addHandler(SpecificationChangedEvent.TYPE, new SpecificationChangedEventHandler() {
+			@Override
+			public void onSpecificationChangedEvent(SpecificationChangedEvent event) {
+				setActiveSpecification(event.getSelectedSpecification());
+			}
+		});
+	}
+
+	/**
+	 * Udpates the "specification-select-panel", where you can select an other
+	 * specification.
+	 */
+	public void updateSpecifications() {
+		removeAllSpecifications();
+		for (MeasurementSpecification ms : ScenarioManager.get().getCurrentScenarioDefinition()
+				.getMeasurementSpecifications()) {
+			addSpecifications(ms.getName());
+		}
 	}
 
 	/**
@@ -49,8 +82,7 @@ public class NavigationController {
 						new TextInputOkHandler() {
 							@Override
 							public void onInput(ClickEvent event, String input) {
-								((SpecificationController) MainLayoutPanel.get().getCenterController(
-										CenterType.Specification)).createSpecification(input);
+								ScenarioManager.get().createNewSpecification(input);
 							}
 						});
 			}
@@ -110,15 +142,13 @@ public class NavigationController {
 				HTML item = (HTML) event.getSource();
 				String specificationName = item.getText();
 
-				if (((SpecificationController) MainLayoutPanel.get().getCenterController(CenterType.Specification))
-						.getCurrentSpecificationName().equals(specificationName)) {
+				if (ScenarioManager.get().getWorkingSpecificationName().equals(specificationName)) {
 					view.getChangeSpecificationPanel().setVisible(false);
 
 					return;
 				}
 
-				((SpecificationController) MainLayoutPanel.get().getCenterController(CenterType.Specification))
-						.changeWorkingSpecification(specificationName);
+				EventControl.get().fireEvent(new SpecificationChangedEvent(specificationName));
 			}
 		};
 	}
@@ -127,16 +157,12 @@ public class NavigationController {
 	 * The specification (in the ChangeSpecificationPanel) with the given name
 	 * will be highlighted.
 	 */
-	public void setActiveSpecification(String name) {
-		String currentSelectedSpecification = ((SpecificationController) parentLayout
-				.getCenterController(CenterType.Specification)).getCurrentSpecificationName();
-
-		if (view.getChangeSpecificationPanel().getItemMap().containsKey(currentSelectedSpecification)) {
-			view.getChangeSpecificationPanel().getItemMap().get(currentSelectedSpecification).removeStyleName("marked");
+	private void setActiveSpecification(String name) {
+		for (HTML html : view.getChangeSpecificationPanel().getItemMap().values()) {
+			html.removeStyleName("marked");
 		}
 
 		view.getChangeSpecificationPanel().getItemMap().get(name).addStyleName("marked");
-
 		view.getChangeSpecificationPanel().setVisible(false);
 	}
 

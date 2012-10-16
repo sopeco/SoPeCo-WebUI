@@ -3,6 +3,9 @@ package org.sopeco.frontend.client.layout;
 import java.util.HashMap;
 
 import org.sopeco.frontend.client.FrontendEntryPoint;
+import org.sopeco.frontend.client.event.EventControl;
+import org.sopeco.frontend.client.event.ScenarioLoadedEvent;
+import org.sopeco.frontend.client.event.handler.ScenarioLoadedEventHandler;
 import org.sopeco.frontend.client.layout.center.CenterType;
 import org.sopeco.frontend.client.layout.center.ICenterController;
 import org.sopeco.frontend.client.layout.center.NoScenario;
@@ -89,6 +92,13 @@ public final class MainLayoutPanel extends DockLayoutPanel implements ValueChang
 		getNavigationController().setCurrentCenterType(currentCenterPanel);
 
 		createNewCenterPanels();
+		
+		EventControl.get().addHandler(ScenarioLoadedEvent.TYPE, new ScenarioLoadedEventHandler() {
+			@Override
+			public void onScenarioLoadedEvent(ScenarioLoadedEvent scenarioLoadedEvent) {
+				createNewCenterPanels();
+			}
+		});
 	}
 
 	@Override
@@ -144,7 +154,7 @@ public final class MainLayoutPanel extends DockLayoutPanel implements ValueChang
 			remove(getCenter());
 		}
 		currentCenterPanel = type;
-		centerScrollPanel.clear();
+		//centerScrollPanel.clear();
 
 //		if (newHistoryItem) {
 //			History.newItem(type.name());
@@ -157,8 +167,9 @@ public final class MainLayoutPanel extends DockLayoutPanel implements ValueChang
 			return;
 		}
 
-		centerScrollPanel.add(centerController.get(type).getView());
-		add(centerScrollPanel);
+		//centerScrollPanel.add(centerController.get(type).getView());
+		//add(centerScrollPanel);
+		add(centerController.get(type).getView());
 	}
 
 	/**

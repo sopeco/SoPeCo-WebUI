@@ -2,6 +2,8 @@ package org.sopeco.frontend.client.rpc;
 
 import java.util.List;
 
+import org.sopeco.persistence.entities.definition.MeasurementSpecification;
+
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -19,6 +21,13 @@ public interface MSpecificationRPC extends RemoteService {
 	 * @return list with names
 	 */
 	List<String> getAllSpecificationNames();
+
+	/**
+	 * Return a list with all specifications.
+	 * 
+	 * @return list with names
+	 */
+	List<MeasurementSpecification> getAllSpecifications();
 
 	/**
 	 * Set the current working specification to the given specification.
@@ -39,8 +48,9 @@ public interface MSpecificationRPC extends RemoteService {
 	/**
 	 * Renames the working specification to the new name.
 	 * 
-	 * @param newName the new name
-	 * @return 
+	 * @param newName
+	 *            the new name
+	 * @return
 	 */
 	boolean renameWorkingSpecification(String newName);
 }

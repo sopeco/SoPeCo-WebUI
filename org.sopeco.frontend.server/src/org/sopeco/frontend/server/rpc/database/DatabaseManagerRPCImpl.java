@@ -9,6 +9,7 @@ import org.sopeco.frontend.client.rpc.DatabaseManagerRPC;
 import org.sopeco.frontend.server.db.FlexiblePersistenceProviderFactory;
 import org.sopeco.frontend.server.db.UIPersistenceProvider;
 import org.sopeco.frontend.server.db.UIPersistenceProviderFactory;
+import org.sopeco.frontend.server.helper.Metering;
 import org.sopeco.frontend.server.rpc.SuperRemoteServlet;
 import org.sopeco.persistence.IMetaDataPersistenceProvider;
 import org.sopeco.persistence.IPersistenceProvider;
@@ -32,11 +33,14 @@ public class DatabaseManagerRPCImpl extends SuperRemoteServlet implements Databa
 	private static IMetaDataPersistenceProvider metaPersistenceProvider;
 
 	private static IMetaDataPersistenceProvider getMetaProvider() {
+		double metering = Metering.start();
+		
 		if (metaPersistenceProvider == null) {
 			metaPersistenceProvider = PersistenceProviderFactory.getInstance().getMetaDataPersistenceProvider(
 					META_SESSION);
 		}
 
+		Metering.stop(metering);
 		return metaPersistenceProvider;
 	}
 
@@ -86,6 +90,7 @@ public class DatabaseManagerRPCImpl extends SuperRemoteServlet implements Databa
 	 * 
 	 */
 	public boolean addDatabase(DatabaseInstance dbInstance, String passwd) {
+		double metering = Metering.start();
 		LOGGER.debug("adding new database");
 
 		String dbName = dbInstance.getDbName();
@@ -103,6 +108,7 @@ public class DatabaseManagerRPCImpl extends SuperRemoteServlet implements Databa
 
 		getMetaProvider().store(dbInstance);
 
+		Metering.stop(metering);
 		return true;
 	}
 
@@ -140,6 +146,8 @@ public class DatabaseManagerRPCImpl extends SuperRemoteServlet implements Databa
 	 * @return true if they are equal
 	 */
 	public boolean instanceEqual(DatabaseInstance i1, DatabaseInstance i2) {
+		double metering = Metering.start();
+		
 		if (!i1.getDbName().equals(i2.getDbName())) {
 			return false;
 		}
@@ -159,6 +167,7 @@ public class DatabaseManagerRPCImpl extends SuperRemoteServlet implements Databa
 			return false;
 		}
 
+		Metering.stop(metering);
 		return true;
 	}
 
@@ -167,6 +176,8 @@ public class DatabaseManagerRPCImpl extends SuperRemoteServlet implements Databa
 	 */
 	@Override
 	public boolean selectDatabase(DatabaseInstance databaseInstance, String passwd) {
+		double metering = Metering.start();
+		
 		DatabaseInstance dbInstance = getRealInstance(databaseInstance);
 
 		if (dbInstance == null || databaseInstance == null) {
@@ -204,6 +215,8 @@ public class DatabaseManagerRPCImpl extends SuperRemoteServlet implements Databa
 		getUser().setCurrentPersistenceProvider(dbConnection);
 		getUser().setUiPesistenceProvider(uiProvider);
 
+		Metering.stop(metering);
+		
 		return true;
 	}
 

@@ -1,8 +1,7 @@
-package org.sopeco.frontend.server.model;
+package org.sopeco.frontend.shared.builder;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.sopeco.persistence.EntityFactory;
+import java.util.logging.Logger;
+
 import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.entities.definition.ParameterNamespace;
@@ -24,7 +23,7 @@ public class MeasurementEnvironmentBuilder {
 	 * Default delimiter which seperates the "paths".
 	 */
 	private static final String DELIMITER = "/";
-	private static final Logger LOGGER = LoggerFactory.getLogger(MeasurementEnvironmentBuilder.class);
+	private static final Logger LOGGER = Logger.getLogger(MeasurementEnvironmentDefinition.class.getName());
 
 	/**
 	 * Creates an empty MEnvironmentDefinition.
@@ -41,7 +40,7 @@ public class MeasurementEnvironmentBuilder {
 	private ParameterNamespace lastCreatedNamespace = null;
 
 	public MeasurementEnvironmentBuilder(ScenarioDefinitionBuilder sBuilder) {
-		LOGGER.debug("Creating a MeasurementEnvironmentBuilder");
+		LOGGER.info("Creating a MeasurementEnvironmentBuilder");
 
 		scenarioBuilder = sBuilder;
 		scenarioBuilder.setMEDefinition(new MeasurementEnvironmentDefinition());
@@ -70,9 +69,10 @@ public class MeasurementEnvironmentBuilder {
 	 * @return The new namespace
 	 */
 	public ParameterNamespace addNamespace(String name, ParameterNamespace targetNamespace) {
-		LOGGER.debug("adding new namespace '" + name + "' to parent '" + targetNamespace.getFullName() + "'");
+		LOGGER.info("adding new namespace '" + name + "' to parent '"
+				+ targetNamespace.getFullName() + "'");
 
-		ParameterNamespace newNamepsace = EntityFactory.createNamespace(name);
+		ParameterNamespace newNamepsace = SimpleEntityFactory.createNamespace(name);
 		newNamepsace.setParent(targetNamespace);
 
 		targetNamespace.getChildren().add(newNamepsace);
@@ -93,17 +93,18 @@ public class MeasurementEnvironmentBuilder {
 	 * @return The last namespace of the path
 	 */
 	public ParameterNamespace addNamespaces(String path) {
-		LOGGER.debug("adding new namespaces '" + path + "'");
+		LOGGER.info("adding new namespaces '" + path + "'");
 
 		String[] nodes = path.split(DELIMITER);
 
 		if (nodes.length == 0) {
-			LOGGER.warn("no namespaces given");
+			LOGGER.warning("no namespaces given");
 			return null;
 		}
 
-		if (nodes.length == 1 || !nodes[0].equals(scenarioBuilder.getMEDefinition().getRoot().getName())) {
-			LOGGER.warn("cant add an other root");
+		if (nodes.length == 1
+				|| !nodes[0].equals(scenarioBuilder.getMEDefinition().getRoot().getName())) {
+			LOGGER.warning("cant add an other root");
 
 			return scenarioBuilder.getMEDefinition().getRoot();
 		}
@@ -159,9 +160,10 @@ public class MeasurementEnvironmentBuilder {
 	 *            namespace where the parameter will be added
 	 */
 	public ParameterDefinition addParameter(String name, String type, ParameterRole role, ParameterNamespace namespace) {
-		LOGGER.debug("adding new parameter '" + name + "' to namespace '" + namespace.getFullName() + "'");
+		LOGGER.info("adding new parameter '" + name + "' to namespace '"
+				+ namespace.getFullName() + "'");
 
-		ParameterDefinition newParameter = EntityFactory.createParameterDefinition(name, type, role);
+		ParameterDefinition newParameter = SimpleEntityFactory.createParameterDefinition(name, type, role);
 
 		newParameter.setNamespace(namespace);
 		namespace.getParameters().add(newParameter);
@@ -187,7 +189,7 @@ public class MeasurementEnvironmentBuilder {
 	 * @return searched namespace
 	 */
 	public ParameterNamespace getNamespace(String path) {
-		LOGGER.debug("Getting namespace by path '" + path + "'");
+		LOGGER.info("Getting namespace by path '" + path + "'");
 
 		if (path.length() > 1 && path.substring(0, 1).equals(DELIMITER)) {
 			path = path.substring(1);
@@ -200,7 +202,7 @@ public class MeasurementEnvironmentBuilder {
 		}
 
 		if (!nodes[0].equals(getRootNamespace().getName())) {
-			LOGGER.warn("first namespace must be the root namespace");
+			LOGGER.warning("first namespace must be the root namespace");
 			return null;
 		} else if (nodes.length == 1) {
 			return scenarioBuilder.getMEDefinition().getRoot();
@@ -230,7 +232,7 @@ public class MeasurementEnvironmentBuilder {
 			return null;
 		}
 
-		LOGGER.debug("found namespace '" + currentNamespace.getFullName() + "'");
+		LOGGER.info("found namespace '" + currentNamespace.getFullName() + "'");
 
 		return currentNamespace;
 	}
@@ -282,11 +284,12 @@ public class MeasurementEnvironmentBuilder {
 	 * @return was the removal successful
 	 */
 	public boolean removeNamespace(ParameterNamespace namespace, boolean appendChildrenToParent) {
-		LOGGER.debug("removing namespace '" + namespace.getFullName() + "' // appendChildrenToParent: "
-				+ appendChildrenToParent);
+		LOGGER.info("removing namespace '" + namespace.getFullName()
+				+ "' // appendChildrenToParent: " + appendChildrenToParent);
 
-		if (namespace.getName().equals(ROOTNAME) || namespace.getParent() == null) {
-			LOGGER.warn("root namespace can not be removed.");
+		if (namespace.getName().equals(ROOTNAME)
+				|| namespace.getParent() == null) {
+			LOGGER.warning("root namespace can not be removed.");
 			return false;
 		}
 
@@ -315,8 +318,9 @@ public class MeasurementEnvironmentBuilder {
 	 * @return was the parameter successful removed
 	 */
 	public boolean removeParameter(ParameterDefinition parameter) {
-		LOGGER.debug("removing parameter '" + parameter.getName() + "' from namespace '"
-				+ parameter.getNamespace().getFullName() + "'");
+		LOGGER.info("removing parameter '" + parameter.getName()
+				+ "' from namespace '" + parameter.getNamespace().getFullName()
+				+ "'");
 
 		ParameterNamespace parent = parameter.getNamespace();
 
@@ -333,7 +337,8 @@ public class MeasurementEnvironmentBuilder {
 	 * @return was the parameter successful removed
 	 */
 	public boolean removeParameter(String name, ParameterNamespace namespace) {
-		LOGGER.debug("removing parameter '" + name + "' from namespace '" + namespace.getFullName() + "'");
+		LOGGER.info("removing parameter '" + name + "' from namespace '"
+				+ namespace.getFullName() + "'");
 
 		ParameterDefinition parameter = namespace.getParameter(name);
 
@@ -354,9 +359,9 @@ public class MeasurementEnvironmentBuilder {
 	 * Setting the root namespace to defaut.
 	 */
 	private void setRootNamespace() {
-		LOGGER.debug("Setting the default root namespace.");
+		LOGGER.info("Setting the default root namespace.");
 
-		ParameterNamespace rootNamespace = EntityFactory.createNamespace(ROOTNAME);
+		ParameterNamespace rootNamespace = SimpleEntityFactory.createNamespace(ROOTNAME);
 
 		scenarioBuilder.getMEDefinition().setRoot(rootNamespace);
 	}

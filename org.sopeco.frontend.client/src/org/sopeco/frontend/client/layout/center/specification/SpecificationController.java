@@ -2,18 +2,20 @@ package org.sopeco.frontend.client.layout.center.specification;
 
 import java.util.List;
 
-import org.apache.commons.math3.distribution.CauchyDistribution;
+import org.sopeco.frontend.client.event.EventControl;
+import org.sopeco.frontend.client.event.SpecificationChangedEvent;
+import org.sopeco.frontend.client.event.handler.SpecificationChangedEventHandler;
 import org.sopeco.frontend.client.layout.MainLayoutPanel;
-import org.sopeco.frontend.client.layout.center.CenterPanel;
 import org.sopeco.frontend.client.layout.center.ICenterController;
 import org.sopeco.frontend.client.layout.popups.Loader;
 import org.sopeco.frontend.client.layout.popups.Message;
+import org.sopeco.frontend.client.model.ScenarioManager;
 import org.sopeco.frontend.client.rpc.RPC;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * 
@@ -24,11 +26,17 @@ public class SpecificationController implements ICenterController {
 
 	private SpecificationView view;
 	private AssignmentController assignmentController;
-	private String currentSpecificationName;
-	private List<String> specificationNames;
+	private SelectionController selectionController;
 
 	public SpecificationController() {
 		reset();
+
+		EventControl.get().addHandler(SpecificationChangedEvent.TYPE, new SpecificationChangedEventHandler() {
+			@Override
+			public void onSpecificationChangedEvent(SpecificationChangedEvent event) {
+				setCurrentSpecificationName(event.getSelectedSpecification());
+			}
+		});
 	}
 
 	@Override
@@ -39,14 +47,20 @@ public class SpecificationController implements ICenterController {
 			assignmentController.reset();
 		}
 
-		view = new SpecificationView(assignmentController.getAssignmentView());
+		if (selectionController == null) {
+			selectionController = new SelectionController();
+		} else {
+			selectionController.reset();
+		}
+
+		view = new SpecificationView(assignmentController.getAssignmentView(), selectionController.getView());
 
 		addExistingAssignments();
 		addRenameSpecificationHandler();
 	}
 
 	@Override
-	public CenterPanel getView() {
+	public Widget getView() {
 		return view;
 	}
 
@@ -60,18 +74,8 @@ public class SpecificationController implements ICenterController {
 			public void onBlur(BlurEvent event) {
 				final String textboxName = view.getSpecificationNameTextbox().getText();
 
-				if (!textboxName.equals(currentSpecificationName)) {
-					RPC.getMSpecificationRPC().renameWorkingSpecification(textboxName, new AsyncCallback<Boolean>() {
-						@Override
-						public void onFailure(Throwable caught) {
-							Message.error(caught.getMessage());
-						}
-
-						@Override
-						public void onSuccess(Boolean result) {
-							loadSpecificationNames(textboxName);
-						}
-					});
+				if (!textboxName.equals(ScenarioManager.get().getWorkingSpecificationName())) {
+					ScenarioManager.get().renameWorkingSpecification(textboxName);
 				}
 			}
 		});
@@ -83,10 +87,6 @@ public class SpecificationController implements ICenterController {
 	 * @param name
 	 */
 	private void setCurrentSpecificationName(String name) {
-		GWT.log("Set new currentSpecificationName: " + name);
-		MainLayoutPanel.get().getNavigationController().setActiveSpecification(name);
-		currentSpecificationName = name;
-
 		view.setSpecificationName(name);
 	}
 
@@ -102,41 +102,6 @@ public class SpecificationController implements ICenterController {
 		assignmentController.addAssignment(ai);
 		assignmentController.addAssignment(ai2);
 		assignmentController.addAssignment(ai3);
-	}
-
-	/**
-	 * Creates a new specification.
-	 */
-	public void createSpecification(final String specificationName) {
-		Loader.showLoader();
-		RPC.getMSpecificationRPC().createSpecification(specificationName, new AsyncCallback<Boolean>() {
-			@Override
-			public void onFailure(Throwable caught) {
-				Loader.hideLoader();
-				Message.error(caught.getMessage());
-			}
-
-			@Override
-			public void onSuccess(Boolean result) {
-				Loader.hideLoader();
-				if (!result) {
-					Message.error("errorAtAddingSpec");
-				}
-
-				MainLayoutPanel.get().getNavigationController().addSpecifications(specificationName);
-				changeWorkingSpecification(specificationName);
-			}
-		});
-
-	}
-
-	/**
-	 * Returns the name of the currentSpecification.
-	 * 
-	 * @return name
-	 */
-	public String getCurrentSpecificationName() {
-		return currentSpecificationName;
 	}
 
 	/**
@@ -166,13 +131,12 @@ public class SpecificationController implements ICenterController {
 			@Override
 			public void onSuccess(List<String> result) {
 				Loader.hideLoader();
-				specificationNames = result;
 
 				MainLayoutPanel.get().getNavigationController().removeAllSpecifications();
 
 				if (!result.isEmpty()) {
 					for (String sName : result) {
-						MainLayoutPanel.get().getNavigationController().addSpecifications(sName);
+						// MainLayoutPanel.get().getNavigationController().addSpecifications(sName);
 					}
 
 					if (selectSpecification == null || selectSpecification.isEmpty()) {

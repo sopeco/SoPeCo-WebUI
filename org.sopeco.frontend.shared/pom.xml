@@ -7,8 +7,8 @@
 		<version>0.0.1-SNAPSHOT</version>
 		<relativePath>../org.sopeco.frontend.parent</relativePath>
 	</parent>
-	<artifactId>org.sopeco.frontend.rpc</artifactId>
-	<name>SoPeCo FrontEnd RPC Interfaces</name>
+	<artifactId>org.sopeco.frontend.shared</artifactId>
+	<name>SoPeCo FrontEnd Shared Classes</name>
 
 	<build>
 		<plugins>
@@ -27,6 +27,5 @@
 			</plugin>
 		</plugins>
 	</build>
-
 
 </project>

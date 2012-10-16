@@ -6,9 +6,9 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
-import org.sopeco.frontend.server.model.MeasurementEnvironmentBuilder;
-import org.sopeco.frontend.server.model.MeasurementSpecificationBuilder;
-import org.sopeco.frontend.server.model.ScenarioDefinitionBuilder;
+import org.sopeco.frontend.shared.builder.MeasurementEnvironmentBuilder;
+import org.sopeco.frontend.shared.builder.MeasurementSpecificationBuilder;
+import org.sopeco.frontend.shared.builder.ScenarioDefinitionBuilder;
 import org.sopeco.persistence.EntityFactory;
 import org.sopeco.persistence.entities.definition.ConstantValueAssignment;
 import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;

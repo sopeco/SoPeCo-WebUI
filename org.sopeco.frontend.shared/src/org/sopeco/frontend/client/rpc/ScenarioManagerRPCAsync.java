@@ -1,5 +1,7 @@
 package org.sopeco.frontend.client.rpc;
 
+import org.sopeco.persistence.entities.definition.ScenarioDefinition;
+
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -21,5 +23,9 @@ public interface ScenarioManagerRPCAsync {
 	void removeScenario(String name, AsyncCallback<Boolean> callback);
 
 	void switchScenario(String name, AsyncCallback<Boolean> callback);
+
+	void getCurrentScenarioDefinition(AsyncCallback<ScenarioDefinition> callback);
+
+	void storeScenarioDefinition(ScenarioDefinition definition, AsyncCallback<Boolean> callback);
 
 }

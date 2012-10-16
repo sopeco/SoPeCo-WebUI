@@ -34,6 +34,7 @@ public class EnvironmentTreeItem extends FrontendTreeItem {
 	protected Image removeNamespace, addNamespace, addParameter;
 	protected TextBox textboxEdit;
 	private boolean preventBlur = false;
+	private boolean hasActionPanel = true;
 
 	private static final ParameterRole DEFAULT_PARAMETER_ROLE = ParameterRole.INPUT;
 	private static final ParameterType DEFAULT_PARAMETER_TYPE = ParameterType.BOOLEAN;
@@ -74,6 +75,12 @@ public class EnvironmentTreeItem extends FrontendTreeItem {
 		textboxEdit.addChangeHandler(nscHandler);
 	}
 
+	public void removeActionPanel() {
+		actionPanel.clear();
+		actionPanel.removeFromParent();
+		hasActionPanel = false;
+	}
+
 	@Override
 	protected void refreshLinePanel() {
 		linePanel.clear();
@@ -83,7 +90,9 @@ public class EnvironmentTreeItem extends FrontendTreeItem {
 		linePanel.add(htmlText);
 		linePanel.add(textboxEdit);
 
-		addActionPanel();
+		if (hasActionPanel) {
+			addActionPanel();
+		}
 
 		linePanel.getElement().appendChild(clearLine);
 	}

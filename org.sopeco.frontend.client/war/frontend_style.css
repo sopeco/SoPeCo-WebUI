@@ -6,6 +6,11 @@
 	z-index: 999;
 }
 
+.transparent-50 {
+	opacity: 0.5;
+	filter: alpha(opacity = 50);
+}
+
 .spc-seperator {
 	width: 0px;
 	display: block;
@@ -94,6 +99,27 @@
 .spc-ComboBox>.spc-ComboBox-DropDownView .spc-ComboBox-FocusPanel.highlight
 	{
 	background-color: #DDEEFF;
+}
+
+.sopeco-Tree {
+	
+}
+
+.sopeco-TreeItem>.sopeco-TreeItem {
+	margin-left: 1em;
+}
+
+.sopeco-TreeItem>.content>img {
+	display: inline-block;
+	margin-right: 10px;
+	position: relative;
+	vertical-align: text-bottom;
+}
+
+.sopeco-TreeItem>.content>span {
+	display: inline-block;
+	line-height: 24px;
+	position: relative;
 }
 
 /* ******************************************* */
@@ -504,12 +530,14 @@ p {
 #changeSpecPanel #addSpecification {
 	color: #333;
 	opacity: 0.5;
-	filter: alpha(opacity=50);
+	filter: alpha(opacity =                       50);
 }
+
 #changeSpecPanel #addSpecification:hover {
 	opacity: 1;
-	filter: alpha(opacity=100);
+	filter: alpha(opacity =                       100);
 }
+
 #changeSpecPanel #addSpecification>img {
 	vertical-align: middle;
 	margin-right: 1em;
@@ -527,8 +555,13 @@ p {
 	clear: both !important;
 }
 
+#assignmentListPanelWrapper {
+	left: 0;
+	bottom: 0;
+}
+
 #assignmentListPanel {
-	padding: 0 1em;
+	padding: 1em;
 }
 
 #assignmentListPanel .assignmentItem {
@@ -560,6 +593,15 @@ p {
 	text-transform: uppercase;
 }
 
-#environmentTreePanel {
-	
+#selectionViewPanelWrapper {
+	border-left: 1px solid #ccc;
+	bottom: 0;
+}
+
+#selectionViewPanel {
+	padding: 1em;
+}
+
+#assignmentListPanelWrapper h3,#selectionViewPanelWrapper h3 {
+	margin: 0 0 1em;
 }

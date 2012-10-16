@@ -1,6 +1,5 @@
-package org.sopeco.frontend.server.model;
+package org.sopeco.frontend.shared.builder;
 
-import org.apache.derby.impl.sql.compile.GetCurrentConnectionNode;
 import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
 import org.sopeco.persistence.entities.definition.MeasurementSpecification;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;

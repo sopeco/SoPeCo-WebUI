@@ -1,8 +1,10 @@
 package org.sopeco.frontend.server.user;
 
+import java.util.logging.Logger;
+
 import org.sopeco.frontend.server.db.UIPersistenceProvider;
-import org.sopeco.frontend.server.model.MeasurementSpecificationBuilder;
-import org.sopeco.frontend.server.model.ScenarioDefinitionBuilder;
+import org.sopeco.frontend.shared.builder.MeasurementSpecificationBuilder;
+import org.sopeco.frontend.shared.builder.ScenarioDefinitionBuilder;
 import org.sopeco.persistence.IPersistenceProvider;
 import org.sopeco.persistence.entities.definition.MeasurementSpecification;
 
@@ -21,6 +23,7 @@ public class User {
 	private String currentDatabaseId;
 	private IPersistenceProvider currentPersistenceProvider;
 	private UIPersistenceProvider uiPesistenceProvider;
+	private static final Logger LOGGER = Logger.getLogger(User.class.getName());
 
 	public User(String sId) {
 		sessionId = sId;
@@ -86,6 +89,7 @@ public class User {
 	}
 
 	public void storeCurrentScenarioDefinition() {
+		LOGGER.info("store current ScenarioDefinition");
 		currentPersistenceProvider.store(currentScenarioDefinitionBuilder.getBuiltScenario());
 	}
 }

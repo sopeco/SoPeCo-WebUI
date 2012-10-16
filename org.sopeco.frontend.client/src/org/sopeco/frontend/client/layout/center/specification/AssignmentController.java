@@ -3,6 +3,8 @@ package org.sopeco.frontend.client.layout.center.specification;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.user.client.ui.Widget;
+
 /**
  * 
  * @author Marius Oehler
@@ -30,8 +32,8 @@ class AssignmentController {
 	 * 
 	 * @return AssignmentView
 	 */
-	public AssignmentView getAssignmentView() {
-		return view;
+	public Widget getAssignmentView() {
+		return view.getInScrollPanel();
 	}
 
 	/**

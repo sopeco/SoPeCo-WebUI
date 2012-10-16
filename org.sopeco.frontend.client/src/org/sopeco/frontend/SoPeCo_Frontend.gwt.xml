@@ -18,6 +18,10 @@
 	<inherits name='org.sopeco.config.exception.ConfigurationException' />-->
 	<inherits name='org.sopeco.persistence' />
 	
+	<inherits name="com.google.gwt.logging.Logging"/>
+	<set-property name="gwt.logging.enabled" value="TRUE"/>
+	<set-property name="gwt.logging.popupHandler" value="DISABLED" />
+	
 	<!-- Specify the app entry point class. -->
 	<entry-point class='org.sopeco.frontend.client.FrontendEntryPoint' />
 
