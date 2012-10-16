@@ -19,6 +19,8 @@ public class Tree extends FlowPanel {
 	}
 
 	public void setRoot(TreeItem item) {
+		clear();
+		
 		rootItem = item;
 
 		add(rootItem);

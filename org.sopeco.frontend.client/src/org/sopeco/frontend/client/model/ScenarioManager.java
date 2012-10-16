@@ -194,7 +194,7 @@ public final class ScenarioManager {
 	/**
 	 * Sends the current scenario to the server and stores them in the database.
 	 */
-	private void storeScenario() {
+	public void storeScenario() {
 		RPC.getScenarioManager().storeScenarioDefinition(getCurrentScenarioDefinition(), new AsyncCallback<Boolean>() {
 			@Override
 			public void onFailure(Throwable caught) {
@@ -207,6 +207,8 @@ public final class ScenarioManager {
 		});
 	}
 
+	
+	
 	/**
 	 * Adding a new specification to the scenario and set it to the working
 	 * specification.

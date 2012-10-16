@@ -25,6 +25,8 @@ public class TreeItem extends FlowPanel implements ClickHandler {
 	private static final String IMG_NO_CHILDREN = "images/tree_minus_inactive.png";
 	private static final String CSS_TRANSPARENT = "transparent-50";
 
+	private static final String PATH_SEPERATOR = "/";
+
 	private String text;
 	private Image image;
 	private Element textElement;
@@ -111,6 +113,15 @@ public class TreeItem extends FlowPanel implements ClickHandler {
 		return parentItem;
 	}
 
+	/**
+	 * Returns the current text.
+	 * 
+	 * @return
+	 */
+	public String getText() {
+		return text;
+	}
+
 	@Override
 	public void onClick(ClickEvent event) {
 		if (!childrenItems.isEmpty()) {
@@ -134,5 +145,26 @@ public class TreeItem extends FlowPanel implements ClickHandler {
 		for (TreeItem item : childrenItems) {
 			item.setVisible(visible);
 		}
+	}
+
+	/**
+	 * Returns the full name.
+	 * 
+	 * @return
+	 */
+	public String getPath() {
+		return getPath(PATH_SEPERATOR);
+	}
+
+	/**
+	 * Returns the full name.
+	 * 
+	 * @return
+	 */
+	public String getPath(String seperator) {
+		if (parentItem != null) {
+			return parentItem.getPath() + seperator + getText();
+		}
+		return getText();
 	}
 }

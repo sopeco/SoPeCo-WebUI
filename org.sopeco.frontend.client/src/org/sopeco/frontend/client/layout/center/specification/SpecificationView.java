@@ -1,6 +1,7 @@
 package org.sopeco.frontend.client.layout.center.specification;
 
 import org.sopeco.frontend.client.R;
+import org.sopeco.frontend.client.widget.ClickPanel;
 
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
@@ -20,9 +21,12 @@ public class SpecificationView extends FlowPanel {
 
 	private HorizontalPanel topPanel;
 	private TextBox textboxName;
-	private HorizontalPanel bottomPanel;
 	private Widget selectionView, assignmentListPanel;
+	private ClickPanel toggleSelectionPanel;
+	private int selectionPanelPosition;
+	private boolean selectionPanelIsVisible;
 
+	private static final String TOGGLE_SELECTION_PANEL_ID = "toggleSelectionPanel";
 	private static final String TOP_PANEL_ID = "specificationTopPanel";
 	private static final String TOP_PANEL_HEIGHT = "60";
 	private static final int SELECTION_PANEL_WIDTH = 400;
@@ -57,27 +61,78 @@ public class SpecificationView extends FlowPanel {
 
 		topPanel.setCellWidth(nameLabel, "100");
 
-		// bottomPanel = new HorizontalPanel();
-		// bottomPanel.getElement().getStyle().setWidth(100, Unit.PCT);
-
 		selectionView.getElement().getStyle().setTop(Double.parseDouble(TOP_PANEL_HEIGHT), Unit.PX);
 		selectionView.getElement().getStyle().setPosition(Position.ABSOLUTE);
-		selectionView.getElement().getStyle().setRight(0, Unit.PX);
 		selectionView.getElement().getStyle().setWidth(SELECTION_PANEL_WIDTH, Unit.PX);
 
 		assignmentListPanel.getElement().getStyle().setPosition(Position.ABSOLUTE);
 		assignmentListPanel.getElement().getStyle().setTop(Double.parseDouble(TOP_PANEL_HEIGHT), Unit.PX);
-		assignmentListPanel.getElement().getStyle().setRight(SELECTION_PANEL_WIDTH, Unit.PX);
+
+		toggleSelectionPanel = new ClickPanel();
+		toggleSelectionPanel.getElement().setId(TOGGLE_SELECTION_PANEL_ID);
+		toggleSelectionPanel.getElement().setInnerHTML("&lt;");
+
+		setSelectionPanelPosition(0);
+		selectionPanelIsVisible = false;
 
 		// ADDING
-		// bottomPanel.add(assignmentListPanel);
-		// bottomPanel.add(selectionView);
-
 		add(topPanel);
 		add(assignmentListPanel);
+		add(toggleSelectionPanel);
 		add(selectionView);
+	}
 
-		// setCellHeight(topPanel, TOP_PANEL_HEIGHT);
+	/**
+	 * Set the text of the toggleSelectionElement.
+	 * 
+	 * @param html
+	 */
+	public void setToggleSelectionElementText(String html) {
+		toggleSelectionPanel.getElement().setInnerHTML(html);
+	}
+
+	/**
+	 * Returns the toggleSelectionElement.
+	 */
+	public ClickPanel getToggleSelectionElement() {
+		return toggleSelectionPanel;
+	}
+
+	/**
+	 * Set the position of the selection panel and of all related elements like
+	 * the toggleSelectionElement and the assignmentListPanel. parameter is a
+	 * percent value between 0 (0%) and 1 (100%).
+	 * 
+	 * @param x
+	 */
+	private void setSelectionPanelPosition(float x) {
+		x = Math.max(0F, Math.min(1F, x));
+		selectionPanelPosition = (int) (SELECTION_PANEL_WIDTH * x);
+
+		selectionView.getElement().getStyle().setRight(selectionPanelPosition - SELECTION_PANEL_WIDTH, Unit.PX);
+		assignmentListPanel.getElement().getStyle().setRight(selectionPanelPosition, Unit.PX);
+		toggleSelectionPanel.getElement().getStyle().setRight(selectionPanelPosition, Unit.PX);
+	}
+
+	/**
+	 * Set whether the selectionPanel is visible.
+	 * 
+	 * @param visible
+	 */
+	public void setSelectionPanelVisible(boolean visible) {
+		selectionPanelIsVisible = visible;
+		if (visible) {
+			setSelectionPanelPosition(1F);
+		} else {
+			setSelectionPanelPosition(0);
+		}
+	}
+
+	/**
+	 * @return the selectionPanelVisible
+	 */
+	public boolean isSelectionPanelVisible() {
+		return selectionPanelIsVisible;
 	}
 
 	/**

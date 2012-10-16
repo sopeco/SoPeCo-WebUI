@@ -3,7 +3,10 @@ package org.sopeco.frontend.client.layout.center.specification;
 import java.util.List;
 
 import org.sopeco.frontend.client.event.EventControl;
+import org.sopeco.frontend.client.event.InitialAssignmentChangedEvent;
 import org.sopeco.frontend.client.event.SpecificationChangedEvent;
+import org.sopeco.frontend.client.event.InitialAssignmentChangedEvent.ChangeType;
+import org.sopeco.frontend.client.event.handler.InitialAssignmentChangedEventHandler;
 import org.sopeco.frontend.client.event.handler.SpecificationChangedEventHandler;
 import org.sopeco.frontend.client.layout.MainLayoutPanel;
 import org.sopeco.frontend.client.layout.center.ICenterController;
@@ -11,9 +14,14 @@ import org.sopeco.frontend.client.layout.popups.Loader;
 import org.sopeco.frontend.client.layout.popups.Message;
 import org.sopeco.frontend.client.model.ScenarioManager;
 import org.sopeco.frontend.client.rpc.RPC;
+import org.sopeco.persistence.entities.definition.ConstantValueAssignment;
+import org.sopeco.persistence.entities.definition.ParameterDefinition;
+import org.sopeco.persistence.entities.definition.ParameterNamespace;
 
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -35,8 +43,56 @@ public class SpecificationController implements ICenterController {
 			@Override
 			public void onSpecificationChangedEvent(SpecificationChangedEvent event) {
 				setCurrentSpecificationName(event.getSelectedSpecification());
+				addExistingAssignments();
 			}
 		});
+
+		EventControl.get().addHandler(InitialAssignmentChangedEvent.TYPE, new InitialAssignmentChangedEventHandler() {
+			@Override
+			public void onInitialAssignmentChanged(InitialAssignmentChangedEvent event) {
+				assignmentEvent(event);
+			}
+		});
+	}
+
+	/**
+	 * Called when a initAssignmentChangeevent is fired
+	 */
+	private void assignmentEvent(InitialAssignmentChangedEvent event) {
+		String[] splitted = event.getFullParameterName().split("/");
+		String name = splitted[splitted.length - 1];
+		String path = event.getFullParameterName().substring(0, event.getFullParameterName().length() - name.length());
+
+		ParameterNamespace namespace = ScenarioManager.get().getBuilder().getEnvironmentBuilder().getNamespace(path);
+		ParameterDefinition parameter = ScenarioManager.get().getBuilder().getEnvironmentBuilder()
+				.getParameter(name, namespace);
+
+		if (event.getChangeType() == ChangeType.Added) {
+			addNewAssignment(parameter, path.replaceAll("/", "."));
+		} else if (event.getChangeType() == ChangeType.Removed) {
+			removeAssignment(parameter, path.replaceAll("/", "."));
+		}
+
+		ScenarioManager.get().storeScenario();
+	}
+
+	/**
+	 * Add new assignment.
+	 */
+	private void addNewAssignment(ParameterDefinition parameter, String path) {
+		AssignmentItem assignment = new AssignmentItem(path, parameter.getName(), parameter.getType());
+		assignmentController.addAssignment(assignment);
+		ScenarioManager.get().getBuilder().getSpecificationBuilder().addInitAssignment(parameter, "");
+	}
+
+	/**
+	 * removes initial assignment.
+	 */
+	private void removeAssignment(ParameterDefinition parameter, String path) {
+		AssignmentItem assignment = new AssignmentItem(path, parameter.getName(), "");
+		assignmentController.removeAssignment(assignment);
+
+		ScenarioManager.get().getBuilder().getSpecificationBuilder().removeInitialAssignment(parameter);
 	}
 
 	@Override
@@ -57,11 +113,30 @@ public class SpecificationController implements ICenterController {
 
 		addExistingAssignments();
 		addRenameSpecificationHandler();
+		addToggleSelectionPanelClickHandler();
 	}
 
 	@Override
 	public Widget getView() {
 		return view;
+	}
+
+	/**
+	 * 
+	 */
+	private void addToggleSelectionPanelClickHandler() {
+		view.getToggleSelectionElement().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				if (view.isSelectionPanelVisible()) {
+					view.setSelectionPanelVisible(false);
+					view.setToggleSelectionElementText("&lt;");
+				} else {
+					view.setSelectionPanelVisible(true);
+					view.setToggleSelectionElementText("&gt;");
+				}
+			}
+		});
 	}
 
 	/**
@@ -95,13 +170,16 @@ public class SpecificationController implements ICenterController {
 	 * assignmenListPanel.
 	 */
 	private void addExistingAssignments() {
-		AssignmentItem ai = new AssignmentItem("name.space.", "test", "STRING");
-		AssignmentItem ai2 = new AssignmentItem("name.asdasdas.", "adsadsd", "INTEGER");
-		AssignmentItem ai3 = new AssignmentItem("name.aasd.", "addasd", "STRING");
+		for (ConstantValueAssignment cva : ScenarioManager.get().getBuilder().getSpecificationBuilder()
+				.getBuiltSpecification().getInitializationAssignemts()) {
 
-		assignmentController.addAssignment(ai);
-		assignmentController.addAssignment(ai2);
-		assignmentController.addAssignment(ai3);
+			String path = cva.getParameter().getFullName();
+			path = path.substring(0, path.lastIndexOf(".") + 1);
+
+			AssignmentItem item = new AssignmentItem(path, cva.getParameter().getName(), cva.getParameter().getType(),
+					cva.getValue());
+			assignmentController.addAssignment(item);
+		}
 	}
 
 	/**
@@ -135,9 +213,6 @@ public class SpecificationController implements ICenterController {
 				MainLayoutPanel.get().getNavigationController().removeAllSpecifications();
 
 				if (!result.isEmpty()) {
-					for (String sName : result) {
-						// MainLayoutPanel.get().getNavigationController().addSpecifications(sName);
-					}
 
 					if (selectSpecification == null || selectSpecification.isEmpty()) {
 						changeWorkingSpecification(result.get(0));

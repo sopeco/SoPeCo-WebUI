@@ -8,7 +8,7 @@
 
 .transparent-50 {
 	opacity: 0.5;
-	filter: alpha(opacity = 50);
+	filter: alpha(opacity =         50);
 }
 
 .spc-seperator {
@@ -118,7 +118,7 @@
 
 .sopeco-TreeItem>.content>span {
 	display: inline-block;
-	line-height: 24px;
+	line-height: 26px;
 	position: relative;
 }
 
@@ -530,12 +530,12 @@ p {
 #changeSpecPanel #addSpecification {
 	color: #333;
 	opacity: 0.5;
-	filter: alpha(opacity =                       50);
+	filter: alpha(opacity =                               50);
 }
 
 #changeSpecPanel #addSpecification:hover {
 	opacity: 1;
-	filter: alpha(opacity =                       100);
+	filter: alpha(opacity =                               100);
 }
 
 #changeSpecPanel #addSpecification>img {
@@ -600,6 +600,43 @@ p {
 
 #selectionViewPanel {
 	padding: 1em;
+}
+
+.selectionTreeItemLeaf {
+	margin-left: 2em;
+	padding-left: 1em;
+}
+
+.selectionTreeItemLeaf:hover {
+	background-color: #E1E7EB;
+}
+
+.selectionTreeItemLeaf>span {
+	line-height: 26px;
+}
+
+.selectionTreeItemLeaf>.gwt-CheckBox {
+	float: right;
+	margin: 4px 4px 0 0;
+	line-height: 0;
+}
+
+#toggleSelectionPanel {
+	position: absolute;
+	display: block;
+	background-color: #EEE;
+	border: 1px solid #BBB;
+	top: 50%;
+	cursor: pointer;
+	border-right: 1px solid #ccc;
+	border-radius: 10px 0 0 10px;
+	padding: 30px 5px;
+	color: #888;
+	z-index: 999;
+}
+
+#toggleSelectionPanel:hover {
+	background-color: #f8f8f8;
 }
 
 #assignmentListPanelWrapper h3,#selectionViewPanelWrapper h3 {
