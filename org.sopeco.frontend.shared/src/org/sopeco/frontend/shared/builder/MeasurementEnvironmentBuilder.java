@@ -69,8 +69,7 @@ public class MeasurementEnvironmentBuilder {
 	 * @return The new namespace
 	 */
 	public ParameterNamespace addNamespace(String name, ParameterNamespace targetNamespace) {
-		LOGGER.info("adding new namespace '" + name + "' to parent '"
-				+ targetNamespace.getFullName() + "'");
+		LOGGER.info("adding new namespace '" + name + "' to parent '" + targetNamespace.getFullName() + "'");
 
 		ParameterNamespace newNamepsace = SimpleEntityFactory.createNamespace(name);
 		newNamepsace.setParent(targetNamespace);
@@ -102,8 +101,7 @@ public class MeasurementEnvironmentBuilder {
 			return null;
 		}
 
-		if (nodes.length == 1
-				|| !nodes[0].equals(scenarioBuilder.getMEDefinition().getRoot().getName())) {
+		if (nodes.length == 1 || !nodes[0].equals(scenarioBuilder.getMEDefinition().getRoot().getName())) {
 			LOGGER.warning("cant add an other root");
 
 			return scenarioBuilder.getMEDefinition().getRoot();
@@ -160,8 +158,7 @@ public class MeasurementEnvironmentBuilder {
 	 *            namespace where the parameter will be added
 	 */
 	public ParameterDefinition addParameter(String name, String type, ParameterRole role, ParameterNamespace namespace) {
-		LOGGER.info("adding new parameter '" + name + "' to namespace '"
-				+ namespace.getFullName() + "'");
+		LOGGER.info("adding new parameter '" + name + "' to namespace '" + namespace.getFullName() + "'");
 
 		ParameterDefinition newParameter = SimpleEntityFactory.createParameterDefinition(name, type, role);
 
@@ -189,15 +186,30 @@ public class MeasurementEnvironmentBuilder {
 	 * @return searched namespace
 	 */
 	public ParameterNamespace getNamespace(String path) {
+		return getNamespace(path, DELIMITER);
+	}
+
+	/**
+	 * Returns the namespace specified by the path. The path will be seperated
+	 * by the delimiter '/' and every node representing a namespace.
+	 * 
+	 * @param path
+	 *            path to namespace
+	 * @param delimiter
+	 *            the delimiter of the nodes
+	 * @return searched namespace
+	 */
+	public ParameterNamespace getNamespace(String path, String delimiter) {
 		LOGGER.info("Getting namespace by path '" + path + "'");
 
-		if (path.length() > 1 && path.substring(0, 1).equals(DELIMITER)) {
+		if (path.length() > 1 && path.substring(0, 1).equals(delimiter)) {
 			path = path.substring(1);
 		}
 
-		String[] nodes = path.split(DELIMITER);
+		String[] nodes = path.split(delimiter);
 
 		if (nodes.length <= 0) {
+			LOGGER.warning("no nodes in array");
 			return null;
 		}
 
@@ -284,11 +296,10 @@ public class MeasurementEnvironmentBuilder {
 	 * @return was the removal successful
 	 */
 	public boolean removeNamespace(ParameterNamespace namespace, boolean appendChildrenToParent) {
-		LOGGER.info("removing namespace '" + namespace.getFullName()
-				+ "' // appendChildrenToParent: " + appendChildrenToParent);
+		LOGGER.info("removing namespace '" + namespace.getFullName() + "' // appendChildrenToParent: "
+				+ appendChildrenToParent);
 
-		if (namespace.getName().equals(ROOTNAME)
-				|| namespace.getParent() == null) {
+		if (namespace.getName().equals(ROOTNAME) || namespace.getParent() == null) {
 			LOGGER.warning("root namespace can not be removed.");
 			return false;
 		}
@@ -318,9 +329,8 @@ public class MeasurementEnvironmentBuilder {
 	 * @return was the parameter successful removed
 	 */
 	public boolean removeParameter(ParameterDefinition parameter) {
-		LOGGER.info("removing parameter '" + parameter.getName()
-				+ "' from namespace '" + parameter.getNamespace().getFullName()
-				+ "'");
+		LOGGER.info("removing parameter '" + parameter.getName() + "' from namespace '"
+				+ parameter.getNamespace().getFullName() + "'");
 
 		ParameterNamespace parent = parameter.getNamespace();
 
@@ -337,8 +347,7 @@ public class MeasurementEnvironmentBuilder {
 	 * @return was the parameter successful removed
 	 */
 	public boolean removeParameter(String name, ParameterNamespace namespace) {
-		LOGGER.info("removing parameter '" + name + "' from namespace '"
-				+ namespace.getFullName() + "'");
+		LOGGER.info("removing parameter '" + name + "' from namespace '" + namespace.getFullName() + "'");
 
 		ParameterDefinition parameter = namespace.getParameter(name);
 

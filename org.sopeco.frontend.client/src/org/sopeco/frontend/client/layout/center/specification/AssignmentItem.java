@@ -6,8 +6,6 @@ import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.DomEvent;
 import com.google.gwt.event.dom.client.HasBlurHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.TextBox;
@@ -19,12 +17,17 @@ import com.google.gwt.user.client.ui.TextBox;
  */
 class AssignmentItem extends FlowPanel implements HasBlurHandlers, BlurHandler {
 
-	private static final String ITEM_CSS_CLASS = "assignmentItem";
-	private static int PATH_MAX_LENGTH = 40;
+	/**
+	 * The max lenght of the displayed namespace. If the namespace is longer
+	 * than this, it will be shortened by trimPath(String).
+	 */
+	private static final int PATH_MAX_LENGTH = 40;
 
 	private String namespace, name, type, value;
-	private HTML htmlAssignment;
 	private TextBox textboxValue;
+
+	private HTML htmlNamespace, htmlName, htmlType;
+	private FlowPanel nestedValueTextBox;
 
 	public AssignmentItem(String pNamespace, String pName, String pType) {
 		this(pNamespace, pName, pType, "");
@@ -40,26 +43,27 @@ class AssignmentItem extends FlowPanel implements HasBlurHandlers, BlurHandler {
 	}
 
 	/**
-	 * 
+	 * Initialize the necessary objects.
 	 */
 	private void initialize() {
-		addStyleName(ITEM_CSS_CLASS);
-
-		String fullText = "<span class=\"namespace\">" + trimPath(namespace) + "</span><span class=\"name\">" + name
-				+ "</span> : " + "<span class=\"type\">" + type + "</span>";
-		htmlAssignment = new HTML(fullText);
-
 		textboxValue = new TextBox();
 		textboxValue.setText(value);
 		textboxValue.addBlurHandler(this);
 
-		Element clearDiv = DOM.createDiv();
-		clearDiv.addClassName("clear");
+		htmlNamespace = new HTML(trimPath(namespace));
+		htmlName = new HTML(name);
+		htmlType = new HTML(type);
+		nestedValueTextBox = new FlowPanel();
 
-		add(htmlAssignment);
-		add(textboxValue);
+		htmlNamespace.setTitle(namespace);
+		nestedValueTextBox.add(textboxValue);
+	}
 
-		getElement().appendChild(clearDiv);
+	/**
+	 * @return the nestedValueTextBox
+	 */
+	public FlowPanel getNestedValueTextBox() {
+		return nestedValueTextBox;
 	}
 
 	/**
@@ -110,6 +114,22 @@ class AssignmentItem extends FlowPanel implements HasBlurHandlers, BlurHandler {
 	}
 
 	/**
+	 * Returns the fullname in a shortened version.
+	 * 
+	 * @return
+	 */
+	public String getShortenedNamespace() {
+		return trimPath(namespace);
+	}
+
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
 	 * @return the textboxValue
 	 */
 	public TextBox getTextboxValue() {
@@ -120,10 +140,31 @@ class AssignmentItem extends FlowPanel implements HasBlurHandlers, BlurHandler {
 	public HandlerRegistration addBlurHandler(BlurHandler handler) {
 		return addHandler(handler, BlurEvent.getType());
 	}
-	
+
 	@Override
 	public void onBlur(BlurEvent event) {
 		DomEvent.fireNativeEvent(Document.get().createBlurEvent(), this);
+	}
+
+	/**
+	 * @return the htmlNamespace
+	 */
+	public HTML getHtmlNamespace() {
+		return htmlNamespace;
+	}
+
+	/**
+	 * @return the htmlName
+	 */
+	public HTML getHtmlName() {
+		return htmlName;
+	}
+
+	/**
+	 * @return the htmlType
+	 */
+	public HTML getHtmlType() {
+		return htmlType;
 	}
 
 }

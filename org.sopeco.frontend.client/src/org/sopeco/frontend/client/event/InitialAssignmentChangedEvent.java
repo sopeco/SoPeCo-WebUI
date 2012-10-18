@@ -18,7 +18,9 @@ public class InitialAssignmentChangedEvent extends GwtEvent<InitialAssignmentCha
 		/** Assignment added. */
 		Added,
 		/** Assignment removed. */
-		Removed
+		Removed,
+		/** An assignment was updated */
+		Updated
 	}
 
 	public static Type<InitialAssignmentChangedEventHandler> TYPE = new Type<InitialAssignmentChangedEventHandler>();

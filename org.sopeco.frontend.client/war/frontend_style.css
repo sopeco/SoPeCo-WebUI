@@ -1,14 +1,14 @@
 .gwt-PopupPanelGlass {
-	z-index: 998;
+	z-index: 1000;
 }
 
 .gwt-DialogBox {
-	z-index: 999;
+	z-index: 1001;
 }
 
 .transparent-50 {
 	opacity: 0.5;
-	filter: alpha(opacity =         50);
+	filter: alpha(opacity =       50);
 }
 
 .spc-seperator {
@@ -258,6 +258,11 @@ p {
 
 #mainNavigation .tlEntry:hover .marker {
 	background-color: #BBB;
+}
+
+#mainNavigation .tlEntry .subText {
+	color: #AAA;
+	font-size: 0.8em;
 }
 
 #mainNavigation .slEntry {
@@ -530,12 +535,15 @@ p {
 #changeSpecPanel #addSpecification {
 	color: #333;
 	opacity: 0.5;
-	filter: alpha(opacity =                               50);
+	filter: alpha(opacity =
+		                                                         
+		  50);
 }
 
 #changeSpecPanel #addSpecification:hover {
 	opacity: 1;
-	filter: alpha(opacity =                               100);
+	filter: alpha(opacity =                                                         
+		   100);
 }
 
 #changeSpecPanel #addSpecification>img {
@@ -545,7 +553,7 @@ p {
 }
 
 #specificationTopPanel {
-	border-bottom: 1px solid #ccc;
+	border-bottom: 2px solid #ccc;
 	width: 100%;
 	padding: 1em;
 }
@@ -556,7 +564,7 @@ p {
 }
 
 #assignmentListPanelWrapper {
-	left: 0;
+	right: 0;
 	bottom: 0;
 }
 
@@ -594,7 +602,7 @@ p {
 }
 
 #selectionViewPanelWrapper {
-	border-left: 1px solid #ccc;
+	border-right: 3px solid #ccc;
 	bottom: 0;
 }
 
@@ -613,6 +621,8 @@ p {
 
 .selectionTreeItemLeaf>span {
 	line-height: 26px;
+	color: #333;
+	font-weight: bold;
 }
 
 .selectionTreeItemLeaf>.gwt-CheckBox {
@@ -626,13 +636,21 @@ p {
 	display: block;
 	background-color: #EEE;
 	border: 1px solid #BBB;
-	top: 50%;
+	top: 40%;
 	cursor: pointer;
-	border-right: 1px solid #ccc;
-	border-radius: 10px 0 0 10px;
-	padding: 30px 5px;
+	/* border-right: 3px solid #ccc; */
+	border-radius: 10px 10px 0px 0;
+	/* padding: 30px 5px; */
 	color: #888;
 	z-index: 999;
+	-webkit-transform: rotate(90deg);
+	-moz-transform: rotate(90deg);
+	filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3 );
+	-webkit-transform-origin: 0 100%;
+	-moz-transform-origin: 0 100%;
+	height: 20px;
+	width: 200px;
+	text-align: center;
 }
 
 #toggleSelectionPanel:hover {
@@ -642,3 +660,38 @@ p {
 #assignmentListPanelWrapper h3,#selectionViewPanelWrapper h3 {
 	margin: 0 0 1em;
 }
+
+#assignmentItemTable {
+	display: table;
+	margin-left: 2em;
+}
+
+#assignmentItemTable>div {
+	display: table-cell;
+}
+
+#assignmentItemTable>div>div {
+	line-height: 28px;
+	border-bottom: 1px dashed #CCC;
+	padding-right: 1em;
+	white-space: nowrap;
+}
+
+#assignmentItemTable>div>div>.gwt-TextBox {
+	padding: 2px 4px;
+	margin-left: 2em;
+}
+
+#assignmentItemTable>.columnFirst {
+	color: #333;
+}
+
+#assignmentItemTable>.columnSecond {
+	color: #333;
+	font-weight: bold;
+}
+
+#assignmentItemTable>.columnThird {
+	color: #999;
+}
+

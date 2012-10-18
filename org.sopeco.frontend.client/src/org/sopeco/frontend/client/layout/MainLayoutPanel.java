@@ -11,17 +11,17 @@ import org.sopeco.frontend.client.layout.center.ICenterController;
 import org.sopeco.frontend.client.layout.center.NoScenario;
 import org.sopeco.frontend.client.layout.center.environment.EnvironmentController;
 import org.sopeco.frontend.client.layout.center.execute.ExecuteController;
+import org.sopeco.frontend.client.layout.center.experiment.ExperimentController;
 import org.sopeco.frontend.client.layout.center.result.ResultController;
 import org.sopeco.frontend.client.layout.center.specification.SpecificationController;
 import org.sopeco.frontend.client.layout.navigation.NavigationController;
 import org.sopeco.frontend.client.layout.navigation.NavigationView;
+import org.sopeco.frontend.shared.helper.Metering;
 
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ScrollPanel;
 
 /**
@@ -73,26 +73,27 @@ public final class MainLayoutPanel extends DockLayoutPanel implements ValueChang
 	 * Initialize the main layout
 	 */
 	private void initialize() {
-//		History.addValueChangeHandler(this);
-//		History.fireCurrentHistoryState();
+		// History.addValueChangeHandler(this);
+		// History.fireCurrentHistoryState();
 
 		centerScrollPanel = new ScrollPanel();
 		currentCenterPanel = DEFAULT_CENTER_TYPE;
 
 		addNorth(getNorthPanel(), Float.parseFloat(NorthPanel.PANEL_HEIGHT));
 		addWest(getNavigationController().getView(), Float.parseFloat(NavigationView.PANEL_WIDTH));
-		
+
 		getWidgetContainerElement(getNavigationController().getView()).setId("mainNavigation");
 
 		centerController.put(CenterType.Environment, new EnvironmentController());
 		centerController.put(CenterType.Specification, new SpecificationController());
 		centerController.put(CenterType.Execute, new ExecuteController());
 		centerController.put(CenterType.Result, new ResultController());
+		centerController.put(CenterType.Experiment, new ExperimentController());
 
 		getNavigationController().setCurrentCenterType(currentCenterPanel);
 
-		createNewCenterPanels();
-		
+		updateCenterPanel();
+
 		EventControl.get().addHandler(ScenarioLoadedEvent.TYPE, new ScenarioLoadedEventHandler() {
 			@Override
 			public void onScenarioLoadedEvent(ScenarioLoadedEvent scenarioLoadedEvent) {
@@ -103,8 +104,8 @@ public final class MainLayoutPanel extends DockLayoutPanel implements ValueChang
 
 	@Override
 	public void onValueChange(ValueChangeEvent<String> event) {
-//		CenterType oldType = CenterType.valueOf(event.getValue());
-//		updateCenterPanel(oldType, false);
+		// CenterType oldType = CenterType.valueOf(event.getValue());
+		// updateCenterPanel(oldType, false);
 	}
 
 	/**
@@ -121,11 +122,15 @@ public final class MainLayoutPanel extends DockLayoutPanel implements ValueChang
 	 * panel.
 	 */
 	public void createNewCenterPanels() {
+		double metering = Metering.start();
+
 		for (ICenterController controller : centerController.values()) {
 			controller.reset();
 		}
 
 		updateCenterPanel();
+
+		Metering.stop(metering);
 	}
 
 	/**
@@ -150,26 +155,32 @@ public final class MainLayoutPanel extends DockLayoutPanel implements ValueChang
 	 * @param type
 	 */
 	public void updateCenterPanel(CenterType type, boolean newHistoryItem) {
+		double metering = Metering.start();
+
 		if (getCenter() != null) {
-			remove(getCenter());
+			getCenter().removeFromParent();
 		}
 		currentCenterPanel = type;
-		//centerScrollPanel.clear();
+		// centerScrollPanel.clear();
 
-//		if (newHistoryItem) {
-//			History.newItem(type.name());
-//		}
+		// if (newHistoryItem) {
+		// History.newItem(type.name());
+		// }
 
 		getNavigationController().setCurrentCenterType(type);
 
 		if (northPanel.getSelectedScenario().isEmpty() || type == CenterType.NoScenario) {
 			add(new NoScenario());
+
+			Metering.stop(metering);
 			return;
 		}
 
-		//centerScrollPanel.add(centerController.get(type).getView());
-		//add(centerScrollPanel);
+		// centerScrollPanel.add(centerController.get(type).getView());
+		// add(centerScrollPanel);
 		add(centerController.get(type).getView());
+
+		Metering.stop(metering);
 	}
 
 	/**

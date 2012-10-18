@@ -1,13 +1,13 @@
 package org.sopeco.frontend.client.layout.navigation;
 
 import org.sopeco.frontend.client.event.EventControl;
+import org.sopeco.frontend.client.event.ExperimentChangedEvent;
 import org.sopeco.frontend.client.event.ScenarioLoadedEvent;
 import org.sopeco.frontend.client.event.SpecificationChangedEvent;
 import org.sopeco.frontend.client.event.handler.ScenarioLoadedEventHandler;
 import org.sopeco.frontend.client.event.handler.SpecificationChangedEventHandler;
 import org.sopeco.frontend.client.layout.MainLayoutPanel;
 import org.sopeco.frontend.client.layout.center.CenterType;
-import org.sopeco.frontend.client.layout.center.specification.SpecificationController;
 import org.sopeco.frontend.client.layout.popups.TextInput;
 import org.sopeco.frontend.client.layout.popups.TextInput.Icon;
 import org.sopeco.frontend.client.layout.popups.TextInputOkHandler;
@@ -52,6 +52,8 @@ public class NavigationController {
 			@Override
 			public void onSpecificationChangedEvent(SpecificationChangedEvent event) {
 				setActiveSpecification(event.getSelectedSpecification());
+
+				view.getNaviItemsMap().get(CenterType.Specification).setSubText(event.getSelectedSpecification());
 			}
 		});
 	}
@@ -183,12 +185,16 @@ public class NavigationController {
 		return new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				view.getNaviItemsMap().get(currentCenterType).setActive(false);
-
 				NavigationSubItem item = (NavigationSubItem) event.getSource();
 				setActiveNavigationItem(item);
 
-				GWT.log("display experiment: " + item.getExperimentName());
+				if (MainLayoutPanel.get().getCenterType() != item.getType()) {
+					GWT.log("display experiment: " + item.getExperimentName());
+					parentLayout.updateCenterPanel(item.getType());
+				}
+
+				ExperimentChangedEvent expChangedEvent = new ExperimentChangedEvent(item.getExperimentName());
+				EventControl.get().fireEvent(expChangedEvent);
 			}
 		};
 	}

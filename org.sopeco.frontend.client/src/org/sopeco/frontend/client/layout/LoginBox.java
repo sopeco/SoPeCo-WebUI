@@ -18,9 +18,11 @@ import org.sopeco.frontend.client.layout.popups.TextInputOkHandler;
 import org.sopeco.persistence.metadata.entities.DatabaseInstance;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Cookies;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
@@ -137,12 +139,12 @@ public class LoginBox extends DialogBox implements ClickHandler, Deactivatable {
 		if (databases.isEmpty()) {
 			listboxDatabases.setEnabled(false);
 			btnRemoveDb.setEnabled(false);
-			
+
 			listboxDatabases.addItem(R.get("no_accounts"));
 		} else {
 			listboxDatabases.setEnabled(true);
 			btnRemoveDb.setEnabled(true);
-			
+
 			for (DatabaseInstance dbInstance : databases) {
 				String name = dbInstance.getDbName();
 
@@ -192,36 +194,46 @@ public class LoginBox extends DialogBox implements ClickHandler, Deactivatable {
 
 	@Override
 	public void onClick(ClickEvent event) {
-		GWT.log("connect to database..");
+		GWT.runAsync(new RunAsyncCallback() {
+			@Override
+			public void onFailure(Throwable reason) {
+				Window.alert("Code download failed");
+			}
 
-		int selectedIndex = listboxDatabases.getSelectedIndex();
+			@Override
+			public void onSuccess() {
+				// TODO Auto-generated method stub
 
-		if (selectedIndex < 0) {
-			Message.warning(R.get("select_account"));
-			return;
-		}
+				GWT.log("connect to database..");
 
-		final DatabaseInstance instance = DBManager.getLoadedDatabases().get(selectedIndex);
+				int selectedIndex = listboxDatabases.getSelectedIndex();
 
-		if (instance == null) {
-			return;
-		}
+				if (selectedIndex < 0) {
+					Message.warning(R.get("select_account"));
+					return;
+				}
 
-		Cookies.setCookie(COOKIE_DATABSE, instance.getDbName());
+				final DatabaseInstance instance = DBManager.getLoadedDatabases().get(selectedIndex);
 
-		if (instance.isProtectedByPassword()) {
-			TextInput.doInput(Icon.Password,
-					R.get("insert_db_passwd_for") + " '" + instance.getDbName() + "'", R.get("db_passwd") + ":",
-					new TextInputOkHandler() {
-						@Override
-						public void onInput(ClickEvent event, String input) {
-							switchDatabaseRequest(instance, input);
-						}
-					});
-		} else {
-			switchDatabaseRequest(instance, "");
-		}
+				if (instance == null) {
+					return;
+				}
 
+				Cookies.setCookie(COOKIE_DATABSE, instance.getDbName());
+
+				if (instance.isProtectedByPassword()) {
+					TextInput.doInput(Icon.Password, R.get("insert_db_passwd_for") + " '" + instance.getDbName() + "'",
+							R.get("db_passwd") + ":", new TextInputOkHandler() {
+								@Override
+								public void onInput(ClickEvent event, String input) {
+									switchDatabaseRequest(instance, input);
+								}
+							});
+				} else {
+					switchDatabaseRequest(instance, "");
+				}
+			}
+		});
 	}
 
 	private void switchDatabaseRequest(final DatabaseInstance instance, final String password) {
@@ -263,27 +275,26 @@ public class LoginBox extends DialogBox implements ClickHandler, Deactivatable {
 		}
 
 		if (instance.isProtectedByPassword()) {
-			TextInput.doInput(Icon.Password, R.get("pw_remove_db"), R.get("db_passwd") + ":",
-					new TextInputOkHandler() {
+			TextInput.doInput(Icon.Password, R.get("pw_remove_db"), R.get("db_passwd") + ":", new TextInputOkHandler() {
+				@Override
+				public void onInput(ClickEvent event, String input) {
+					DBManager.getDbManager().checkPassword(instance, input, new AsyncCallback<Boolean>() {
 						@Override
-						public void onInput(ClickEvent event, String input) {
-							DBManager.getDbManager().checkPassword(instance, input, new AsyncCallback<Boolean>() {
-								@Override
-								public void onSuccess(Boolean result) {
-									if (result) {
-										deleteDatabase(instance);
-									} else {
-										Message.error(R.get("wrong_pw_cant_remove_db"));
-									}
-								}
+						public void onSuccess(Boolean result) {
+							if (result) {
+								deleteDatabase(instance);
+							} else {
+								Message.error(R.get("wrong_pw_cant_remove_db"));
+							}
+						}
 
-								@Override
-								public void onFailure(Throwable caught) {
-									Message.error(caught.getMessage());
-								}
-							});
+						@Override
+						public void onFailure(Throwable caught) {
+							Message.error(caught.getMessage());
 						}
 					});
+				}
+			});
 		} else {
 			deleteDatabase(instance);
 		}

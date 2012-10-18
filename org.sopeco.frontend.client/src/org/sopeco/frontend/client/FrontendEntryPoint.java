@@ -75,7 +75,7 @@ public class FrontendEntryPoint implements EntryPoint {
 		RootLayoutPanel rootLayoutPanel = RootLayoutPanel.get();
 		rootLayoutPanel.add(MainLayoutPanel.get());
 
-//		ServerPush.start();
+		ServerPush.start();
 	}
 
 	/**

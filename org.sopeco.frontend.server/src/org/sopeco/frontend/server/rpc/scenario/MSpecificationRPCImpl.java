@@ -6,9 +6,9 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sopeco.frontend.client.rpc.MSpecificationRPC;
-import org.sopeco.frontend.server.helper.Metering;
 import org.sopeco.frontend.server.rpc.SuperRemoteServlet;
 import org.sopeco.frontend.shared.builder.MeasurementSpecificationBuilder;
+import org.sopeco.frontend.shared.helper.Metering;
 import org.sopeco.persistence.entities.definition.MeasurementSpecification;
 
 /**

@@ -1,4 +1,4 @@
-package org.sopeco.frontend.server.helper;
+package org.sopeco.frontend.shared.helper;
 
 import java.util.HashMap;
 
@@ -17,7 +17,7 @@ public class Metering {
 		double rand = Math.random();
 
 		map.put(rand, System.currentTimeMillis());
-
+		
 		return rand;
 	}
 

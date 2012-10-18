@@ -5,6 +5,7 @@ import org.sopeco.frontend.client.event.SpecificationChangedEvent;
 import org.sopeco.frontend.client.event.handler.SpecificationChangedEventHandler;
 import org.sopeco.frontend.client.model.ScenarioManager;
 import org.sopeco.frontend.client.widget.tree.TreeItem;
+import org.sopeco.frontend.shared.helper.Metering;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.entities.definition.ParameterNamespace;
 
@@ -43,6 +44,8 @@ public class SelectionController {
 	// }
 
 	private void generateTree() {
+		double metering = Metering.start();
+		
 		ParameterNamespace root = ScenarioManager.get().getBuilder().getMEDefinition().getRoot();
 
 		TreeItem rootItem = new TreeItem(root.getName());
@@ -50,6 +53,8 @@ public class SelectionController {
 		recursiveAddTreeItems(root, rootItem);
 
 		view.getTree().setRoot(rootItem);
+
+		Metering.stop(metering);
 	}
 
 	private boolean recursiveAddTreeItems(ParameterNamespace namespace, TreeItem treeItem) {

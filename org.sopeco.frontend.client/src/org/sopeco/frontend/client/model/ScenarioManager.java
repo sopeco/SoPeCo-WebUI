@@ -1,9 +1,14 @@
 package org.sopeco.frontend.client.model;
 
+import java.util.logging.Logger;
+
+import org.sopeco.frontend.client.event.EnvironmentParameterChangedEvent;
 import org.sopeco.frontend.client.event.EventControl;
+import org.sopeco.frontend.client.event.InitialAssignmentChangedEvent;
 import org.sopeco.frontend.client.event.ScenarioChangedEvent;
 import org.sopeco.frontend.client.event.ScenarioLoadedEvent;
 import org.sopeco.frontend.client.event.SpecificationChangedEvent;
+import org.sopeco.frontend.client.event.InitialAssignmentChangedEvent.ChangeType;
 import org.sopeco.frontend.client.event.handler.ScenarioChangedEventHandler;
 import org.sopeco.frontend.client.event.handler.SpecificationChangedEventHandler;
 import org.sopeco.frontend.client.layout.MainLayoutPanel;
@@ -13,7 +18,12 @@ import org.sopeco.frontend.client.layout.popups.Message;
 import org.sopeco.frontend.client.rpc.RPC;
 import org.sopeco.frontend.shared.builder.MeasurementSpecificationBuilder;
 import org.sopeco.frontend.shared.builder.ScenarioDefinitionBuilder;
+import org.sopeco.frontend.shared.builder.SimpleEntityFactory;
+import org.sopeco.persistence.entities.definition.ConstantValueAssignment;
 import org.sopeco.persistence.entities.definition.MeasurementSpecification;
+import org.sopeco.persistence.entities.definition.ParameterDefinition;
+import org.sopeco.persistence.entities.definition.ParameterNamespace;
+import org.sopeco.persistence.entities.definition.ParameterRole;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -25,11 +35,15 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  */
 public final class ScenarioManager {
 
+	private static final Logger LOGGER = Logger.getLogger(ScenarioManager.class.getName());
 	private static ScenarioManager modelManager;
 
 	private ScenarioDefinitionBuilder builder;
 	private String currentScenarioName;
 	private String workingSpecification;
+
+	private ExperimentModul experimentModul;
+	private SpecificationModul specificationModul;
 
 	private ScenarioManager() {
 		builder = new ScenarioDefinitionBuilder();
@@ -48,6 +62,34 @@ public final class ScenarioManager {
 			}
 		});
 	}
+
+	/**
+	 * Returns the ExperimentModul, which contains all methods that were related
+	 * to experiments.
+	 * 
+	 * @return experimentModul
+	 */
+	public ExperimentModul experiment() {
+		if (experimentModul == null) {
+			experimentModul = new ExperimentModul(this);
+		}
+
+		return experimentModul;
+	}
+
+	/**
+	 * Returns the SpecificationModul, which contains all methods that were
+	 * related to specification.
+	 * 
+	 * @return experimentModul
+	 */
+//	public SpecificationModul specification() {
+//		if (specificationModul == null) {
+//			specificationModul = new SpecificationModul(this);
+//		}
+//
+//		return specificationModul;
+//	}
 
 	/**
 	 * Changing the current working specification.
@@ -207,8 +249,6 @@ public final class ScenarioManager {
 		});
 	}
 
-	
-	
 	/**
 	 * Adding a new specification to the scenario and set it to the working
 	 * specification.
@@ -249,5 +289,90 @@ public final class ScenarioManager {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Changes the value of the given InitAssignment Parameter.
+	 * 
+	 * @param path
+	 * @param name
+	 * @param newValue
+	 * @return
+	 */
+	public boolean changeInitAssignmentValue(String path, String name, String newValue) {
+		ParameterNamespace namespace = getBuilder().getEnvironmentBuilder().getNamespace(path, "\\.");
+		ParameterDefinition parameter = getBuilder().getEnvironmentBuilder().getParameter(name, namespace);
+
+		if (parameter == null) {
+			return false;
+		}
+
+		for (ConstantValueAssignment cva : getBuilder().getSpecificationBuilder().getBuiltSpecification()
+				.getInitializationAssignemts()) {
+			if (cva.getParameter().getFullName().equals(parameter.getFullName())) {
+				cva.setValue(newValue);
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * 
+	 * @param path
+	 * @param oldName
+	 * @param newName
+	 * @param type
+	 * @param role
+	 * @return
+	 */
+	public boolean updateParameter(String path, String oldName, String newName, String type, ParameterRole role) {
+		LOGGER.info("rpc: updateParameter: " + oldName + " from '" + path + "'");
+
+		ParameterNamespace ns = getBuilder().getEnvironmentBuilder().getNamespace(path);
+
+		if (ns == null) {
+			LOGGER.info("no namespace '" + ns + "' found");
+			return false;
+		}
+
+		ParameterDefinition parameter = getBuilder().getEnvironmentBuilder().getParameter(oldName, ns);
+
+		if (parameter == null) {
+			LOGGER.info("no parameter '" + oldName + "' found");
+			return false;
+		}
+
+		// ParameterDefinition oldParameter =
+		// SimpleEntityFactory.createParameterDefinition(parameter.getName(),
+		// parameter.getType(), parameter.getRole());
+		// oldParameter.setNamespace(parameter.getNamespace());
+
+		ConstantValueAssignment initialAssignmentParameter = null;
+		for (ConstantValueAssignment cva : getBuilder().getSpecificationBuilder().getBuiltSpecification()
+				.getInitializationAssignemts()) {
+			if (cva.getParameter().getFullName().equals(parameter.getFullName())) {
+				initialAssignmentParameter = cva;
+			}
+		}
+
+		parameter.setName(newName);
+		parameter.setType(type);
+		parameter.setRole(role);
+
+		if (initialAssignmentParameter != null) {
+			initialAssignmentParameter.setParameter(parameter);
+			((SpecificationController) MainLayoutPanel.get().getCenterController(CenterType.Specification))
+					.addExistingAssignments();
+		}
+
+		// EnvironmentParameterChangedEvent event = new
+		// EnvironmentParameterChangedEvent(oldParameter, parameter);
+		// EventControl.get().fireEvent(event);
+
+		storeScenario();
+
+		return true;
 	}
 }

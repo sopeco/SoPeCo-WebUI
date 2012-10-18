@@ -5,6 +5,7 @@ import org.sopeco.frontend.client.rpc.RPC;
 import org.sopeco.frontend.client.widget.EParameterTreeItem;
 import org.sopeco.frontend.client.widget.EnvironmentTreeItem;
 import org.sopeco.frontend.client.widget.FrontendTree;
+import org.sopeco.frontend.shared.helper.Metering;
 import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.entities.definition.ParameterNamespace;
@@ -35,15 +36,13 @@ public class EnvironmentDefinitonTreePanel extends FlowPanel {
 
 	private void updateTree() {
 		clear();
-//		if (frontendTree != null) {
-//			remove(frontendTree);
-//		}
 
 		generateTree(false);
 		add(frontendTree);
 	}
 
 	public void generateTree(boolean forceUpdate) {
+		double metering = Metering.start();
 		frontendTree = new FrontendTree();
 
 		if (currentEnvironmentDefinition == null || forceUpdate) {
@@ -62,6 +61,8 @@ public class EnvironmentDefinitonTreePanel extends FlowPanel {
 					Message.error(caught.getMessage());
 				}
 			});
+
+			Metering.stop(metering);
 			return;
 		}
 
@@ -72,9 +73,13 @@ public class EnvironmentDefinitonTreePanel extends FlowPanel {
 		addPNS(root, rootItem);
 
 		frontendTree.setRoot(rootItem);
+
+		Metering.stop(metering);
 	}
 
 	private void addPNS(ParameterNamespace namespace, EnvironmentTreeItem nsTItem) {
+		double metering = Metering.start();
+		
 		for (ParameterNamespace pns : namespace.getChildren()) {
 			EnvironmentTreeItem treeItem = new EnvironmentTreeItem(pns.getName());
 
@@ -91,6 +96,8 @@ public class EnvironmentDefinitonTreePanel extends FlowPanel {
 
 			nsTItem.addItem(treeItem);
 		}
+		
+		Metering.stop(metering);
 	}
 
 	public void setEnvironmentDefiniton(MeasurementEnvironmentDefinition newEnvironmentDefinition) {

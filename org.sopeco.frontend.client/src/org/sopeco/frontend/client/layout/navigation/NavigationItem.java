@@ -2,10 +2,12 @@ package org.sopeco.frontend.client.layout.navigation;
 
 import org.sopeco.frontend.client.layout.center.CenterType;
 
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -19,12 +21,14 @@ import com.google.gwt.user.client.ui.Image;
  */
 public class NavigationItem extends FocusPanel {
 
+	private static final String CSS_SUB_TEXT_CLASS = "subText";
 	private static final String CHANGE_SPECIFICATION_ICON_ID = "changeSpecImage";
 	private static final String CHANGE_SPECIFICATION_ICON = "images/change_2.png";
 
 	private FlowPanel contentPanel;
 	private boolean isActive;
 	private CenterType type;
+	private Element subTextElement;
 
 	/**
 	 * The panel, which contains all other widgets.
@@ -42,8 +46,16 @@ public class NavigationItem extends FocusPanel {
 
 		contentPanel = new FlowPanel();
 
+		FlowPanel textWrapper = new FlowPanel();
 		HTML label = new HTML(name);
-		contentPanel.add(label);
+
+		subTextElement = DOM.createSpan();
+		subTextElement.addClassName(CSS_SUB_TEXT_CLASS);
+
+		textWrapper.add(label);
+		textWrapper.getElement().appendChild(subTextElement);
+
+		contentPanel.add(textWrapper);
 
 		HTML marked = new HTML();
 		marked.addStyleName("marker");
@@ -52,6 +64,15 @@ public class NavigationItem extends FocusPanel {
 		add(contentPanel);
 
 		preventFocus();
+	}
+
+	/**
+	 * Sets the second textline of the navi items.
+	 * 
+	 * @param text
+	 */
+	public void setSubText(String text) {
+		subTextElement.setInnerHTML(text);
 	}
 
 	/**
@@ -126,4 +147,5 @@ public class NavigationItem extends FocusPanel {
 	public boolean isActive() {
 		return isActive;
 	}
+
 }

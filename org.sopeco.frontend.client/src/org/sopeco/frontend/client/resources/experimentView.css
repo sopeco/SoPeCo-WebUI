@@ -1,0 +1,40 @@
+/* CSS of the ExperimentView */
+#expSettingsPanel {
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	border-right: 2px solid #CCC;
+}
+
+/** expSettingsNamePanel */
+#expSettingsNamePanel {
+	width: 100%;
+	height: 50px;
+	border-bottom: 2px solid #CCC;
+}
+
+#expSettingsNamePanel td {
+	padding: 0.5em 1em;
+	position: relative;
+}
+
+#expSettingsNamePanel .gwt-HTML {
+	color: #333;
+	font-weight: bold;
+}
+
+#expSettingsNamePanel .gwt-TextBox {
+	width: 95%;
+	padding: 4px;
+}
+
+/** expSettingsPanel */
+#expSettingsPanel h3 {
+	margin: 1em;
+}
+
+/** explorationPanel */
+#expSettingsExplroationPanel {
+	border-bottom: 2px solid #ccc;
+}

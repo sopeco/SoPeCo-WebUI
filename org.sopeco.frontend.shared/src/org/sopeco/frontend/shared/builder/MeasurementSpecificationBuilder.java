@@ -3,6 +3,7 @@ package org.sopeco.frontend.shared.builder;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.sopeco.frontend.shared.helper.Metering;
 import org.sopeco.persistence.entities.definition.ConstantValueAssignment;
 import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
 import org.sopeco.persistence.entities.definition.ExperimentTerminationCondition;
@@ -29,19 +30,22 @@ public class MeasurementSpecificationBuilder {
 	}
 
 	public MeasurementSpecificationBuilder(ScenarioDefinitionBuilder sBuilder, String specName) {
+		double metering = Metering.start();
 		LOGGER.info("Creating MeasurementSpecificationBuilder '" + specName + "'");
-		LOGGER.log(Level.FINE, "Creating MeasurementSpecificationBuilder '" + specName + "'");
-
-		// scenarioBuilder = sBuilder;
 
 		specification = SimpleEntityFactory.createMeasurementSpecification(specName);
 		sBuilder.getBuiltScenario().getMeasurementSpecifications().add(specification);
+
+		Metering.stop(metering);
 	}
 
 	public MeasurementSpecificationBuilder(MeasurementSpecification spec) {
+		double metering = Metering.start();
 		LOGGER.info("Creating MeasurementSpecificationBuilder for Spec. '" + spec.getName() + "'");
 
 		specification = spec;
+
+		Metering.stop(metering);
 	}
 
 	/**
@@ -86,16 +90,11 @@ public class MeasurementSpecificationBuilder {
 	 * @return
 	 */
 	public boolean containsInitialAssignment(ParameterDefinition parameter) {
-		if (parameter.getFullName().equals("root.configuration2.Browserrr")) {
-			System.out.println();
-		}
 		for (ConstantValueAssignment assignment : specification.getInitializationAssignemts()) {
 			if (assignment.getParameter().getFullName().equals(parameter.getFullName())) {
-				LOGGER.info("contains init assignment'" + parameter.getFullName() + "': true");
 				return true;
 			}
 		}
-		LOGGER.info("contains init assignment'" + parameter.getFullName() + "': false");
 		return false;
 	}
 

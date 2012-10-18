@@ -93,7 +93,7 @@ public class NavigationView extends FlowPanel {
 	 *            on the item
 	 */
 	public NavigationSubItem addExperimentItem(String text) {
-		NavigationSubItem newItem = new NavigationSubItem(text);
+		NavigationSubItem newItem = new NavigationSubItem(text, CenterType.Experiment);
 		experimentsPanel.add(newItem);
 		return newItem;
 	}

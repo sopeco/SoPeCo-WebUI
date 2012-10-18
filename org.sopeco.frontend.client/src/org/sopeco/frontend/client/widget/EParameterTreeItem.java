@@ -3,6 +3,7 @@ package org.sopeco.frontend.client.widget;
 import org.sopeco.frontend.client.R;
 import org.sopeco.frontend.client.layout.popups.Loader;
 import org.sopeco.frontend.client.layout.popups.Message;
+import org.sopeco.frontend.client.model.ScenarioManager;
 import org.sopeco.frontend.client.rpc.RPC;
 import org.sopeco.persistence.dataset.util.ParameterType;
 import org.sopeco.persistence.entities.definition.ParameterRole;
@@ -197,19 +198,20 @@ public class EParameterTreeItem extends EnvironmentTreeItem {
 	private void updateParameter(String oldName, String newName) {
 		String path = parentItem.getPath();
 
-		Loader.showIcon();
-		RPC.getMEControllerRPC().updateParameter(path, oldName, newName, type, role, new AsyncCallback<Boolean>() {
-			@Override
-			public void onSuccess(Boolean result) {
-				Loader.hideIcon();
-			}
-
-			@Override
-			public void onFailure(Throwable caught) {
-				Message.error(caught.getMessage());
-
-				Loader.hideIcon();
-			}
-		});
+//		Loader.showIcon();
+		ScenarioManager.get().updateParameter(path, oldName, newName, type, role);
+//		RPC.getMEControllerRPC().updateParameter(path, oldName, newName, type, role, new AsyncCallback<Boolean>() {
+//			@Override
+//			public void onSuccess(Boolean result) {
+//				Loader.hideIcon();
+//			}
+//
+//			@Override
+//			public void onFailure(Throwable caught) {
+//				Message.error(caught.getMessage());
+//
+//				Loader.hideIcon();
+//			}
+//		});
 	}
 }

@@ -139,11 +139,11 @@ public class DefinitionBuilderTest {
 		assertEquals(newNamespace.getAllParameters().size(), 2);
 
 		assertEquals(newNamespace.getAllParameters().get(0).getName(), "First");
-		assertEquals(newNamespace.getAllParameters().get(0).getType(), "FirstType");
+		assertEquals(newNamespace.getAllParameters().get(0).getType(), "FirstType".toUpperCase());
 		assertEquals(newNamespace.getAllParameters().get(0).getRole(), ParameterRole.INPUT);
-
+		
 		assertEquals(newNamespace.getAllParameters().get(1).getName(), "Second");
-		assertEquals(newNamespace.getAllParameters().get(1).getType(), "SecondType");
+		assertEquals(newNamespace.getAllParameters().get(1).getType(), "SecondType".toUpperCase());
 		assertEquals(newNamespace.getAllParameters().get(1).getRole(), ParameterRole.OBSERVATION);
 	}
 

@@ -14,8 +14,8 @@ public class NavigationSubItem extends NavigationItem {
 
 	private String experimentName;
 
-	public NavigationSubItem(String name) {
-		super(CenterType.Other, name);
+	public NavigationSubItem(String name, CenterType type) {
+		super(type, name);
 		experimentName = name;
 
 		removeStyleName("tlEntry");

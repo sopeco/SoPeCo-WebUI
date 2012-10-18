@@ -9,8 +9,8 @@ import org.sopeco.frontend.client.rpc.DatabaseManagerRPC;
 import org.sopeco.frontend.server.db.FlexiblePersistenceProviderFactory;
 import org.sopeco.frontend.server.db.UIPersistenceProvider;
 import org.sopeco.frontend.server.db.UIPersistenceProviderFactory;
-import org.sopeco.frontend.server.helper.Metering;
 import org.sopeco.frontend.server.rpc.SuperRemoteServlet;
+import org.sopeco.frontend.shared.helper.Metering;
 import org.sopeco.persistence.IMetaDataPersistenceProvider;
 import org.sopeco.persistence.IPersistenceProvider;
 import org.sopeco.persistence.PersistenceProviderFactory;
@@ -29,15 +29,13 @@ public class DatabaseManagerRPCImpl extends SuperRemoteServlet implements Databa
 	private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseManagerRPCImpl.class);
 	private static final long serialVersionUID = 1L;
 
-	private static final String META_SESSION = "META-SESSION";
 	private static IMetaDataPersistenceProvider metaPersistenceProvider;
 
 	private static IMetaDataPersistenceProvider getMetaProvider() {
 		double metering = Metering.start();
 		
 		if (metaPersistenceProvider == null) {
-			metaPersistenceProvider = PersistenceProviderFactory.getInstance().getMetaDataPersistenceProvider(
-					META_SESSION);
+			metaPersistenceProvider = PersistenceProviderFactory.getInstance().getMetaDataPersistenceProvider();
 		}
 
 		Metering.stop(metering);

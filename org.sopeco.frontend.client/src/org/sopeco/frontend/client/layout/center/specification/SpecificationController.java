@@ -2,10 +2,11 @@ package org.sopeco.frontend.client.layout.center.specification;
 
 import java.util.List;
 
+import org.sopeco.frontend.client.R;
 import org.sopeco.frontend.client.event.EventControl;
 import org.sopeco.frontend.client.event.InitialAssignmentChangedEvent;
-import org.sopeco.frontend.client.event.SpecificationChangedEvent;
 import org.sopeco.frontend.client.event.InitialAssignmentChangedEvent.ChangeType;
+import org.sopeco.frontend.client.event.SpecificationChangedEvent;
 import org.sopeco.frontend.client.event.handler.InitialAssignmentChangedEventHandler;
 import org.sopeco.frontend.client.event.handler.SpecificationChangedEventHandler;
 import org.sopeco.frontend.client.layout.MainLayoutPanel;
@@ -14,6 +15,7 @@ import org.sopeco.frontend.client.layout.popups.Loader;
 import org.sopeco.frontend.client.layout.popups.Message;
 import org.sopeco.frontend.client.model.ScenarioManager;
 import org.sopeco.frontend.client.rpc.RPC;
+import org.sopeco.frontend.shared.helper.Metering;
 import org.sopeco.persistence.entities.definition.ConstantValueAssignment;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.entities.definition.ParameterNamespace;
@@ -71,6 +73,8 @@ public class SpecificationController implements ICenterController {
 			addNewAssignment(parameter, path.replaceAll("/", "."));
 		} else if (event.getChangeType() == ChangeType.Removed) {
 			removeAssignment(parameter, path.replaceAll("/", "."));
+		} else if (event.getChangeType() == ChangeType.Updated) {
+			addExistingAssignments();
 		}
 
 		ScenarioManager.get().storeScenario();
@@ -82,6 +86,7 @@ public class SpecificationController implements ICenterController {
 	private void addNewAssignment(ParameterDefinition parameter, String path) {
 		AssignmentItem assignment = new AssignmentItem(path, parameter.getName(), parameter.getType());
 		assignmentController.addAssignment(assignment);
+		assignmentController.refreshAssignmentListPanel();
 		ScenarioManager.get().getBuilder().getSpecificationBuilder().addInitAssignment(parameter, "");
 	}
 
@@ -130,10 +135,10 @@ public class SpecificationController implements ICenterController {
 			public void onClick(ClickEvent event) {
 				if (view.isSelectionPanelVisible()) {
 					view.setSelectionPanelVisible(false);
-					view.setToggleSelectionElementText("&lt;");
+					view.setToggleSelectionElementText(R.get("showEnvParameter"));
 				} else {
 					view.setSelectionPanelVisible(true);
-					view.setToggleSelectionElementText("&gt;");
+					view.setToggleSelectionElementText(R.get("hideEnvParameter"));
 				}
 			}
 		});
@@ -166,10 +171,13 @@ public class SpecificationController implements ICenterController {
 	}
 
 	/**
-	 * Adding the initial assignment of the current model to the
-	 * assignmenListPanel.
+	 * Clean the list of init assignments and adds the initial assignment of the
+	 * current model to the assignmenListPanel.
 	 */
-	private void addExistingAssignments() {
+	public void addExistingAssignments() {
+		double metering = Metering.start();
+		assignmentController.clearAssignments();
+
 		for (ConstantValueAssignment cva : ScenarioManager.get().getBuilder().getSpecificationBuilder()
 				.getBuiltSpecification().getInitializationAssignemts()) {
 
@@ -180,6 +188,9 @@ public class SpecificationController implements ICenterController {
 					cva.getValue());
 			assignmentController.addAssignment(item);
 		}
+
+		assignmentController.refreshAssignmentListPanel();
+		Metering.stop(metering);
 	}
 
 	/**

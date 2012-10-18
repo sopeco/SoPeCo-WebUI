@@ -27,6 +27,7 @@ public class SpecificationView extends FlowPanel {
 	private boolean selectionPanelIsVisible;
 
 	private static final String TOGGLE_SELECTION_PANEL_ID = "toggleSelectionPanel";
+	private static final int TOGGLE_SELECTION_PANEL_BORDER_WIDTH = 3;
 	private static final String TOP_PANEL_ID = "specificationTopPanel";
 	private static final String TOP_PANEL_HEIGHT = "60";
 	private static final int SELECTION_PANEL_WIDTH = 400;
@@ -70,7 +71,7 @@ public class SpecificationView extends FlowPanel {
 
 		toggleSelectionPanel = new ClickPanel();
 		toggleSelectionPanel.getElement().setId(TOGGLE_SELECTION_PANEL_ID);
-		toggleSelectionPanel.getElement().setInnerHTML("&lt;");
+		toggleSelectionPanel.getElement().setInnerHTML(R.get("showEnvParameter"));
 
 		setSelectionPanelPosition(0);
 		selectionPanelIsVisible = false;
@@ -107,11 +108,13 @@ public class SpecificationView extends FlowPanel {
 	 */
 	private void setSelectionPanelPosition(float x) {
 		x = Math.max(0F, Math.min(1F, x));
-		selectionPanelPosition = (int) (SELECTION_PANEL_WIDTH * x);
+		selectionPanelPosition = (int) (SELECTION_PANEL_WIDTH * x) - TOGGLE_SELECTION_PANEL_BORDER_WIDTH;
 
-		selectionView.getElement().getStyle().setRight(selectionPanelPosition - SELECTION_PANEL_WIDTH, Unit.PX);
-		assignmentListPanel.getElement().getStyle().setRight(selectionPanelPosition, Unit.PX);
-		toggleSelectionPanel.getElement().getStyle().setRight(selectionPanelPosition, Unit.PX);
+		selectionView.getElement().getStyle().setLeft(selectionPanelPosition - SELECTION_PANEL_WIDTH, Unit.PX);
+		assignmentListPanel.getElement().getStyle().setLeft(selectionPanelPosition, Unit.PX);
+
+		int togglePosition = selectionPanelPosition + TOGGLE_SELECTION_PANEL_BORDER_WIDTH - 1;
+		toggleSelectionPanel.getElement().getStyle().setLeft(Math.max(0, togglePosition), Unit.PX);
 	}
 
 	/**

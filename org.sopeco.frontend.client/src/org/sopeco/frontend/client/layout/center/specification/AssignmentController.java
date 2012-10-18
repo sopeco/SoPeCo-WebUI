@@ -1,10 +1,13 @@
 package org.sopeco.frontend.client.layout.center.specification;
 
-import java.util.HashMap;
+import java.util.TreeMap;
+
+import org.sopeco.frontend.client.layout.popups.Message;
+import org.sopeco.frontend.client.model.ScenarioManager;
+import org.sopeco.frontend.shared.helper.Metering;
 
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -15,7 +18,7 @@ import com.google.gwt.user.client.ui.Widget;
 class AssignmentController implements BlurHandler {
 
 	private AssignmentView view;
-	private HashMap<String, AssignmentItem> assignmentMap;
+	private TreeMap<String, AssignmentItem> assignmentMap;
 
 	public AssignmentController() {
 		reset();
@@ -25,7 +28,7 @@ class AssignmentController implements BlurHandler {
 	 * Creates a new assignmentView.
 	 */
 	public void reset() {
-		assignmentMap = new HashMap<String, AssignmentItem>();
+		assignmentMap = new TreeMap<String, AssignmentItem>();
 
 		view = new AssignmentView();
 	}
@@ -46,10 +49,27 @@ class AssignmentController implements BlurHandler {
 	 * @param assignment
 	 */
 	public void addAssignment(AssignmentItem assignment) {
+		double metering = Metering.start();
+
 		assignmentMap.put(assignment.getFullName(), assignment);
-		view.add(assignment);
 
 		assignment.addBlurHandler(this);
+
+		Metering.stop(metering);
+	}
+
+	/**
+	 * Clear the assignmentListPanel and adds all assignments again.
+	 */
+	public void refreshAssignmentListPanel() {
+		double metering = Metering.start();
+
+		view.clearAssignments();
+		for (String key : assignmentMap.keySet()) {
+			view.addAssignmentitem(assignmentMap.get(key));
+		}
+
+		Metering.stop(metering);
 	}
 
 	/**
@@ -57,7 +77,7 @@ class AssignmentController implements BlurHandler {
 	 */
 	public void removeAssignment(AssignmentItem assignment) {
 		if (assignmentMap.containsKey(assignment.getFullName())) {
-			assignmentMap.get(assignment.getFullName()).removeFromParent();
+			view.removeAssignmentitem(assignmentMap.get(assignment.getFullName()));
 			assignmentMap.remove(assignment.getFullName());
 		}
 	}
@@ -65,7 +85,20 @@ class AssignmentController implements BlurHandler {
 	@Override
 	public void onBlur(BlurEvent event) {
 		AssignmentItem item = (AssignmentItem) event.getSource();
-		
-		Window.alert(item.getFullName());
+
+		if (ScenarioManager.get().changeInitAssignmentValue(item.getNamespace(), item.getName(),
+				item.getTextboxValue().getText())) {
+			ScenarioManager.get().storeScenario();
+		} else {
+			Message.error("error");
+		}
+	}
+
+	/**
+	 * Removes all existing assignments.
+	 */
+	public void clearAssignments() {
+		assignmentMap.clear();
+		view.clearAssignments();
 	}
 }
