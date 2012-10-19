@@ -40,7 +40,7 @@ public final class ScenarioManager {
 
 	private ScenarioDefinitionBuilder builder;
 	private String currentScenarioName;
-	private String workingSpecification;
+//	private String workingSpecification;
 
 	private ExperimentModul experimentModul;
 	private SpecificationModul specificationModul;
@@ -55,12 +55,12 @@ public final class ScenarioManager {
 			}
 		});
 
-		EventControl.get().addHandler(SpecificationChangedEvent.TYPE, new SpecificationChangedEventHandler() {
-			@Override
-			public void onSpecificationChangedEvent(SpecificationChangedEvent event) {
-				changeWorkingSpecification(event.getSelectedSpecification());
-			}
-		});
+//		EventControl.get().addHandler(SpecificationChangedEvent.TYPE, new SpecificationChangedEventHandler() {
+//			@Override
+//			public void onSpecificationChangedEvent(SpecificationChangedEvent event) {
+//				changeWorkingSpecification(event.getSelectedSpecification());
+//			}
+//		});
 	}
 
 	/**
@@ -83,24 +83,24 @@ public final class ScenarioManager {
 	 * 
 	 * @return experimentModul
 	 */
-//	public SpecificationModul specification() {
-//		if (specificationModul == null) {
-//			specificationModul = new SpecificationModul(this);
-//		}
-//
-//		return specificationModul;
-//	}
+	public SpecificationModul specification() {
+		if (specificationModul == null) {
+			specificationModul = new SpecificationModul(this);
+		}
 
-	/**
-	 * Changing the current working specification.
-	 */
-	private void changeWorkingSpecification(String newWorkingSpecification) {
-		workingSpecification = newWorkingSpecification;
-
-		MeasurementSpecification specification = builder.getMeasurementSpecification(workingSpecification);
-		MeasurementSpecificationBuilder specificationBuilder = new MeasurementSpecificationBuilder(specification);
-		builder.setSpecificationBuilder(specificationBuilder);
+		return specificationModul;
 	}
+
+//	/**
+//	 * Changing the current working specification.
+//	 */
+//	private void changeWorkingSpecification(String newWorkingSpecification) {
+//		workingSpecification = newWorkingSpecification;
+//
+//		MeasurementSpecification specification = builder.getMeasurementSpecification(workingSpecification);
+//		MeasurementSpecificationBuilder specificationBuilder = new MeasurementSpecificationBuilder(specification);
+//		builder.setSpecificationBuilder(specificationBuilder);
+//	}
 
 	/**
 	 * Returns an object (Singelton) of the ModelManager Class.
@@ -185,14 +185,14 @@ public final class ScenarioManager {
 		return builder;
 	}
 
-	/**
-	 * Return the name of the current selected specification.
-	 * 
-	 * @return
-	 */
-	public String getWorkingSpecificationName() {
-		return workingSpecification;
-	}
+//	/**
+//	 * Return the name of the current selected specification.
+//	 * 
+//	 * @return
+//	 */
+//	public String getWorkingSpecificationName() {
+//		return workingSpecification;
+//	}
 
 	/**
 	 * Renames the current workingSpecification to the given name.
@@ -224,10 +224,12 @@ public final class ScenarioManager {
 				}
 
 				builder = ScenarioDefinitionBuilder.load(result);
-				workingSpecification = builder.getBuiltScenario().getMeasurementSpecifications().get(0).getName();
-
+//				workingSpecification = builder.getBuiltScenario().getMeasurementSpecifications().get(0).getName();
+				String newSpecification = builder.getBuiltScenario().getMeasurementSpecifications().get(0).getName();
+				specification().setWorkingSpecification(newSpecification);
+				
 				EventControl.get().fireEvent(new ScenarioLoadedEvent());
-				EventControl.get().fireEvent(new SpecificationChangedEvent(workingSpecification));
+				EventControl.get().fireEvent(new SpecificationChangedEvent(newSpecification));
 
 			}
 		});

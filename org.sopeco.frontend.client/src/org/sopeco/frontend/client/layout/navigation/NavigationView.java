@@ -97,4 +97,11 @@ public class NavigationView extends FlowPanel {
 		experimentsPanel.add(newItem);
 		return newItem;
 	}
+
+	/**
+	 * Removes all experiments from the navigation.
+	 */
+	public void clearExperiments() {
+		experimentsPanel.clear();
+	}
 }

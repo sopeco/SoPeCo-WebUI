@@ -19,14 +19,17 @@
 	position: relative;
 }
 
-#expSettingsNamePanel .gwt-HTML {
+#expSettingsNamePanel .gwt-HTML,#expSettingsTerminationPanel table .gwt-HTML
+	{
 	color: #333;
 	font-weight: bold;
 }
 
-#expSettingsNamePanel .gwt-TextBox {
-	width: 95%;
+#expSettingsNamePanel .gwt-TextBox,#expSettingsTerminationPanel table .gwt-TextBox
+	{
+	width: 90%;
 	padding: 4px;
+	float: right;
 }
 
 /** expSettingsPanel */
@@ -37,4 +40,14 @@
 /** explorationPanel */
 #expSettingsExplroationPanel {
 	border-bottom: 2px solid #ccc;
+}
+
+/** terminationGrid */
+#expSettingsTerminationPanel table {
+	padding: 0 1em;
+	width: 100%;
+}
+
+#expSettingsTerminationPanel table td {
+	position: relative;
 }

@@ -3,7 +3,6 @@ package org.sopeco.frontend.client.widget;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
@@ -262,6 +261,13 @@ public class ComboBox extends FlowPanel implements HasValueChangeHandlers<String
 		add(dummyPanel);
 
 		setWidth(DEFAULT_WIDTH);
+	}
+
+	/**
+	 * Sets whether the text of the combobox is editable.
+	 */
+	public void setEditable(boolean editable) {
+		inputField.setEnabled(editable);
 	}
 
 	/**

@@ -12,6 +12,7 @@ import com.google.gwt.user.client.ui.HTML;
  */
 public class NavigationSubItem extends NavigationItem {
 
+	private static final String ADD_IMAGE = "<img src=\"images/add_blue.png\">";
 	private String experimentName;
 
 	public NavigationSubItem(String name, CenterType type) {
@@ -32,5 +33,12 @@ public class NavigationSubItem extends NavigationItem {
 	 */
 	public String getExperimentName() {
 		return experimentName;
+	}
+
+	/**
+	 * Adds an add iamge to the label on the navi item.
+	 */
+	public void addAddImage() {
+		getLabel().setHTML(ADD_IMAGE + getLabel().getText());
 	}
 }

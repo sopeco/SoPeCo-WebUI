@@ -12,7 +12,27 @@ import com.google.gwt.user.client.ui.TextBox;
  * @author Marius Oehler
  * 
  */
-public class NumbersOnlyHandler implements KeyPressHandler, ChangeHandler {
+public final class NumbersOnlyHandler implements KeyPressHandler, ChangeHandler {
+
+	/** Singleton Object */
+	private static NumbersOnlyHandler handler;
+
+	/**
+	 * Adding a NumbersOnlyHandler to the given TextBox.
+	 * 
+	 * @param textbox
+	 */
+	public static void setOn(TextBox textbox) {
+		if (handler == null) {
+			handler = new NumbersOnlyHandler();
+		}
+
+		textbox.addKeyPressHandler(handler);
+		textbox.addChangeHandler(handler);
+	}
+
+	private NumbersOnlyHandler() {
+	}
 
 	@Override
 	public void onKeyPress(KeyPressEvent event) {

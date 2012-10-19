@@ -33,7 +33,7 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 public final class MainLayoutPanel extends DockLayoutPanel implements ValueChangeHandler<String> {
 
 	private static MainLayoutPanel singletonLayoutPanel;
-	private static final CenterType DEFAULT_CENTER_TYPE = CenterType.Specification;
+	private static final CenterType DEFAULT_CENTER_TYPE = CenterType.Experiment;
 
 	private NorthPanel northPanel;
 	private NavigationController navigationController;

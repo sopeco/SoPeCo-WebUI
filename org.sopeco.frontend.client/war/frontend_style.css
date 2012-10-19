@@ -8,7 +8,7 @@
 
 .transparent-50 {
 	opacity: 0.5;
-	filter: alpha(opacity =       50);
+	filter: alpha(opacity =           50);
 }
 
 .spc-seperator {
@@ -51,6 +51,7 @@
 	margin: 1px 2px;
 	padding: 3px;
 	background: transparent;
+	color: #333;
 }
 
 .spc-ComboBox>img {
@@ -535,15 +536,16 @@ p {
 #changeSpecPanel #addSpecification {
 	color: #333;
 	opacity: 0.5;
-	filter: alpha(opacity =
+	filter: alpha(opacity =  
 		                                                         
-		  50);
+		    50);
 }
 
 #changeSpecPanel #addSpecification:hover {
 	opacity: 1;
-	filter: alpha(opacity =                                                         
-		   100);
+	filter: alpha(opacity = 
+		                                                         
+		     100);
 }
 
 #changeSpecPanel #addSpecification>img {
@@ -638,11 +640,8 @@ p {
 	border: 1px solid #BBB;
 	top: 40%;
 	cursor: pointer;
-	/* border-right: 3px solid #ccc; */
 	border-radius: 10px 10px 0px 0;
-	/* padding: 30px 5px; */
 	color: #888;
-	z-index: 999;
 	-webkit-transform: rotate(90deg);
 	-moz-transform: rotate(90deg);
 	filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3 );
@@ -695,3 +694,18 @@ p {
 	color: #999;
 }
 
+.addExperimentNaviItem {
+	opacity: 0.5;
+	filter: alpha(opacity =           50);
+}
+
+.addExperimentNaviItem:hover {
+	opacity: 1;
+	filter: alpha(opacity =           100);
+}
+
+.addExperimentNaviItem img {
+	vertical-align: middle;
+	margin-bottom: 3px;
+	margin-right: 10px;
+}

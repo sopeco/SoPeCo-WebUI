@@ -27,7 +27,7 @@ public class SpecificationModul {
 	SpecificationModul(ScenarioManager scenarioManager) {
 		manager = scenarioManager;
 
-//		EventControl.get().addHandler(SpecificationChangedEvent.TYPE, getSpecificationChangedEventHandler());
+		EventControl.get().addHandler(SpecificationChangedEvent.TYPE, getSpecificationChangedEventHandler());
 	}
 
 	/**
@@ -63,10 +63,10 @@ public class SpecificationModul {
 	}
 
 	/**
-	 * @param workingSpecification the workingSpecification to set
+	 * @param newSpecification the workingSpecification to set
 	 */
-	public void setWorkingSpecification(String workingSpecification) {
-		this.workingSpecification = workingSpecification;
+	public void setWorkingSpecification(String newSpecification) {
+		this.workingSpecification = newSpecification;
 	}
 	
 	

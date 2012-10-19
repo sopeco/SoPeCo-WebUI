@@ -1,5 +1,6 @@
 package org.sopeco.frontend.client.layout.navigation;
 
+import org.sopeco.frontend.client.R;
 import org.sopeco.frontend.client.event.EventControl;
 import org.sopeco.frontend.client.event.ExperimentChangedEvent;
 import org.sopeco.frontend.client.event.ScenarioLoadedEvent;
@@ -12,6 +13,7 @@ import org.sopeco.frontend.client.layout.popups.TextInput;
 import org.sopeco.frontend.client.layout.popups.TextInput.Icon;
 import org.sopeco.frontend.client.layout.popups.TextInputOkHandler;
 import org.sopeco.frontend.client.model.ScenarioManager;
+import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
 import org.sopeco.persistence.entities.definition.MeasurementSpecification;
 
 import com.google.gwt.core.client.GWT;
@@ -54,6 +56,7 @@ public class NavigationController {
 				setActiveSpecification(event.getSelectedSpecification());
 
 				view.getNaviItemsMap().get(CenterType.Specification).setSubText(event.getSelectedSpecification());
+				loadExperiments();
 			}
 		});
 	}
@@ -80,13 +83,12 @@ public class NavigationController {
 			public void onClick(ClickEvent event) {
 				view.getChangeSpecificationPanel().setVisible(false);
 
-				TextInput.doInput(Icon.Add, "Add specification", "Name of the new specification:",
-						new TextInputOkHandler() {
-							@Override
-							public void onInput(ClickEvent event, String input) {
-								ScenarioManager.get().createNewSpecification(input);
-							}
-						});
+				TextInput.doInput(Icon.Add, "Add specification", R.get("addExpText") + ":", new TextInputOkHandler() {
+					@Override
+					public void onInput(ClickEvent event, String input) {
+						ScenarioManager.get().createNewSpecification(input);
+					}
+				});
 			}
 		});
 	}
@@ -144,7 +146,7 @@ public class NavigationController {
 				HTML item = (HTML) event.getSource();
 				String specificationName = item.getText();
 
-				if (ScenarioManager.get().getWorkingSpecificationName().equals(specificationName)) {
+				if (ScenarioManager.get().specification().getWorkingSpecificationName().equals(specificationName)) {
 					view.getChangeSpecificationPanel().setVisible(false);
 
 					return;
@@ -172,8 +174,34 @@ public class NavigationController {
 	 * Adds the existing experiments to the navigation.
 	 */
 	private void loadExperiments() {
-		view.addExperimentItem("Exp. 1").addClickHandler(getNavigationSubItemClickHandler());
-		view.addExperimentItem("Exp. 2").addClickHandler(getNavigationSubItemClickHandler());
+		view.clearExperiments();
+
+		view.addExperimentItem("TEST").addClickHandler(getNavigationSubItemClickHandler());
+		
+		for (ExperimentSeriesDefinition experiment : ScenarioManager.get().experiment()
+				.getExperimentsOfCurrentSpecififcation()) {
+			view.addExperimentItem(experiment.getName()).addClickHandler(getNavigationSubItemClickHandler());
+		}
+
+		NavigationSubItem addExperiment = view.addExperimentItem("Add Experiment");
+		addExperiment.addStyleName("addExperimentNaviItem");
+		addExperiment.addAddImage();
+		addExperiment.addClickHandler(getAddExperimentClickHandler());
+	}
+
+	private ClickHandler getAddExperimentClickHandler() {
+		return new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				TextInput.doInput(Icon.Add, R.get("addExperiment"), R.get("addExpText") + ":",
+						new TextInputOkHandler() {
+							@Override
+							public void onInput(ClickEvent event, String input) {
+//								ScenarioManager.get().createNewSpecification(input);
+							}
+						});
+			}
+		};
 	}
 
 	/**

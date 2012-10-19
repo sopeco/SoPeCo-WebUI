@@ -29,6 +29,7 @@ public class NavigationItem extends FocusPanel {
 	private boolean isActive;
 	private CenterType type;
 	private Element subTextElement;
+	private HTML label;
 
 	/**
 	 * The panel, which contains all other widgets.
@@ -47,7 +48,7 @@ public class NavigationItem extends FocusPanel {
 		contentPanel = new FlowPanel();
 
 		FlowPanel textWrapper = new FlowPanel();
-		HTML label = new HTML(name);
+		label = new HTML(name);
 
 		subTextElement = DOM.createSpan();
 		subTextElement.addClassName(CSS_SUB_TEXT_CLASS);
@@ -85,6 +86,13 @@ public class NavigationItem extends FocusPanel {
 				setFocus(false);
 			}
 		});
+	}
+
+	/**
+	 * Returns the HTML Element 'label'.
+	 */
+	public HTML getLabel() {
+		return label;
 	}
 
 	/**

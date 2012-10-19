@@ -82,4 +82,14 @@
 		<url-pattern>/sopeco_frontend/mSpecificationRPC</url-pattern>
 	</servlet-mapping>
 	
+	<servlet>
+		<servlet-name>extensionRPC</servlet-name>
+		<servlet-class>org.sopeco.frontend.server.rpc.ExtensionRPCImpl
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>extensionRPC</servlet-name>
+		<url-pattern>/sopeco_frontend/extensionRPC</url-pattern>
+	</servlet-mapping>
+	
 </web-app>

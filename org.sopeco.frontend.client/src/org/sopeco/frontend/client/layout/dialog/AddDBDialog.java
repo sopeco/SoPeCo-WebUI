@@ -82,8 +82,7 @@ public class AddDBDialog extends DialogBox {
 
 		textboxPort = new TextBox();
 		textboxPort.setText(SystemDetails.getMetaDatabasePort());
-		textboxPort.addKeyPressHandler(new NumbersOnlyHandler());
-		textboxPort.addChangeHandler(new NumbersOnlyHandler());
+		NumbersOnlyHandler.setOn(textboxPort);
 		grid.setWidget(2, 1, textboxPort);
 
 		Label lblPassword = new Label("Password");

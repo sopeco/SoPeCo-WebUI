@@ -17,6 +17,7 @@ public final class RPC {
 	private static MEControllerRPCAsync meController = null;
 	private static SystemDetailsRPCAsync systemDetails = null;
 	private static MSpecificationRPCAsync specificationRPC = null;
+	private static ExtensionRPCAsync extensionRPC = null;
 
 	/**
 	 * Returns a instance of the ScenarioManagerRPCAsync.
@@ -68,5 +69,18 @@ public final class RPC {
 		}
 
 		return specificationRPC;
+	}
+
+	/**
+	 * Returns a instance of the ExtensionRPCAsync.
+	 * 
+	 * @return
+	 */
+	public static ExtensionRPCAsync getExtensionRPC() {
+		if (extensionRPC == null) {
+			extensionRPC = GWT.create(ExtensionRPC.class);
+		}
+
+		return extensionRPC;
 	}
 }

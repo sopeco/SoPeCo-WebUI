@@ -45,7 +45,7 @@ public class SpecificationController implements ICenterController {
 			@Override
 			public void onSpecificationChangedEvent(SpecificationChangedEvent event) {
 				setCurrentSpecificationName(event.getSelectedSpecification());
-				addExistingAssignments();
+				addExistingAssignments(event.getSelectedSpecification());
 			}
 		});
 
@@ -154,7 +154,7 @@ public class SpecificationController implements ICenterController {
 			public void onBlur(BlurEvent event) {
 				final String textboxName = view.getSpecificationNameTextbox().getText();
 
-				if (!textboxName.equals(ScenarioManager.get().getWorkingSpecificationName())) {
+				if (!textboxName.equals(ScenarioManager.get().specification().getWorkingSpecificationName())) {
 					ScenarioManager.get().renameWorkingSpecification(textboxName);
 				}
 			}
@@ -175,11 +175,23 @@ public class SpecificationController implements ICenterController {
 	 * current model to the assignmenListPanel.
 	 */
 	public void addExistingAssignments() {
+		addExistingAssignments(ScenarioManager.get().specification().getWorkingSpecificationName());
+	}
+
+	/**
+	 * Clean the list of init assignments and adds the initial assignment of the
+	 * given specification to the assignmenListPanel.
+	 */
+	public void addExistingAssignments(String specificationName) {
 		double metering = Metering.start();
 		assignmentController.clearAssignments();
 
-		for (ConstantValueAssignment cva : ScenarioManager.get().getBuilder().getSpecificationBuilder()
-				.getBuiltSpecification().getInitializationAssignemts()) {
+		if (specificationName == null) {
+			return;
+		}
+
+		for (ConstantValueAssignment cva : ScenarioManager.get().getBuilder()
+				.getMeasurementSpecification(specificationName).getInitializationAssignemts()) {
 
 			String path = cva.getParameter().getFullName();
 			path = path.substring(0, path.lastIndexOf(".") + 1);
