@@ -114,6 +114,7 @@ public class ComboBox extends FlowPanel implements HasValueChangeHandlers<String
 	public void clear() {
 		selectedIndex = -1;
 		itemList.clear();
+		dropdownView.clear();
 		userEditedText = false;
 	}
 

@@ -2,6 +2,7 @@ package org.sopeco.frontend.shared.helper;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Container to transmit the Extensions.
@@ -15,40 +16,16 @@ public class Extension implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private String name;
-	private HashMap<String, String> config;
+	private Map<String, Map<String, String>> extensionMap;
 
 	public Extension() {
+		extensionMap = new HashMap<String, Map<String, String>>();
 	}
 
 	/**
-	 * @return the name
+	 * @return the extensionMap
 	 */
-	public String getName() {
-		return name;
+	public Map<String, Map<String, String>> getExtensionMap() {
+		return extensionMap;
 	}
-
-	/**
-	 * @return the config
-	 */
-	public HashMap<String, String> getConfig() {
-		return config;
-	}
-
-	/**
-	 * @param name
-	 *            the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	/**
-	 * @param config
-	 *            the config to set
-	 */
-	public void setConfig(HashMap<String, String> config) {
-		this.config = config;
-	}
-
 }

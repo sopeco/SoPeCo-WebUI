@@ -1,11 +1,8 @@
 package org.sopeco.frontend.client.layout.center.experiment;
 
 import org.sopeco.frontend.client.R;
-import org.sopeco.frontend.client.widget.ComboBox;
 
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
@@ -20,25 +17,24 @@ import com.google.gwt.user.client.ui.TextBox;
 public class ExperimentSettingsView extends FlowPanel {
 
 	private static final String EXP_SETTINGS_PANEL_ID = "expSettingsPanel";
-	private static final int EXP_SETTINGS_PANEL_WIDTH = 400;
+	/** Width of the SettingsPanel */
+	public static final int EXP_SETTINGS_PANEL_WIDTH = 400;
 
 	private static final String EXP_SETTINGS_NAME_PANEL_ID = "expSettingsNamePanel";
 	private static final String EXP_SETTINGS_NAME_PANEL_LEFTCELL_WIDTH = "100";
 
-	private static final String EXP_SETTINGS_EXPLORATION_PANEL_ID = "expSettingsExplroationPanel";
-	private static final String EXP_SETTINGS_TERMINATION_PANEL_ID = "expSettingsTerminationPanel";
+//	private static final String EXP_SETTINGS_EXPLORATION_PANEL_ID = "expSettingsExplroationPanel";
+//	private static final String EXP_SETTINGS_TERMINATION_PANEL_ID = "expSettingsTerminationPanel";
 
-	private static final int TERMIANTION_COMBOBOX_WIDTH = 360;
-
-	private static final String TERMIANTION_RADIO_GRP = "TERMINATION_GRP";
+//	private static final String TERMIANTION_RADIO_GRP = "TERMINATION_GRP";
 
 	private HTML htmlName, htmlRepetitions, htmlTimeout;
 	private HorizontalPanel hPanelName;
 	private TextBox textboxName/* , textboxRepetitions, textboxTimeout */;
-	private FlowPanel explorationPanel, terminationPanel;
+//	private FlowPanel explorationPanel, terminationPanel;
 	// private RadioButton radioRepetitions, radioTimeout;
 	// private FlexTable terminationGrid;
-	private ComboBox terminationCombobox;
+//	private ComboBox terminationCombobox;
 
 	public ExperimentSettingsView() {
 		initialize();
@@ -51,8 +47,8 @@ public class ExperimentSettingsView extends FlowPanel {
 		hPanelName = new HorizontalPanel();
 		htmlName = new HTML(R.get("name"));
 		textboxName = new TextBox();
-		explorationPanel = new FlowPanel();
-		terminationPanel = new FlowPanel();
+//		explorationPanel = new FlowPanel();
+//		terminationPanel = new FlowPanel();
 
 		hPanelName.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
 
@@ -60,8 +56,8 @@ public class ExperimentSettingsView extends FlowPanel {
 		hPanelName.add(textboxName);
 
 		add(hPanelName);
-		add(explorationPanel);
-		add(terminationPanel);
+//		add(explorationPanel);
+//		add(terminationPanel);
 
 		// Styles etc..
 		getElement().setId(EXP_SETTINGS_PANEL_ID);
@@ -70,61 +66,66 @@ public class ExperimentSettingsView extends FlowPanel {
 		hPanelName.getElement().setId(EXP_SETTINGS_NAME_PANEL_ID);
 		hPanelName.setCellWidth(htmlName, EXP_SETTINGS_NAME_PANEL_LEFTCELL_WIDTH);
 
-		initExplorationPanel();
-
-		initTerminationPanel();
+//		initExplorationPanel();
+//
+//		initTerminationPanel();
 	}
 
-	/**
-	 * Initialization of the explorationPanel.
-	 */
-	private void initExplorationPanel() {
-		explorationPanel.getElement().setId(EXP_SETTINGS_EXPLORATION_PANEL_ID);
-
-		Element headline = DOM.createElement("h3");
-		headline.setInnerHTML(R.get("explStrategy"));
-
-		explorationPanel.getElement().appendChild(headline);
+	public void addExtensionView (ExperimentExtensionView extView){
+		add(extView);
 	}
-
-	/**
-	 * Initialization of the terminationPanel.
-	 */
-	private void initTerminationPanel() {
-		terminationPanel.getElement().setId(EXP_SETTINGS_TERMINATION_PANEL_ID);
-
-		Element headline = DOM.createElement("h3");
-		headline.setInnerHTML(R.get("termination"));
-
-		terminationPanel.getElement().appendChild(headline);
-
-		terminationCombobox = new ComboBox();
-		terminationCombobox.setWidth(TERMIANTION_COMBOBOX_WIDTH);
-		terminationCombobox.getElement().getStyle()
-				.setMarginLeft((EXP_SETTINGS_PANEL_WIDTH - TERMIANTION_COMBOBOX_WIDTH) / 2, Unit.PX);
-
-		terminationPanel.add(terminationCombobox);
-
-		// terminationGrid = new FlexTable();
-		// radioRepetitions = new RadioButton(TERMIANTION_RADIO_GRP);
-		// radioTimeout = new RadioButton(TERMIANTION_RADIO_GRP);
-		// htmlRepetitions = new HTML(R.get("repetitions"));
-		// htmlTimeout = new HTML(R.get("timeout"));
-		// textboxRepetitions = new TextBox();
-		// textboxTimeout = new TextBox();
-		//
-		// NumbersOnlyHandler.setOn(textboxRepetitions);
-		// NumbersOnlyHandler.setOn(textboxTimeout);
-		//
-		// terminationGrid.setWidget(0, 0, radioRepetitions);
-		// terminationGrid.setWidget(1, 0, radioTimeout);
-		// terminationGrid.setWidget(0, 1, htmlRepetitions);
-		// terminationGrid.setWidget(1, 1, htmlTimeout);
-		// terminationGrid.setWidget(0, 2, textboxRepetitions);
-		// terminationGrid.setWidget(1, 2, textboxTimeout);
-		//
-		// terminationPanel.add(terminationGrid);
-	}
+	
+//	/**
+//	 * Initialization of the explorationPanel.
+//	 */
+//	private void initExplorationPanel() {
+//		explorationPanel.getElement().setId(EXP_SETTINGS_EXPLORATION_PANEL_ID);
+//
+//		Element headline = DOM.createElement("h3");
+//		headline.setInnerHTML(R.get("explStrategy"));
+//
+//		explorationPanel.getElement().appendChild(headline);
+//	}
+//
+//	/**
+//	 * Initialization of the terminationPanel.
+//	 */
+//	private void initTerminationPanel() {
+//		terminationPanel.getElement().setId(EXP_SETTINGS_TERMINATION_PANEL_ID);
+//
+//		Element headline = DOM.createElement("h3");
+//		headline.setInnerHTML(R.get("termination"));
+//
+//		terminationPanel.getElement().appendChild(headline);
+//
+//		// terminationCombobox = new ComboBox();
+//		// terminationCombobox.setWidth(TERMIANTION_COMBOBOX_WIDTH);
+//		// terminationCombobox.getElement().getStyle()
+//		// .setMarginLeft((EXP_SETTINGS_PANEL_WIDTH -
+//		// TERMIANTION_COMBOBOX_WIDTH) / 2, Unit.PX);
+//
+////		terminationPanel.add(terminationCombobox);
+//
+//		// terminationGrid = new FlexTable();
+//		// radioRepetitions = new RadioButton(TERMIANTION_RADIO_GRP);
+//		// radioTimeout = new RadioButton(TERMIANTION_RADIO_GRP);
+//		// htmlRepetitions = new HTML(R.get("repetitions"));
+//		// htmlTimeout = new HTML(R.get("timeout"));
+//		// textboxRepetitions = new TextBox();
+//		// textboxTimeout = new TextBox();
+//		//
+//		// NumbersOnlyHandler.setOn(textboxRepetitions);
+//		// NumbersOnlyHandler.setOn(textboxTimeout);
+//		//
+//		// terminationGrid.setWidget(0, 0, radioRepetitions);
+//		// terminationGrid.setWidget(1, 0, radioTimeout);
+//		// terminationGrid.setWidget(0, 1, htmlRepetitions);
+//		// terminationGrid.setWidget(1, 1, htmlTimeout);
+//		// terminationGrid.setWidget(0, 2, textboxRepetitions);
+//		// terminationGrid.setWidget(1, 2, textboxTimeout);
+//		//
+//		// terminationPanel.add(terminationGrid);
+//	}
 
 	private void addExistingTerminationConditions() {
 

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.sopeco.engine.experimentseries.ITerminationConditionExtension;
+import org.sopeco.engine.registry.ExtensionRegistry;
 import org.sopeco.frontend.client.event.EventControl;
 import org.sopeco.frontend.client.event.ExperimentChangedEvent;
 import org.sopeco.frontend.client.event.handler.ExperimentChangedEventHandler;
@@ -97,7 +98,7 @@ public class ExperimentModul {
 	 * @param name
 	 */
 	public void createExperimentSeries(String name) {
-//		ExtensionRegistry.getSingleton().getExtensions(ITerminationConditionExtension.class).getList().get(0).;
+//		ExtensionRegistry.getSingleton().getExtensions(ITerminationConditionExtension.class).getList();
 //		ExperimentTerminationCondition condition = EntityFactory.createTerminationCondition("Number Of Repetitions", )
 	
 		
