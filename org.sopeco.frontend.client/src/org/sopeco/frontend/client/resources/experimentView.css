@@ -5,6 +5,8 @@
 	left: 0;
 	bottom: 0;
 	border-right: 2px solid #CCC;
+	overflow-x: hidden;
+	overflow-y: auto;
 }
 
 /** expSettingsNamePanel */
@@ -53,6 +55,32 @@
 }
 
 /** ExtensionViews */
-.experimentExtensionView {
-	
+.experimentExtensionView table {
+	width: 100%;
+}
+
+.experimentExtensionView table .gwt-HTML {
+	margin-left: 20px;
+	line-height: 28px;
+	width: 235px;
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+.experimentExtensionView table .gwt-TextBox {
+	float: right;
+	margin-right: 1.5em;
+	padding: 4px;
+	width: 100px;
+	color: #aaa;
+}
+
+.experimentExtensionView table .gwt-TextBox.valueChanged {
+	color: #333;
+	font-weight: bold;
+}
+
+.experimentExtensionView table .gwt-TextBox:focus {
+	color: #333;
+	font-weight: normal;
 }

@@ -51,7 +51,7 @@
 	margin: 1px 2px;
 	padding: 3px;
 	background: transparent;
-	color: #333;
+	color: #333 !important;
 }
 
 .spc-ComboBox>img {

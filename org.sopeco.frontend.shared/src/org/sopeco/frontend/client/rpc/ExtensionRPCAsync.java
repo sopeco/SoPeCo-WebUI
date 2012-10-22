@@ -1,6 +1,6 @@
 package org.sopeco.frontend.client.rpc;
 
-import org.sopeco.frontend.shared.helper.Extension;
+import org.sopeco.frontend.shared.helper.ExtensionContainer;
 import org.sopeco.frontend.shared.helper.ExtensionTypes;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -11,5 +11,5 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  */
 public interface ExtensionRPCAsync {
-	void getExtension(ExtensionTypes extensionType, AsyncCallback<Extension> callback);
+	void getExtensions(AsyncCallback<ExtensionContainer> callback);
 }

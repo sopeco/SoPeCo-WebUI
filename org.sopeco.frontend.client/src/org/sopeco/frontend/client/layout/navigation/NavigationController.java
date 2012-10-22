@@ -173,11 +173,9 @@ public class NavigationController {
 	/**
 	 * Adds the existing experiments to the navigation.
 	 */
-	private void loadExperiments() {
+	public void loadExperiments() {
 		view.clearExperiments();
 
-		view.addExperimentItem("TEST").addClickHandler(getNavigationSubItemClickHandler());
-		
 		for (ExperimentSeriesDefinition experiment : ScenarioManager.get().experiment()
 				.getExperimentsOfCurrentSpecififcation()) {
 			view.addExperimentItem(experiment.getName()).addClickHandler(getNavigationSubItemClickHandler());
@@ -197,7 +195,7 @@ public class NavigationController {
 						new TextInputOkHandler() {
 							@Override
 							public void onInput(ClickEvent event, String input) {
-//								ScenarioManager.get().createNewSpecification(input);
+								ScenarioManager.get().experiment().createExperimentSeries(input);
 							}
 						});
 			}

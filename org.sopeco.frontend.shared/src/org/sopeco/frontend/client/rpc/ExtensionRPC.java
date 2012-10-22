@@ -1,7 +1,6 @@
 package org.sopeco.frontend.client.rpc;
 
-import org.sopeco.frontend.shared.helper.Extension;
-import org.sopeco.frontend.shared.helper.ExtensionTypes;
+import org.sopeco.frontend.shared.helper.ExtensionContainer;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
@@ -13,5 +12,5 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  */
 @RemoteServiceRelativePath("extensionRPC")
 public interface ExtensionRPC extends RemoteService {
-	Extension getExtension(ExtensionTypes extensionType);
+	ExtensionContainer getExtensions();
 }

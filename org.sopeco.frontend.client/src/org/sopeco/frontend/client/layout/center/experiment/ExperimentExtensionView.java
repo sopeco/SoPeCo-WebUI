@@ -44,6 +44,7 @@ public class ExperimentExtensionView extends FlowPanel {
 
 		combobox.setWidth(width - 2 * DEFAULT_MARGIN);
 		combobox.getElement().getStyle().setMarginLeft(DEFAULT_MARGIN, Unit.PX);
+		combobox.getElement().getStyle().setMarginRight(DEFAULT_MARGIN, Unit.PX);
 		combobox.setEditable(false);
 
 		getElement().appendChild(headline);
@@ -74,15 +75,26 @@ public class ExperimentExtensionView extends FlowPanel {
 		return configTable;
 	}
 
-	public void addConfigRow(String labelText, String value) {
+	/**
+	 * 
+	 * @param labelText
+	 * @param key
+	 * @param value
+	 * @return
+	 */
+	public TextBox addConfigRow(String labelText, String key, String value) {
 		HTML htmlLabel = new HTML(labelText);
 		TextBox textboxValue = new TextBox();
 
+		textboxValue.setName(key);
 		textboxValue.setText(value);
+		htmlLabel.setTitle(labelText);
 
 		int row = configTable.getRowCount();
 
 		configTable.setWidget(row, 0, htmlLabel);
 		configTable.setWidget(row, 1, textboxValue);
+
+		return textboxValue;
 	}
 }

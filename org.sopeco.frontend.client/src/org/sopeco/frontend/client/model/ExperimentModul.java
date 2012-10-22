@@ -4,12 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.sopeco.engine.experimentseries.ITerminationConditionExtension;
-import org.sopeco.engine.registry.ExtensionRegistry;
 import org.sopeco.frontend.client.event.EventControl;
 import org.sopeco.frontend.client.event.ExperimentChangedEvent;
 import org.sopeco.frontend.client.event.handler.ExperimentChangedEventHandler;
+import org.sopeco.frontend.client.extensions.Extensions;
+import org.sopeco.frontend.client.layout.MainLayoutPanel;
+import org.sopeco.frontend.shared.builder.SimpleEntityFactory;
+import org.sopeco.frontend.shared.helper.ExtensionTypes;
 import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
+import org.sopeco.persistence.entities.definition.ExperimentTerminationCondition;
+
+import com.google.gwt.editor.client.adapters.SimpleEditor;
 
 /**
  * Contains all necessary methods for Experiment manipulation to quickly access
@@ -98,11 +103,17 @@ public class ExperimentModul {
 	 * @param name
 	 */
 	public void createExperimentSeries(String name) {
-//		ExtensionRegistry.getSingleton().getExtensions(ITerminationConditionExtension.class).getList();
-//		ExperimentTerminationCondition condition = EntityFactory.createTerminationCondition("Number Of Repetitions", )
-	
-		
+		LOGGER.info("Create experiment '" + name + "'");
+
+		ExperimentTerminationCondition terminationCondition = SimpleEntityFactory.createTerminationCondition(name,
+				Extensions.get().getExtensions(ExtensionTypes.TERMINATIONCONDITION).get(0));
+
+		ExperimentSeriesDefinition experiment = SimpleEntityFactory.createExperimentSeriesDefinition(name,
+				terminationCondition);
+
+		manager.getBuilder().getSpecificationBuilder().addExperimentSeries(experiment);
+
+		MainLayoutPanel.get().getNavigationController().loadExperiments();
+		manager.storeScenario();
 	}
-	
-	
 }

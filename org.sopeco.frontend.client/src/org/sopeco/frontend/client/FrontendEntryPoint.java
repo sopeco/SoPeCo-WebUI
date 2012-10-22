@@ -1,13 +1,18 @@
 package org.sopeco.frontend.client;
 
+import org.sopeco.frontend.client.extensions.Extensions;
 import org.sopeco.frontend.client.helper.ServerPush;
 import org.sopeco.frontend.client.helper.SystemDetails;
+import org.sopeco.frontend.client.helper.callback.CallbackBatch;
+import org.sopeco.frontend.client.helper.callback.ParallelCallback;
 import org.sopeco.frontend.client.layout.LoginBox;
 import org.sopeco.frontend.client.layout.MainLayoutPanel;
 import org.sopeco.frontend.client.layout.popups.Message;
 import org.sopeco.frontend.client.model.ScenarioManager;
+import org.sopeco.frontend.client.rpc.RPC;
 import org.sopeco.frontend.client.rpc.StartupService;
 import org.sopeco.frontend.client.rpc.StartupServiceAsync;
+import org.sopeco.frontend.shared.helper.ExtensionContainer;
 import org.sopeco.persistence.metadata.entities.DatabaseInstance;
 
 import com.google.gwt.core.client.EntryPoint;
@@ -27,6 +32,8 @@ public class FrontendEntryPoint implements EntryPoint {
 	private DatabaseInstance connectedDatabase;
 	private static FrontendEntryPoint frontend;
 
+	private CallbackBatch loadingBatch;
+
 	// Fast login
 	public static final boolean DEVELOPMENT = false;
 
@@ -37,6 +44,24 @@ public class FrontendEntryPoint implements EntryPoint {
 		frontend = this;
 
 		loadFirstStep();
+
+		// TODO: alle callbacks die am anfang etwas laden muessen, als
+		// parallelcallback in die batch..
+		ParallelCallback<ExtensionContainer> loadExtensions = Extensions.getLoadingCallback();
+
+		loadingBatch = new CallbackBatch(loadExtensions) {
+			@Override
+			protected void onSuccess() {
+				System.out.println();
+			}
+
+			@Override
+			protected void onFailure() {
+				Message.error("Loading data failed..");
+			}
+		};
+
+		RPC.getExtensionRPC().getExtensions(loadExtensions);
 
 		startup();
 	}
