@@ -84,3 +84,59 @@
 	color: #333;
 	font-weight: normal;
 }
+
+/** parameterPanel */
+#expParameterPanel {
+	position: absolute;
+	top: 0;
+	right: 0px;
+	bottom: 0;
+	margin-left: 2px;
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+
+#expParameterPanel h3 {
+	margin: 0em;
+}
+
+/** preperationPanel */
+#expPreperationPanel {
+	padding: 1em;
+}
+
+/** ExperimentAssignmentsPanel */
+#expAssignmentsPanel {
+	border-top: 2px solid #ccc;
+	padding: 1em;
+}
+
+/** prep items */
+.preperationAssignmentItem {
+	border-bottom: 1px dashed #DDD;
+	padding: 2px;
+}
+
+.preperationAssignmentItem>div {
+	display: inline-block;
+}
+
+.preperationAssignmentItem .namespace {
+	color: #333;
+	margin-right: 20px;
+}
+
+.preperationAssignmentItem .name {
+	color: #333;
+	font-weight: bold;
+	margin-right: 10px;
+}
+
+.preperationAssignmentItem .type {
+	color: #999;
+	margin-right: 25px;
+}
+
+.preperationAssignmentItem .gwt-TextBox {
+	padding: 2px 4px;
+}

@@ -17,9 +17,6 @@ import com.google.gwt.user.client.ui.TextBox;
 public class ExperimentSettingsView extends FlowPanel {
 
 	private static final String EXP_SETTINGS_PANEL_ID = "expSettingsPanel";
-	/** Width of the SettingsPanel. */
-	public static final int EXP_SETTINGS_PANEL_WIDTH = 400;
-
 	private static final String EXP_SETTINGS_NAME_PANEL_ID = "expSettingsNamePanel";
 	private static final String EXP_SETTINGS_NAME_PANEL_LEFTCELL_WIDTH = "100";
 
@@ -48,7 +45,7 @@ public class ExperimentSettingsView extends FlowPanel {
 
 		// Styles etc..
 		getElement().setId(EXP_SETTINGS_PANEL_ID);
-		getElement().getStyle().setWidth(EXP_SETTINGS_PANEL_WIDTH, Unit.PX);
+		getElement().getStyle().setWidth(ExperimentView.EXP_SETTINGS_PANEL_WIDTH, Unit.PX);
 
 		hPanelName.getElement().setId(EXP_SETTINGS_NAME_PANEL_ID);
 		hPanelName.setCellWidth(htmlName, EXP_SETTINGS_NAME_PANEL_LEFTCELL_WIDTH);

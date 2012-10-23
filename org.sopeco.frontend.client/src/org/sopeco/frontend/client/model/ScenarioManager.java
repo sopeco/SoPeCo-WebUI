@@ -40,7 +40,6 @@ public final class ScenarioManager {
 
 	private ScenarioDefinitionBuilder builder;
 	private String currentScenarioName;
-//	private String workingSpecification;
 
 	private ExperimentModul experimentModul;
 	private SpecificationModul specificationModul;
@@ -54,13 +53,6 @@ public final class ScenarioManager {
 				switchScenario(scenarioChangedEvent.getScenarioName());
 			}
 		});
-
-//		EventControl.get().addHandler(SpecificationChangedEvent.TYPE, new SpecificationChangedEventHandler() {
-//			@Override
-//			public void onSpecificationChangedEvent(SpecificationChangedEvent event) {
-//				changeWorkingSpecification(event.getSelectedSpecification());
-//			}
-//		});
 	}
 
 	/**
@@ -90,17 +82,6 @@ public final class ScenarioManager {
 
 		return specificationModul;
 	}
-
-//	/**
-//	 * Changing the current working specification.
-//	 */
-//	private void changeWorkingSpecification(String newWorkingSpecification) {
-//		workingSpecification = newWorkingSpecification;
-//
-//		MeasurementSpecification specification = builder.getMeasurementSpecification(workingSpecification);
-//		MeasurementSpecificationBuilder specificationBuilder = new MeasurementSpecificationBuilder(specification);
-//		builder.setSpecificationBuilder(specificationBuilder);
-//	}
 
 	/**
 	 * Returns an object (Singelton) of the ModelManager Class.
@@ -152,20 +133,6 @@ public final class ScenarioManager {
 		});
 	}
 
-	// /**
-	// * Loading all necessary data of the current selected scenario and update
-	// * all related (ui)elements.
-	// */
-	// private void loadingCurrentScenario() {
-	//
-	// MainLayoutPanel.get().createNewCenterPanels();
-	//
-	// loadCurrentScenarioFromServer();
-	//
-	// ((SpecificationController)
-	// MainLayoutPanel.get().getCenterController(CenterType.Specification))
-	// .loadSpecificationNames();
-	// }
 
 	/**
 	 * Returns the scenario definition of the current scenario builder.
@@ -184,15 +151,6 @@ public final class ScenarioManager {
 	public ScenarioDefinitionBuilder getBuilder() {
 		return builder;
 	}
-
-//	/**
-//	 * Return the name of the current selected specification.
-//	 * 
-//	 * @return
-//	 */
-//	public String getWorkingSpecificationName() {
-//		return workingSpecification;
-//	}
 
 	/**
 	 * Renames the current workingSpecification to the given name.

@@ -3,17 +3,15 @@ package org.sopeco.frontend.client.layout.center.experiment;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.sopeco.frontend.client.R;
 import org.sopeco.frontend.client.extensions.Extensions;
-import org.sopeco.frontend.client.layout.popups.Message;
-import org.sopeco.frontend.client.rpc.RPC;
-import org.sopeco.frontend.shared.helper.ExtensionContainer;
+import org.sopeco.frontend.client.model.ScenarioManager;
 import org.sopeco.frontend.shared.helper.ExtensionTypes;
 import org.sopeco.frontend.shared.helper.Metering;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.regexp.shared.RegExp;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.TextBox;
 
 /**
@@ -25,14 +23,16 @@ public class ExperimentExtensionController implements ValueChangeHandler<String>
 
 	private static final String VALUE_CHANGED_CSS_CLASS = "valueChanged";
 
+	private ExperimentController parentController;
 	private ExperimentExtensionView view;
-	private ExtensionTypes extensionType;
+//	private ExtensionTypes extensionType;
 	private Map<String, Map<String, String>> extensionMap;
 	private Map<String, String> currentConfig;
 
-	public ExperimentExtensionController(int width) {
+	public ExperimentExtensionController(ExperimentController parent, int width) {
 		view = new ExperimentExtensionView(width);
 		currentConfig = new HashMap<String, String>();
+		parentController = parent;
 
 		view.getCombobox().addValueChangeHandler(new ValueChangeHandler<String>() {
 			@Override
@@ -40,6 +40,8 @@ public class ExperimentExtensionController implements ValueChangeHandler<String>
 				changeConfig();
 
 				updateConfigTable();
+
+				ScenarioManager.get().experiment().saveExperimentConfig(parentController);
 			}
 		});
 	}
@@ -71,33 +73,11 @@ public class ExperimentExtensionController implements ValueChangeHandler<String>
 	 *            the extension to set
 	 */
 	public void setExtensionType(ExtensionTypes newExtensionType) {
-		extensionType = newExtensionType;
+//		extensionType = newExtensionType;
 
 		extensionMap = Extensions.get().getExtensions(newExtensionType);
 		updateView();
-		// retreiveExtension();
 	}
-
-	// /**
-	// *
-	// * @return
-	// */
-	// private void retreiveExtension() {
-	// RPC.getExtensionRPC().getExtension(extensionType, new
-	// AsyncCallback<ExtensionContainer>() {
-	// @Override
-	// public void onSuccess(ExtensionContainer result) {
-	// extension = result;
-	//
-	// updateView();
-	// }
-	//
-	// @Override
-	// public void onFailure(Throwable caught) {
-	// Message.error(caught.getMessage());
-	// }
-	// });
-	// }
 
 	/**
 	 * Returns the name of the selected extension. (Selected ComboBox Item).
@@ -137,8 +117,9 @@ public class ExperimentExtensionController implements ValueChangeHandler<String>
 		for (String key : currentConfig.keySet()) {
 			String text = regex.replace(key, " $1");
 
-			TextBox newTextbox = view.addConfigRow(text, key,
-					extensionMap.get(view.getCombobox().getText()).get(key));
+			TextBox newTextbox = view.addConfigRow(text, key, currentConfig.get(key));
+			setTextboxHighligh(newTextbox, !valueIsDefault(key, currentConfig.get(key)));
+			newTextbox.setTitle(R.get("default") + ": " + extensionMap.get(view.getCombobox().getText()).get(key));
 
 			newTextbox.addValueChangeHandler(this);
 		}
@@ -150,14 +131,30 @@ public class ExperimentExtensionController implements ValueChangeHandler<String>
 	public void onValueChange(ValueChangeEvent<String> event) {
 		String key = ((TextBox) event.getSource()).getName();
 
-		/** Mark textbox, that their value is not default. */
-		if (!extensionMap.get(view.getCombobox().getText()).get(key).equals(event.getValue())) {
-			((TextBox) event.getSource()).addStyleName(VALUE_CHANGED_CSS_CLASS);
-		} else {
-			((TextBox) event.getSource()).removeStyleName(VALUE_CHANGED_CSS_CLASS);
-		}
+		setTextboxHighligh((TextBox) event.getSource(), !valueIsDefault(key, event.getValue()));
 
 		currentConfig.put(key, event.getValue());
+
+		ScenarioManager.get().experiment().saveExperimentConfig(parentController);
+	}
+
+	/**
+	 * Checks whether the value is the default value for the given key.
+	 * 
+	 * @param key
+	 * @param value
+	 * @return
+	 */
+	private boolean valueIsDefault(String key, String value) {
+		return extensionMap.get(view.getCombobox().getText()).get(key).equals(value);
+	}
+
+	private void setTextboxHighligh(TextBox textbox, boolean isHighlighted) {
+		if (isHighlighted) {
+			textbox.addStyleName(VALUE_CHANGED_CSS_CLASS);
+		} else {
+			textbox.removeStyleName(VALUE_CHANGED_CSS_CLASS);
+		}
 	}
 
 	/**
@@ -169,5 +166,31 @@ public class ExperimentExtensionController implements ValueChangeHandler<String>
 		Map<String, String> copiedMap = new HashMap<String, String>();
 		copiedMap.putAll(currentConfig);
 		return copiedMap;
+	}
+
+	/**
+	 * Sets the value of the combobox to the given name.
+	 * 
+	 * @param name
+	 */
+	public void setExtension(String name) {
+		int i = 0;
+		for (String key : extensionMap.keySet()) {
+			if (key.equals(name)) {
+				view.getCombobox().setSelectedIndex(i);
+			}
+			i++;
+		}
+	}
+
+	/**
+	 * Sets the current configMap to the given Map.
+	 * 
+	 * @param newConfigMap
+	 */
+	public void setConfigMap(Map<String, String> newConfigMap) {
+		currentConfig = newConfigMap;
+
+		updateConfigTable();
 	}
 }

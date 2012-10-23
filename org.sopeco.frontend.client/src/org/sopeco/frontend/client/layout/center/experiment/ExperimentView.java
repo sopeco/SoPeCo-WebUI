@@ -9,7 +9,11 @@ import org.sopeco.frontend.client.layout.center.CenterPanel;
  */
 public class ExperimentView extends CenterPanel {
 
+	/** Width of the SettingsPanel. */
+	public static final int EXP_SETTINGS_PANEL_WIDTH = 400;
+
 	private ExperimentSettingsView settingsView;
+	private ExperimentParameterView parameterView;
 
 	public ExperimentView() {
 		initialize();
@@ -20,8 +24,10 @@ public class ExperimentView extends CenterPanel {
 	 */
 	private void initialize() {
 		settingsView = new ExperimentSettingsView();
+		parameterView = new ExperimentParameterView();
 
 		add(settingsView);
+		add(parameterView);
 	}
 
 	/**
@@ -36,6 +42,13 @@ public class ExperimentView extends CenterPanel {
 	 */
 	public ExperimentSettingsView getSettingsView() {
 		return settingsView;
+	}
+
+	/**
+	 * @return the parameterView
+	 */
+	public ExperimentParameterView getParameterView() {
+		return parameterView;
 	}
 
 }

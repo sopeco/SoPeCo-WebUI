@@ -22,7 +22,6 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
-import com.google.gwt.user.client.ui.ScrollPanel;
 
 /**
  * The main-layout of the web-application.
@@ -38,7 +37,6 @@ public final class MainLayoutPanel extends DockLayoutPanel implements ValueChang
 	private NorthPanel northPanel;
 	private NavigationController navigationController;
 	private FrontendEntryPoint parentModule;
-	private ScrollPanel centerScrollPanel;
 
 	private CenterType currentCenterPanel;
 	private HashMap<CenterType, ICenterController> centerController = new HashMap<CenterType, ICenterController>();
@@ -76,7 +74,7 @@ public final class MainLayoutPanel extends DockLayoutPanel implements ValueChang
 		// History.addValueChangeHandler(this);
 		// History.fireCurrentHistoryState();
 
-		centerScrollPanel = new ScrollPanel();
+//		centerScrollPanel = new ScrollPanel();
 		currentCenterPanel = DEFAULT_CENTER_TYPE;
 
 		addNorth(getNorthPanel(), Float.parseFloat(NorthPanel.PANEL_HEIGHT));

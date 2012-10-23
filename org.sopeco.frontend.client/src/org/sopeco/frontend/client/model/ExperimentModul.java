@@ -2,6 +2,7 @@ package org.sopeco.frontend.client.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import org.sopeco.frontend.client.event.EventControl;
@@ -9,12 +10,13 @@ import org.sopeco.frontend.client.event.ExperimentChangedEvent;
 import org.sopeco.frontend.client.event.handler.ExperimentChangedEventHandler;
 import org.sopeco.frontend.client.extensions.Extensions;
 import org.sopeco.frontend.client.layout.MainLayoutPanel;
+import org.sopeco.frontend.client.layout.center.experiment.ExperimentController;
 import org.sopeco.frontend.shared.builder.SimpleEntityFactory;
 import org.sopeco.frontend.shared.helper.ExtensionTypes;
+import org.sopeco.frontend.shared.helper.Metering;
 import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
 import org.sopeco.persistence.entities.definition.ExperimentTerminationCondition;
-
-import com.google.gwt.editor.client.adapters.SimpleEditor;
+import org.sopeco.persistence.entities.definition.ExplorationStrategy;
 
 /**
  * Contains all necessary methods for Experiment manipulation to quickly access
@@ -57,8 +59,25 @@ public class ExperimentModul {
 	/**
 	 * @return the currentExperiment
 	 */
-	public String getCurrentExperiment() {
+	public String getCurrentExperimentName() {
 		return currentExperiment;
+	}
+
+	/**
+	 * Returns the current selected ExperimentSeriesDefinition.
+	 */
+	public ExperimentSeriesDefinition getCurrentExperiment() {
+		if (currentExperiment == null) {
+			return null;
+		}
+
+		for (ExperimentSeriesDefinition experiment : getExperimentsOfCurrentSpecififcation()) {
+			if (experiment.getName().equals(currentExperiment)) {
+				return experiment;
+			}
+		}
+
+		return null;
 	}
 
 	/**
@@ -68,6 +87,36 @@ public class ExperimentModul {
 	public void setCurrentExperiment(String newExperiment) {
 		LOGGER.info("Switch experiment to '" + newExperiment + "'");
 		currentExperiment = newExperiment;
+	}
+
+	/**
+	 * Stores the config of the selected experiment.
+	 * 
+	 * @param experimentController
+	 */
+	public void saveExperimentConfig(ExperimentController experimentController) {
+		double metering = Metering.start();
+		LOGGER.info("Save experiment configuration");
+
+		ExperimentSeriesDefinition experiment = getCurrentExperiment();
+		if (experiment == null) {
+			return;
+		}
+
+		String terminationName = experimentController.getTerminationExtController().getSelectedExtensionName();
+		Map<String, String> terminationConfig = experimentController.getTerminationExtController().getConfigMap();
+
+		String explorationName = experimentController.getExplorationExtController().getSelectedExtensionName();
+		Map<String, String> explorationConfig = experimentController.getExplorationExtController().getConfigMap();
+
+		experiment.setExperimentTerminationCondition(SimpleEntityFactory.createTerminationCondition(terminationName,
+				terminationConfig));
+		experiment.setExplorationStrategy(SimpleEntityFactory.createExplorationStrategy(explorationName,
+				explorationConfig));
+
+		manager.storeScenario();
+
+		Metering.stop(metering);
 	}
 
 	/**
@@ -105,15 +154,38 @@ public class ExperimentModul {
 	public void createExperimentSeries(String name) {
 		LOGGER.info("Create experiment '" + name + "'");
 
-		ExperimentTerminationCondition terminationCondition = SimpleEntityFactory.createTerminationCondition(name,
-				Extensions.get().getExtensions(ExtensionTypes.TERMINATIONCONDITION).get(0));
-
 		ExperimentSeriesDefinition experiment = SimpleEntityFactory.createExperimentSeriesDefinition(name,
-				terminationCondition);
+				createDefaultTerminationCondition());
+
+		experiment.setExplorationStrategy(createDefaultExplorationStrategy());
 
 		manager.getBuilder().getSpecificationBuilder().addExperimentSeries(experiment);
 
 		MainLayoutPanel.get().getNavigationController().loadExperiments();
 		manager.storeScenario();
+	}
+
+	/**
+	 * Creates a random (first of the map) termonationCondition.
+	 * 
+	 * @return
+	 */
+	private ExperimentTerminationCondition createDefaultTerminationCondition() {
+		String key = (String) Extensions.get().getExtensions(ExtensionTypes.TERMINATIONCONDITION).keySet().toArray()[0];
+		Map<String, String> configMap = Extensions.get().getExtensions(ExtensionTypes.TERMINATIONCONDITION).get(key);
+
+		return SimpleEntityFactory.createTerminationCondition(key, configMap);
+	}
+
+	/**
+	 * Creates a random (first of the map) ExplorationStrategy.
+	 * 
+	 * @return
+	 */
+	private ExplorationStrategy createDefaultExplorationStrategy() {
+		String key = (String) Extensions.get().getExtensions(ExtensionTypes.EXPLORATIONSTRATEGY).keySet().toArray()[0];
+		Map<String, String> configMap = Extensions.get().getExtensions(ExtensionTypes.EXPLORATIONSTRATEGY).get(key);
+
+		return SimpleEntityFactory.createExplorationStrategy(key, configMap);
 	}
 }
