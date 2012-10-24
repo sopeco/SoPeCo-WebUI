@@ -11,7 +11,8 @@ import com.google.gwt.event.shared.GwtEvent;
  */
 public class ExperimentChangedEvent extends GwtEvent<ExperimentChangedEventHandler> {
 
-	public static Type<ExperimentChangedEventHandler> TYPE = new Type<ExperimentChangedEventHandler>();
+	/** */
+	public static final Type<ExperimentChangedEventHandler> TYPE = new Type<ExperimentChangedEventHandler>();
 	private String experimentName;
 
 	public ExperimentChangedEvent(String name) {

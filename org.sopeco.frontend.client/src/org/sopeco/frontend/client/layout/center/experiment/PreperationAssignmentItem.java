@@ -22,11 +22,6 @@ import com.google.gwt.user.client.ui.TextBox;
  */
 public class PreperationAssignmentItem extends FlowPanel {
 
-	private static final String PREP_ASSIGNMENT_CSS_CLASS = "preperationAssignmentItem";
-	private static final String NAMESPACE_CSS_CLASS = "namespace";
-	private static final String NAME_CSS_CLASS = "name";
-	private static final String TYPE_CSS_CLASS = "type";
-
 	private ParameterDefinition definition;
 	private String constantValue;
 
@@ -43,7 +38,7 @@ public class PreperationAssignmentItem extends FlowPanel {
 	 * Inits
 	 */
 	private void initialize() {
-		addStyleName(PREP_ASSIGNMENT_CSS_CLASS);
+		addStyleName(ExperimentParameterView.ASSIGNMENT_ITEM_CSS_CLASS);
 
 		htmlNamespace = new HTML(definition.getFullName());
 		htmlName = new HTML(definition.getName());
@@ -51,9 +46,9 @@ public class PreperationAssignmentItem extends FlowPanel {
 
 		textboxValue = new TextBox();
 
-		htmlNamespace.addStyleName(NAMESPACE_CSS_CLASS);
-		htmlName.addStyleName(NAME_CSS_CLASS);
-		htmlType.addStyleName(TYPE_CSS_CLASS);
+		htmlNamespace.addStyleName(ExperimentParameterView.ASSIGNMENT_ITEM_NAMESPACE_CSS_CLASS);
+		htmlName.addStyleName(ExperimentParameterView.ASSIGNMENT_ITEM_NAME_CSS_CLASS);
+		htmlType.addStyleName(ExperimentParameterView.ASSIGNMENT_ITEM_TYPE_CSS_CLASS);
 
 		add(htmlNamespace);
 		add(htmlName);

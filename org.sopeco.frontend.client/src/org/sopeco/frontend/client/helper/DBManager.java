@@ -10,10 +10,18 @@ import org.sopeco.persistence.metadata.entities.DatabaseInstance;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class DBManager {
+/**
+ * 
+ * @author Marius Oehler
+ * 
+ */
+public final class DBManager {
 
 	private static DatabaseManagerRPCAsync dbManager;
 	private static List<DatabaseInstance> databaseList;
+
+	private DBManager() {
+	}
 
 	/**
 	 * 

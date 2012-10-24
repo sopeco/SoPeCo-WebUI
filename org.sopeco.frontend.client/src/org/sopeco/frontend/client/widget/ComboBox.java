@@ -159,6 +159,18 @@ public class ComboBox extends FlowPanel implements HasValueChangeHandlers<String
 	 *            index
 	 */
 	public void setSelectedIndex(int i) {
+		setSelectedIndex(i, false);
+	}
+
+	/**
+	 * Set the combobox to the selected element.
+	 * 
+	 * @param i
+	 *            index
+	 * @param fireEvent
+	 *            whether an event will be fired
+	 */
+	public void setSelectedIndex(int i, boolean fireEvent) {
 		if (i == -1) {
 			if (selectedIndex != -1) {
 				itemList.get(selectedIndex).setFocus(false);
@@ -174,7 +186,10 @@ public class ComboBox extends FlowPanel implements HasValueChangeHandlers<String
 		Label label = (Label) itemList.get(i).getWidget();
 		inputField.setText(label.getText());
 		userEditedText = false;
-		ValueChangeEvent.fire(ComboBox.this, getText());
+
+		if (fireEvent) {
+			ValueChangeEvent.fire(ComboBox.this, getText());
+		}
 	}
 
 	/**
@@ -316,7 +331,7 @@ public class ComboBox extends FlowPanel implements HasValueChangeHandlers<String
 		@Override
 		public void onClick(ClickEvent event) {
 			int index = itemList.indexOf(event.getSource());
-			setSelectedIndex(index);
+			setSelectedIndex(index, true);
 			hideDropdownList();
 		}
 

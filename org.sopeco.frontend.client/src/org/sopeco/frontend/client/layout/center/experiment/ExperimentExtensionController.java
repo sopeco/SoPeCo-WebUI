@@ -2,6 +2,8 @@ package org.sopeco.frontend.client.layout.center.experiment;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.sopeco.frontend.client.R;
 import org.sopeco.frontend.client.extensions.Extensions;
@@ -9,6 +11,7 @@ import org.sopeco.frontend.client.model.ScenarioManager;
 import org.sopeco.frontend.shared.helper.ExtensionTypes;
 import org.sopeco.frontend.shared.helper.Metering;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.regexp.shared.RegExp;
@@ -25,23 +28,30 @@ public class ExperimentExtensionController implements ValueChangeHandler<String>
 
 	private ExperimentController parentController;
 	private ExperimentExtensionView view;
-//	private ExtensionTypes extensionType;
+	// private ExtensionTypes extensionType;
 	private Map<String, Map<String, String>> extensionMap;
 	private Map<String, String> currentConfig;
+	private String currentExtensionName;
 
 	public ExperimentExtensionController(ExperimentController parent, int width) {
 		view = new ExperimentExtensionView(width);
 		currentConfig = new HashMap<String, String>();
 		parentController = parent;
+		currentExtensionName = "";
 
 		view.getCombobox().addValueChangeHandler(new ValueChangeHandler<String>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<String> event) {
+				double metering = Metering.start();
+				currentExtensionName = event.getValue();
+
 				changeConfig();
 
 				updateConfigTable();
 
 				ScenarioManager.get().experiment().saveExperimentConfig(parentController);
+
+				Metering.stop(metering);
 			}
 		});
 	}
@@ -73,7 +83,7 @@ public class ExperimentExtensionController implements ValueChangeHandler<String>
 	 *            the extension to set
 	 */
 	public void setExtensionType(ExtensionTypes newExtensionType) {
-//		extensionType = newExtensionType;
+		// extensionType = newExtensionType;
 
 		extensionMap = Extensions.get().getExtensions(newExtensionType);
 		updateView();
@@ -96,7 +106,9 @@ public class ExperimentExtensionController implements ValueChangeHandler<String>
 
 		view.getCombobox().clear();
 
-		for (String name : extensionMap.keySet()) {
+		Set<String> keySet = new TreeSet<String>(extensionMap.keySet());
+
+		for (String name : keySet) {
 			view.getCombobox().addItem(name);
 		}
 
@@ -119,7 +131,7 @@ public class ExperimentExtensionController implements ValueChangeHandler<String>
 
 			TextBox newTextbox = view.addConfigRow(text, key, currentConfig.get(key));
 			setTextboxHighligh(newTextbox, !valueIsDefault(key, currentConfig.get(key)));
-			newTextbox.setTitle(R.get("default") + ": " + extensionMap.get(view.getCombobox().getText()).get(key));
+			newTextbox.setTitle(R.get("default") + ": " + extensionMap.get(currentExtensionName).get(key));
 
 			newTextbox.addValueChangeHandler(this);
 		}
@@ -129,6 +141,8 @@ public class ExperimentExtensionController implements ValueChangeHandler<String>
 
 	@Override
 	public void onValueChange(ValueChangeEvent<String> event) {
+		double metering = Metering.start();
+
 		String key = ((TextBox) event.getSource()).getName();
 
 		setTextboxHighligh((TextBox) event.getSource(), !valueIsDefault(key, event.getValue()));
@@ -136,6 +150,8 @@ public class ExperimentExtensionController implements ValueChangeHandler<String>
 		currentConfig.put(key, event.getValue());
 
 		ScenarioManager.get().experiment().saveExperimentConfig(parentController);
+
+		Metering.stop(metering);
 	}
 
 	/**
@@ -146,7 +162,8 @@ public class ExperimentExtensionController implements ValueChangeHandler<String>
 	 * @return
 	 */
 	private boolean valueIsDefault(String key, String value) {
-		return extensionMap.get(view.getCombobox().getText()).get(key).equals(value);
+		GWT.log("check: " + key + " = " + value + " [" + currentExtensionName + "]");
+		return extensionMap.get(currentExtensionName).get(key).equals(value);
 	}
 
 	private void setTextboxHighligh(TextBox textbox, boolean isHighlighted) {
@@ -174,10 +191,15 @@ public class ExperimentExtensionController implements ValueChangeHandler<String>
 	 * @param name
 	 */
 	public void setExtension(String name) {
+		Set<String> keySet = new TreeSet<String>(extensionMap.keySet());
+
 		int i = 0;
-		for (String key : extensionMap.keySet()) {
+		for (String key : keySet) {
 			if (key.equals(name)) {
+				GWT.log("Set Extension to: " + name);
+				currentExtensionName = name;
 				view.getCombobox().setSelectedIndex(i);
+				return;
 			}
 			i++;
 		}
@@ -193,4 +215,12 @@ public class ExperimentExtensionController implements ValueChangeHandler<String>
 
 		updateConfigTable();
 	}
+
+	/**
+	 * @return the currentExtensionName
+	 */
+	public String getCurrentExtensionName() {
+		return currentExtensionName;
+	}
+
 }

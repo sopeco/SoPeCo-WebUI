@@ -1,16 +1,12 @@
 package org.sopeco.frontend.shared.builder;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.sopeco.frontend.shared.helper.Metering;
 import org.sopeco.persistence.entities.definition.ConstantValueAssignment;
 import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
-import org.sopeco.persistence.entities.definition.ExperimentTerminationCondition;
 import org.sopeco.persistence.entities.definition.MeasurementSpecification;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
-
-import com.google.gwt.core.client.GWT;
 
 /**
  * Builder for the measurement specification.
@@ -141,8 +137,8 @@ public class MeasurementSpecificationBuilder {
 	 * @return if adding was successful: the created experimentSeriesDefinition
 	 *         object else null
 	 */
-	public ExperimentSeriesDefinition addExperimentSeries(String name, ExperimentTerminationCondition termination) {
-		ExperimentSeriesDefinition experiment = SimpleEntityFactory.createExperimentSeriesDefinition(name, termination);
+	public ExperimentSeriesDefinition addExperimentSeries(String name/*, ExperimentTerminationCondition termination*/) {
+		ExperimentSeriesDefinition experiment = SimpleEntityFactory.createExperimentSeriesDefinition(name/*, termination*/);
 
 		if (addExperimentSeries(experiment)) {
 			return experiment;

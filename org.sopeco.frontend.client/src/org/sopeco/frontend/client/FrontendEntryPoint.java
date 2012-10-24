@@ -65,7 +65,7 @@ public class FrontendEntryPoint implements EntryPoint {
 
 		startup();
 	}
-
+	
 	private void loadFirstStep() {
 		Timer waitForLang = new Timer() {
 			@Override

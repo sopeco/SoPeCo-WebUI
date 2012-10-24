@@ -15,7 +15,6 @@ import org.sopeco.frontend.shared.builder.SimpleEntityFactory;
 import org.sopeco.frontend.shared.helper.ExtensionTypes;
 import org.sopeco.frontend.shared.helper.Metering;
 import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
-import org.sopeco.persistence.entities.definition.ExperimentTerminationCondition;
 import org.sopeco.persistence.entities.definition.ExplorationStrategy;
 
 /**
@@ -103,14 +102,14 @@ public class ExperimentModul {
 			return;
 		}
 
-		String terminationName = experimentController.getTerminationExtController().getSelectedExtensionName();
-		Map<String, String> terminationConfig = experimentController.getTerminationExtController().getConfigMap();
+//		String terminationName = experimentController.getTerminationExtController().getSelectedExtensionName();
+//		Map<String, String> terminationConfig = experimentController.getTerminationExtController().getConfigMap();
 
-		String explorationName = experimentController.getExplorationExtController().getSelectedExtensionName();
+		String explorationName = experimentController.getExplorationExtController().getCurrentExtensionName();
 		Map<String, String> explorationConfig = experimentController.getExplorationExtController().getConfigMap();
 
-		experiment.setExperimentTerminationCondition(SimpleEntityFactory.createTerminationCondition(terminationName,
-				terminationConfig));
+//		experiment.setExperimentTerminationCondition(SimpleEntityFactory.createTerminationCondition(terminationName,
+//				terminationConfig));
 		experiment.setExplorationStrategy(SimpleEntityFactory.createExplorationStrategy(explorationName,
 				explorationConfig));
 
@@ -154,8 +153,8 @@ public class ExperimentModul {
 	public void createExperimentSeries(String name) {
 		LOGGER.info("Create experiment '" + name + "'");
 
-		ExperimentSeriesDefinition experiment = SimpleEntityFactory.createExperimentSeriesDefinition(name,
-				createDefaultTerminationCondition());
+		ExperimentSeriesDefinition experiment = SimpleEntityFactory.createExperimentSeriesDefinition(name/*,
+				createDefaultTerminationCondition()*/);
 
 		experiment.setExplorationStrategy(createDefaultExplorationStrategy());
 
@@ -165,17 +164,17 @@ public class ExperimentModul {
 		manager.storeScenario();
 	}
 
-	/**
-	 * Creates a random (first of the map) termonationCondition.
-	 * 
-	 * @return
-	 */
-	private ExperimentTerminationCondition createDefaultTerminationCondition() {
-		String key = (String) Extensions.get().getExtensions(ExtensionTypes.TERMINATIONCONDITION).keySet().toArray()[0];
-		Map<String, String> configMap = Extensions.get().getExtensions(ExtensionTypes.TERMINATIONCONDITION).get(key);
-
-		return SimpleEntityFactory.createTerminationCondition(key, configMap);
-	}
+//	/**
+//	 * Creates a random (first of the map) termonationCondition.
+//	 * 
+//	 * @return
+//	 */
+//	private ExperimentTerminationCondition createDefaultTerminationCondition() {
+//		String key = (String) Extensions.get().getExtensions(ExtensionTypes.TERMINATIONCONDITION).keySet().toArray()[0];
+//		Map<String, String> configMap = Extensions.get().getExtensions(ExtensionTypes.TERMINATIONCONDITION).get(key);
+//
+//		return SimpleEntityFactory.createTerminationCondition(key, configMap);
+//	}
 
 	/**
 	 * Creates a random (first of the map) ExplorationStrategy.

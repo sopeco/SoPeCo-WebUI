@@ -4,7 +4,6 @@ import java.util.Map;
 
 import org.sopeco.persistence.entities.definition.ConstantValueAssignment;
 import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
-import org.sopeco.persistence.entities.definition.ExperimentTerminationCondition;
 import org.sopeco.persistence.entities.definition.ExplorationStrategy;
 import org.sopeco.persistence.entities.definition.MeasurementSpecification;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
@@ -36,11 +35,11 @@ public class SimpleEntityFactory {
 		return cva;
 	}
 
-	public static ExperimentSeriesDefinition createExperimentSeriesDefinition(String name,
-			ExperimentTerminationCondition terminationCondition) {
+	public static ExperimentSeriesDefinition createExperimentSeriesDefinition(String name
+		/*	,ExperimentTerminationCondition terminationCondition*/) {
 		ExperimentSeriesDefinition esd = new ExperimentSeriesDefinition();
 		esd.setName(name);
-		esd.setExperimentTerminationCondition(terminationCondition);
+		//esd.setExperimentTerminationCondition(terminationCondition);
 		return esd;
 	}
 
@@ -58,14 +57,14 @@ public class SimpleEntityFactory {
 		return pd;
 	}
 
-	public static ExperimentTerminationCondition createTerminationCondition(String name, Map<String, String> config) {
-		ExperimentTerminationCondition etc = new ExperimentTerminationCondition();
-		etc.setName(name);
-		if (config != null) {
-			etc.getConfiguration().putAll(config);
-		}
-		return etc;
-	}
+//	public static ExperimentTerminationCondition createTerminationCondition(String name, Map<String, String> config) {
+//		ExperimentTerminationCondition etc = new ExperimentTerminationCondition();
+//		etc.setName(name);
+//		if (config != null) {
+//			etc.getConfiguration().putAll(config);
+//		}
+//		return etc;
+//	}
 
 	public static ExplorationStrategy createExplorationStrategy(String name, Map<String, String> config) {
 		ExplorationStrategy es = new ExplorationStrategy();

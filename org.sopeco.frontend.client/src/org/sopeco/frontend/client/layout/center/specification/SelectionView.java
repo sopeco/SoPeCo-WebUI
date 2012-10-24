@@ -1,7 +1,6 @@
 package org.sopeco.frontend.client.layout.center.specification;
 
 import org.sopeco.frontend.client.R;
-import org.sopeco.frontend.client.widget.FrontendTree;
 import org.sopeco.frontend.client.widget.tree.Tree;
 
 import com.google.gwt.dom.client.Element;

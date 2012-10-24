@@ -111,32 +111,40 @@
 	padding: 1em;
 }
 
-/** prep items */
-.preperationAssignmentItem {
+/** parameterAssignmentItem */
+.parameterAssignmentItem {
 	border-bottom: 1px dashed #DDD;
 	padding: 2px;
 }
 
-.preperationAssignmentItem>div {
+.parameterAssignmentItem>div {
 	display: inline-block;
 }
 
-.preperationAssignmentItem .namespace {
+.parameterAssignmentItem .namespace {
 	color: #333;
 	margin-right: 20px;
 }
 
-.preperationAssignmentItem .name {
+.parameterAssignmentItem .name {
 	color: #333;
 	font-weight: bold;
 	margin-right: 10px;
 }
 
-.preperationAssignmentItem .type {
+.parameterAssignmentItem .type {
 	color: #999;
 	margin-right: 25px;
 }
 
-.preperationAssignmentItem .gwt-TextBox {
+.parameterAssignmentItem .gwt-TextBox {
 	padding: 2px 4px;
+}
+
+.parameterAssignmentItem .spc-ComboBox .gwt-TextBox {
+	padding: 1px 4px;
+}
+
+.parameterAssignmentItem .spc-ComboBox img {
+	padding: 0px 8px;
 }

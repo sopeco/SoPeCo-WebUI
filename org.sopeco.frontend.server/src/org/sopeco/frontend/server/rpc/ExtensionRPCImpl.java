@@ -6,7 +6,6 @@ import java.util.Map;
 import org.sopeco.engine.experimentseries.IConstantAssignmentExtension;
 import org.sopeco.engine.experimentseries.IExplorationStrategyExtension;
 import org.sopeco.engine.experimentseries.IParameterVariationExtension;
-import org.sopeco.engine.experimentseries.ITerminationConditionExtension;
 import org.sopeco.engine.processing.IProcessingStrategyExtension;
 import org.sopeco.engine.registry.ExtensionRegistry;
 import org.sopeco.engine.registry.ISoPeCoExtension;
@@ -35,9 +34,9 @@ public class ExtensionRPCImpl extends RemoteServiceServlet implements
 			case EXPLORATIONSTRATEGY:
 				container.getMap().put(ExtensionTypes.EXPLORATIONSTRATEGY, createExtension(IExplorationStrategyExtension.class));
 				break;
-			case TERMINATIONCONDITION:
-				container.getMap().put(ExtensionTypes.TERMINATIONCONDITION, createExtension(ITerminationConditionExtension.class));
-				break;
+//			case TERMINATIONCONDITION:
+//				container.getMap().put(ExtensionTypes.TERMINATIONCONDITION, createExtension(ITerminationConditionExtension.class));
+//				break;
 			case CONSTANTASSIGNMENT:
 				container.getMap().put(ExtensionTypes.CONSTANTASSIGNMENT, createExtension(IConstantAssignmentExtension.class));
 				break;

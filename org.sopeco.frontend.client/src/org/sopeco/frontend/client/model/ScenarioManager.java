@@ -2,15 +2,11 @@ package org.sopeco.frontend.client.model;
 
 import java.util.logging.Logger;
 
-import org.sopeco.frontend.client.event.EnvironmentParameterChangedEvent;
 import org.sopeco.frontend.client.event.EventControl;
-import org.sopeco.frontend.client.event.InitialAssignmentChangedEvent;
 import org.sopeco.frontend.client.event.ScenarioChangedEvent;
 import org.sopeco.frontend.client.event.ScenarioLoadedEvent;
 import org.sopeco.frontend.client.event.SpecificationChangedEvent;
-import org.sopeco.frontend.client.event.InitialAssignmentChangedEvent.ChangeType;
 import org.sopeco.frontend.client.event.handler.ScenarioChangedEventHandler;
-import org.sopeco.frontend.client.event.handler.SpecificationChangedEventHandler;
 import org.sopeco.frontend.client.layout.MainLayoutPanel;
 import org.sopeco.frontend.client.layout.center.CenterType;
 import org.sopeco.frontend.client.layout.center.specification.SpecificationController;
@@ -18,7 +14,6 @@ import org.sopeco.frontend.client.layout.popups.Message;
 import org.sopeco.frontend.client.rpc.RPC;
 import org.sopeco.frontend.shared.builder.MeasurementSpecificationBuilder;
 import org.sopeco.frontend.shared.builder.ScenarioDefinitionBuilder;
-import org.sopeco.frontend.shared.builder.SimpleEntityFactory;
 import org.sopeco.persistence.entities.definition.ConstantValueAssignment;
 import org.sopeco.persistence.entities.definition.MeasurementSpecification;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;

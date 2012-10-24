@@ -3,9 +3,7 @@ package org.sopeco.frontend.client.model;
 import java.util.logging.Logger;
 
 import org.sopeco.frontend.client.event.EventControl;
-import org.sopeco.frontend.client.event.ExperimentChangedEvent;
 import org.sopeco.frontend.client.event.SpecificationChangedEvent;
-import org.sopeco.frontend.client.event.handler.ExperimentChangedEventHandler;
 import org.sopeco.frontend.client.event.handler.SpecificationChangedEventHandler;
 import org.sopeco.frontend.shared.builder.MeasurementSpecificationBuilder;
 import org.sopeco.persistence.entities.definition.MeasurementSpecification;

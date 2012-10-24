@@ -12,7 +12,8 @@ import com.google.gwt.event.shared.GwtEvent;
  */
 public class EnvironmentParameterChangedEvent extends GwtEvent<EnvironmentParameterChangedEventHandler> {
 
-	public static Type<EnvironmentParameterChangedEventHandler> TYPE = new Type<EnvironmentParameterChangedEventHandler>();
+	/** */
+	public static final Type<EnvironmentParameterChangedEventHandler> TYPE = new Type<EnvironmentParameterChangedEventHandler>();
 	private ParameterDefinition oldParameter, newParameter;
 
 	public EnvironmentParameterChangedEvent(ParameterDefinition pOldparameter, ParameterDefinition pNewParameter) {

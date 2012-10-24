@@ -11,7 +11,8 @@ import com.google.gwt.event.shared.GwtEvent;
  */
 public class ScenarioLoadedEvent extends GwtEvent<ScenarioLoadedEventHandler> {
 
-	public static Type<ScenarioLoadedEventHandler> TYPE = new Type<ScenarioLoadedEventHandler>();
+	/** */
+	public static final Type<ScenarioLoadedEventHandler> TYPE = new Type<ScenarioLoadedEventHandler>();
 
 	@Override
 	public Type<ScenarioLoadedEventHandler> getAssociatedType() {

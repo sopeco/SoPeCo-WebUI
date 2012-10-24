@@ -28,28 +28,31 @@ public class ExperimentController implements ICenterController {
 	private static final Logger LOGGER = Logger.getLogger(ExperimentController.class.getName());
 
 	private ExperimentView view;
-	private ExperimentExtensionController terminationExtController, explorationExtController;
+	private ExperimentExtensionController /*terminationExtController,*/ explorationExtController;
 	private PreperationAssignmentController preperationAssignmentController;
-
+	private ExperimentAssignmentController experimentAssignmentController;
+	
 	public ExperimentController() {
 		FrontEndResources.loadExperimentCSS();
 
-		terminationExtController = new ExperimentExtensionController(this, ExperimentView.EXP_SETTINGS_PANEL_WIDTH);
+//		terminationExtController = new ExperimentExtensionController(this, ExperimentView.EXP_SETTINGS_PANEL_WIDTH);
 		explorationExtController = new ExperimentExtensionController(this, ExperimentView.EXP_SETTINGS_PANEL_WIDTH);
 		preperationAssignmentController = new PreperationAssignmentController();
-
+		experimentAssignmentController = new ExperimentAssignmentController();
+		
 		view = new ExperimentView();
 
 		view.getSettingsView().addExtensionView(explorationExtController.getView());
-		view.getSettingsView().addExtensionView(terminationExtController.getView());
+//		view.getSettingsView().addExtensionView(terminationExtController.getView());
 
 		view.getParameterView().add(preperationAssignmentController.getView());
+		view.getParameterView().add(experimentAssignmentController.getView());
 		
 		explorationExtController.setHeadline(R.get("explStrategy"));
-		terminationExtController.setHeadline(R.get("termination"));
+//		terminationExtController.setHeadline(R.get("termination"));
 
 		explorationExtController.setExtensionType(ExtensionTypes.EXPLORATIONSTRATEGY);
-		terminationExtController.setExtensionType(ExtensionTypes.TERMINATIONCONDITION);
+//		terminationExtController.setExtensionType(ExtensionTypes.TERMINATIONCONDITION);
 
 		registerEventHandlers();
 
@@ -66,6 +69,10 @@ public class ExperimentController implements ICenterController {
 		preperationAssignmentController.addAssignment(definition);
 		preperationAssignmentController.addAssignment(definition2);
 		preperationAssignmentController.addAssignment(definition3);
+		
+		experimentAssignmentController.addAssignment(null);
+		experimentAssignmentController.addAssignment(null);
+		experimentAssignmentController.addAssignment(null);
 	}
 
 	/**
@@ -98,16 +105,17 @@ public class ExperimentController implements ICenterController {
 		Map<String, String> explorationConfig = ScenarioManager.get().experiment().getCurrentExperiment()
 				.getExplorationStrategy().getConfiguration();
 
-		String terminationName = ScenarioManager.get().experiment().getCurrentExperiment()
-				.getExperimentTerminationCondition().getName();
-		Map<String, String> terminationConfig = ScenarioManager.get().experiment().getCurrentExperiment()
-				.getExperimentTerminationCondition().getConfiguration();
+		
+//		String terminationName = ScenarioManager.get().experiment().getCurrentExperiment()
+//				.getExperimentTerminationCondition().getName();
+//		Map<String, String> terminationConfig = ScenarioManager.get().experiment().getCurrentExperiment()
+//				.getExperimentTerminationCondition().getConfiguration();
 
 		explorationExtController.setExtension(explorationName);
 		explorationExtController.setConfigMap(explorationConfig);
 
-		terminationExtController.setExtension(terminationName);
-		terminationExtController.setConfigMap(terminationConfig);
+//		terminationExtController.setExtension(terminationName);
+//		terminationExtController.setConfigMap(terminationConfig);
 	}
 
 	@Override
@@ -120,12 +128,12 @@ public class ExperimentController implements ICenterController {
 		view.reset();
 	}
 
-	/**
-	 * @return the terminationExtController
-	 */
-	public ExperimentExtensionController getTerminationExtController() {
-		return terminationExtController;
-	}
+//	/**
+//	 * @return the terminationExtController
+//	 */
+//	public ExperimentExtensionController getTerminationExtController() {
+//		return terminationExtController;
+//	}
 
 	/**
 	 * @return the explorationExtController

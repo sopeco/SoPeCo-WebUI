@@ -11,7 +11,8 @@ import com.google.gwt.event.shared.GwtEvent;
  */
 public class PreperationAssignmentLoadedEvent extends GwtEvent<PreperationAssignmentLoadedEventHandler> {
 
-	public static Type<PreperationAssignmentLoadedEventHandler> TYPE = new Type<PreperationAssignmentLoadedEventHandler>();
+	/** */
+	public static final Type<PreperationAssignmentLoadedEventHandler> TYPE = new Type<PreperationAssignmentLoadedEventHandler>();
 
 	@Override
 	public Type<PreperationAssignmentLoadedEventHandler> getAssociatedType() {

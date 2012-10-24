@@ -7,8 +7,6 @@ import org.sopeco.frontend.client.helper.callback.ParallelCallback;
 import org.sopeco.frontend.shared.helper.ExtensionContainer;
 import org.sopeco.frontend.shared.helper.ExtensionTypes;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
-
 /**
  * 
  * @author Marius Oehler

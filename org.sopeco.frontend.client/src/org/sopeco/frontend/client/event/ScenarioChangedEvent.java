@@ -11,7 +11,8 @@ import com.google.gwt.event.shared.GwtEvent;
  */
 public class ScenarioChangedEvent extends GwtEvent<ScenarioChangedEventHandler> {
 
-	public static Type<ScenarioChangedEventHandler> TYPE = new Type<ScenarioChangedEventHandler>();
+	/** */
+	public static final Type<ScenarioChangedEventHandler> TYPE = new Type<ScenarioChangedEventHandler>();
 	private String scenarioName;
 
 	public ScenarioChangedEvent(String name) {

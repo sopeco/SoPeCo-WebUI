@@ -1,6 +1,5 @@
 package org.sopeco.frontend.client.helper;
 
-import org.sopeco.frontend.client.FrontendEntryPoint;
 import org.sopeco.frontend.client.layout.MainLayoutPanel;
 import org.sopeco.frontend.client.layout.center.CenterType;
 import org.sopeco.frontend.client.layout.center.environment.EnvironmentView;

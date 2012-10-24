@@ -3,7 +3,6 @@ package org.sopeco.frontend.client.layout.dialog;
 import org.sopeco.frontend.client.helper.SystemDetails;
 import org.sopeco.frontend.client.helper.handler.NumbersOnlyHandler;
 import org.sopeco.frontend.client.layout.LoginBox;
-import org.sopeco.frontend.client.layout.NorthPanel;
 import org.sopeco.frontend.client.layout.popups.Loader;
 import org.sopeco.frontend.client.layout.popups.Message;
 import org.sopeco.frontend.client.rpc.DatabaseManagerRPC;

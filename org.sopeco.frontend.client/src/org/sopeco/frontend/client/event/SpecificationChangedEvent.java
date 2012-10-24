@@ -11,7 +11,8 @@ import com.google.gwt.event.shared.GwtEvent;
  */
 public class SpecificationChangedEvent extends GwtEvent<SpecificationChangedEventHandler> {
 
-	public static Type<SpecificationChangedEventHandler> TYPE = new Type<SpecificationChangedEventHandler>();
+	/**	 */
+	public static final Type<SpecificationChangedEventHandler> TYPE = new Type<SpecificationChangedEventHandler>();
 	private String selectedSpecification;
 
 	public SpecificationChangedEvent(String selected) {

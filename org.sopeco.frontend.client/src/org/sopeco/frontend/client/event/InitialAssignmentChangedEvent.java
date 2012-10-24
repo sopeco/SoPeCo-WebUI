@@ -19,11 +19,12 @@ public class InitialAssignmentChangedEvent extends GwtEvent<InitialAssignmentCha
 		Added,
 		/** Assignment removed. */
 		Removed,
-		/** An assignment was updated */
+		/** An assignment was updated. */
 		Updated
 	}
 
-	public static Type<InitialAssignmentChangedEventHandler> TYPE = new Type<InitialAssignmentChangedEventHandler>();
+	/** */
+	public static final Type<InitialAssignmentChangedEventHandler> TYPE = new Type<InitialAssignmentChangedEventHandler>();
 	private String fullParameterName;
 	private ChangeType type;
 

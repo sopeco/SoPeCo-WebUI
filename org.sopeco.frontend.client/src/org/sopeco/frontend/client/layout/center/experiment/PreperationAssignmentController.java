@@ -6,9 +6,8 @@ import java.util.List;
 import org.sopeco.frontend.client.event.EventControl;
 import org.sopeco.frontend.client.event.PreperationAssignmentLoadedEvent;
 import org.sopeco.frontend.client.event.handler.PreperationAssignmentLoadedEventHandler;
+import org.sopeco.frontend.client.helper.ElementPropertyAligner;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
-
-import com.google.gwt.dom.client.Style.Unit;
 
 /**
  * 
@@ -19,9 +18,13 @@ public class PreperationAssignmentController {
 
 	private PreperationAssignmentView view;
 	private List<PreperationAssignmentItem> preperationItems;
+	private ElementPropertyAligner namespacePropertyAligner, typePropertyAligner;
 
 	public PreperationAssignmentController() {
 		preperationItems = new ArrayList<PreperationAssignmentItem>();
+
+		namespacePropertyAligner = new ElementPropertyAligner();
+		typePropertyAligner = new ElementPropertyAligner();
 
 		registerHandler();
 	}
@@ -43,53 +46,8 @@ public class PreperationAssignmentController {
 	 * The called method at an PreperationAssignmentLoadedEvent.
 	 */
 	private void assignmentLoadedEvent(PreperationAssignmentLoadedEvent event) {
-		updateHTMLNamespaceWidth();
-		updateHTMLTypeWidth();
-	}
-
-	/**
-	 * Sets the width of all namespace-HTML elements of the assignment items to
-	 * the same width.
-	 */
-	private void updateHTMLNamespaceWidth() {
-		int widestHTML = 0;
-		for (PreperationAssignmentItem item : preperationItems) {
-			item.getHtmlNamespace().getElement().getStyle().clearWidth();
-
-			if (item.getHtmlNamespace().getOffsetWidth() > widestHTML) {
-				widestHTML = item.getHtmlNamespace().getOffsetWidth();
-			}
-		}
-
-		for (PreperationAssignmentItem item : preperationItems) {
-			item.getHtmlNamespace().getElement().getStyle().setWidth(widestHTML, Unit.PX);
-		}
-	}
-
-	/**
-	 * Sets the width of all namespace-HTML elements of the assignment items to
-	 * the same width.
-	 */
-	private void updateHTMLTypeWidth() {
-		int widestHTML = 0;
-		for (PreperationAssignmentItem item : preperationItems) {
-			item.getHtmlType().getElement().getStyle().clearWidth();
-
-			int tempWidth = item.getHtmlNamespace().getOffsetWidth();
-			tempWidth += item.getHtmlName().getOffsetWidth();
-			tempWidth += item.getHtmlType().getOffsetWidth();
-
-			if (tempWidth > widestHTML) {
-				widestHTML = tempWidth;
-			}
-		}
-
-		for (PreperationAssignmentItem item : preperationItems) {
-			int widthToSet = widestHTML;
-			widthToSet -= item.getHtmlNamespace().getOffsetWidth();
-			widthToSet -= item.getHtmlName().getOffsetWidth();
-			item.getHtmlType().getElement().getStyle().setWidth(widthToSet, Unit.PX);
-		}
+		namespacePropertyAligner.alignWith();
+		typePropertyAligner.offsetWidth();
 	}
 
 	/**
@@ -119,6 +77,10 @@ public class PreperationAssignmentController {
 		PreperationAssignmentItem item = new PreperationAssignmentItem(definition, value);
 
 		preperationItems.add(item);
+
+		namespacePropertyAligner.addElement(item.getHtmlNamespace().getElement());
+		typePropertyAligner.addElement(item.getHtmlType().getElement(), item.getHtmlNamespace().getElement(), item
+				.getHtmlName().getElement());
 
 		getView().add(item);
 	}
