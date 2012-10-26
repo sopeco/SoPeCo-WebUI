@@ -2,6 +2,7 @@ package org.sopeco.frontend.client.model;
 
 import java.util.logging.Logger;
 
+import org.sopeco.frontend.client.event.EnvironmentDefinitionChangedEvent;
 import org.sopeco.frontend.client.event.EventControl;
 import org.sopeco.frontend.client.event.ScenarioChangedEvent;
 import org.sopeco.frontend.client.event.ScenarioLoadedEvent;
@@ -183,7 +184,7 @@ public final class ScenarioManager {
 				
 				EventControl.get().fireEvent(new ScenarioLoadedEvent());
 				EventControl.get().fireEvent(new SpecificationChangedEvent(newSpecification));
-
+				EventControl.get().fireEvent(new EnvironmentDefinitionChangedEvent());
 			}
 		});
 	}

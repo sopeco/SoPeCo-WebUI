@@ -69,7 +69,7 @@ public class EnvironmentDefinitonTreePanel extends FlowPanel {
 
 		EnvironmentTreeItem rootItem = new EnvironmentTreeItem(root.getName());
 
-//		addPNS(root, rootItem);
+		addPNS(root, rootItem);
 
 		frontendTree.setRoot(rootItem);
 

@@ -6,7 +6,9 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import org.sopeco.frontend.client.event.EventControl;
+import org.sopeco.frontend.client.event.ExperimentAssignmentsChangedEvent;
 import org.sopeco.frontend.client.event.ExperimentChangedEvent;
+import org.sopeco.frontend.client.event.PreperationAssignmentsChangedEvent;
 import org.sopeco.frontend.client.event.handler.ExperimentChangedEventHandler;
 import org.sopeco.frontend.client.extensions.Extensions;
 import org.sopeco.frontend.client.layout.MainLayoutPanel;
@@ -14,8 +16,11 @@ import org.sopeco.frontend.client.layout.center.experiment.ExperimentController;
 import org.sopeco.frontend.shared.builder.SimpleEntityFactory;
 import org.sopeco.frontend.shared.helper.ExtensionTypes;
 import org.sopeco.frontend.shared.helper.Metering;
+import org.sopeco.persistence.entities.definition.ConstantValueAssignment;
 import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
 import org.sopeco.persistence.entities.definition.ExplorationStrategy;
+import org.sopeco.persistence.entities.definition.ParameterDefinition;
+import org.sopeco.persistence.entities.definition.ParameterValueAssignment;
 
 /**
  * Contains all necessary methods for Experiment manipulation to quickly access
@@ -102,14 +107,16 @@ public class ExperimentModul {
 			return;
 		}
 
-//		String terminationName = experimentController.getTerminationExtController().getSelectedExtensionName();
-//		Map<String, String> terminationConfig = experimentController.getTerminationExtController().getConfigMap();
+		// String terminationName =
+		// experimentController.getTerminationExtController().getSelectedExtensionName();
+		// Map<String, String> terminationConfig =
+		// experimentController.getTerminationExtController().getConfigMap();
 
 		String explorationName = experimentController.getExplorationExtController().getCurrentExtensionName();
 		Map<String, String> explorationConfig = experimentController.getExplorationExtController().getConfigMap();
 
-//		experiment.setExperimentTerminationCondition(SimpleEntityFactory.createTerminationCondition(terminationName,
-//				terminationConfig));
+		// experiment.setExperimentTerminationCondition(SimpleEntityFactory.createTerminationCondition(terminationName,
+		// terminationConfig));
 		experiment.setExplorationStrategy(SimpleEntityFactory.createExplorationStrategy(explorationName,
 				explorationConfig));
 
@@ -153,8 +160,12 @@ public class ExperimentModul {
 	public void createExperimentSeries(String name) {
 		LOGGER.info("Create experiment '" + name + "'");
 
-		ExperimentSeriesDefinition experiment = SimpleEntityFactory.createExperimentSeriesDefinition(name/*,
-				createDefaultTerminationCondition()*/);
+		ExperimentSeriesDefinition experiment = SimpleEntityFactory.createExperimentSeriesDefinition(name/*
+																										 * ,
+																										 * createDefaultTerminationCondition
+																										 * (
+																										 * )
+																										 */);
 
 		experiment.setExplorationStrategy(createDefaultExplorationStrategy());
 
@@ -164,17 +175,20 @@ public class ExperimentModul {
 		manager.storeScenario();
 	}
 
-//	/**
-//	 * Creates a random (first of the map) termonationCondition.
-//	 * 
-//	 * @return
-//	 */
-//	private ExperimentTerminationCondition createDefaultTerminationCondition() {
-//		String key = (String) Extensions.get().getExtensions(ExtensionTypes.TERMINATIONCONDITION).keySet().toArray()[0];
-//		Map<String, String> configMap = Extensions.get().getExtensions(ExtensionTypes.TERMINATIONCONDITION).get(key);
-//
-//		return SimpleEntityFactory.createTerminationCondition(key, configMap);
-//	}
+	// /**
+	// * Creates a random (first of the map) termonationCondition.
+	// *
+	// * @return
+	// */
+	// private ExperimentTerminationCondition
+	// createDefaultTerminationCondition() {
+	// String key = (String)
+	// Extensions.get().getExtensions(ExtensionTypes.TERMINATIONCONDITION).keySet().toArray()[0];
+	// Map<String, String> configMap =
+	// Extensions.get().getExtensions(ExtensionTypes.TERMINATIONCONDITION).get(key);
+	//
+	// return SimpleEntityFactory.createTerminationCondition(key, configMap);
+	// }
 
 	/**
 	 * Creates a random (first of the map) ExplorationStrategy.
@@ -186,5 +200,163 @@ public class ExperimentModul {
 		Map<String, String> configMap = Extensions.get().getExtensions(ExtensionTypes.EXPLORATIONSTRATEGY).get(key);
 
 		return SimpleEntityFactory.createExplorationStrategy(key, configMap);
+	}
+
+	/**
+	 * Adds a parameterdefinition as a preperation assignment.
+	 */
+	public void addPreperationAssignment(ParameterDefinition definition) {
+		if (isPreperationAssignment(definition)) {
+			return;
+		}
+		ConstantValueAssignment cva = new ConstantValueAssignment();
+		cva.setParameter(definition);
+		cva.setValue("");
+
+		getCurrentExperiment().getPreperationAssignments().add(cva);
+
+		manager.storeScenario();
+
+		EventControl.get().fireEvent(new PreperationAssignmentsChangedEvent());
+	}
+
+	/**
+	 * Sets the value of the assignment with the given parameter.
+	 * 
+	 * @param definition
+	 * @param value
+	 */
+	public void setPreperationAssignmentValue(ParameterDefinition definition, String value) {
+		if (getCurrentExperiment() == null) {
+			return;
+		}
+
+		for (ConstantValueAssignment cva : getCurrentExperiment().getPreperationAssignments()) {
+			if (cva.getParameter().getFullName().equals(definition.getFullName())) {
+				cva.setValue(value);
+
+				manager.storeScenario();
+				return;
+			}
+		}
+	}
+
+	/**
+	 * Removes the given Definiton of the current experiment.
+	 * 
+	 * @param definition
+	 */
+	public void removePreperationAssignment(ParameterDefinition definition) {
+		if (getCurrentExperiment() == null) {
+			return;
+		}
+
+		for (ConstantValueAssignment cva : getCurrentExperiment().getPreperationAssignments()) {
+			if (cva.getParameter().getFullName().equals(definition.getFullName())) {
+				getCurrentExperiment().getPreperationAssignments().remove(cva);
+				break;
+			}
+		}
+
+		manager.storeScenario();
+
+		EventControl.get().fireEvent(new PreperationAssignmentsChangedEvent());
+	}
+
+	/**
+	 * Checks if the given paramaeter is already a preperation assignment.
+	 * 
+	 * @param definition
+	 * @return
+	 */
+	public boolean isPreperationAssignment(ParameterDefinition definition) {
+		if (getCurrentExperiment() == null) {
+			return false;
+		}
+
+		for (ConstantValueAssignment cva : getCurrentExperiment().getPreperationAssignments()) {
+			if (cva.getParameter().getFullName().equals(definition.getFullName())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Adds a parameterdefinition as a preperation assignment.
+	 */
+	public void addExperimentAssignment(ParameterDefinition definition) {
+		if (isPreperationAssignment(definition)) {
+			return;
+		}
+		ConstantValueAssignment cva = new ConstantValueAssignment();
+		cva.setParameter(definition);
+		cva.setValue("");
+
+		getCurrentExperiment().getExperimentAssignments().add(cva);
+
+		manager.storeScenario();
+
+		EventControl.get().fireEvent(new ExperimentAssignmentsChangedEvent());
+	}
+
+	/**
+	 * Removes the given Definiton of the current experiment.
+	 * 
+	 * @param definition
+	 */
+	public void removeExperimentAssignment(ParameterDefinition definition) {
+		if (getCurrentExperiment() == null) {
+			return;
+		}
+
+		for (ParameterValueAssignment pva : getCurrentExperiment().getExperimentAssignments()) {
+			if (pva.getParameter().getFullName().equals(definition.getFullName())) {
+				getCurrentExperiment().getExperimentAssignments().remove(pva);
+				break;
+			}
+		}
+
+		manager.storeScenario();
+
+		EventControl.get().fireEvent(new ExperimentAssignmentsChangedEvent());
+	}
+
+	/**
+	 * Checks if the given paramaeter is already a preperation assignment.
+	 * 
+	 * @param definition
+	 * @return
+	 */
+	public boolean isExperimentAssignment(ParameterDefinition definition) {
+		if (getCurrentExperiment() == null) {
+			return false;
+		}
+
+		for (ParameterValueAssignment pva : getCurrentExperiment().getExperimentAssignments()) {
+			if (pva.getParameter().getFullName().equals(definition.getFullName())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * 
+	 */
+	public void setExperimentAssignment(ParameterValueAssignment pva) {
+		if (isExperimentAssignment(pva.getParameter())) {
+			for (ParameterValueAssignment va : getCurrentExperiment().getExperimentAssignments()) {
+				if (va.getParameter().getFullName().equals(pva.getParameter().getFullName())) {
+					getCurrentExperiment().getExperimentAssignments().remove(va);
+					break;
+				}
+			}
+
+		}
+
+		getCurrentExperiment().getExperimentAssignments().add(pva);
+
+		manager.storeScenario();
 	}
 }

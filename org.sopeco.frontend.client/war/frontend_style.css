@@ -8,7 +8,7 @@
 
 .transparent-50 {
 	opacity: 0.5;
-	filter: alpha(opacity =           50);
+	filter: alpha(opacity =             50);
 }
 
 .spc-seperator {
@@ -221,6 +221,7 @@ p {
 	border-right: 1px solid #CCC;
 	background-color: #fafafa;
 	overflow: visible !important;
+	box-shadow: #9AB 0px 3px 8px 0px;
 }
 
 #mainNavigation .tlEntry {
@@ -536,16 +537,16 @@ p {
 #changeSpecPanel #addSpecification {
 	color: #333;
 	opacity: 0.5;
-	filter: alpha(opacity =  
+	filter: alpha(opacity =   
 		                                                         
-		    50);
+		     50);
 }
 
 #changeSpecPanel #addSpecification:hover {
 	opacity: 1;
-	filter: alpha(opacity = 
+	filter: alpha(opacity =  
 		                                                         
-		     100);
+		      100);
 }
 
 #changeSpecPanel #addSpecification>img {
@@ -627,7 +628,8 @@ p {
 	font-weight: bold;
 }
 
-.selectionTreeItemLeaf>.gwt-CheckBox {
+.selectionTreeItemLeaf>.gwt-CheckBox,.selectionTreeItemLeaf>.gwt-RadioButton
+	{
 	float: right;
 	margin: 4px 4px 0 0;
 	line-height: 0;
@@ -696,12 +698,12 @@ p {
 
 .addExperimentNaviItem {
 	opacity: 0.5;
-	filter: alpha(opacity =           50);
+	filter: alpha(opacity =             50);
 }
 
 .addExperimentNaviItem:hover {
 	opacity: 1;
-	filter: alpha(opacity =           100);
+	filter: alpha(opacity =             100);
 }
 
 .addExperimentNaviItem img {

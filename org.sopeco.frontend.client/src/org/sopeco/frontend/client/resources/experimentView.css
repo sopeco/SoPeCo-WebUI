@@ -103,6 +103,7 @@
 /** preperationPanel */
 #expPreperationPanel {
 	padding: 1em;
+	position: relative;
 }
 
 /** ExperimentAssignmentsPanel */
@@ -147,4 +148,33 @@
 
 .parameterAssignmentItem .spc-ComboBox img {
 	padding: 0px 8px;
+}
+
+/** expParameterTree */
+#expParameterTree {
+	position: absolute;
+	left: 0;
+	top: 0;
+	bottom: 0;
+	width: 380px;
+	padding: 10px;
+	background-color: white;
+	margin-left: 1px;
+	box-shadow: 0 0 12px 1px lightSlateGray;
+}
+
+#expParameterTree h3 {
+	margin: 0;
+}
+
+/** EditArea */
+.editArea-configMap {
+	display: block;
+	padding: 2px 10px;
+	margin: 8px 0 8px 16px;
+	border-left: 4px solid #CCC;
+}
+
+.editArea-configMap td .gwt-HTML {
+	margin-right: 16px;
 }

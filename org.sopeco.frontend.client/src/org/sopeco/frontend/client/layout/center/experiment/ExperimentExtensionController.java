@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.logging.Logger;
 
 import org.sopeco.frontend.client.R;
 import org.sopeco.frontend.client.extensions.Extensions;
@@ -11,7 +12,6 @@ import org.sopeco.frontend.client.model.ScenarioManager;
 import org.sopeco.frontend.shared.helper.ExtensionTypes;
 import org.sopeco.frontend.shared.helper.Metering;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.regexp.shared.RegExp;
@@ -24,6 +24,7 @@ import com.google.gwt.user.client.ui.TextBox;
  */
 public class ExperimentExtensionController implements ValueChangeHandler<String> {
 
+	private static final Logger LOGGER = Logger.getLogger(ExperimentExtensionController.class.getName());
 	private static final String VALUE_CHANGED_CSS_CLASS = "valueChanged";
 
 	private ExperimentController parentController;
@@ -83,8 +84,6 @@ public class ExperimentExtensionController implements ValueChangeHandler<String>
 	 *            the extension to set
 	 */
 	public void setExtensionType(ExtensionTypes newExtensionType) {
-		// extensionType = newExtensionType;
-
 		extensionMap = Extensions.get().getExtensions(newExtensionType);
 		updateView();
 	}
@@ -162,10 +161,16 @@ public class ExperimentExtensionController implements ValueChangeHandler<String>
 	 * @return
 	 */
 	private boolean valueIsDefault(String key, String value) {
-		GWT.log("check: " + key + " = " + value + " [" + currentExtensionName + "]");
+		// LOGGER.info("check: " + key + " = " + value + " [" +
+		// currentExtensionName + "]");
 		return extensionMap.get(currentExtensionName).get(key).equals(value);
 	}
 
+	/**
+	 * 
+	 * @param textbox
+	 * @param isHighlighted
+	 */
 	private void setTextboxHighligh(TextBox textbox, boolean isHighlighted) {
 		if (isHighlighted) {
 			textbox.addStyleName(VALUE_CHANGED_CSS_CLASS);
@@ -196,9 +201,11 @@ public class ExperimentExtensionController implements ValueChangeHandler<String>
 		int i = 0;
 		for (String key : keySet) {
 			if (key.equals(name)) {
-				GWT.log("Set Extension to: " + name);
+				LOGGER.info("Set Extension to: " + name);
+
 				currentExtensionName = name;
 				view.getCombobox().setSelectedIndex(i);
+
 				return;
 			}
 			i++;
