@@ -60,10 +60,10 @@ public class EnvironmentView extends CenterPanel {
 	private Image sliderImage;
 	private HTML sliderText, statusText;
 	private RadioButton radioDirectInput, radioFromController;
-	private ListBox mecDropDown;
-	private TextBox mecTextBox;
+//	private ListBox mecDropDown;
+//	private TextBox mecTextBox;
 	private Button checkStatusBtn, getMEButton;
-	private boolean checkAndGet = false;
+//	private boolean checkAndGet = false;
 
 	private ComboBox meControllerCombobox;
 
@@ -250,7 +250,7 @@ public class EnvironmentView extends CenterPanel {
 		radioFromController.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<Boolean> event) {
-				mecTextBox.removeStyleName("invalid");
+//				mecTextBox.removeStyleName("invalid");
 				checkStatusBtn.setEnabled(true);
 			}
 		});
@@ -401,9 +401,9 @@ public class EnvironmentView extends CenterPanel {
 	// });
 	// }
 
-	public void addMEControllerUrl(String url) {
-		mecDropDown.addItem(url);
-		mecDropDown.setEnabled(true);
-		radioFromController.setEnabled(true);
-	}
+//	public void addMEControllerUrl(String url) {
+//		mecDropDown.addItem(url);
+//		mecDropDown.setEnabled(true);
+//		radioFromController.setEnabled(true);
+//	}
 }

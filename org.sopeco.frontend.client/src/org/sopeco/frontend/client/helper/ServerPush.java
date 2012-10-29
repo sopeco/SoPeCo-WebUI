@@ -70,9 +70,9 @@ public class ServerPush {
 			Notification.show(message);
 			break;
 		case NEW_MEC_AVAILABLE:
-			EnvironmentView envPanel = (EnvironmentView) MainLayoutPanel.get()
-					.getCenterController(CenterType.Environment).getView();
-			envPanel.addMEControllerUrl(pushPackage.getPiggyback());
+//			EnvironmentView envPanel = (EnvironmentView) MainLayoutPanel.get()
+//					.getCenterController(CenterType.Environment).getView();
+//			envPanel.addMEControllerUrl(pushPackage.getPiggyback());
 			break;
 		case NEW_ENV_DEFINITION:
 			EnvironmentView envPanel2 = (EnvironmentView) MainLayoutPanel.get()

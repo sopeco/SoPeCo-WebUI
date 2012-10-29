@@ -129,7 +129,6 @@ public final class ScenarioManager {
 		});
 	}
 
-
 	/**
 	 * Returns the scenario definition of the current scenario builder.
 	 * 
@@ -178,10 +177,11 @@ public final class ScenarioManager {
 				}
 
 				builder = ScenarioDefinitionBuilder.load(result);
-//				workingSpecification = builder.getBuiltScenario().getMeasurementSpecifications().get(0).getName();
+				// workingSpecification =
+				// builder.getBuiltScenario().getMeasurementSpecifications().get(0).getName();
 				String newSpecification = builder.getBuiltScenario().getMeasurementSpecifications().get(0).getName();
 				specification().setWorkingSpecification(newSpecification);
-				
+
 				EventControl.get().fireEvent(new ScenarioLoadedEvent());
 				EventControl.get().fireEvent(new SpecificationChangedEvent(newSpecification));
 				EventControl.get().fireEvent(new EnvironmentDefinitionChangedEvent());

@@ -63,7 +63,7 @@ public final class R {
 						public void onResponseReceived(Request req, Response resp) {
 							String content = resp.getText();
 
-							for (String row : content.split(LINESEPERATOR)) {								
+							for (String row : content.split(LINESEPERATOR)) {
 								if (row.isEmpty()) {
 									continue;
 								}

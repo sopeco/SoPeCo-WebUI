@@ -10,19 +10,13 @@ import org.sopeco.frontend.client.extensions.Extensions;
 import org.sopeco.frontend.client.model.ScenarioManager;
 import org.sopeco.frontend.client.widget.ComboBox;
 import org.sopeco.frontend.shared.helper.ExtensionTypes;
-import org.sopeco.frontend.shared.helper.Metering;
 import org.sopeco.persistence.entities.definition.ConstantValueAssignment;
 import org.sopeco.persistence.entities.definition.DynamicValueAssignment;
 import org.sopeco.persistence.entities.definition.ParameterValueAssignment;
 
-import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.TextBox;
 
 /**
  * 
@@ -31,16 +25,15 @@ import com.google.gwt.user.client.ui.TextBox;
  */
 public class ExperimentAssignmentItem extends AssignmentItem implements ValueChangeHandler<String> {
 
-	private static final String EA_CONFIG_MAP_CSS_CLASS = "editArea-configMap";
+	private static final String EXT_BOOLEAN_VARIATION = "Boolean Variation";
 	private static final String CONSTANT_VARIATION = "Constant Variation";
 
 	private ComboBox combobox;
-	private Set<String> variationSet;
-	private FlowPanel editArea;
+	private String currentVariationName;
 
 	private static Map<String, String[]> allowedExtension;
 
-	private Map<String, TextBox> configTextboxes;
+	private ParameterPanel parameterPanel;
 
 	public ExperimentAssignmentItem(ParameterValueAssignment valueAssignment) {
 		super(valueAssignment);
@@ -51,8 +44,6 @@ public class ExperimentAssignmentItem extends AssignmentItem implements ValueCha
 	@Override
 	protected void initValueArea() {
 		combobox = new ComboBox();
-		editArea = new FlowPanel();
-		configTextboxes = new HashMap<String, TextBox>();
 
 		combobox.setEditable(false);
 		combobox.addValueChangeHandler(this);
@@ -60,7 +51,25 @@ public class ExperimentAssignmentItem extends AssignmentItem implements ValueCha
 
 		add(combobox);
 
-		updateEditArea();
+		setParameterPanel();
+	}
+
+	private void setParameterPanel() {
+		if (parameterPanel != null && parameterPanel.isAttached()) {
+			parameterPanel.removeFromParent();
+		}
+
+		if (assignment instanceof DynamicValueAssignment) {
+			if (currentVariationName.equals(EXT_BOOLEAN_VARIATION)) {
+				parameterPanel = new EmptyParameterPanel(this);
+			} else {
+				parameterPanel = new KVParameterPanel(this, ((DynamicValueAssignment) assignment).getConfiguration());
+			}
+		} else {
+			parameterPanel = new ConstantParameterPanel(this, ((ConstantValueAssignment) assignment).getValue());
+		}
+
+		add(parameterPanel);
 	}
 
 	@Override
@@ -72,9 +81,7 @@ public class ExperimentAssignmentItem extends AssignmentItem implements ValueCha
 	 * Adds the values to the combobox.
 	 */
 	private void initCombobox() {
-		variationSet = new TreeSet<String>();
-
-		// variationSet.add(R.get("constantValue"));
+		Set<String> variationSet = new TreeSet<String>();
 
 		Set<String> keySetVar = new TreeSet<String>(Extensions.get().getExtensions(ExtensionTypes.PARAMETERVARIATION)
 				.keySet());
@@ -91,9 +98,11 @@ public class ExperimentAssignmentItem extends AssignmentItem implements ValueCha
 		for (String key : variationSet) {
 			if (isExtentionAllowed(key)) {
 				combobox.addItem(key);
-				if (assignment instanceof DynamicValueAssignment
-						&& key.equals(((DynamicValueAssignment) assignment).getName())) {
+				if ((assignment instanceof DynamicValueAssignment && key.equals(((DynamicValueAssignment) assignment)
+						.getName()))
+						|| (assignment instanceof ConstantValueAssignment && key.equals(CONSTANT_VARIATION))) {
 					combobox.setSelectedIndex(counter);
+					currentVariationName = key;
 				}
 				counter++;
 			}
@@ -102,7 +111,11 @@ public class ExperimentAssignmentItem extends AssignmentItem implements ValueCha
 
 	@Override
 	public void onValueChange(ValueChangeEvent<String> event) {
-		updateEditArea();
+		currentVariationName = event.getValue();
+
+		storeNewAssignment(event.getValue());
+
+		setParameterPanel();
 	}
 
 	/**
@@ -139,79 +152,41 @@ public class ExperimentAssignmentItem extends AssignmentItem implements ValueCha
 		allowedExtension.put("CSV", new String[] { "STRING", "INTEGER", "DOUBLE" });
 	}
 
-	/**
-	 * 
-	 */
-	private void updateEditArea() {
-		double metering = Metering.start();
-		if (editArea.isAttached()) {
-			editArea.removeFromParent();
-		}
-		editArea.clear();
-		editArea.setStyleName("");
-
-		// build
-		editAreaConfigMap();
-
-		add(editArea);
-		Metering.stop(metering);
-	}
-
-	/**
-	 * 
-	 */
-	private void editAreaConfigMap() {
-		Map<String, String> configMap = Extensions.get().getExtensions(ExtensionTypes.PARAMETERVARIATION)
-				.get(combobox.getText());
-
-		if (configMap.isEmpty()) {
-			return;
-		}
-
-		FlexTable configTable = new FlexTable();
-
-		int i = 0;
-		for (String key : configMap.keySet()) {
-			TextBox valueBox = new TextBox();
-			valueBox.setText(configMap.get(key));
-			valueBox.addValueChangeHandler(new ValueChangeHandler<String>() {
-				@Override
-				public void onValueChange(ValueChangeEvent<String> event) {
-					storeAssignment();
-				}
-			});
-
-			configTextboxes.put(key, valueBox);
-			configTable.setWidget(i, 0, new HTML(key));
-			configTable.setWidget(i, 1, valueBox);
-			i++;
-		}
-
-		editArea.addStyleName(EA_CONFIG_MAP_CSS_CLASS);
-		editArea.getElement().getStyle().setDisplay(Display.BLOCK);
-
-		editArea.add(configTable);
+	private ParameterValueAssignment getConstantValueAssignment() {
+		ConstantValueAssignment cva = new ConstantValueAssignment();
+		cva.setParameter(assignment.getParameter());
+		cva.setValue(parameterPanel.getValue());
+		return cva;
 	}
 
 	/**
 	 * 
 	 * @return
 	 */
-	private Map<String, String> getConfigurtion() {
-		Map<String, String> returnMap = new HashMap<String, String>();
+	private DynamicValueAssignment getDynamicValueAssignment() {
+		DynamicValueAssignment dva = new DynamicValueAssignment();
 
-		for (String key : configTextboxes.keySet()) {
-			returnMap.put(key, configTextboxes.get(key).getText());
-		}
+		dva.setName(currentVariationName);
+		dva.setParameter(assignment.getParameter());
+		dva.getConfiguration().clear();
+		dva.getConfiguration().putAll(parameterPanel.getConfig());
 
-		return returnMap;
+		return dva;
 	}
 
 	private ParameterValueAssignment getValueAssignment() {
-		if (combobox.getText().equals(CONSTANT_VARIATION)) {
+		if (currentVariationName.equals(CONSTANT_VARIATION)) {
+			return getConstantValueAssignment();
+		} else {
+			return getDynamicValueAssignment();
+		}
+	}
+
+	private ParameterValueAssignment createValueAssignment(String variationName) {
+		if (variationName.equals(CONSTANT_VARIATION)) {
 			return createConstantValueAssignment();
 		} else {
-			return createDynamicValueAssignment();
+			return createDynamicValueAssignment(variationName);
 		}
 	}
 
@@ -219,12 +194,13 @@ public class ExperimentAssignmentItem extends AssignmentItem implements ValueCha
 	 * 
 	 * @return
 	 */
-	private DynamicValueAssignment createDynamicValueAssignment() {
+	private DynamicValueAssignment createDynamicValueAssignment(String variationName) {
 		DynamicValueAssignment dva = new DynamicValueAssignment();
 
-		dva.setName(combobox.getText());
-		dva.getConfiguration().putAll(getConfigurtion());
+		dva.setName(variationName);
 		dva.setParameter(assignment.getParameter());
+		dva.getConfiguration().putAll(
+				Extensions.get().getExtensions(ExtensionTypes.PARAMETERVARIATION).get(variationName));
 
 		return dva;
 	}
@@ -236,7 +212,6 @@ public class ExperimentAssignmentItem extends AssignmentItem implements ValueCha
 	private ParameterValueAssignment createConstantValueAssignment() {
 		ConstantValueAssignment cva = new ConstantValueAssignment();
 		cva.setParameter(assignment.getParameter());
-		// TODO value
 		cva.setValue("");
 		return cva;
 	}
@@ -244,7 +219,13 @@ public class ExperimentAssignmentItem extends AssignmentItem implements ValueCha
 	/**
 	 * Saves the current config of this ExperimentAssignment.
 	 */
-	private void storeAssignment() {
+	private void storeNewAssignment(String variationName) {
+		ParameterValueAssignment newValueAssignment = createValueAssignment(variationName);
+		ScenarioManager.get().experiment().setExperimentAssignment(newValueAssignment);
+		assignment = newValueAssignment;
+	}
+
+	public void storeAssignment() {
 		ScenarioManager.get().experiment().setExperimentAssignment(getValueAssignment());
 	}
 }

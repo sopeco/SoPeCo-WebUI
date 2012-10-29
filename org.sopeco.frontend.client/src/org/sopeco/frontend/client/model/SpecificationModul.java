@@ -50,7 +50,7 @@ public class SpecificationModul {
 		MeasurementSpecificationBuilder specificationBuilder = new MeasurementSpecificationBuilder(specification);
 		manager.getBuilder().setSpecificationBuilder(specificationBuilder);
 	}
-	
+
 	/**
 	 * Return the name of the current selected specification.
 	 * 
@@ -61,11 +61,11 @@ public class SpecificationModul {
 	}
 
 	/**
-	 * @param newSpecification the workingSpecification to set
+	 * @param newSpecification
+	 *            the workingSpecification to set
 	 */
 	public void setWorkingSpecification(String newSpecification) {
 		this.workingSpecification = newSpecification;
 	}
-	
-	
+
 }

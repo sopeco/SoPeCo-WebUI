@@ -30,7 +30,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 public class AddDBDialog extends DialogBox {
 
 	private LoginBox parentPanel;
-	
+
 	private DatabaseManagerRPCAsync dbManagerRPC;
 	private TextBox textboxDbName, textboxHost, textboxPort, textboxPasswd;
 	private Button btnAdd;
@@ -39,7 +39,7 @@ public class AddDBDialog extends DialogBox {
 		super(false, true);
 
 		this.parentPanel = parentPanel;
-		
+
 		initializeGui();
 
 		dbManagerRPC = GWT.create(DatabaseManagerRPC.class);
@@ -73,7 +73,7 @@ public class AddDBDialog extends DialogBox {
 		grid.setWidget(1, 0, lblHost);
 
 		textboxHost = new TextBox();
-		textboxHost.setText( SystemDetails.getMetaDatabaseHost() );
+		textboxHost.setText(SystemDetails.getMetaDatabaseHost());
 		grid.setWidget(1, 1, textboxHost);
 
 		Label lblPort = new Label("Port");
@@ -86,8 +86,7 @@ public class AddDBDialog extends DialogBox {
 
 		Label lblPassword = new Label("Password");
 		grid.setWidget(3, 0, lblPassword);
-		grid.getCellFormatter().setVerticalAlignment(3, 1,
-				HasVerticalAlignment.ALIGN_MIDDLE);
+		grid.getCellFormatter().setVerticalAlignment(3, 1, HasVerticalAlignment.ALIGN_MIDDLE);
 
 		textboxPasswd = new TextBox();
 		grid.setWidget(3, 1, textboxPasswd);
@@ -115,8 +114,7 @@ public class AddDBDialog extends DialogBox {
 		});
 		btnCancel.setWidth("150px");
 
-		for (TextBox tb : new TextBox[] { textboxDbName, textboxHost,
-				textboxPort, textboxPasswd }) {
+		for (TextBox tb : new TextBox[] { textboxDbName, textboxHost, textboxPort, textboxPasswd }) {
 			TextfieldHandler tfHandler = new TextfieldHandler();
 			tb.addChangeHandler(tfHandler);
 			tb.addKeyUpHandler(tfHandler);
@@ -140,15 +138,15 @@ public class AddDBDialog extends DialogBox {
 		newDb.setHost(textboxHost.getText());
 		newDb.setPort(textboxPort.getText());
 		String passwd;
-		
-		if ( textboxPasswd.getText().isEmpty() ) {
+
+		if (textboxPasswd.getText().isEmpty()) {
 			newDb.setProtectedByPassword(false);
 			passwd = "";
 		} else {
 			newDb.setProtectedByPassword(true);
 			passwd = textboxPasswd.getText();
 		}
-		
+
 		Loader.showLoader();
 
 		dbManagerRPC.addDatabase(newDb, passwd, new AsyncCallback<Boolean>() {

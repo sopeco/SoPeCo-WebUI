@@ -34,8 +34,7 @@ public class Confirmation extends DialogBox {
 	/*
 	 * show a confirm dialog with the committed handler
 	 */
-	public static void confirm(String message, ClickHandler onConfirm,
-			ClickHandler onCancel) {
+	public static void confirm(String message, ClickHandler onConfirm, ClickHandler onCancel) {
 		Confirmation conf = new Confirmation(message, onConfirm, onCancel);
 
 		if (currentConfirmDialog == null) {
@@ -54,7 +53,7 @@ public class Confirmation extends DialogBox {
 			@Override
 			public void onClick(ClickEvent event) {
 				GWT.log("hide confirmation dialog");
-				
+
 				currentConfirmDialog.hide();
 
 				if (queue.isEmpty()) {
@@ -71,14 +70,13 @@ public class Confirmation extends DialogBox {
 	/*
 	 * create a confirm dialog
 	 */
-	private Confirmation(String message, ClickHandler onConfirm,
-			ClickHandler onCancel) {
+	private Confirmation(String message, ClickHandler onConfirm, ClickHandler onCancel) {
 		super(false, true);
 
 		initialize();
 
 		lblText.setHTML(message);
-		
+
 		btnConfirm.addClickHandler(onConfirm);
 		btnConfirm.addClickHandler(getDefaultCloseHandler());
 

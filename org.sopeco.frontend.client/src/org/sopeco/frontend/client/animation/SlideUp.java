@@ -5,7 +5,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * 
  * @author Marius Oehler
- *
+ * 
  */
 public final class SlideUp extends SuperAnimation {
 
@@ -25,7 +25,7 @@ public final class SlideUp extends SuperAnimation {
 	public static void start(Widget w) {
 		start(w, null, DEFAULT);
 	}
-	
+
 	public static void start(Widget w, ICompleteHandler cHandler) {
 		start(w, cHandler, DEFAULT);
 	}
@@ -35,11 +35,11 @@ public final class SlideUp extends SuperAnimation {
 		ani.setCompleteHandler(cHandler);
 		ani.run(duration);
 	}
-	
+
 	@Override
 	protected void onComplete() {
 		onUpdate(interpolate(1.0));
-		
+
 		executeCompleteHandler();
 	}
 }

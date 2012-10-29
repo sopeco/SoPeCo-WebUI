@@ -78,7 +78,7 @@ public class EnvironmentDefinitonTreePanel extends FlowPanel {
 
 	private void addPNS(ParameterNamespace namespace, EnvironmentTreeItem nsTItem) {
 		double metering = Metering.start();
-		
+
 		for (ParameterNamespace pns : namespace.getChildren()) {
 			EnvironmentTreeItem treeItem = new EnvironmentTreeItem(pns.getName());
 
@@ -95,7 +95,7 @@ public class EnvironmentDefinitonTreePanel extends FlowPanel {
 
 			nsTItem.addItem(treeItem);
 		}
-		
+
 		Metering.stop(metering);
 	}
 

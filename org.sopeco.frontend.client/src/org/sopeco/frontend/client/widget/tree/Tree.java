@@ -7,7 +7,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 /**
  * 
  * @author Marius Oehler
- *
+ * 
  */
 public class Tree extends FlowPanel {
 
@@ -20,7 +20,7 @@ public class Tree extends FlowPanel {
 
 	public void setRoot(TreeItem item) {
 		clear();
-		
+
 		rootItem = item;
 
 		add(rootItem);

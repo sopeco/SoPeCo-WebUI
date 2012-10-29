@@ -74,7 +74,7 @@ public final class MainLayoutPanel extends DockLayoutPanel implements ValueChang
 		// History.addValueChangeHandler(this);
 		// History.fireCurrentHistoryState();
 
-//		centerScrollPanel = new ScrollPanel();
+		// centerScrollPanel = new ScrollPanel();
 		currentCenterPanel = DEFAULT_CENTER_TYPE;
 
 		addNorth(getNorthPanel(), Float.parseFloat(NorthPanel.PANEL_HEIGHT));

@@ -27,10 +27,9 @@ public class ExperimentController implements ICenterController {
 	private static final Logger LOGGER = Logger.getLogger(ExperimentController.class.getName());
 
 	private ExperimentView view;
-	private ExperimentExtensionController /* terminationExtController, */explorationExtController;
-	// private PreperationAssignmentController preperationAssignmentController;
-	// private ExperimentAssignmentController experimentAssignmentController;
+	private ExperimentExtensionController explorationExtController;
 	private ParameterTreeController treeController;
+	private TerminationController terminationController;
 
 	private AssignmentController assignmentPreperation, assignmentExperiment;
 
@@ -38,18 +37,17 @@ public class ExperimentController implements ICenterController {
 		FrontEndResources.loadExperimentCSS();
 
 		explorationExtController = new ExperimentExtensionController(this, ExperimentView.EXP_SETTINGS_PANEL_WIDTH);
-		// preperationAssignmentController = new
-		// PreperationAssignmentController();
-		// experimentAssignmentController = new
-		// ExperimentAssignmentController();
 
 		assignmentPreperation = new AssignmentController(Type.PREPERATION);
 		assignmentExperiment = new AssignmentController(Type.EXPERIMENT);
+
+		terminationController = new TerminationController();
 
 		view = new ExperimentView();
 		treeController = new ParameterTreeController();
 
 		view.getSettingsView().addExtensionView(explorationExtController.getView());
+		view.getSettingsView().add(terminationController.getView());
 
 		view.getParameterView().add(assignmentPreperation.getView());
 		view.getParameterView().add(assignmentExperiment.getView());

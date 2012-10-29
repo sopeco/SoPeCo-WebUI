@@ -171,10 +171,40 @@
 .editArea-configMap {
 	display: block;
 	padding: 2px 10px;
-	margin: 8px 0 8px 16px;
+	margin: 2px 0 2px 16px;
 	border-left: 4px solid #CCC;
 }
 
 .editArea-configMap td .gwt-HTML {
-	margin-right: 16px;
+	margin-right: 32px;
+}
+
+/** terminationView */
+#terminationView {
+	border-top: 2px solid #CCC;
+	margin-top: 1em;
+	padding: 1em;
+}
+
+#terminationView h3 {
+	margin: 0
+}
+
+#terminationView>div {
+	border-bottom: 1px dashed #ccc;
+	padding: 6px 0;
+}
+
+#terminationView .gwt-HTML {
+	display: inline-block;
+	color: #333;
+}
+
+#terminationView table {
+	width: 100%;
+}
+
+#terminationView .gwt-TextBox {
+	float: right;
+	padding: 2px 4px;
 }

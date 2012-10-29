@@ -29,7 +29,7 @@ public class SelectionView extends ScrollPanel {
 	 */
 	private void initialize() {
 		wrapper = new FlowPanel();
-		
+
 		wrapper.getElement().setId(SELECTION_PANEL_ID);
 		getElement().setId(SELECTION_PANEL_WRAPPER_ID);
 

@@ -174,7 +174,7 @@ public class EParameterTreeItem extends EnvironmentTreeItem {
 			@Override
 			public void onSuccess(Boolean result) {
 				remove();
-				
+
 				Loader.hideIcon();
 			}
 		});
@@ -198,20 +198,21 @@ public class EParameterTreeItem extends EnvironmentTreeItem {
 	private void updateParameter(String oldName, String newName) {
 		String path = parentItem.getPath();
 
-//		Loader.showIcon();
+		// Loader.showIcon();
 		ScenarioManager.get().updateParameter(path, oldName, newName, type, role);
-//		RPC.getMEControllerRPC().updateParameter(path, oldName, newName, type, role, new AsyncCallback<Boolean>() {
-//			@Override
-//			public void onSuccess(Boolean result) {
-//				Loader.hideIcon();
-//			}
-//
-//			@Override
-//			public void onFailure(Throwable caught) {
-//				Message.error(caught.getMessage());
-//
-//				Loader.hideIcon();
-//			}
-//		});
+		// RPC.getMEControllerRPC().updateParameter(path, oldName, newName,
+		// type, role, new AsyncCallback<Boolean>() {
+		// @Override
+		// public void onSuccess(Boolean result) {
+		// Loader.hideIcon();
+		// }
+		//
+		// @Override
+		// public void onFailure(Throwable caught) {
+		// Message.error(caught.getMessage());
+		//
+		// Loader.hideIcon();
+		// }
+		// });
 	}
 }

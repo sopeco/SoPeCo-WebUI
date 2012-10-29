@@ -45,7 +45,7 @@ public class SelectionController {
 
 	private void generateTree() {
 		double metering = Metering.start();
-		
+
 		ParameterNamespace root = ScenarioManager.get().getBuilder().getMEDefinition().getRoot();
 
 		TreeItem rootItem = new TreeItem(root.getName());

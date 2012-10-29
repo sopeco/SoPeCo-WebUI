@@ -197,7 +197,7 @@ public class EnvironmentController implements ICenterController, ClickHandler, V
 					public void onSuccess(MeasurementEnvironmentDefinition result) {
 						currentMeasurementEnvironment = result;
 						view.getEnvironmentDefinitonTreePanel().setEnvironmentDefiniton(result);
-//TODO
+						// TODO
 						Loader.hideLoader();
 					}
 				});

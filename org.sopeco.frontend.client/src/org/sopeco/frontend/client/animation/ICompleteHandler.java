@@ -1,6 +1,5 @@
 package org.sopeco.frontend.client.animation;
 
-
 /**
  * 
  * @author Marius Oehler
