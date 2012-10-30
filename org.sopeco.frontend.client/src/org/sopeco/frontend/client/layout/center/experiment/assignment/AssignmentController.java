@@ -1,6 +1,7 @@
 package org.sopeco.frontend.client.layout.center.experiment.assignment;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -175,8 +176,10 @@ public class AssignmentController {
 			}
 		}
 
-		for (ParameterValueAssignment pva : sortedMap.values()) {
-			addAssignment(pva);
+		Iterator<ParameterValueAssignment> iter = sortedMap.values().iterator();
+		while (iter.hasNext()) {
+			ParameterValueAssignment pva = iter.next();
+			addAssignment(pva, !iter.hasNext());
 		}
 	}
 
@@ -186,6 +189,10 @@ public class AssignmentController {
 	 * @param value
 	 */
 	public void addAssignment(ParameterValueAssignment valueAssignment) {
+		addAssignment(valueAssignment, true);
+	}
+
+	public void addAssignment(ParameterValueAssignment valueAssignment, boolean onLoadEvent) {
 		AssignmentItem item;
 
 		if (assignmentType == Type.EXPERIMENT) {
@@ -194,6 +201,8 @@ public class AssignmentController {
 			item = new PreperationAssignmentItem(valueAssignment);
 		}
 
+		item.setFireOnLoadEvent(onLoadEvent);
+		
 		assignmentItems.add(item);
 
 		namespacePropertyAligner.addElement(item.getHtmlNamespace().getElement());

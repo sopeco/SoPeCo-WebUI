@@ -21,6 +21,8 @@ public abstract class AssignmentItem extends FlowPanel {
 
 	private HTML htmlNamespace, htmlName, htmlType;
 
+	private boolean fireOnLoadEvent = true;
+
 	public AssignmentItem(ParameterValueAssignment valueAssignment) {
 		assignment = valueAssignment;
 
@@ -49,6 +51,14 @@ public abstract class AssignmentItem extends FlowPanel {
 	}
 
 	/**
+	 * @param fireOnLoadEvent
+	 *            the fireOnLoadEvent to set
+	 */
+	public void setFireOnLoadEvent(boolean fireOnLoadEvent) {
+		this.fireOnLoadEvent = fireOnLoadEvent;
+	}
+
+	/**
 	 * Initialization of the area where the user can edit the values.
 	 */
 	protected abstract void initValueArea();
@@ -64,12 +74,14 @@ public abstract class AssignmentItem extends FlowPanel {
 	protected void onLoad() {
 		super.onLoad();
 
-		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-			@Override
-			public void execute() {
-				EventControl.get().fireEvent(getOnLoadEvent());
-			}
-		});
+		if (fireOnLoadEvent) {
+			Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+				@Override
+				public void execute() {
+					EventControl.get().fireEvent(getOnLoadEvent());
+				}
+			});
+		}
 	}
 
 	/**
