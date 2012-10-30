@@ -7,14 +7,22 @@ import org.sopeco.frontend.client.R;
 import org.sopeco.frontend.client.event.EventControl;
 import org.sopeco.frontend.client.event.ExperimentChangedEvent;
 import org.sopeco.frontend.client.event.handler.ExperimentChangedEventHandler;
+import org.sopeco.frontend.client.layout.MainLayoutPanel;
+import org.sopeco.frontend.client.layout.center.CenterType;
 import org.sopeco.frontend.client.layout.center.ICenterController;
 import org.sopeco.frontend.client.layout.center.experiment.assignment.AssignmentController;
 import org.sopeco.frontend.client.layout.center.experiment.assignment.AssignmentController.Type;
+import org.sopeco.frontend.client.layout.popups.Confirmation;
 import org.sopeco.frontend.client.model.ScenarioManager;
 import org.sopeco.frontend.client.resources.FrontEndResources;
 import org.sopeco.frontend.shared.helper.ExtensionTypes;
 import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -22,7 +30,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Marius Oehler
  * 
  */
-public class ExperimentController implements ICenterController {
+public class ExperimentController implements ICenterController, ValueChangeHandler<String>, ClickHandler {
 
 	private static final Logger LOGGER = Logger.getLogger(ExperimentController.class.getName());
 
@@ -57,7 +65,29 @@ public class ExperimentController implements ICenterController {
 
 		explorationExtController.setExtensionType(ExtensionTypes.EXPLORATIONSTRATEGY);
 
+		view.getSettingsView().getTextboxName().addValueChangeHandler(this);
+		view.getSettingsView().getRemoveExperimentImage().addClickHandler(this);
+
 		registerEventHandlers();
+	}
+
+	@Override
+	public void onClick(ClickEvent event) {
+		Confirmation.confirm(R.get("removeTihsExp"), new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				ScenarioManager.get().experiment().removeCurrentExperimentSeries();
+
+				MainLayoutPanel.get().updateCenterPanel(CenterType.Specification);
+			}
+		});
+	}
+
+	@Override
+	public void onValueChange(ValueChangeEvent<String> event) {
+		if (event.getSource() == view.getSettingsView().getTextboxName()) {
+			ScenarioManager.get().experiment().renameCurrentExpSeries(event.getValue());
+		}
 	}
 
 	/**

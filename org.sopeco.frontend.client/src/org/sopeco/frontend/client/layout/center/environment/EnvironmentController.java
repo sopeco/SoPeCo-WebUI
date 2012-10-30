@@ -6,10 +6,13 @@ import org.sopeco.frontend.client.R;
 import org.sopeco.frontend.client.animation.ICompleteHandler;
 import org.sopeco.frontend.client.animation.SlideDown;
 import org.sopeco.frontend.client.animation.SlideUp;
+import org.sopeco.frontend.client.event.EnvironmentDefinitionChangedEvent;
+import org.sopeco.frontend.client.event.EventControl;
 import org.sopeco.frontend.client.layout.center.ICenterController;
 import org.sopeco.frontend.client.layout.center.environment.EnvironmentView.ControllerStatus;
 import org.sopeco.frontend.client.layout.popups.Loader;
 import org.sopeco.frontend.client.layout.popups.Message;
+import org.sopeco.frontend.client.model.ScenarioManager;
 import org.sopeco.frontend.client.rpc.MEControllerRPC;
 import org.sopeco.frontend.client.rpc.RPC;
 import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
@@ -197,6 +200,9 @@ public class EnvironmentController implements ICenterController, ClickHandler, V
 					public void onSuccess(MeasurementEnvironmentDefinition result) {
 						currentMeasurementEnvironment = result;
 						view.getEnvironmentDefinitonTreePanel().setEnvironmentDefiniton(result);
+						
+						ScenarioManager.get().setMeasurementDefinition(result);
+						
 						// TODO
 						Loader.hideLoader();
 					}

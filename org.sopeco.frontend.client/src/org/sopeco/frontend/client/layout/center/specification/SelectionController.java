@@ -1,7 +1,9 @@
 package org.sopeco.frontend.client.layout.center.specification;
 
+import org.sopeco.frontend.client.event.EnvironmentDefinitionChangedEvent;
 import org.sopeco.frontend.client.event.EventControl;
 import org.sopeco.frontend.client.event.SpecificationChangedEvent;
+import org.sopeco.frontend.client.event.handler.EnvironmentDefinitionChangedEventHandler;
 import org.sopeco.frontend.client.event.handler.SpecificationChangedEventHandler;
 import org.sopeco.frontend.client.model.ScenarioManager;
 import org.sopeco.frontend.client.widget.tree.TreeItem;
@@ -37,11 +39,15 @@ public class SelectionController {
 				generateTree();
 			}
 		});
-	}
 
-	// public void updateTree() {
-	// generateTree();
-	// }
+		EventControl.get().addHandler(EnvironmentDefinitionChangedEvent.TYPE,
+				new EnvironmentDefinitionChangedEventHandler() {
+					@Override
+					public void onEnvironmentChangedEvent(EnvironmentDefinitionChangedEvent event) {
+						generateTree();
+					}
+				});
+	}
 
 	private void generateTree() {
 		double metering = Metering.start();

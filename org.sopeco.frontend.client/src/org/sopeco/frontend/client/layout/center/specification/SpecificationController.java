@@ -130,15 +130,15 @@ public class SpecificationController implements ICenterController {
 	 * 
 	 */
 	private void addToggleSelectionPanelClickHandler() {
-		view.getToggleSelectionElement().addClickHandler(new ClickHandler() {
+		assignmentController.getEditIamge().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				if (view.isSelectionPanelVisible()) {
 					view.setSelectionPanelVisible(false);
-					view.setToggleSelectionElementText(R.get("showEnvParameter"));
+				//	view.setToggleSelectionElementText(R.get("showEnvParameter"));
 				} else {
 					view.setSelectionPanelVisible(true);
-					view.setToggleSelectionElementText(R.get("hideEnvParameter"));
+					//view.setToggleSelectionElementText(R.get("hideEnvParameter"));
 				}
 			}
 		});

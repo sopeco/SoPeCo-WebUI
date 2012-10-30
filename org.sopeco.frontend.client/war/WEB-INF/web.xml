@@ -92,4 +92,15 @@
 		<url-pattern>/sopeco_frontend/extensionRPC</url-pattern>
 	</servlet-mapping>
 	
+	<!-- HttpServlet for FileExport -->
+	<servlet>
+		<servlet-name>exportServlet</servlet-name>
+		<servlet-class>org.sopeco.frontend.server.export.ExportServlet
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>exportServlet</servlet-name>
+		<url-pattern>/sopeco_frontend/export</url-pattern>
+	</servlet-mapping>
+	
 </web-app>

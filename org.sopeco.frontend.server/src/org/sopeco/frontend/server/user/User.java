@@ -7,6 +7,8 @@ import org.sopeco.frontend.shared.builder.MeasurementSpecificationBuilder;
 import org.sopeco.frontend.shared.builder.ScenarioDefinitionBuilder;
 import org.sopeco.persistence.IPersistenceProvider;
 import org.sopeco.persistence.entities.definition.MeasurementSpecification;
+import org.sopeco.persistence.entities.definition.ScenarioDefinition;
+import org.sopeco.persistence.exceptions.DataNotFoundException;
 
 /**
  * 
@@ -90,6 +92,18 @@ public class User {
 
 	public void storeCurrentScenarioDefinition() {
 		LOGGER.info("store current ScenarioDefinition");
-		currentPersistenceProvider.store(currentScenarioDefinitionBuilder.getBuiltScenario());
+		
+		ScenarioDefinition test2 = currentScenarioDefinitionBuilder.getBuiltScenario();
+		
+		currentPersistenceProvider.store(test2);
+
+		try {
+			ScenarioDefinition test = currentPersistenceProvider.loadScenarioDefinition(test2.getScenarioName());
+
+			System.out.println("");
+		} catch (DataNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

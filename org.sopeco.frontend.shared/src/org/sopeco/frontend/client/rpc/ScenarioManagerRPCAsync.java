@@ -28,4 +28,5 @@ public interface ScenarioManagerRPCAsync {
 
 	void storeScenarioDefinition(ScenarioDefinition definition, AsyncCallback<Boolean> callback);
 
+	void getScenarioAsXML(AsyncCallback<String> callback);
 }

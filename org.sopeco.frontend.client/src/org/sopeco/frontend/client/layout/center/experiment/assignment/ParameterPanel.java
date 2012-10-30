@@ -13,6 +13,7 @@ import com.google.gwt.user.client.ui.HTML;
  */
 public abstract class ParameterPanel extends FlowPanel {
 
+	protected static final String EDITABLE_TEXT_CSS_CLASS = "editableText";
 	protected static final String EA_CONFIG_MAP_CSS_CLASS = "editArea-configMap";
 	public static final double VALUE_HTML_HEIGHT = 1.3;
 
@@ -28,7 +29,6 @@ public abstract class ParameterPanel extends FlowPanel {
 
 	protected void emptyValueHTML(HTML htmlElement) {
 		if (htmlElement.getText().isEmpty()) {
-			htmlElement.getElement().getStyle().setBackgroundColor("#e2e8ea");
 			htmlElement.getElement().getStyle().setWidth(2, Unit.EM);
 			htmlElement.getElement().getStyle().setHeight(VALUE_HTML_HEIGHT, Unit.EM);
 		} else {

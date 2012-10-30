@@ -2,11 +2,13 @@ package org.sopeco.frontend.client.layout.center.experiment;
 
 import org.sopeco.frontend.client.R;
 
+import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.TextBox;
 
 /**
@@ -24,6 +26,8 @@ public class ExperimentSettingsView extends FlowPanel {
 	private HorizontalPanel hPanelName;
 	private TextBox textboxName;
 
+	private Image removeExperimentImage;
+	
 	public ExperimentSettingsView() {
 		initialize();
 	}
@@ -35,11 +39,16 @@ public class ExperimentSettingsView extends FlowPanel {
 		hPanelName = new HorizontalPanel();
 		htmlName = new HTML(R.get("name"));
 		textboxName = new TextBox();
-
+		removeExperimentImage = new Image("images/trash.png");
+		
+		removeExperimentImage.getElement().getStyle().setCursor(Cursor.POINTER);
+		removeExperimentImage.setTitle(R.get("removeExpSeries"));
+		
 		hPanelName.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
 
 		hPanelName.add(htmlName);
 		hPanelName.add(textboxName);
+		hPanelName.add(removeExperimentImage);
 
 		add(hPanelName);
 
@@ -68,4 +77,12 @@ public class ExperimentSettingsView extends FlowPanel {
 	public TextBox getTextboxName() {
 		return textboxName;
 	}
+
+	/**
+	 * @return the removeExperimentImage
+	 */
+	public Image getRemoveExperimentImage() {
+		return removeExperimentImage;
+	}
+
 }

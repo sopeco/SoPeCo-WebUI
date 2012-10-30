@@ -66,6 +66,7 @@ public class KVParameterPanel extends ParameterPanel implements ValueChangeHandl
 			pair.getTextbox().addFocusHandler(this);
 			pair.getHtml().addClickHandler(this);
 			pair.getHtml().getElement().getStyle().setCursor(Cursor.POINTER);
+			pair.getHtml().addStyleName(EDITABLE_TEXT_CSS_CLASS);
 
 			valuePairs.put(key, pair);
 

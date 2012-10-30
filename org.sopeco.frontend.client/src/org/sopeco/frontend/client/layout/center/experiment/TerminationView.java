@@ -42,12 +42,15 @@ public class TerminationView extends FlowPanel {
 	/**
 	 * 
 	 * @param termination
+	 * @return
 	 */
-	public void addCondition(ExperimentTerminationCondition termination) {
+	public Condition addCondition(ExperimentTerminationCondition termination) {
 		Condition condition = new Condition(termination);
 
 		conditionMap.put(termination.getName(), condition);
 		add(condition);
+
+		return condition;
 	}
 
 	/**
@@ -55,6 +58,15 @@ public class TerminationView extends FlowPanel {
 	 */
 	public Map<String, Condition> getConditionMap() {
 		return conditionMap;
+	}
+
+	@Override
+	public void clear() {
+		for (Condition c : conditionMap.values()) {
+			c.removeFromParent();
+		}
+
+		conditionMap.clear();
 	}
 
 	/**
@@ -79,16 +91,30 @@ public class TerminationView extends FlowPanel {
 		 * @return the condition
 		 */
 		public ExperimentTerminationCondition getCondition() {
-			return condition;
+			ExperimentTerminationCondition temp = new ExperimentTerminationCondition();
+			temp.setName(condition.getName());
+			temp.setDescription(condition.getDescription());
+			temp.getParametersDefaultValues().putAll(condition.getParametersDefaultValues());
+			temp.getParametersValues().putAll(getConfig());
+
+			return temp;
+		}
+
+		public void setConfiguration(Map<String, String> config) {
+			for (String key : config.keySet()) {
+				textboxes.get(key).setText(config.get(key));
+			}
 		}
 
 		public void setConditionVisibility(boolean show) {
 			if (show) {
 				table.setVisible(true);
 				nameHTML.getElement().getStyle().setFontWeight(FontWeight.BOLD);
+				conditionCheckbox.setValue(true);
 			} else {
 				table.setVisible(false);
 				nameHTML.getElement().getStyle().clearFontWeight();
+				conditionCheckbox.setValue(false);
 			}
 		}
 
@@ -110,8 +136,9 @@ public class TerminationView extends FlowPanel {
 			int row = 0;
 			for (String key : condition.getParametersDefaultValues().keySet()) {
 				TextBox textbox = new TextBox();
-				textbox.setText(condition.getParamValue(key));
+				textbox.setText(condition.getParametersDefaultValues().get(key));
 				textbox.addValueChangeHandler(textboxValueChangeHandler());
+				textbox.setTitle("Default: " + condition.getParametersDefaultValues().get(key));
 
 				textboxes.put(key, textbox);
 

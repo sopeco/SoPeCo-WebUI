@@ -16,6 +16,7 @@ import org.sopeco.frontend.client.rpc.RPC;
 import org.sopeco.frontend.shared.builder.MeasurementSpecificationBuilder;
 import org.sopeco.frontend.shared.builder.ScenarioDefinitionBuilder;
 import org.sopeco.persistence.entities.definition.ConstantValueAssignment;
+import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
 import org.sopeco.persistence.entities.definition.MeasurementSpecification;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.entities.definition.ParameterNamespace;
@@ -330,5 +331,11 @@ public final class ScenarioManager {
 		storeScenario();
 
 		return true;
+	}
+	
+	public void setMeasurementDefinition (MeasurementEnvironmentDefinition environment) {
+		builder.getBuiltScenario().setMeasurementEnvironmentDefinition(environment);
+		
+		EventControl.get().fireEvent(new EnvironmentDefinitionChangedEvent());
 	}
 }

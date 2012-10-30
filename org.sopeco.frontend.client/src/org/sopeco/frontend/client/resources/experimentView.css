@@ -9,6 +9,13 @@
 	overflow-y: auto;
 }
 
+/** */
+.selectionTreeItemLeaf>span.text {
+	position: absolute;
+	left: 10px;
+	right: 60px;
+}
+
 /** expSettingsNamePanel */
 #expSettingsNamePanel {
 	width: 100%;
@@ -207,4 +214,9 @@
 #terminationView .gwt-TextBox {
 	float: right;
 	padding: 2px 4px;
+}
+
+.editableText {
+	background-color: #F3F4F5;
+	padding: 0px 3px;
 }

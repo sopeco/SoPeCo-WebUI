@@ -7,7 +7,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * 
  * @author Marius Oehler
@@ -51,7 +50,20 @@ public final class UserManager {
 	}
 
 	/**
+	 * Returns whether a user with the given session id exists in the userMap.
+	 * 
+	 * @param sessionId
+	 * @return user with the given session exists
+	 */
+	public static boolean existSession(String sessionId) {
+		synchronized (userMap) {
+			return userMap.containsKey(sessionId);
+		}
+	}
+
+	/**
 	 * Returns a List with all users which have the given databaseId.
+	 * 
 	 * @param databaseId
 	 * @return
 	 */

@@ -10,6 +10,7 @@ import org.sopeco.frontend.client.layout.popups.Message;
 import org.sopeco.frontend.client.rpc.RPC;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -34,6 +35,8 @@ public class NorthPanel extends FlowPanel {
 
 	private static final String SAP_RESEARCH_LOGO = "images/sap_research.png";
 	private static final String SAP_RESEARCH_LOGO_ID = "sapResearchLogo";
+
+	private static final int EXPORT_MARGIN = 4;
 
 	private ListBox listboxScenarios;
 	private HTML connectedToText;
@@ -150,6 +153,16 @@ public class NorthPanel extends FlowPanel {
 				removeScenario, secondHoPanel }) {
 			w.addStyleName("hDefaultMargin");
 		}
+
+		Anchor export = new Anchor("export");
+		export.getElement().getStyle().setMarginLeft(EXPORT_MARGIN, Unit.EM);
+		export.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				ExportBox.showExportBox();
+			}
+		});
+		secondHoPanel.add(export);
 
 		setConnectedAccountName(parentPanel.getParentModule().getConnectedDatabase().getDbName());
 

@@ -573,6 +573,7 @@ p {
 
 #assignmentListPanel {
 	padding: 1em;
+	position: relative;
 }
 
 #assignmentListPanel .assignmentItem {
@@ -616,6 +617,7 @@ p {
 .selectionTreeItemLeaf {
 	margin-left: 2em;
 	padding-left: 1em;
+	position: relative;
 }
 
 .selectionTreeItemLeaf:hover {
@@ -631,7 +633,7 @@ p {
 .selectionTreeItemLeaf>.gwt-CheckBox,.selectionTreeItemLeaf>.gwt-RadioButton
 	{
 	float: right;
-	margin: 4px 4px 0 0;
+	margin: 4px 4px 0px 0;
 	line-height: 0;
 }
 

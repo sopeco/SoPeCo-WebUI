@@ -29,4 +29,6 @@ public interface ScenarioManagerRPC extends RemoteService {
 	ScenarioDefinition getCurrentScenarioDefinition();
 	
 	boolean storeScenarioDefinition(ScenarioDefinition definition);
+	
+	String getScenarioAsXML();
 }

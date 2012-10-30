@@ -58,6 +58,7 @@ public class ConstantParameterPanel extends ParameterPanel implements ClickHandl
 		valueHtml.addClickHandler(this);
 		valueHtml.getElement().getStyle().setCursor(Cursor.POINTER);
 		valueHtml.getElement().getStyle().setVerticalAlign(VerticalAlign.TEXT_BOTTOM);
+		valueHtml.addStyleName(EDITABLE_TEXT_CSS_CLASS);
 
 		emptyValueHTML(valueHtml);
 

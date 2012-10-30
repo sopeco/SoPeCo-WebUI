@@ -18,7 +18,9 @@ import org.sopeco.frontend.shared.helper.ExtensionTypes;
 import org.sopeco.frontend.shared.helper.Metering;
 import org.sopeco.persistence.entities.definition.ConstantValueAssignment;
 import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
+import org.sopeco.persistence.entities.definition.ExperimentTerminationCondition;
 import org.sopeco.persistence.entities.definition.ExplorationStrategy;
+import org.sopeco.persistence.entities.definition.MeasurementSpecification;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.entities.definition.ParameterValueAssignment;
 
@@ -65,6 +67,21 @@ public class ExperimentModul {
 	 */
 	public String getCurrentExperimentName() {
 		return currentExperiment;
+	}
+
+	/**
+	 * Removes the current selected experiment series from the specification
+	 * definition.
+	 */
+	public void removeCurrentExperimentSeries() {
+		MeasurementSpecification ms = manager.getBuilder().getMeasurementSpecification(
+				manager.specification().getWorkingSpecificationName());
+
+		ms.getExperimentSeriesDefinitions().remove(getCurrentExperiment());
+
+		manager.storeScenario();
+
+		MainLayoutPanel.get().getNavigationController().loadExperiments();
 	}
 
 	/**
@@ -356,6 +373,85 @@ public class ExperimentModul {
 		}
 
 		getCurrentExperiment().getExperimentAssignments().add(pva);
+
+		manager.storeScenario();
+	}
+
+	/**
+	 * 
+	 * @param termination
+	 */
+	public void addTermination(ExperimentTerminationCondition termination) {
+		if (isSetTermination(termination)) {
+			LOGGER.info("is already as t-condition set => updating config.");
+			getTerminationCondition(termination).getParametersValues().clear();
+			getTerminationCondition(termination).getParametersValues().putAll(termination.getParametersValues());
+		} else {
+			getCurrentExperiment().addTerminationCondition(termination);
+		}
+		manager.storeScenario();
+	}
+
+	/**
+	 * 
+	 * @param termination
+	 */
+	public boolean isSetTermination(ExperimentTerminationCondition termination) {
+		for (ExperimentTerminationCondition condition : getCurrentExperiment().getTerminationConditions()) {
+			if (condition.getName().toLowerCase().equals(termination.getName().toLowerCase())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * 
+	 * @param termination
+	 * @return
+	 */
+	public ExperimentTerminationCondition getTerminationCondition(ExperimentTerminationCondition termination) {
+		for (ExperimentTerminationCondition condition : getCurrentExperiment().getTerminationConditions()) {
+			if (condition.getName().toLowerCase().equals(termination.getName().toLowerCase())) {
+				return condition;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * 
+	 * @param termination
+	 */
+	public void removeTermination(ExperimentTerminationCondition termination) {
+		ExperimentTerminationCondition search = null;
+		for (ExperimentTerminationCondition condition : getCurrentExperiment().getTerminationConditions()) {
+			if (condition.getName().toLowerCase().equals(termination.getName().toLowerCase())) {
+				search = condition;
+				break;
+			}
+		}
+
+		if (search != null) {
+			getCurrentExperiment().getTerminationConditions().remove(search);
+		} else {
+			LOGGER.info("is not set as t-condition set.");
+		}
+
+		manager.storeScenario();
+	}
+
+	/**
+	 * 
+	 * @param newName
+	 */
+	public void renameCurrentExpSeries(String newName) {
+		getCurrentExperiment().setName(newName);
+		setCurrentExperiment(newName);
+
+		MainLayoutPanel.get().getNavigationController().loadExperiments();
+
+		EventControl.get().fireEvent(new ExperimentChangedEvent(newName));
 
 		manager.storeScenario();
 	}

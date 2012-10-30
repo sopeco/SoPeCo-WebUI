@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.sopeco.engine.model.ScenarioDefinitionWriter;
 import org.sopeco.frontend.client.rpc.ScenarioManagerRPC;
 import org.sopeco.frontend.server.rpc.SuperRemoteServlet;
 import org.sopeco.frontend.shared.builder.ScenarioDefinitionBuilder;
@@ -121,5 +122,16 @@ public class ScenarioManagerRPCImpl extends SuperRemoteServlet implements
 
 		getUser().storeCurrentScenarioDefinition();
 		return true;
+	}
+
+	@Override
+	public String getScenarioAsXML() {
+		ScenarioDefinition definition = getUser().getCurrentScenarioDefinitionBuilder().getBuiltScenario();
+
+		if (definition != null) {
+			ScenarioDefinitionWriter writer = new ScenarioDefinitionWriter();
+			return writer.convertToXMLString(definition);
+		}
+		return "";
 	}
 }

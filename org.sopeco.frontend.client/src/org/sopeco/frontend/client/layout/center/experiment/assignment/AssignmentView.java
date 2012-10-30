@@ -35,8 +35,9 @@ public class AssignmentView extends FlowPanel implements ClickHandler {
 
 		editImage = new Image("images/pencil.png");
 		editImage.setHeight("18px");
+		editImage.setWidth("18px");
 		editImage.getElement().getStyle().setPosition(Position.ABSOLUTE);
-		editImage.getElement().getStyle().setLeft(210, Unit.PX);
+		editImage.getElement().getStyle().setLeft(220, Unit.PX);
 		editImage.getElement().getStyle().setTop(16, Unit.PX);
 		editImage.getElement().getStyle().setCursor(Cursor.POINTER);
 		editImage.addClickHandler(this);

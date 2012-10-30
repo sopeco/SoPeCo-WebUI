@@ -32,7 +32,7 @@ import com.google.gwt.user.client.ui.DockLayoutPanel;
 public final class MainLayoutPanel extends DockLayoutPanel implements ValueChangeHandler<String> {
 
 	private static MainLayoutPanel singletonLayoutPanel;
-	private static final CenterType DEFAULT_CENTER_TYPE = CenterType.Experiment;
+	private static final CenterType DEFAULT_CENTER_TYPE = CenterType.Environment;
 
 	private NorthPanel northPanel;
 	private NavigationController navigationController;

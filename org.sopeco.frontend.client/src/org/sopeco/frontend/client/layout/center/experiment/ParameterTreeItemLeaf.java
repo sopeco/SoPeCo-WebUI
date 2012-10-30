@@ -5,6 +5,7 @@ import org.sopeco.frontend.client.widget.tree.TreeItem;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.DOM;
@@ -17,6 +18,7 @@ import com.google.gwt.user.client.ui.CheckBox;
  */
 public class ParameterTreeItemLeaf extends TreeItem implements ValueChangeHandler<Boolean> {
 
+	private static final double CHECKBOX_MARGIN_FIX = 4;
 	private static final String CSS_LEAF_CLASS = "selectionTreeItemLeaf";
 	private Element textElement;
 	private CheckBox preperationCheckBox, experimentCheckBox;
@@ -44,6 +46,7 @@ public class ParameterTreeItemLeaf extends TreeItem implements ValueChangeHandle
 
 		textElement = DOM.createSpan();
 		textElement.setInnerHTML(getText());
+		textElement.addClassName("text");
 
 		preperationCheckBox = new CheckBox();
 		experimentCheckBox = new CheckBox();
@@ -51,9 +54,16 @@ public class ParameterTreeItemLeaf extends TreeItem implements ValueChangeHandle
 		preperationCheckBox.addValueChangeHandler(this);
 		experimentCheckBox.addValueChangeHandler(this);
 
+		preperationCheckBox.getElement().getStyle().setMarginBottom(CHECKBOX_MARGIN_FIX, Unit.PX);
+		preperationCheckBox.getElement().getStyle().setMarginBottom(CHECKBOX_MARGIN_FIX, Unit.PX);
+
+		Element clearDiv = DOM.createDiv();
+		clearDiv.addClassName("clear");
+
 		getElement().appendChild(textElement);
 		add(experimentCheckBox);
 		add(preperationCheckBox);
+		getElement().appendChild(clearDiv);
 	}
 
 	@Override
