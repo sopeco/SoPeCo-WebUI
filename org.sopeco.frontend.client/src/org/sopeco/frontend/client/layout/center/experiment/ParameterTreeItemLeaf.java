@@ -47,6 +47,7 @@ public class ParameterTreeItemLeaf extends TreeItem implements ValueChangeHandle
 		textElement = DOM.createSpan();
 		textElement.setInnerHTML(getText());
 		textElement.addClassName("text");
+		textElement.setTitle(getText());
 
 		preperationCheckBox = new CheckBox();
 		experimentCheckBox = new CheckBox();

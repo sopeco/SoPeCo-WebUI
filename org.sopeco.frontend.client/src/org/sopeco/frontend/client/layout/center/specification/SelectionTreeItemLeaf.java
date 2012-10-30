@@ -6,6 +6,9 @@ import org.sopeco.frontend.client.event.InitialAssignmentChangedEvent.ChangeType
 import org.sopeco.frontend.client.widget.tree.TreeItem;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style.Overflow;
+import com.google.gwt.dom.client.Style.Position;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.DOM;
@@ -37,12 +40,21 @@ public class SelectionTreeItemLeaf extends TreeItem implements ValueChangeHandle
 	@Override
 	protected void initialize() {
 		addStyleName(CSS_LEAF_CLASS);
+		setHeight("26px");
 
 		textElement = DOM.createSpan();
 		textElement.setInnerHTML(getText());
 
+		textElement.getStyle().setLeft(10, Unit.PX);
+		textElement.getStyle().setRight(40, Unit.PX);
+		textElement.getStyle().setOverflow(Overflow.HIDDEN);
+		textElement.getStyle().setPosition(Position.ABSOLUTE);
+		textElement.setTitle(getText());
+
 		selectedCheckBox = new CheckBox();
 		selectedCheckBox.addValueChangeHandler(this);
+		selectedCheckBox.getElement().getStyle().setPosition(Position.ABSOLUTE);
+		selectedCheckBox.getElement().getStyle().setRight(0, Unit.PX);
 
 		getElement().appendChild(textElement);
 		add(selectedCheckBox);
