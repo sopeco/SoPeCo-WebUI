@@ -27,7 +27,8 @@ class AssignmentView extends FlowPanel {
 	private static final String ASSIGNMENT_ITEM_TABLE_COL_3 = "columnThird";
 	private static final String ASSIGNMENT_ITEM_TABLE_COL_4 = "columnFourth";
 
-	private FlowPanel assignmentItemTable, columnFirst, columnSecond, columnThird, columnFourth;
+	private FlowPanel assignmentItemTable;
+	//private FlowPanel columnFirst, columnSecond, columnThird, columnFourth;
 
 	private Image editImage;
 	
@@ -49,20 +50,20 @@ class AssignmentView extends FlowPanel {
 		assignmentItemTable = new FlowPanel();
 		assignmentItemTable.getElement().setId(ASSIGNMENT_ITEM_TABLE);
 
-		columnFirst = new FlowPanel();
-		columnSecond = new FlowPanel();
-		columnThird = new FlowPanel();
-		columnFourth = new FlowPanel();
-
-		columnFirst.addStyleName(ASSIGNMENT_ITEM_TABLE_COL_1);
-		columnSecond.addStyleName(ASSIGNMENT_ITEM_TABLE_COL_2);
-		columnThird.addStyleName(ASSIGNMENT_ITEM_TABLE_COL_3);
-		columnFourth.addStyleName(ASSIGNMENT_ITEM_TABLE_COL_4);
-
-		assignmentItemTable.add(columnFirst);
-		assignmentItemTable.add(columnSecond);
-		assignmentItemTable.add(columnThird);
-		assignmentItemTable.add(columnFourth);
+//		columnFirst = new FlowPanel();
+//		columnSecond = new FlowPanel();
+//		columnThird = new FlowPanel();
+//		columnFourth = new FlowPanel();
+//
+//		columnFirst.addStyleName(ASSIGNMENT_ITEM_TABLE_COL_1);
+//		columnSecond.addStyleName(ASSIGNMENT_ITEM_TABLE_COL_2);
+//		columnThird.addStyleName(ASSIGNMENT_ITEM_TABLE_COL_3);
+//		columnFourth.addStyleName(ASSIGNMENT_ITEM_TABLE_COL_4);
+//
+//		assignmentItemTable.add(columnFirst);
+//		assignmentItemTable.add(columnSecond);
+//		assignmentItemTable.add(columnThird);
+//		assignmentItemTable.add(columnFourth);
 
 		editImage = new Image("images/pencil.png");
 		editImage.setHeight("18px");
@@ -83,17 +84,19 @@ class AssignmentView extends FlowPanel {
 	}
 
 	public void addAssignmentitem(AssignmentItem item) {
-		columnFirst.add(item.getHtmlNamespace());
-		columnSecond.add(item.getHtmlName());
-		columnThird.add(item.getHtmlType());
-		columnFourth.add(item.getNestedValueTextBox());
+//		columnFirst.add(item.getHtmlNamespace());
+//		columnSecond.add(item.getHtmlName());
+//		columnThird.add(item.getHtmlType());
+//		columnFourth.add(item.getNestedValueTextBox());
+		add(item);
 	}
 
 	public void removeAssignmentitem(AssignmentItem item) {
-		item.getHtmlNamespace().removeFromParent();
-		item.getHtmlName().removeFromParent();
-		item.getHtmlType().removeFromParent();
-		item.getNestedValueTextBox().removeFromParent();
+//		item.getHtmlNamespace().removeFromParent();
+//		item.getHtmlName().removeFromParent();
+//		item.getHtmlType().removeFromParent();
+//		item.getNestedValueTextBox().removeFromParent();
+		remove(item);
 	}
 	
 	/**
@@ -101,12 +104,5 @@ class AssignmentView extends FlowPanel {
 	 */
 	public Image getEditImage() {
 		return editImage;
-	}
-
-	public void clearAssignments() {
-		columnFirst.clear();
-		columnSecond.clear();
-		columnThird.clear();
-		columnFourth.clear();
 	}
 }

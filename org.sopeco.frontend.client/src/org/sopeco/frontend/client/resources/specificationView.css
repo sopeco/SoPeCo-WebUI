@@ -1,0 +1,37 @@
+#assignmentListPanel {
+	padding: 1em;
+	position: relative;
+}
+
+#assignmentListPanel .assignmentItem {
+	margin-bottom: 2px;
+	padding-bottom: 2px;
+	border-bottom: 1px dashed #DDD;
+}
+
+#assignmentListPanel .assignmentItem>div {
+	display: inline-block;
+}
+
+#assignmentListPanel .assignmentItem .gwt-HTML {
+	margin-right: 1em;
+}
+
+#assignmentListPanel .assignmentItem .gwt-TextBox {
+	padding: 2px 4px;
+	margin: 0 0 0 1em;
+}
+
+#assignmentListPanel .assignmentItem .namespace {
+	
+}
+
+#assignmentListPanel .assignmentItem .name {
+	font-weight: bold;
+	color: #333;
+}
+
+#assignmentListPanel .assignmentItem .type {
+	color: #AAA;
+	white-space: nowrap;
+}

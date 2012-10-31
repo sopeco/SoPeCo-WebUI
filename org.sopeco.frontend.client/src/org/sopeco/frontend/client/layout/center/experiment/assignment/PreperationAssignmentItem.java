@@ -26,6 +26,8 @@ import com.google.gwt.user.client.ui.TextBox;
 public class PreperationAssignmentItem extends AssignmentItem implements ValueChangeHandler<String>, ClickHandler,
 		BlurHandler {
 
+	private static final String EDITABLE_TEXT_CSS_CLASS = "editableText";
+
 	private TextBox textboxValue;
 	private HTML valueHTML;
 
@@ -43,6 +45,7 @@ public class PreperationAssignmentItem extends AssignmentItem implements ValueCh
 		textboxValue.addBlurHandler(this);
 
 		valueHTML = new HTML();
+		valueHTML.addStyleName(EDITABLE_TEXT_CSS_CLASS);
 		valueHTML.addClickHandler(this);
 		valueHTML.getElement().getStyle().setCursor(Cursor.POINTER);
 		valueHTML.getElement().getStyle().setVerticalAlign(VerticalAlign.TEXT_BOTTOM);
@@ -60,7 +63,6 @@ public class PreperationAssignmentItem extends AssignmentItem implements ValueCh
 
 	private void emptyValueHTML(HTML htmlElement) {
 		if (htmlElement.getText().isEmpty()) {
-			htmlElement.getElement().getStyle().setBackgroundColor("#e2e8ea");
 			htmlElement.getElement().getStyle().setWidth(2, Unit.EM);
 			htmlElement.getElement().getStyle().setHeight(ParameterPanel.VALUE_HTML_HEIGHT, Unit.EM);
 		} else {

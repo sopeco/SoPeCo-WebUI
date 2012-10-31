@@ -1,0 +1,31 @@
+.csvEditor .listElement {
+	border-bottom: 1px solid #CCC;
+	border-left: 1px solid #CCC;
+	margin: 4px 0;
+}
+
+.csvEditor .csvList {
+	overflow-x: hidden;
+	overflow-y: scroll;
+	width: 210px;
+	max-height: 400px;
+	border: 1px solid #ddd;
+	border-left: 0;
+}
+
+.csvEditor .listElement .gwt-Image {
+	vertical-align: text-top;
+}
+
+.csvEditor .listElement .gwt-TextBox {
+	padding: 2px 4px;
+	background: transparent;
+	border: none;
+	outline: none;
+	margin: 0;
+	width: 160px;
+}
+
+.csvEditor .gwt-Button {
+	width: 70px;
+}

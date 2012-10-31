@@ -572,40 +572,6 @@ p {
 	bottom: 0;
 }
 
-#assignmentListPanel {
-	padding: 1em;
-	position: relative;
-}
-
-#assignmentListPanel .assignmentItem {
-	margin-bottom: 0.4em;
-	display: block;
-}
-
-#assignmentListPanel .assignmentItem>div {
-	float: left;
-	margin-top: 1px;
-}
-
-#assignmentListPanel .assignmentItem>input {
-	margin: 0 0 0 20px;
-	padding: 2px 8px;
-	float: left;
-}
-
-#assignmentListPanel .assignmentItem .namespace {
-	
-}
-
-#assignmentListPanel .assignmentItem .name {
-	font-weight: bold;
-}
-
-#assignmentListPanel .assignmentItem .type {
-	color: #AAA;
-	text-transform: uppercase;
-}
-
 #selectionViewPanelWrapper {
 	border-right: 3px solid #ccc;
 	bottom: 0;

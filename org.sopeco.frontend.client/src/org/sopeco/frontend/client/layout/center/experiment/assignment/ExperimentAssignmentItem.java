@@ -26,6 +26,7 @@ import com.google.gwt.event.shared.GwtEvent;
 public class ExperimentAssignmentItem extends AssignmentItem implements ValueChangeHandler<String> {
 
 	private static final String EXT_BOOLEAN_VARIATION = "Boolean Variation";
+	private static final String EXT_CSV_VARIATION = "CSV";
 	private static final String CONSTANT_VARIATION = "Constant Variation";
 
 	private ComboBox combobox;
@@ -62,6 +63,8 @@ public class ExperimentAssignmentItem extends AssignmentItem implements ValueCha
 		if (assignment instanceof DynamicValueAssignment) {
 			if (currentVariationName.equals(EXT_BOOLEAN_VARIATION)) {
 				parameterPanel = new EmptyParameterPanel(this);
+			} else if (currentVariationName.equals(EXT_CSV_VARIATION)) {
+				parameterPanel = new CSVParameterPanel(this, ((DynamicValueAssignment) assignment).getConfiguration());
 			} else {
 				parameterPanel = new KVParameterPanel(this, ((DynamicValueAssignment) assignment).getConfiguration());
 			}

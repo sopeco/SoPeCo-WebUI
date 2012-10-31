@@ -39,12 +39,56 @@ public final class FrontEndResources {
 	}
 
 	/**
+	 * 
+	 */
+	public static void loadCSVEditorCSS() {
+		GWT.runAsync(new RunAsyncCallback() {
+			@Override
+			public void onFailure(Throwable reason) {
+				Window.alert(R.get("errorCssLoading"));
+			}
+
+			@Override
+			public void onSuccess() {
+				ResourceBundle rsc = GWT.create(ResourceBundle.class);
+				rsc.csvEditorCss().ensureInjected();
+			}
+		});
+	}
+
+	/**
+	 * 
+	 */
+	public static void loadSpecificationCSS() {
+		GWT.runAsync(new RunAsyncCallback() {
+			@Override
+			public void onFailure(Throwable reason) {
+				Window.alert(R.get("errorCssLoading"));
+			}
+
+			@Override
+			public void onSuccess() {
+				ResourceBundle rsc = GWT.create(ResourceBundle.class);
+				rsc.specificationCss().ensureInjected();
+			}
+		});
+	}
+
+	/**
 	 * ClientBundle to load Resources.
 	 */
 	interface ResourceBundle extends ClientBundle {
 		@Source("experimentView.css")
 		@CssResource.NotStrict
 		CssResource experimentCss();
+
+		@Source("csvEditor.css")
+		@CssResource.NotStrict
+		CssResource csvEditorCss();
+
+		@Source("specificationView.css")
+		@CssResource.NotStrict
+		CssResource specificationCss();
 	}
 
 }

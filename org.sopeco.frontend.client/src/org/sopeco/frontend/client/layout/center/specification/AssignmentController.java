@@ -2,6 +2,7 @@ package org.sopeco.frontend.client.layout.center.specification;
 
 import java.util.TreeMap;
 
+import org.sopeco.frontend.client.helper.ElementPropertyAligner;
 import org.sopeco.frontend.client.layout.popups.Message;
 import org.sopeco.frontend.client.model.ScenarioManager;
 import org.sopeco.frontend.shared.helper.Metering;
@@ -21,6 +22,8 @@ class AssignmentController implements BlurHandler {
 	private AssignmentView view;
 	private TreeMap<String, AssignmentItem> assignmentMap;
 
+	private ElementPropertyAligner namespaceAligner, typeAligner;
+
 	public AssignmentController() {
 		reset();
 	}
@@ -30,6 +33,9 @@ class AssignmentController implements BlurHandler {
 	 */
 	public void reset() {
 		assignmentMap = new TreeMap<String, AssignmentItem>();
+
+		namespaceAligner = new ElementPropertyAligner();
+		typeAligner = new ElementPropertyAligner();
 
 		view = new AssignmentView();
 	}
@@ -65,6 +71,13 @@ class AssignmentController implements BlurHandler {
 
 		assignment.addBlurHandler(this);
 
+		namespaceAligner.addElement(assignment.getHtmlNamespace().getElement());
+		typeAligner.addElement(assignment.getHtmlType().getElement(), assignment.getHtmlNamespace().getElement(),
+				assignment.getHtmlName().getElement());
+
+		assignment.setNamespaceAligner(namespaceAligner);
+		assignment.setTypeAligner(typeAligner);
+
 		Metering.stop(metering);
 	}
 
@@ -74,7 +87,7 @@ class AssignmentController implements BlurHandler {
 	public void refreshAssignmentListPanel() {
 		double metering = Metering.start();
 
-		view.clearAssignments();
+		clearAssignments(false);
 		for (String key : assignmentMap.keySet()) {
 			view.addAssignmentitem(assignmentMap.get(key));
 		}
@@ -107,8 +120,13 @@ class AssignmentController implements BlurHandler {
 	/**
 	 * Removes all existing assignments.
 	 */
-	public void clearAssignments() {
-		assignmentMap.clear();
-		view.clearAssignments();
+	public void clearAssignments(boolean clearMap) {
+		for (AssignmentItem item : assignmentMap.values()) {
+			item.removeFromParent();
+		}
+
+		if (clearMap) {
+			assignmentMap.clear();
+		}
 	}
 }

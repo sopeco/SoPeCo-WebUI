@@ -223,3 +223,7 @@
 	background-color: #F3F4F5;
 	padding: 0px 3px;
 }
+
+.editableText:hover {
+	background-color: #E0EAFF;
+}

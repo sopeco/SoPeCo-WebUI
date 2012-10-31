@@ -1,5 +1,9 @@
 package org.sopeco.frontend.client.layout.center.specification;
 
+import org.sopeco.frontend.client.helper.ElementPropertyAligner;
+
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
@@ -23,11 +27,18 @@ class AssignmentItem extends FlowPanel implements HasBlurHandlers, BlurHandler {
 	 */
 	private static final int PATH_MAX_LENGTH = 40;
 
+	private static final String ITEM_CSS_CLASS = "assignmentItem";
+	private static final String ITEM_NAMESPACE_CSS_CLASS = "namespace";
+	private static final String ITEM_NAME_CSS_CLASS = "name";
+	private static final String ITEM_TYPE_CSS_CLASS = "type";
+
 	private String namespace, name, type, value;
 	private TextBox textboxValue;
 
 	private HTML htmlNamespace, htmlName, htmlType;
 	private FlowPanel nestedValueTextBox;
+
+	private ElementPropertyAligner namespaceAligner, typeAligner;
 
 	public AssignmentItem(String pNamespace, String pName, String pType) {
 		this(pNamespace, pName, pType, "");
@@ -46,17 +57,66 @@ class AssignmentItem extends FlowPanel implements HasBlurHandlers, BlurHandler {
 	 * Initialize the necessary objects.
 	 */
 	private void initialize() {
+		addStyleName(ITEM_CSS_CLASS);
+
 		textboxValue = new TextBox();
 		textboxValue.setText(value);
 		textboxValue.addBlurHandler(this);
 
 		htmlNamespace = new HTML(trimPath(namespace));
 		htmlName = new HTML(name);
-		htmlType = new HTML(type);
+		htmlType = new HTML(": " + type);
 		nestedValueTextBox = new FlowPanel();
 
 		htmlNamespace.setTitle(namespace);
 		nestedValueTextBox.add(textboxValue);
+
+		htmlNamespace.addStyleName(ITEM_NAMESPACE_CSS_CLASS);
+		htmlName.addStyleName(ITEM_NAME_CSS_CLASS);
+		htmlType.addStyleName(ITEM_TYPE_CSS_CLASS);
+
+		add(htmlNamespace);
+		add(htmlName);
+		add(htmlType);
+		add(nestedValueTextBox);
+	}
+
+	/**
+	 * @param aligner
+	 *            the namespaceAligner to set
+	 */
+	public void setNamespaceAligner(ElementPropertyAligner aligner) {
+		this.namespaceAligner = aligner;
+	}
+
+	/**
+	 * @param aligner
+	 *            the typeAligner to set
+	 */
+	public void setTypeAligner(ElementPropertyAligner aligner) {
+		this.typeAligner = aligner;
+	}
+
+	@Override
+	protected void onLoad() {
+		super.onLoad();
+
+		if (namespaceAligner != null) {
+			Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+				@Override
+				public void execute() {
+					namespaceAligner.alignWith();
+				}
+			});
+		}
+		if (typeAligner != null) {
+			Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+				@Override
+				public void execute() {
+					typeAligner.offsetWidth();
+				}
+			});
+		}
 	}
 
 	/**
