@@ -6,5 +6,5 @@ package org.sopeco.frontend.client.layout.center;
  * 
  */
 public enum CenterType {
-	Environment, Specification, Execute, Result, NoScenario, Other, Experiment
+	Environment, Specification, Execute, Result, NoScenario, Other, Experiment, Message
 }

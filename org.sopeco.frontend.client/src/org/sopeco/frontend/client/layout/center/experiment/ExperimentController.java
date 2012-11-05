@@ -1,5 +1,6 @@
 package org.sopeco.frontend.client.layout.center.experiment;
 
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -8,7 +9,6 @@ import org.sopeco.frontend.client.event.EventControl;
 import org.sopeco.frontend.client.event.ExperimentChangedEvent;
 import org.sopeco.frontend.client.event.handler.ExperimentChangedEventHandler;
 import org.sopeco.frontend.client.layout.MainLayoutPanel;
-import org.sopeco.frontend.client.layout.center.CenterType;
 import org.sopeco.frontend.client.layout.center.ICenterController;
 import org.sopeco.frontend.client.layout.center.experiment.assignment.AssignmentController;
 import org.sopeco.frontend.client.layout.center.experiment.assignment.AssignmentController.Type;
@@ -18,7 +18,6 @@ import org.sopeco.frontend.client.resources.FrontEndResources;
 import org.sopeco.frontend.shared.helper.ExtensionTypes;
 import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -78,7 +77,14 @@ public class ExperimentController implements ICenterController, ValueChangeHandl
 			public void onClick(ClickEvent event) {
 				ScenarioManager.get().experiment().removeCurrentExperimentSeries();
 
-				MainLayoutPanel.get().updateCenterPanel(CenterType.Specification);
+				List<ExperimentSeriesDefinition> expList = ScenarioManager.get().experiment()
+						.getExperimentsOfCurrentSpecififcation();
+
+				if (expList.isEmpty()) {
+					MainLayoutPanel.get().setMessage(R.get("noExpSeries"), R.get("plsAddExpSeries"));
+				} else {
+					MainLayoutPanel.get().getViewSwitch().switchToExperiment(expList.get(0).getName());
+				}
 			}
 		});
 	}

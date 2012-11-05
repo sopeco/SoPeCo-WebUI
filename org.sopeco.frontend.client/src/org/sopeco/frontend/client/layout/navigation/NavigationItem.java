@@ -1,5 +1,6 @@
 package org.sopeco.frontend.client.layout.navigation;
 
+import org.sopeco.frontend.client.helper.UIObjectHelper;
 import org.sopeco.frontend.client.layout.center.CenterType;
 
 import com.google.gwt.dom.client.Element;
@@ -153,7 +154,9 @@ public class NavigationItem extends FocusPanel {
 	 * @return
 	 */
 	public boolean isActive() {
-		return isActive;
+		return UIObjectHelper.hasCssClass(this, "marked");
+
+		// return isActive;
 	}
 
 }

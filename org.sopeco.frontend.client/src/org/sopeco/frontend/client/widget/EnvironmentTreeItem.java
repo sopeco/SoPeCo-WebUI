@@ -75,6 +75,9 @@ public class EnvironmentTreeItem extends FrontendTreeItem {
 		textboxEdit.addChangeHandler(nscHandler);
 	}
 
+	/**
+	 * 
+	 */
 	public void removeActionPanel() {
 		actionPanel.clear();
 		actionPanel.removeFromParent();
@@ -97,12 +100,18 @@ public class EnvironmentTreeItem extends FrontendTreeItem {
 		linePanel.getElement().appendChild(clearLine);
 	}
 
+	/**
+	 * 
+	 */
 	protected void addImage() {
 		if (children.size() > 0) {
 			linePanel.add(img);
 		}
 	}
 
+	/**
+	 * 
+	 */
 	protected void addActionPanel() {
 		actionPanel.clear();
 
@@ -116,6 +125,10 @@ public class EnvironmentTreeItem extends FrontendTreeItem {
 		linePanel.add(actionPanel);
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	private ClickHandler getOnHTMLClickHandler() {
 		return new ClickHandler() {
 			@Override
@@ -129,6 +142,10 @@ public class EnvironmentTreeItem extends FrontendTreeItem {
 		};
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	private BlurHandler getOnTextboxBlurHandler() {
 		return new BlurHandler() {
 			@Override
@@ -140,6 +157,9 @@ public class EnvironmentTreeItem extends FrontendTreeItem {
 		};
 	}
 
+	/**
+	 * 
+	 */
 	protected void applyChanges() {
 		if (!preventBlur && !textboxEdit.getText().isEmpty()) {
 			currentText = textboxEdit.getText();
@@ -152,6 +172,9 @@ public class EnvironmentTreeItem extends FrontendTreeItem {
 		htmlText.getElement().getStyle().setDisplay(Display.BLOCK);
 	}
 
+	/**
+	 * 
+	 */
 	protected void rename() {
 		String oldPath = getPath();
 
@@ -173,6 +196,10 @@ public class EnvironmentTreeItem extends FrontendTreeItem {
 		});
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	private KeyDownHandler getTextboxKeyDownHandler() {
 		return new KeyDownHandler() {
 			@Override
@@ -187,6 +214,10 @@ public class EnvironmentTreeItem extends FrontendTreeItem {
 		};
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	private ClickHandler getClickHandlerRemove() {
 		return new ClickHandler() {
 			@Override
@@ -196,6 +227,9 @@ public class EnvironmentTreeItem extends FrontendTreeItem {
 		};
 	}
 
+	/**
+	 * 
+	 */
 	protected void removeItem() {
 		String remNsPath = getPath();
 		GWT.log("new ns: " + remNsPath);
@@ -218,6 +252,10 @@ public class EnvironmentTreeItem extends FrontendTreeItem {
 		});
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	private ClickHandler getClickHandlerAdd() {
 		return new ClickHandler() {
 			@Override
@@ -271,6 +309,10 @@ public class EnvironmentTreeItem extends FrontendTreeItem {
 		};
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	private ClickHandler getClickHandlerAddParameter() {
 		return new ClickHandler() {
 			@Override

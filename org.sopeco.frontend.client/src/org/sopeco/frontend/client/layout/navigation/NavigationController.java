@@ -1,8 +1,9 @@
 package org.sopeco.frontend.client.layout.navigation;
 
+import java.util.logging.Logger;
+
 import org.sopeco.frontend.client.R;
 import org.sopeco.frontend.client.event.EventControl;
-import org.sopeco.frontend.client.event.ExperimentChangedEvent;
 import org.sopeco.frontend.client.event.ScenarioLoadedEvent;
 import org.sopeco.frontend.client.event.SpecificationChangedEvent;
 import org.sopeco.frontend.client.event.handler.ScenarioLoadedEventHandler;
@@ -16,7 +17,6 @@ import org.sopeco.frontend.client.model.ScenarioManager;
 import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
 import org.sopeco.persistence.entities.definition.MeasurementSpecification;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.HTML;
@@ -27,20 +27,23 @@ import com.google.gwt.user.client.ui.HTML;
  * @author Marius Oehler
  * 
  */
-public class NavigationController {
+public class NavigationController implements ClickHandler {
+
+	private static final Logger LOGGER = Logger.getLogger(NavigationController.class.getName());
 
 	private NavigationView view;
 	private CenterType currentCenterType;
 	private NavigationItem currentActiveNavigationItem;
-	private MainLayoutPanel parentLayout;
 
-	public NavigationController(MainLayoutPanel parent) {
-		parentLayout = parent;
+	public NavigationController() {
 		view = new NavigationView();
 
 		loadExperiments();
-		attachNaviItemClickHandlers();
 		addCreateSpecificationClickHandler();
+
+		for (NavigationItem item : view.getNaviItemsMap().values()) {
+			item.addClickHandler(this);
+		}
 
 		// Events
 		EventControl.get().addHandler(ScenarioLoadedEvent.TYPE, new ScenarioLoadedEventHandler() {
@@ -59,6 +62,23 @@ public class NavigationController {
 				loadExperiments();
 			}
 		});
+	}
+
+	@Override
+	public void onClick(ClickEvent event) {
+		NavigationItem source = (NavigationItem) event.getSource();
+
+		if (source.isActive()) {
+			LOGGER.info("navi item is already selected -> skipped");
+			return;
+		}
+
+		if (source.getType() == CenterType.Experiment) {
+			String experimentName = ((NavigationSubItem) source).getExperimentName();
+			MainLayoutPanel.get().getViewSwitch().switchToExperiment(experimentName);
+		} else {
+			MainLayoutPanel.get().getViewSwitch().switchTo(source.getType());
+		}
 	}
 
 	/**
@@ -94,22 +114,10 @@ public class NavigationController {
 	}
 
 	/**
-	 * Adds a clickhandler to each item in the navigation.
+	 * Hides the panel, where the user can change the current specification.
 	 */
-	private void attachNaviItemClickHandlers() {
-		for (final NavigationItem item : view.getNaviItemsMap().values()) {
-			item.addClickHandler(new ClickHandler() {
-				@Override
-				public void onClick(ClickEvent event) {
-					if (item.isActive()) {
-						return;
-					}
-
-					parentLayout.updateCenterPanel(item.getType());
-					view.getChangeSpecificationPanel().setVisible(false);
-				}
-			});
-		}
+	public void hideChangeSpecpanel() {
+		view.getChangeSpecificationPanel().setVisible(false);
 	}
 
 	/**
@@ -178,7 +186,10 @@ public class NavigationController {
 
 		for (ExperimentSeriesDefinition experiment : ScenarioManager.get().experiment()
 				.getExperimentsOfCurrentSpecififcation()) {
-			view.addExperimentItem(experiment.getName()).addClickHandler(getNavigationSubItemClickHandler());
+			NavigationSubItem expItem = view.addExperimentItem(experiment.getName());
+
+			// expItem.addClickHandler(getNavigationSubItemClickHandler());
+			expItem.addClickHandler(this);
 		}
 
 		NavigationSubItem addExperiment = view.addExperimentItem("Add Experiment");
@@ -187,6 +198,10 @@ public class NavigationController {
 		addExperiment.addClickHandler(getAddExperimentClickHandler());
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	private ClickHandler getAddExperimentClickHandler() {
 		return new ClickHandler() {
 			@Override
@@ -198,29 +213,6 @@ public class NavigationController {
 								ScenarioManager.get().experiment().createExperimentSeries(input);
 							}
 						});
-			}
-		};
-	}
-
-	/**
-	 * Returns the clickhandler of the experiment-entries.
-	 * 
-	 * @return the clickhandler
-	 */
-	private ClickHandler getNavigationSubItemClickHandler() {
-		return new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				NavigationSubItem item = (NavigationSubItem) event.getSource();
-				setActiveNavigationItem(item);
-
-				if (MainLayoutPanel.get().getCenterType() != item.getType()) {
-					GWT.log("display experiment: " + item.getExperimentName());
-					parentLayout.updateCenterPanel(item.getType());
-				}
-
-				ExperimentChangedEvent expChangedEvent = new ExperimentChangedEvent(item.getExperimentName());
-				EventControl.get().fireEvent(expChangedEvent);
 			}
 		};
 	}
@@ -245,12 +237,26 @@ public class NavigationController {
 	 * @param item
 	 */
 	private void setActiveNavigationItem(NavigationItem item) {
+		if (item == null) {
+			return;
+		}
+
 		if (currentActiveNavigationItem != null) {
 			currentActiveNavigationItem.setActive(false);
 		}
 
 		currentActiveNavigationItem = item;
 		item.setActive(true);
+	}
+
+	/**
+	 * Highlights the NaviItem, which is related to the experiment with the
+	 * given name.
+	 * 
+	 * @param experimentName
+	 */
+	public void highlightExperiment(String experimentName) {
+		setActiveNavigationItem(view.getExperimentItems().get(experimentName));
 	}
 
 	/**

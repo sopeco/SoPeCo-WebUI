@@ -1,31 +1,37 @@
 package org.sopeco.frontend.client.widget;
 
 import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.user.client.ui.FocusWidget;
+import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
  * 
  * @author Marius Oehler
  * 
  */
-public final class Headline extends FocusWidget {
+public class Headline extends SimplePanel {
 
 	private static final int DEFAULT_TYPE = 3;
 
-	private Headline(Element element) {
-		super(element);
+	public Headline() {
+		this("", DEFAULT_TYPE);
+	}
+	
+	public Headline(String text) {
+		this(text, DEFAULT_TYPE);
 	}
 
-	public static Headline create(String text, int type) {
-		Element headlineElement = Document.get().createElement("h" + type);
-		headlineElement.setInnerHTML(text);
-		headlineElement.getStyle().setProperty("outline", "none");
-		
-		return new Headline(headlineElement);
+	public Headline(String text, int type) {
+		super(Document.get().createElement("h" + type));
+
+		getElement().setInnerHTML(text);
 	}
 
-	public static Headline create(String text) {
-		return create(text, DEFAULT_TYPE);
+	/**
+	 * Sets the text of the headline element.
+	 * 
+	 * @param text
+	 */
+	public void setText(String text) {
+		getElement().setInnerHTML(text);
 	}
 }

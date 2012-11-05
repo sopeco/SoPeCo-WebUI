@@ -13,6 +13,7 @@ import org.sopeco.frontend.client.rpc.RPC;
 import org.sopeco.frontend.client.rpc.StartupService;
 import org.sopeco.frontend.client.rpc.StartupServiceAsync;
 import org.sopeco.frontend.shared.helper.ExtensionContainer;
+import org.sopeco.gwt.widgets.MyWidget;
 import org.sopeco.persistence.metadata.entities.DatabaseInstance;
 
 import com.google.gwt.core.client.EntryPoint;
@@ -45,6 +46,8 @@ public class FrontendEntryPoint implements EntryPoint {
 
 		loadFirstStep();
 
+		MyWidget m = new MyWidget();
+		
 		// TODO: alle callbacks die am anfang etwas laden muessen, als
 		// parallelcallback in die batch..
 		ParallelCallback<ExtensionContainer> loadExtensions = Extensions.getLoadingCallback();
@@ -100,7 +103,7 @@ public class FrontendEntryPoint implements EntryPoint {
 		RootLayoutPanel rootLayoutPanel = RootLayoutPanel.get();
 		rootLayoutPanel.add(MainLayoutPanel.get());
 
-		//ServerPush.start();
+		// ServerPush.start();
 	}
 
 	/**
@@ -164,7 +167,13 @@ public class FrontendEntryPoint implements EntryPoint {
 		});
 	}
 
-	public static FrontendEntryPoint getFrontendEP() {
+	/**
+	 * Returns the FrontendEntryPoint object, which is like the "main method" of
+	 * the current process.
+	 * 
+	 * @return FrontendEntryPoint-Object
+	 */
+	public static FrontendEntryPoint get() {
 		return frontend;
 	}
 }

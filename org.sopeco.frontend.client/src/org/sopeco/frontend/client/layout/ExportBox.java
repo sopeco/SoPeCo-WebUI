@@ -11,6 +11,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -27,10 +28,11 @@ public final class ExportBox extends DialogBox implements ClickHandler {
 	private static final String EXPORT_XML_URL = "sopeco_frontend/export?scenario";
 	private static final double BOX_MARGIN = 0.5D;
 
-	private Button exportXML;
+	private Button exportXML, btnClose;
 	private TextArea textarea;
 
 	private VerticalPanel panel;
+	private FlowPanel btnPanel;
 
 	private ExportBox() {
 		setModal(true);
@@ -46,13 +48,22 @@ public final class ExportBox extends DialogBox implements ClickHandler {
 		exportXML.getElement().getStyle().setFloat(Float.RIGHT);
 		exportXML.addClickHandler(this);
 
+		btnClose = new Button(R.get("Close"));
+		btnClose.getElement().getStyle().setMarginLeft(1, Unit.EM);
+		btnClose.getElement().getStyle().setFloat(Float.RIGHT);
+		btnClose.addClickHandler(this);
+
 		textarea = new TextArea();
 		textarea.setWidth("700px");
 		textarea.setHeight("200px");
 
+		btnPanel = new FlowPanel();
+		btnPanel.add(btnClose);
+		btnPanel.add(exportXML);
+
 		panel.add(headline);
 		panel.add(textarea);
-		panel.add(exportXML);
+		panel.add(btnPanel);
 
 		add(panel);
 	}
@@ -66,8 +77,12 @@ public final class ExportBox extends DialogBox implements ClickHandler {
 
 	@Override
 	public void onClick(ClickEvent event) {
-		Window.open(EXPORT_XML_URL, "_self", "");
-		hide();
+		if (event.getSource() == exportXML) {
+			Window.open(EXPORT_XML_URL, "_self", "");
+			hide();
+		} else if (event.getSource() == btnClose) {
+			hide();
+		}
 	}
 
 	public static void showExportBox() {

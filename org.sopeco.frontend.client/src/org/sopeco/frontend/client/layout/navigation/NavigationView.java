@@ -1,6 +1,7 @@
 package org.sopeco.frontend.client.layout.navigation;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import org.sopeco.frontend.client.R;
 import org.sopeco.frontend.client.layout.center.CenterType;
@@ -23,7 +24,8 @@ public class NavigationView extends FlowPanel {
 	private static final int ITEM_MAP_SIZE = 4;
 	private static final float ITEM_MAP_LOAD_FACTOR = 1F;
 
-	private HashMap<CenterType, NavigationItem> naviItems;
+	private Map<CenterType, NavigationItem> naviItems;
+	private Map<String, NavigationSubItem> experimentItems;
 	private FlowPanel experimentsPanel;
 	private ChangeSpecificationPanel changeSpecificationPanel;
 
@@ -41,6 +43,7 @@ public class NavigationView extends FlowPanel {
 		experimentsPanel = new FlowPanel();
 
 		naviItems = new HashMap<CenterType, NavigationItem>(ITEM_MAP_SIZE, ITEM_MAP_LOAD_FACTOR);
+		experimentItems = new HashMap<String, NavigationSubItem>();
 
 		addNaviItem(CenterType.Environment, R.get("environment"));
 		addNaviItem(CenterType.Specification, R.get("specification"));
@@ -63,8 +66,9 @@ public class NavigationView extends FlowPanel {
 	 *            the text on the item
 	 */
 	private void addNaviItem(CenterType type, String text) {
-		naviItems.put(type, new NavigationItem(type, text));
-		add(naviItems.get(type));
+		NavigationItem item = new NavigationItem(type, text);
+		naviItems.put(type, item);
+		add(item);
 	}
 
 	/**
@@ -81,8 +85,18 @@ public class NavigationView extends FlowPanel {
 	 * 
 	 * @return hashmap
 	 */
-	public HashMap<CenterType, NavigationItem> getNaviItemsMap() {
+	public Map<CenterType, NavigationItem> getNaviItemsMap() {
 		return naviItems;
+	}
+
+	/**
+	 * Returns a Map, which contains all navi-items (NavigationSubItem) to
+	 * switch between the experiments.
+	 * 
+	 * @return the experimentItems
+	 */
+	public Map<String, NavigationSubItem> getExperimentItems() {
+		return experimentItems;
 	}
 
 	/**
@@ -95,6 +109,7 @@ public class NavigationView extends FlowPanel {
 	public NavigationSubItem addExperimentItem(String text) {
 		NavigationSubItem newItem = new NavigationSubItem(text, CenterType.Experiment);
 		experimentsPanel.add(newItem);
+		experimentItems.put(text, newItem);
 		return newItem;
 	}
 

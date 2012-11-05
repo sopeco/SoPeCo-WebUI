@@ -71,7 +71,7 @@ public class CSVEditor extends DialogBox implements HasValueChangeHandlers<Strin
 
 		boxLayout = new FlexTable();
 
-		headline = Headline.create(R.get("values"));
+		headline = new Headline(R.get("values"));
 		headline.getElement().getStyle().setMarginTop(0, Unit.PX);
 		headline.getElement().getStyle().setMarginBottom(0, Unit.PX);
 

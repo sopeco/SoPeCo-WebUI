@@ -14,6 +14,7 @@
 	<modules>
 		<module>../org.sopeco.frontend.shared</module>
 		<module>../org.sopeco.frontend.server</module>
+		<module>../org.sopeco.gwt</module>
 		<module>../org.sopeco.frontend.client</module>
 	</modules>
 

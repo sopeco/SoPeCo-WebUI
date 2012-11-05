@@ -177,35 +177,17 @@ public class ExperimentModul {
 	public void createExperimentSeries(String name) {
 		LOGGER.info("Create experiment '" + name + "'");
 
-		ExperimentSeriesDefinition experiment = SimpleEntityFactory.createExperimentSeriesDefinition(name/*
-																										 * ,
-																										 * createDefaultTerminationCondition
-																										 * (
-																										 * )
-																										 */);
+		ExperimentSeriesDefinition experiment = SimpleEntityFactory.createExperimentSeriesDefinition(name);
 
 		experiment.setExplorationStrategy(createDefaultExplorationStrategy());
 
 		manager.getBuilder().getSpecificationBuilder().addExperimentSeries(experiment);
 
 		MainLayoutPanel.get().getNavigationController().loadExperiments();
+		MainLayoutPanel.get().getViewSwitch().switchToExperiment(name);
+		
 		manager.storeScenario();
 	}
-
-	// /**
-	// * Creates a random (first of the map) termonationCondition.
-	// *
-	// * @return
-	// */
-	// private ExperimentTerminationCondition
-	// createDefaultTerminationCondition() {
-	// String key = (String)
-	// Extensions.get().getExtensions(ExtensionTypes.TERMINATIONCONDITION).keySet().toArray()[0];
-	// Map<String, String> configMap =
-	// Extensions.get().getExtensions(ExtensionTypes.TERMINATIONCONDITION).get(key);
-	//
-	// return SimpleEntityFactory.createTerminationCondition(key, configMap);
-	// }
 
 	/**
 	 * Creates a random (first of the map) ExplorationStrategy.

@@ -8,6 +8,7 @@ import org.sopeco.frontend.client.event.ScenarioLoadedEvent;
 import org.sopeco.frontend.client.event.handler.ScenarioLoadedEventHandler;
 import org.sopeco.frontend.client.layout.center.CenterType;
 import org.sopeco.frontend.client.layout.center.ICenterController;
+import org.sopeco.frontend.client.layout.center.MessagePanel;
 import org.sopeco.frontend.client.layout.center.NoScenario;
 import org.sopeco.frontend.client.layout.center.environment.EnvironmentController;
 import org.sopeco.frontend.client.layout.center.execute.ExecuteController;
@@ -37,6 +38,7 @@ public final class MainLayoutPanel extends DockLayoutPanel implements ValueChang
 	private NorthPanel northPanel;
 	private NavigationController navigationController;
 	private FrontendEntryPoint parentModule;
+	private ViewSwitch viewSwitch;
 
 	private CenterType currentCenterPanel;
 	private HashMap<CenterType, ICenterController> centerController = new HashMap<CenterType, ICenterController>();
@@ -55,7 +57,7 @@ public final class MainLayoutPanel extends DockLayoutPanel implements ValueChang
 	 */
 	public static MainLayoutPanel get() {
 		if (singletonLayoutPanel == null) {
-			singletonLayoutPanel = new MainLayoutPanel(FrontendEntryPoint.getFrontendEP());
+			singletonLayoutPanel = new MainLayoutPanel(FrontendEntryPoint.get());
 		}
 		return singletonLayoutPanel;
 	}
@@ -65,6 +67,16 @@ public final class MainLayoutPanel extends DockLayoutPanel implements ValueChang
 			singletonLayoutPanel = null;
 			// TODO
 		}
+	}
+
+	/**
+	 * @return the viewSwitch
+	 */
+	public ViewSwitch getViewSwitch() {
+		if (viewSwitch == null) {
+			viewSwitch = new ViewSwitch();
+		}
+		return viewSwitch;
 	}
 
 	/**
@@ -181,6 +193,14 @@ public final class MainLayoutPanel extends DockLayoutPanel implements ValueChang
 		Metering.stop(metering);
 	}
 
+	public void setMessage(String headline, String text) {
+		if (getCenter() != null) {
+			getCenter().removeFromParent();
+		}
+
+		add(MessagePanel.createMessagePanel(headline, text));
+	}
+
 	/**
 	 * Returns the panel for the northern area.
 	 * 
@@ -200,7 +220,7 @@ public final class MainLayoutPanel extends DockLayoutPanel implements ValueChang
 	 */
 	public NavigationController getNavigationController() {
 		if (navigationController == null) {
-			navigationController = new NavigationController(this);
+			navigationController = new NavigationController();
 		}
 
 		return navigationController;
