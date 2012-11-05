@@ -7,9 +7,9 @@ import org.sopeco.frontend.client.event.handler.EnvironmentDefinitionChangedEven
 import org.sopeco.frontend.client.event.handler.ExperimentChangedEventHandler;
 import org.sopeco.frontend.client.helper.EnvironmentFilter;
 import org.sopeco.frontend.client.model.ScenarioManager;
-import org.sopeco.frontend.client.widget.tree.Tree;
-import org.sopeco.frontend.client.widget.tree.TreeItem;
 import org.sopeco.frontend.shared.helper.Metering;
+import org.sopeco.gwt.widgets.tree.Tree;
+import org.sopeco.gwt.widgets.tree.TreeItem;
 import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.entities.definition.ParameterNamespace;

@@ -35,3 +35,24 @@
 	color: #AAA;
 	white-space: nowrap;
 }
+
+#selectionViewPanel h3 {
+	margin-bottom: 8px;
+}
+
+#meControllerUrl {
+	font-weight: normal;
+	cursor: pointer;
+	padding: 1px 4px;
+}
+
+#meControllerUrl:hover {
+	background-color: #EAF0F6;
+	color: black;
+}
+
+.smallLabel {
+	font-size: 11px;
+	margin: 6px 0 0;
+	color: #666;
+}

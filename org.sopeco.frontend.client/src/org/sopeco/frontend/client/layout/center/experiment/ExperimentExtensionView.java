@@ -1,6 +1,6 @@
 package org.sopeco.frontend.client.layout.center.experiment;
 
-import org.sopeco.frontend.client.widget.ComboBox;
+import org.sopeco.gwt.widgets.ComboBox;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Unit;

@@ -6,8 +6,8 @@ import org.sopeco.frontend.client.event.SpecificationChangedEvent;
 import org.sopeco.frontend.client.event.handler.EnvironmentDefinitionChangedEventHandler;
 import org.sopeco.frontend.client.event.handler.SpecificationChangedEventHandler;
 import org.sopeco.frontend.client.model.ScenarioManager;
-import org.sopeco.frontend.client.widget.tree.TreeItem;
 import org.sopeco.frontend.shared.helper.Metering;
+import org.sopeco.gwt.widgets.tree.TreeItem;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.entities.definition.ParameterNamespace;
 

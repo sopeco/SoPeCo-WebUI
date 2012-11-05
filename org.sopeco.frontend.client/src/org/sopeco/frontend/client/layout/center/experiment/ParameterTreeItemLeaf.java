@@ -1,7 +1,7 @@
 package org.sopeco.frontend.client.layout.center.experiment;
 
 import org.sopeco.frontend.client.model.ScenarioManager;
-import org.sopeco.frontend.client.widget.tree.TreeItem;
+import org.sopeco.gwt.widgets.tree.TreeItem;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 
 import com.google.gwt.dom.client.Element;

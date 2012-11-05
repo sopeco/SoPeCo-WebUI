@@ -3,7 +3,7 @@ package org.sopeco.frontend.client.layout.center.environment;
 import org.sopeco.frontend.client.R;
 import org.sopeco.frontend.client.layout.center.CenterPanel;
 import org.sopeco.frontend.client.widget.ClickPanel;
-import org.sopeco.frontend.client.widget.ComboBox;
+import org.sopeco.gwt.widgets.ComboBox;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;

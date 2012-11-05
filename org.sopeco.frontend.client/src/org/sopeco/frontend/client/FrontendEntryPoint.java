@@ -1,7 +1,6 @@
 package org.sopeco.frontend.client;
 
 import org.sopeco.frontend.client.extensions.Extensions;
-import org.sopeco.frontend.client.helper.ServerPush;
 import org.sopeco.frontend.client.helper.SystemDetails;
 import org.sopeco.frontend.client.helper.callback.CallbackBatch;
 import org.sopeco.frontend.client.helper.callback.ParallelCallback;
@@ -13,7 +12,6 @@ import org.sopeco.frontend.client.rpc.RPC;
 import org.sopeco.frontend.client.rpc.StartupService;
 import org.sopeco.frontend.client.rpc.StartupServiceAsync;
 import org.sopeco.frontend.shared.helper.ExtensionContainer;
-import org.sopeco.gwt.widgets.MyWidget;
 import org.sopeco.persistence.metadata.entities.DatabaseInstance;
 
 import com.google.gwt.core.client.EntryPoint;
@@ -45,8 +43,6 @@ public class FrontendEntryPoint implements EntryPoint {
 		frontend = this;
 
 		loadFirstStep();
-
-		MyWidget m = new MyWidget();
 		
 		// TODO: alle callbacks die am anfang etwas laden muessen, als
 		// parallelcallback in die batch..

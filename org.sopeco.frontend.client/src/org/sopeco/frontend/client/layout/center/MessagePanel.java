@@ -1,7 +1,7 @@
 package org.sopeco.frontend.client.layout.center;
 
-import org.sopeco.frontend.client.widget.Headline;
-import org.sopeco.frontend.client.widget.Paragraph;
+import org.sopeco.gwt.widgets.Headline;
+import org.sopeco.gwt.widgets.Paragraph;
 
 import com.google.gwt.dom.client.Style.Unit;
 

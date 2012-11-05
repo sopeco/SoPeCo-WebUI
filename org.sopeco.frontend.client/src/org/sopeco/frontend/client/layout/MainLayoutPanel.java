@@ -198,6 +198,8 @@ public final class MainLayoutPanel extends DockLayoutPanel implements ValueChang
 			getCenter().removeFromParent();
 		}
 
+		currentCenterPanel = CenterType.Other;
+		
 		add(MessagePanel.createMessagePanel(headline, text));
 	}
 

@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.sopeco.frontend.client.R;
 import org.sopeco.frontend.client.resources.FrontEndResources;
-import org.sopeco.frontend.client.widget.Headline;
+import org.sopeco.gwt.widgets.Headline;
 
 import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.dom.client.Style.Unit;
