@@ -58,30 +58,30 @@ public class ServerPush {
 	 * @param x
 	 */
 	private static void execute(PushPackage pushPackage) {
-		switch (pushPackage.getType()) {
-		case IDLE:
-			// Notification.show("Idle");
-			break;
-		case ERROR:
-			Notification.show("Error");
-			break;
-		case MESSAGE:
-			String message = (String) pushPackage.getPiggyback();
-			Notification.show(message);
-			break;
-		case NEW_MEC_AVAILABLE:
-//			EnvironmentView envPanel = (EnvironmentView) MainLayoutPanel.get()
+//		switch (pushPackage.getType()) {
+//		case IDLE:
+//			// Notification.show("Idle");
+//			break;
+//		case ERROR:
+//			Notification.show("Error");
+//			break;
+//		case MESSAGE:
+//			String message = (String) pushPackage.getPiggyback();
+//			Notification.show(message);
+//			break;
+//		case NEW_MEC_AVAILABLE:
+////			EnvironmentView envPanel = (EnvironmentView) MainLayoutPanel.get()
+////					.getCenterController(CenterType.Environment).getView();
+////			envPanel.addMEControllerUrl(pushPackage.getPiggyback());
+//			break;
+//		case NEW_ENV_DEFINITION:
+//			EnvironmentView envPanel2 = (EnvironmentView) MainLayoutPanel.get()
 //					.getCenterController(CenterType.Environment).getView();
-//			envPanel.addMEControllerUrl(pushPackage.getPiggyback());
-			break;
-		case NEW_ENV_DEFINITION:
-			EnvironmentView envPanel2 = (EnvironmentView) MainLayoutPanel.get()
-					.getCenterController(CenterType.Environment).getView();
-
-			envPanel2.getEnvironmentDefinitonTreePanel().generateTree(true);
-			break;
-		default:
-			Message.warning("unknown parameter");
-		}
+//
+//			envPanel2.getEnvironmentDefinitonTreePanel().generateTree(true);
+//			break;
+//		default:
+//			Message.warning("unknown parameter");
+//		}
 	}
 }

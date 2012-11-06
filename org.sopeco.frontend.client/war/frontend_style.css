@@ -8,7 +8,7 @@
 
 .transparent-50 {
 	opacity: 0.5;
-	filter: alpha(opacity =             50);
+	filter: alpha(opacity =               50);
 }
 
 .spc-seperator {
@@ -538,16 +538,16 @@ p {
 #changeSpecPanel #addSpecification {
 	color: #333;
 	opacity: 0.5;
-	filter: alpha(opacity =   
+	filter: alpha(opacity =    
 		                                                         
-		     50);
+		      50);
 }
 
 #changeSpecPanel #addSpecification:hover {
 	opacity: 1;
-	filter: alpha(opacity =  
+	filter: alpha(opacity =   
 		                                                         
-		      100);
+		       100);
 }
 
 #changeSpecPanel #addSpecification>img {
@@ -667,16 +667,20 @@ p {
 
 .addExperimentNaviItem {
 	opacity: 0.5;
-	filter: alpha(opacity =             50);
+	filter: alpha(opacity =               50);
 }
 
 .addExperimentNaviItem:hover {
 	opacity: 1;
-	filter: alpha(opacity =             100);
+	filter: alpha(opacity =               100);
 }
 
 .addExperimentNaviItem img {
 	vertical-align: middle;
 	margin-bottom: 3px;
 	margin-right: 10px;
+}
+
+.resultTreeItem:hover {
+	color: #468;
 }

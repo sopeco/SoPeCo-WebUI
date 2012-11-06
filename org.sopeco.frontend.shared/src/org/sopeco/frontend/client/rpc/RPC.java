@@ -18,7 +18,22 @@ public final class RPC {
 	private static SystemDetailsRPCAsync systemDetails = null;
 	private static MSpecificationRPCAsync specificationRPC = null;
 	private static ExtensionRPCAsync extensionRPC = null;
+	private static ExecuteRPCAsync executeRPC = null;
+	private static ResultRPCAsync resultRPC = null;
 
+	/**
+	 * Returns a instance of the ScenarioManagerRPCAsync.
+	 * 
+	 * @return
+	 */
+	public static ResultRPCAsync getResultRPC() {
+		if (resultRPC == null) {
+			resultRPC = GWT.create(ResultRPC.class);
+		}
+
+		return resultRPC;
+	}
+	
 	/**
 	 * Returns a instance of the ScenarioManagerRPCAsync.
 	 * 
@@ -82,5 +97,18 @@ public final class RPC {
 		}
 
 		return extensionRPC;
+	}
+
+	/**
+	 * Returns a instance of the ExecuteRPCAsync.
+	 * 
+	 * @return
+	 */
+	public static ExecuteRPCAsync getExecuteRPC() {
+		if (executeRPC == null) {
+			executeRPC = GWT.create(ExecuteRPC.class);
+		}
+
+		return executeRPC;
 	}
 }

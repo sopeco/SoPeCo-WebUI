@@ -66,6 +66,20 @@ public class TreeItem extends FlowPanel implements ClickHandler {
 	}
 
 	/**
+	 * 
+	 */
+	protected FlowPanel getContentWrapper() {
+		return contentWrapper;
+	}
+
+	/**
+	 * Removes the icon to collapse this node.
+	 */
+	protected void removeIcon () {
+		image.removeFromParent();
+	}
+	
+	/**
 	 * Adding a new child item to this item.
 	 * 
 	 * @param item

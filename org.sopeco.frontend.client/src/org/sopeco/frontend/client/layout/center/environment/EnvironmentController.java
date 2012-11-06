@@ -200,9 +200,9 @@ public class EnvironmentController implements ICenterController, ClickHandler, V
 					public void onSuccess(MeasurementEnvironmentDefinition result) {
 						currentMeasurementEnvironment = result;
 						view.getEnvironmentDefinitonTreePanel().setEnvironmentDefiniton(result);
-						
+
 						ScenarioManager.get().setMeasurementDefinition(result);
-						
+
 						// TODO
 						Loader.hideLoader();
 					}
@@ -334,5 +334,14 @@ public class EnvironmentController implements ICenterController, ClickHandler, V
 		view.setSliderImageURL(EnvironmentView.SLIDER_PANEL_IMG_VISIBLE);
 		view.setSliderPanelText(R.get("hideThisArea"));
 		DOM.getElementById("mecSliderPanel").addClassName("down");
+	}
+
+	/**
+	 * Returns the value of the controllerCombobox.
+	 * 
+	 * @return
+	 */
+	public String getControllerUrl() {
+		return view.getControllerComboBox().getText();
 	}
 }

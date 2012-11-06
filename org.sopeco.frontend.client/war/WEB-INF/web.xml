@@ -31,7 +31,7 @@
 		<servlet-name>startupService</servlet-name>
 		<url-pattern>/sopeco_frontend/startupService</url-pattern>
 	</servlet-mapping>
-	
+
 	<servlet>
 		<servlet-name>systemDetailsRPC</servlet-name>
 		<servlet-class>org.sopeco.frontend.server.rpc.SystemDetailsRPCImpl
@@ -41,7 +41,7 @@
 		<servlet-name>systemDetailsRPC</servlet-name>
 		<url-pattern>/sopeco_frontend/systemDetailsRPC</url-pattern>
 	</servlet-mapping>
-	
+
 	<servlet>
 		<servlet-name>pushRPC</servlet-name>
 		<servlet-class>org.sopeco.frontend.server.rpc.PushRPCImpl
@@ -51,7 +51,7 @@
 		<servlet-name>pushRPC</servlet-name>
 		<url-pattern>/sopeco_frontend/pushRPC</url-pattern>
 	</servlet-mapping>
-	
+
 	<servlet>
 		<servlet-name>scenarioManagerRPC</servlet-name>
 		<servlet-class>org.sopeco.frontend.server.rpc.scenario.ScenarioManagerRPCImpl
@@ -61,7 +61,7 @@
 		<servlet-name>scenarioManagerRPC</servlet-name>
 		<url-pattern>/sopeco_frontend/scenarioManagerRPC</url-pattern>
 	</servlet-mapping>
-	
+
 	<servlet>
 		<servlet-name>meControllerRPC</servlet-name>
 		<servlet-class>org.sopeco.frontend.server.rpc.scenario.MEControllerRPCImpl
@@ -71,7 +71,7 @@
 		<servlet-name>meControllerRPC</servlet-name>
 		<url-pattern>/sopeco_frontend/meControllerRPC</url-pattern>
 	</servlet-mapping>
-	
+
 	<servlet>
 		<servlet-name>mSpecificationRPC</servlet-name>
 		<servlet-class>org.sopeco.frontend.server.rpc.scenario.MSpecificationRPCImpl
@@ -81,7 +81,7 @@
 		<servlet-name>mSpecificationRPC</servlet-name>
 		<url-pattern>/sopeco_frontend/mSpecificationRPC</url-pattern>
 	</servlet-mapping>
-	
+
 	<servlet>
 		<servlet-name>extensionRPC</servlet-name>
 		<servlet-class>org.sopeco.frontend.server.rpc.ExtensionRPCImpl
@@ -91,7 +91,28 @@
 		<servlet-name>extensionRPC</servlet-name>
 		<url-pattern>/sopeco_frontend/extensionRPC</url-pattern>
 	</servlet-mapping>
-	
+
+	<servlet>
+		<servlet-name>executeRPC</servlet-name>
+		<servlet-class>org.sopeco.frontend.server.rpc.ExecuteRPCImpl
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>executeRPC</servlet-name>
+		<url-pattern>/sopeco_frontend/executeRPC</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>resultRPCImpl</servlet-name>
+		<servlet-class>org.sopeco.frontend.server.rpc.ResultRPCImpl
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>resultRPCImpl</servlet-name>
+		<url-pattern>/sopeco_frontend/resultRPC</url-pattern>
+	</servlet-mapping>
+
+
 	<!-- HttpServlet for FileExport -->
 	<servlet>
 		<servlet-name>exportServlet</servlet-name>
@@ -103,4 +124,14 @@
 		<url-pattern>/sopeco_frontend/export</url-pattern>
 	</servlet-mapping>
 	
+	<servlet>
+		<servlet-name>datasetExportServlet</servlet-name>
+		<servlet-class>org.sopeco.frontend.server.export.DataSetExportServlet
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>datasetExportServlet</servlet-name>
+		<url-pattern>/sopeco_frontend/dataset</url-pattern>
+	</servlet-mapping>
+
 </web-app>

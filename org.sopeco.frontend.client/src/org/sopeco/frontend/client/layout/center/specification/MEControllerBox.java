@@ -118,7 +118,7 @@ public final class MEControllerBox extends DialogBox implements ValueChangeHandl
 		boolean matchFound = (matcher != null);
 
 		if (matchFound) {
-			if (matcher.getGroupCount() == 7) {
+			if (matcher.getGroupCount() == 6) {
 				if (matcher.getGroup(1).equals("rmi")) {
 					cbProtocol.setSelectedIndex(0);
 				} else if (matcher.getGroup(1).equals("http")) {
@@ -131,10 +131,6 @@ public final class MEControllerBox extends DialogBox implements ValueChangeHandl
 				tbPort.setText(matcher.getGroup(4));
 				cbController.setText(matcher.getGroup(5));
 			}
-			// for (int i = 0; i <= matcher.getGroupCount(); i++) {
-			// String groupStr = matcher.getGroup(i);
-			// GWT.log(i+": "+groupStr);
-			// }
 		}
 
 	}

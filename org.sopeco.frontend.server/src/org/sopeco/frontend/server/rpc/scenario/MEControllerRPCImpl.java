@@ -71,7 +71,7 @@ public class MEControllerRPCImpl extends SuperRemoteServlet implements MEControl
 
 			getUser().getUiPesistenceProvider().storeMEControllerUrl(url);
 
-			pushNewMECToClients(url);
+			//pushNewMECToClients(url);
 		}
 
 		try {
@@ -142,9 +142,9 @@ public class MEControllerRPCImpl extends SuperRemoteServlet implements MEControl
 
 			MeasurementEnvironmentDefinition med = meCotnroller.getMEDefinition();
 
-			if (med.getRoot().getName().isEmpty()) {
-				med.getRoot().setName("root");
-			}
+//			if (med.getRoot().getName().isEmpty()) {
+//				med.getRoot().setName("root");
+//			}
 
 			setNewMEDefinition(med);
 

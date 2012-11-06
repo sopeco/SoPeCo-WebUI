@@ -49,50 +49,52 @@ public class SelectionView extends ScrollPanel {
 		wrapper.getElement().setId(SELECTION_PANEL_ID);
 		getElement().setId(SELECTION_PANEL_WRAPPER_ID);
 
-		Headline headlineW = new Headline(R.get("meController"));
-		wrapper.add(headlineW);
-
 		// ************************
+		
+//		Headline headlineW = new Headline(R.get("meController"));
+//		wrapper.add(headlineW);
 
-		lastCheck = System.currentTimeMillis();
-
-		ClickPanel cpa = new ClickPanel();
-		FlowPanel par = new FlowPanel();
-		par.getElement().setId(MECONTROLLER_URL_ID);
-
-		final Image status = new Image("images/status-green.png");
-		status.getElement().getStyle().setVerticalAlign(VerticalAlign.MIDDLE);
-		status.getElement().getStyle().setPaddingBottom(1, Unit.PX);
-		status.getElement().getStyle().setMarginRight(6, Unit.PX);
-		status.addMouseOverHandler(new MouseOverHandler() {
-			@Override
-			public void onMouseOver(MouseOverEvent event) {
-				long dif = (System.currentTimeMillis() - lastCheck) / 1000;
-				String text = "Last check: ";
-				if (dif >= 60) {
-					text += (dif / 60) + " minutes";
-				} else {
-					text += dif + " seconds";
-				}
-
-				status.setTitle(text);
-			}
-		});
-		cpa.add(par);
-		cpa.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				MEControllerBox.showBox();
-			}
-		});
-
-		par.add(status);
-
-		HTML url = new HTML("rmi://localhost:1099/UIPriceTagsController");
-		url.getElement().getStyle().setDisplay(Display.INLINE_BLOCK);
-		par.add(url);
-
-		wrapper.add(cpa);
+		
+//
+//		lastCheck = System.currentTimeMillis();
+//
+//		ClickPanel cpa = new ClickPanel();
+//		FlowPanel par = new FlowPanel();
+//		par.getElement().setId(MECONTROLLER_URL_ID);
+//
+//		final Image status = new Image("images/status-green.png");
+//		status.getElement().getStyle().setVerticalAlign(VerticalAlign.MIDDLE);
+//		status.getElement().getStyle().setPaddingBottom(1, Unit.PX);
+//		status.getElement().getStyle().setMarginRight(6, Unit.PX);
+//		status.addMouseOverHandler(new MouseOverHandler() {
+//			@Override
+//			public void onMouseOver(MouseOverEvent event) {
+//				long dif = (System.currentTimeMillis() - lastCheck) / 1000;
+//				String text = "Last check: ";
+//				if (dif >= 60) {
+//					text += (dif / 60) + " minutes";
+//				} else {
+//					text += dif + " seconds";
+//				}
+//
+//				status.setTitle(text);
+//			}
+//		});
+//		cpa.add(par);
+//		cpa.addClickHandler(new ClickHandler() {
+//			@Override
+//			public void onClick(ClickEvent event) {
+//				MEControllerBox.showBox();
+//			}
+//		});
+//
+//		par.add(status);
+//
+//		HTML url = new HTML("rmi://localhost:1099/UIPriceTagsController");
+//		url.getElement().getStyle().setDisplay(Display.INLINE_BLOCK);
+//		par.add(url);
+//
+//		wrapper.add(cpa);
 
 		// ************************
 
