@@ -7,6 +7,7 @@ import org.sopeco.frontend.client.layout.center.CenterType;
 import org.sopeco.frontend.client.layout.center.ICenterController;
 import org.sopeco.frontend.client.layout.center.environment.EnvironmentController;
 import org.sopeco.frontend.client.layout.popups.Message;
+import org.sopeco.frontend.client.model.Manager;
 import org.sopeco.frontend.client.rpc.RPC;
 
 import com.google.gwt.core.client.GWT;
@@ -56,8 +57,7 @@ public class ExecuteController implements ICenterController, ClickHandler {
 	@Override
 	public void onClick(ClickEvent event) {
 		if (event.getSource() == view.getBtnStartExperiment()) {
-			String url = ((EnvironmentController) MainLayoutPanel.get().getCenterController(CenterType.Environment))
-					.getControllerUrl();
+			String url = Manager.get().getControllerUrl();
 
 			if (running) {
 				// RPC.getExecuteRPC().stop(url, new AsyncCallback<Void>() {

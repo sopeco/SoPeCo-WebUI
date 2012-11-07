@@ -1,11 +1,11 @@
 package org.sopeco.frontend.client.layout.center.specification;
 
 import org.sopeco.frontend.client.R;
+import org.sopeco.frontend.client.model.Manager.ControllerStatus;
 import org.sopeco.frontend.client.widget.ClickPanel;
 import org.sopeco.gwt.widgets.Headline;
 import org.sopeco.gwt.widgets.tree.Tree;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
@@ -33,6 +33,8 @@ public class SelectionView extends ScrollPanel {
 
 	private FlowPanel wrapper;
 	private Tree tree;
+	private HTML htmlControllerUrl;
+	private Image imgControllerStatus;
 
 	private long lastCheck;
 
@@ -50,52 +52,54 @@ public class SelectionView extends ScrollPanel {
 		getElement().setId(SELECTION_PANEL_WRAPPER_ID);
 
 		// ************************
-		
-//		Headline headlineW = new Headline(R.get("meController"));
-//		wrapper.add(headlineW);
+		// ************************
+		// ************************
+		// TODO cleanup
+		Headline headlineW = new Headline(R.get("meController"));
+		wrapper.add(headlineW);
 
-		
-//
-//		lastCheck = System.currentTimeMillis();
-//
-//		ClickPanel cpa = new ClickPanel();
-//		FlowPanel par = new FlowPanel();
-//		par.getElement().setId(MECONTROLLER_URL_ID);
-//
-//		final Image status = new Image("images/status-green.png");
-//		status.getElement().getStyle().setVerticalAlign(VerticalAlign.MIDDLE);
-//		status.getElement().getStyle().setPaddingBottom(1, Unit.PX);
-//		status.getElement().getStyle().setMarginRight(6, Unit.PX);
-//		status.addMouseOverHandler(new MouseOverHandler() {
-//			@Override
-//			public void onMouseOver(MouseOverEvent event) {
-//				long dif = (System.currentTimeMillis() - lastCheck) / 1000;
-//				String text = "Last check: ";
-//				if (dif >= 60) {
-//					text += (dif / 60) + " minutes";
-//				} else {
-//					text += dif + " seconds";
-//				}
-//
-//				status.setTitle(text);
-//			}
-//		});
-//		cpa.add(par);
-//		cpa.addClickHandler(new ClickHandler() {
-//			@Override
-//			public void onClick(ClickEvent event) {
-//				MEControllerBox.showBox();
-//			}
-//		});
-//
-//		par.add(status);
-//
-//		HTML url = new HTML("rmi://localhost:1099/UIPriceTagsController");
-//		url.getElement().getStyle().setDisplay(Display.INLINE_BLOCK);
-//		par.add(url);
-//
-//		wrapper.add(cpa);
+		lastCheck = System.currentTimeMillis();
 
+		ClickPanel cpa = new ClickPanel();
+		FlowPanel par = new FlowPanel();
+		par.getElement().setId(MECONTROLLER_URL_ID);
+
+		imgControllerStatus = new Image("images/status-green.png");
+		imgControllerStatus.getElement().getStyle().setVerticalAlign(VerticalAlign.MIDDLE);
+		imgControllerStatus.getElement().getStyle().setPaddingBottom(1, Unit.PX);
+		imgControllerStatus.getElement().getStyle().setMarginRight(6, Unit.PX);
+		imgControllerStatus.addMouseOverHandler(new MouseOverHandler() {
+			@Override
+			public void onMouseOver(MouseOverEvent event) {
+				long dif = (System.currentTimeMillis() - lastCheck) / 1000;
+				String text = "Last check: ";
+				if (dif >= 60) {
+					text += (dif / 60) + " minutes";
+				} else {
+					text += dif + " seconds";
+				}
+
+				imgControllerStatus.setTitle(text);
+			}
+		});
+		cpa.add(par);
+		cpa.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				MEControllerBox.showBox();
+			}
+		});
+
+		par.add(imgControllerStatus);
+
+		htmlControllerUrl = new HTML("");
+		htmlControllerUrl.getElement().getStyle().setDisplay(Display.INLINE_BLOCK);
+		par.add(htmlControllerUrl);
+
+		wrapper.add(cpa);
+
+		// ************************
+		// ************************
 		// ************************
 
 		Element headline = DOM.createElement("h3");
@@ -106,6 +110,29 @@ public class SelectionView extends ScrollPanel {
 		wrapper.add(getTree());
 
 		add(wrapper);
+	}
+
+	public void setControllerUrl(String controllerUrl) {
+		htmlControllerUrl.setText(controllerUrl);
+	}
+
+	public void setControllerStatus(ControllerStatus status, long lastUpdate) {
+		String imgUrl = "images/status-";
+		switch (status) {
+		case ONLINE:
+			imgUrl += "green.png";
+			break;
+		case OFFLINE:
+			imgUrl += "red.png";
+			break;
+		default:
+		case UNKNOWN:
+			imgUrl += "gray.png";
+			break;
+		}
+
+		imgControllerStatus.setUrl(imgUrl);
+		lastCheck = lastUpdate;
 	}
 
 	/**

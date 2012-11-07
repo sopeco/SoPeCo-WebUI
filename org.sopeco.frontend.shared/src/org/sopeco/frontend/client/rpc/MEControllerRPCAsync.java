@@ -10,7 +10,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 /**
  * 
  * @author Marius Oehler
- *
+ * 
  */
 public interface MEControllerRPCAsync {
 
@@ -39,4 +39,7 @@ public interface MEControllerRPCAsync {
 	void updateParameter(String path, String oldName, String newName, String type, ParameterRole role,
 			AsyncCallback<Boolean> callback);
 
+	void isPortReachable(String host, int port, AsyncCallback<Boolean> callback);
+
+	void getRMIController(String host, int port, AsyncCallback<List<String>> callback);
 }

@@ -332,10 +332,25 @@ public final class ScenarioManager {
 
 		return true;
 	}
-	
-	public void setMeasurementDefinition (MeasurementEnvironmentDefinition environment) {
+
+	public void loadDefinitionFromCurrentController() {
+		RPC.getMEControllerRPC().getMEDefinitionFromMEC(Manager.get().getControllerUrl(),
+				new AsyncCallback<MeasurementEnvironmentDefinition>() {
+					@Override
+					public void onFailure(Throwable caught) {
+						Message.error(caught.getMessage());
+					}
+
+					@Override
+					public void onSuccess(MeasurementEnvironmentDefinition result) {
+						setMeasurementDefinition(result);
+					}
+				});
+	}
+
+	public void setMeasurementDefinition(MeasurementEnvironmentDefinition environment) {
 		builder.getBuiltScenario().setMeasurementEnvironmentDefinition(environment);
-		
+
 		EventControl.get().fireEvent(new EnvironmentDefinitionChangedEvent());
 	}
 }

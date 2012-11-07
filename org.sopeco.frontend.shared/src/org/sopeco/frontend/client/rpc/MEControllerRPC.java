@@ -77,11 +77,14 @@ public interface MEControllerRPC extends RemoteService {
 	boolean removeNamespace(String path);
 
 	boolean renameNamespace(String namespacePath, String newName);
-	
+
 	boolean addParameter(String path, String name, String type, ParameterRole role);
-	
+
 	boolean removeParameter(String path, String name);
-	
+
 	boolean updateParameter(String path, String oldName, String newName, String type, ParameterRole role);
 
+	boolean isPortReachable(String host, int port);
+
+	List<String> getRMIController(String host, int port);
 }

@@ -2,9 +2,12 @@ package org.sopeco.frontend.client.layout.center.specification;
 
 import org.sopeco.frontend.client.event.EnvironmentDefinitionChangedEvent;
 import org.sopeco.frontend.client.event.EventControl;
+import org.sopeco.frontend.client.event.MEControllerEvent;
 import org.sopeco.frontend.client.event.SpecificationChangedEvent;
 import org.sopeco.frontend.client.event.handler.EnvironmentDefinitionChangedEventHandler;
+import org.sopeco.frontend.client.event.handler.MEControllerEventHandler;
 import org.sopeco.frontend.client.event.handler.SpecificationChangedEventHandler;
+import org.sopeco.frontend.client.model.Manager;
 import org.sopeco.frontend.client.model.ScenarioManager;
 import org.sopeco.frontend.shared.helper.Metering;
 import org.sopeco.gwt.widgets.tree.TreeItem;
@@ -32,6 +35,8 @@ public class SelectionController {
 	public void reset() {
 		view = new SelectionView();
 
+		updateMEControllerElements();
+
 		// generateTree();
 		EventControl.get().addHandler(SpecificationChangedEvent.TYPE, new SpecificationChangedEventHandler() {
 			@Override
@@ -47,6 +52,20 @@ public class SelectionController {
 						generateTree();
 					}
 				});
+
+		EventControl.get().addHandler(MEControllerEvent.TYPE, new MEControllerEventHandler() {
+			@Override
+			public void onNewMEControllerEvent(MEControllerEvent event) {
+				// if (event.getEventType() == EventType.CONTROLLER_CHANGED) {
+				updateMEControllerElements();
+				// }
+			}
+		});
+	}
+
+	private void updateMEControllerElements() {
+		view.setControllerUrl(Manager.get().getControllerUrl());
+		view.setControllerStatus(Manager.get().getControllerLastStatus(), Manager.get().getControllerLastCheck());
 	}
 
 	private void generateTree() {

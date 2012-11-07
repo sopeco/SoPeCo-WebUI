@@ -13,6 +13,7 @@ import org.sopeco.engine.measurementenvironment.rmi.RmiMEConnector;
 import org.sopeco.frontend.client.rpc.MEControllerRPC;
 import org.sopeco.frontend.client.rpc.PushRPC.Type;
 import org.sopeco.frontend.server.db.entities.MEControllerUrl;
+import org.sopeco.frontend.server.helper.ServerCheck;
 import org.sopeco.frontend.server.rpc.PushRPCImpl;
 import org.sopeco.frontend.server.rpc.SuperRemoteServlet;
 import org.sopeco.frontend.server.user.User;
@@ -32,7 +33,8 @@ import org.sopeco.persistence.exceptions.DataNotFoundException;
  * @author Marius Oehler
  * 
  */
-public class MEControllerRPCImpl extends SuperRemoteServlet implements MEControllerRPC {
+public class MEControllerRPCImpl extends SuperRemoteServlet implements
+		MEControllerRPC {
 
 	/**
 	 * 
@@ -71,11 +73,12 @@ public class MEControllerRPCImpl extends SuperRemoteServlet implements MEControl
 
 			getUser().getUiPesistenceProvider().storeMEControllerUrl(url);
 
-			//pushNewMECToClients(url);
+			// pushNewMECToClients(url);
 		}
 
 		try {
-			IMeasurementEnvironmentController meCotnroller = RmiMEConnector.connectToMEController(new URI(url));
+			IMeasurementEnvironmentController meCotnroller = RmiMEConnector.connectToMEController(new URI(
+					url));
 
 			MeasurementEnvironmentDefinition med = meCotnroller.getMEDefinition();
 
@@ -137,14 +140,14 @@ public class MEControllerRPCImpl extends SuperRemoteServlet implements MEControl
 	@Override
 	public MeasurementEnvironmentDefinition getMEDefinitionFromMEC(String controllerUrl) {
 		try {
-			IMeasurementEnvironmentController meCotnroller = RmiMEConnector
-					.connectToMEController(new URI(controllerUrl));
+			IMeasurementEnvironmentController meCotnroller = RmiMEConnector.connectToMEController(new URI(
+					controllerUrl));
 
 			MeasurementEnvironmentDefinition med = meCotnroller.getMEDefinition();
 
-//			if (med.getRoot().getName().isEmpty()) {
-//				med.getRoot().setName("root");
-//			}
+			// if (med.getRoot().getName().isEmpty()) {
+			// med.getRoot().setName("root");
+			// }
 
 			setNewMEDefinition(med);
 
@@ -160,8 +163,7 @@ public class MEControllerRPCImpl extends SuperRemoteServlet implements MEControl
 
 	@Override
 	public MeasurementEnvironmentDefinition getBlankMEDefinition() {
-		MeasurementEnvironmentDefinition meDefinition = MeasurementEnvironmentBuilder
-				.createBlankEnvironmentDefinition();
+		MeasurementEnvironmentDefinition meDefinition = MeasurementEnvironmentBuilder.createBlankEnvironmentDefinition();
 
 		setNewMEDefinition(meDefinition);
 
@@ -185,15 +187,14 @@ public class MEControllerRPCImpl extends SuperRemoteServlet implements MEControl
 	public boolean addNamespace(String path) {
 		LOGGER.debug("rpc: addNamespace: {}", path);
 
-		ParameterNamespace ns = getUser().getCurrentScenarioDefinitionBuilder().getEnvironmentBuilder()
-				.addNamespaces(path);
+		ParameterNamespace ns = getUser().getCurrentScenarioDefinitionBuilder().getEnvironmentBuilder().addNamespaces(path);
 
 		if (ns == null) {
 			return false;
 		}
 
 		getUser().storeCurrentScenarioDefinition();
-		
+
 		pushNotice();
 		return true;
 	}
@@ -202,8 +203,7 @@ public class MEControllerRPCImpl extends SuperRemoteServlet implements MEControl
 	public boolean removeNamespace(String path) {
 		LOGGER.debug("rpc: removeNamespace: {}", path);
 
-		ParameterNamespace ns = getUser().getCurrentScenarioDefinitionBuilder().getEnvironmentBuilder()
-				.getNamespace(path);
+		ParameterNamespace ns = getUser().getCurrentScenarioDefinitionBuilder().getEnvironmentBuilder().getNamespace(path);
 
 		if (ns == null) {
 			LOGGER.debug("nothing found");
@@ -227,8 +227,7 @@ public class MEControllerRPCImpl extends SuperRemoteServlet implements MEControl
 	public boolean renameNamespace(String namespacePath, String newName) {
 		LOGGER.debug("rpc: renameNamespace: {}", namespacePath);
 
-		ParameterNamespace ns = getUser().getCurrentScenarioDefinitionBuilder().getEnvironmentBuilder()
-				.getNamespace(namespacePath);
+		ParameterNamespace ns = getUser().getCurrentScenarioDefinitionBuilder().getEnvironmentBuilder().getNamespace(namespacePath);
 
 		if (ns == null) {
 			LOGGER.debug("no namespace '{}' found", ns);
@@ -247,8 +246,7 @@ public class MEControllerRPCImpl extends SuperRemoteServlet implements MEControl
 	public boolean addParameter(String path, String name, String type, ParameterRole role) {
 		LOGGER.debug("rpc: addParameter: {} to '{}'", name, path);
 
-		ParameterNamespace ns = getUser().getCurrentScenarioDefinitionBuilder().getEnvironmentBuilder()
-				.getNamespace(path);
+		ParameterNamespace ns = getUser().getCurrentScenarioDefinitionBuilder().getEnvironmentBuilder().getNamespace(path);
 
 		if (ns == null) {
 			LOGGER.debug("no namespace '{}' found", ns);
@@ -258,7 +256,7 @@ public class MEControllerRPCImpl extends SuperRemoteServlet implements MEControl
 		getUser().getCurrentScenarioDefinitionBuilder().getEnvironmentBuilder().addParameter(name, type, role, ns);
 
 		getUser().storeCurrentScenarioDefinition();
-		
+
 		pushNotice();
 		return true;
 	}
@@ -267,8 +265,7 @@ public class MEControllerRPCImpl extends SuperRemoteServlet implements MEControl
 	public boolean removeParameter(String path, String name) {
 		LOGGER.debug("rpc: removeParameter: {} from '{}'", name, path);
 
-		ParameterNamespace ns = getUser().getCurrentScenarioDefinitionBuilder().getEnvironmentBuilder()
-				.getNamespace(path);
+		ParameterNamespace ns = getUser().getCurrentScenarioDefinitionBuilder().getEnvironmentBuilder().getNamespace(path);
 
 		if (ns == null) {
 			LOGGER.debug("no namespace '{}' found", ns);
@@ -278,7 +275,7 @@ public class MEControllerRPCImpl extends SuperRemoteServlet implements MEControl
 		getUser().getCurrentScenarioDefinitionBuilder().getEnvironmentBuilder().removeParameter(name, ns);
 
 		getUser().storeCurrentScenarioDefinition();
-		
+
 		pushNotice();
 		return true;
 	}
@@ -287,16 +284,14 @@ public class MEControllerRPCImpl extends SuperRemoteServlet implements MEControl
 	public boolean updateParameter(String path, String oldName, String newName, String type, ParameterRole role) {
 		LOGGER.debug("rpc: updateParameter: {} from '{}'", oldName, path);
 
-		ParameterNamespace ns = getUser().getCurrentScenarioDefinitionBuilder().getEnvironmentBuilder()
-				.getNamespace(path);
+		ParameterNamespace ns = getUser().getCurrentScenarioDefinitionBuilder().getEnvironmentBuilder().getNamespace(path);
 
 		if (ns == null) {
 			LOGGER.debug("no namespace '{}' found", ns);
 			return false;
 		}
 
-		ParameterDefinition parameter = getUser().getCurrentScenarioDefinitionBuilder().getEnvironmentBuilder()
-				.getParameter(oldName, ns);
+		ParameterDefinition parameter = getUser().getCurrentScenarioDefinitionBuilder().getEnvironmentBuilder().getParameter(oldName, ns);
 
 		if (parameter == null) {
 			LOGGER.debug("no parameter '{}' found", oldName);
@@ -315,33 +310,49 @@ public class MEControllerRPCImpl extends SuperRemoteServlet implements MEControl
 	}
 
 	private void pushNotice() {
-//		LOGGER.debug("push updateParameter");
-//		PushPackage pp = new PushPackage(Type.NEW_ENV_DEFINITION);
-//
-//		String database = getUser().getCurrentDatabaseId();
-//		String myScenario = getUser().getCurrentScenarioDefinitionBuilder().getBuiltScenario().getScenarioName();
-//		for (User u : UserManager.getAllUserOnDatabase(database)) {
-//			if (u == getUser()) {
-//				continue;
-//			}
-//
-//			LOGGER.debug("push '{}' to user {}", myScenario, u.getSessionId());
-//			
-//			if (u.getCurrentScenarioDefinitionBuilder().getBuiltScenario().getScenarioName().equals(myScenario)) {
-//
-//				try {
-//					ScenarioDefinition def = u.getCurrentPersistenceProvider().loadScenarioDefinition(
-//							u.getCurrentScenarioDefinitionBuilder().getBuiltScenario().getScenarioName());
-//					ScenarioDefinitionBuilder builder = ScenarioDefinitionBuilder.load(def);
-//					u.setCurrentScenarioDefinitionBuilder(builder);
-//
-//					PushRPCImpl.push(u.getSessionId(), pp);
-//					LOGGER.debug("environment changed pushed to user {}", u.getSessionId());
-//				} catch (DataNotFoundException e) {
-//					LOGGER.warn("no scenario definition found");
-//				}
-//
-//			}
-//		}
+		// LOGGER.debug("push updateParameter");
+		// PushPackage pp = new PushPackage(Type.NEW_ENV_DEFINITION);
+		//
+		// String database = getUser().getCurrentDatabaseId();
+		// String myScenario =
+		// getUser().getCurrentScenarioDefinitionBuilder().getBuiltScenario().getScenarioName();
+		// for (User u : UserManager.getAllUserOnDatabase(database)) {
+		// if (u == getUser()) {
+		// continue;
+		// }
+		//
+		// LOGGER.debug("push '{}' to user {}", myScenario, u.getSessionId());
+		//
+		// if
+		// (u.getCurrentScenarioDefinitionBuilder().getBuiltScenario().getScenarioName().equals(myScenario))
+		// {
+		//
+		// try {
+		// ScenarioDefinition def =
+		// u.getCurrentPersistenceProvider().loadScenarioDefinition(
+		// u.getCurrentScenarioDefinitionBuilder().getBuiltScenario().getScenarioName());
+		// ScenarioDefinitionBuilder builder =
+		// ScenarioDefinitionBuilder.load(def);
+		// u.setCurrentScenarioDefinitionBuilder(builder);
+		//
+		// PushRPCImpl.push(u.getSessionId(), pp);
+		// LOGGER.debug("environment changed pushed to user {}",
+		// u.getSessionId());
+		// } catch (DataNotFoundException e) {
+		// LOGGER.warn("no scenario definition found");
+		// }
+		//
+		// }
+		// }
+	}
+
+	@Override
+	public boolean isPortReachable(String host, int port) {
+		return ServerCheck.isPortReachable(host, port);
+	}
+
+	@Override
+	public List<String> getRMIController(String host, int port) {
+		return ServerCheck.getRMIController(host, port);
 	}
 }
