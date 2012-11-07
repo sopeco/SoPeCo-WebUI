@@ -29,7 +29,7 @@ public class ResultController implements ICenterController, ClickHandler {
 	private ResultView view;
 	private List<SharedScenarioInstance> currentScenarioInstanceList;
 
-	private static final String DOWNLOAD_DATASET_URL = "/sopeco_frontend/dataset";
+	private static final String DOWNLOAD_DATASET_URL = "sopeco_frontend/dataset";
 
 	public ResultController() {
 		reset();

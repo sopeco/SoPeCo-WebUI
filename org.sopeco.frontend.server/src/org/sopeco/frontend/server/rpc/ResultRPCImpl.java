@@ -32,9 +32,11 @@ public class ResultRPCImpl extends SuperRemoteServlet implements ResultRPC {
 			DataSetAggregated d = new DataSetAggregated();
 
 			SimpleDataSet sd = d.convertToSimpleDataSet();
-
+			
+			
 			DataSetCsvHandler handler = new DataSetCsvHandler(';', '#', true);
 			// handler.store(dataset, fileName)
+//			handler.
 		} catch (DataNotFoundException e) {
 			throw new RuntimeException(e);
 		}
