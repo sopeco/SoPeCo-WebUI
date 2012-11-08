@@ -73,7 +73,7 @@ public class SelectionController {
 
 		ParameterNamespace root = ScenarioManager.get().getBuilder().getMEDefinition().getRoot();
 
-		TreeItem rootItem = new TreeItem(root.getName());
+		TreeItem rootItem = new TreeItem("", true);
 
 		recursiveAddTreeItems(root, rootItem);
 

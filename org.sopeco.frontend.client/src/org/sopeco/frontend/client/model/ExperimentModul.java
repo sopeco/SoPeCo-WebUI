@@ -39,6 +39,8 @@ public class ExperimentModul {
 		Repetitions, Timeout
 	}
 
+	private static final String DEFAULT_EXPLORATION = "Full Exploration Strategy";
+
 	private static final Logger LOGGER = Logger.getLogger(ExperimentModul.class.getName());
 	private ScenarioManager manager;
 
@@ -185,7 +187,7 @@ public class ExperimentModul {
 
 		MainLayoutPanel.get().getNavigationController().loadExperiments();
 		MainLayoutPanel.get().getViewSwitch().switchToExperiment(name);
-		
+
 		manager.storeScenario();
 	}
 
@@ -195,7 +197,13 @@ public class ExperimentModul {
 	 * @return
 	 */
 	private ExplorationStrategy createDefaultExplorationStrategy() {
-		String key = (String) Extensions.get().getExtensions(ExtensionTypes.EXPLORATIONSTRATEGY).keySet().toArray()[0];
+		String key;
+		if (Extensions.get().getExtensions(ExtensionTypes.EXPLORATIONSTRATEGY).containsKey(DEFAULT_EXPLORATION)) {
+			key = DEFAULT_EXPLORATION;
+		} else {
+			key = (String) Extensions.get().getExtensions(ExtensionTypes.EXPLORATIONSTRATEGY).keySet().toArray()[0];
+		}
+
 		Map<String, String> configMap = Extensions.get().getExtensions(ExtensionTypes.EXPLORATIONSTRATEGY).get(key);
 
 		return SimpleEntityFactory.createExplorationStrategy(key, configMap);

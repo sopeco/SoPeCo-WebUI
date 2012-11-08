@@ -71,6 +71,8 @@ public class SpecificationController implements ICenterController {
 		ParameterDefinition parameter = ScenarioManager.get().getBuilder().getEnvironmentBuilder()
 				.getParameter(name, namespace);
 
+		path = namespace.getFullName();
+
 		if (event.getChangeType() == ChangeType.Added) {
 			addNewAssignment(parameter, path.replaceAll("/", "."));
 		} else if (event.getChangeType() == ChangeType.Removed) {
@@ -195,9 +197,11 @@ public class SpecificationController implements ICenterController {
 		for (ConstantValueAssignment cva : ScenarioManager.get().getBuilder()
 				.getMeasurementSpecification(specificationName).getInitializationAssignemts()) {
 
-			String path = cva.getParameter().getFullName();
-			path = path.substring(0, path.lastIndexOf(".") + 1);
+//			String path = cva.getParameter().getFullName();
+//			path = path.substring(0, path.lastIndexOf(".") + 1);
 
+			String path = cva.getParameter().getNamespace().getFullName();
+			
 			AssignmentItem item = new AssignmentItem(path, cva.getParameter().getName(), cva.getParameter().getType(),
 					cva.getValue());
 			assignmentController.addAssignment(item);

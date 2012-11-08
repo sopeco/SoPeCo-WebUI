@@ -5,6 +5,7 @@ import org.sopeco.frontend.client.event.InitialAssignmentChangedEvent;
 import org.sopeco.frontend.client.event.InitialAssignmentChangedEvent.ChangeType;
 import org.sopeco.gwt.widgets.tree.TreeItem;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.dom.client.Style.Position;
@@ -38,7 +39,7 @@ public class SelectionTreeItemLeaf extends TreeItem implements ValueChangeHandle
 	}
 
 	@Override
-	protected void initialize() {
+	protected void initialize(boolean noContent) {
 		addStyleName(CSS_LEAF_CLASS);
 		setHeight("26px");
 
@@ -68,6 +69,8 @@ public class SelectionTreeItemLeaf extends TreeItem implements ValueChangeHandle
 		} else {
 			type = ChangeType.Removed;
 		}
+
+		GWT.log("add: " + getPath());
 		InitialAssignmentChangedEvent changeEvent = new InitialAssignmentChangedEvent(getPath(), type);
 		EventControl.get().fireEvent(changeEvent);
 	}

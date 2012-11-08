@@ -38,14 +38,21 @@ public class TreeItem extends FlowPanel implements ClickHandler {
 	/** The parent item. */
 	private TreeItem parentItem;
 
-	public TreeItem(String pText) {
+	public TreeItem(String pText, boolean noContent) {
 		text = pText;
 
-		initialize();
+		initialize(noContent);
 	}
 
-	protected void initialize() {
-		addStyleName(CSS_TREE_ITEM_CLASS);
+	public TreeItem(String pText) {
+		this(pText, false);
+	}
+
+	protected void initialize(boolean noContent) {
+		if (!noContent) {
+			addStyleName(CSS_TREE_ITEM_CLASS);
+		}
+
 		childrenItems = new ArrayList<TreeItem>();
 		expanded = true;
 
@@ -59,8 +66,10 @@ public class TreeItem extends FlowPanel implements ClickHandler {
 		textElement = DOM.createSpan();
 		textElement.setInnerHTML(text);
 
-		contentWrapper.add(image);
-		contentWrapper.getElement().appendChild(textElement);
+		if (!noContent) {
+			contentWrapper.add(image);
+			contentWrapper.getElement().appendChild(textElement);
+		}
 
 		add(contentWrapper);
 	}
@@ -75,10 +84,10 @@ public class TreeItem extends FlowPanel implements ClickHandler {
 	/**
 	 * Removes the icon to collapse this node.
 	 */
-	protected void removeIcon () {
+	protected void removeIcon() {
 		image.removeFromParent();
 	}
-	
+
 	/**
 	 * Adding a new child item to this item.
 	 * 

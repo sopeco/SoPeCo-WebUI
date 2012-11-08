@@ -119,8 +119,12 @@ public class MeasurementSpecificationBuilder {
 		LOGGER.info("Removing parameter '" + parameter.getFullName() + "' from init assignment list");
 
 		for (ConstantValueAssignment cva : specification.getInitializationAssignemts()) {
-			if (cva.getParameter() == parameter) {
-				return specification.getInitializationAssignemts().remove(cva);
+			if (cva.getParameter().getFullName().equals(parameter.getFullName())) {
+				if (specification.getInitializationAssignemts().remove(cva)) {
+
+					return true;
+				}
+				return false;
 			}
 		}
 
@@ -137,8 +141,15 @@ public class MeasurementSpecificationBuilder {
 	 * @return if adding was successful: the created experimentSeriesDefinition
 	 *         object else null
 	 */
-	public ExperimentSeriesDefinition addExperimentSeries(String name/*, ExperimentTerminationCondition termination*/) {
-		ExperimentSeriesDefinition experiment = SimpleEntityFactory.createExperimentSeriesDefinition(name/*, termination*/);
+	public ExperimentSeriesDefinition addExperimentSeries(String name/*
+																	 * ,
+																	 * ExperimentTerminationCondition
+																	 * termination
+																	 */) {
+		ExperimentSeriesDefinition experiment = SimpleEntityFactory.createExperimentSeriesDefinition(name/*
+																										 * ,
+																										 * termination
+																										 */);
 
 		if (addExperimentSeries(experiment)) {
 			return experiment;

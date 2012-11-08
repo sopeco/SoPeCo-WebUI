@@ -79,6 +79,7 @@ public class ExperimentExtensionController implements ValueChangeHandler<String>
 		view.getHeadline().setInnerHTML(text);
 	}
 
+
 	/**
 	 * @param extensionMap
 	 *            the extension to set

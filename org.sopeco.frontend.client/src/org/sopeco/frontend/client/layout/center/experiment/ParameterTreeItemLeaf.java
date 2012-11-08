@@ -41,7 +41,7 @@ public class ParameterTreeItemLeaf extends TreeItem implements ValueChangeHandle
 	}
 
 	@Override
-	protected void initialize() {
+	protected void initialize(boolean noContent) {
 		addStyleName(CSS_LEAF_CLASS);
 
 		textElement = DOM.createSpan();

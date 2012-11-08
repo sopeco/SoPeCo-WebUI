@@ -3,6 +3,7 @@ package org.sopeco.frontend.client.layout;
 import org.sopeco.frontend.client.R;
 import org.sopeco.frontend.client.event.EventControl;
 import org.sopeco.frontend.client.event.ScenarioChangedEvent;
+import org.sopeco.frontend.client.layout.center.specification.MEControllerBox;
 import org.sopeco.frontend.client.layout.dialog.AddScenarioDialog;
 import org.sopeco.frontend.client.layout.popups.Confirmation;
 import org.sopeco.frontend.client.layout.popups.Loader;
@@ -10,6 +11,7 @@ import org.sopeco.frontend.client.layout.popups.Message;
 import org.sopeco.frontend.client.rpc.RPC;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -31,8 +33,9 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Marius Oehler
  * 
  */
-public class NorthPanel extends FlowPanel {
+public class NorthPanel extends FlowPanel implements ClickHandler {
 
+	private static final String IMAGE_SATELLITE = "images/satellite.png";
 	private static final String SAP_RESEARCH_LOGO = "images/sap_research.png";
 	private static final String SAP_RESEARCH_LOGO_ID = "sapResearchLogo";
 
@@ -42,6 +45,7 @@ public class NorthPanel extends FlowPanel {
 	private HTML connectedToText;
 	private boolean scenariosAvailable = false;
 	private Anchor addScenario, removeScenario;
+	private Image imageSatellite;
 
 	private MainLayoutPanel parentPanel;
 	/**
@@ -164,9 +168,24 @@ public class NorthPanel extends FlowPanel {
 		});
 		secondHoPanel.add(export);
 
+		imageSatellite = new Image(IMAGE_SATELLITE);
+		imageSatellite.addClickHandler(this);
+		imageSatellite.getElement().getStyle().setMarginLeft(EXPORT_MARGIN, Unit.EM);
+		imageSatellite.getElement().getStyle().setCursor(Cursor.POINTER);
+		imageSatellite.setHeight("24px");
+		imageSatellite.setWidth("24px");
+		secondHoPanel.add(imageSatellite);
+
 		setConnectedAccountName(parentPanel.getParentModule().getConnectedDatabase().getDbName());
 
 		updateScenarioList();
+	}
+
+	@Override
+	public void onClick(ClickEvent event) {
+		if (event.getSource() == imageSatellite) {
+			MEControllerBox.showBox();
+		}
 	}
 
 	/**

@@ -33,7 +33,7 @@ import com.google.gwt.user.client.ui.DockLayoutPanel;
 public final class MainLayoutPanel extends DockLayoutPanel implements ValueChangeHandler<String> {
 
 	private static MainLayoutPanel singletonLayoutPanel;
-	private static final CenterType DEFAULT_CENTER_TYPE = CenterType.Environment;
+	private static final CenterType DEFAULT_CENTER_TYPE = CenterType.Specification;
 
 	private NorthPanel northPanel;
 	private NavigationController navigationController;
@@ -94,7 +94,7 @@ public final class MainLayoutPanel extends DockLayoutPanel implements ValueChang
 
 		getWidgetContainerElement(getNavigationController().getView()).setId("mainNavigation");
 
-		centerController.put(CenterType.Environment, new EnvironmentController());
+		//centerController.put(CenterType.Environment, new EnvironmentController());
 		centerController.put(CenterType.Specification, new SpecificationController());
 		centerController.put(CenterType.Execute, new ExecuteController());
 		centerController.put(CenterType.Result, new ResultController());

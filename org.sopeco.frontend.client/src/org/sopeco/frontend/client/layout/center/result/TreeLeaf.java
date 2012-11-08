@@ -36,8 +36,8 @@ public class TreeLeaf extends TreeItem implements HasClickHandlers, ClickHandler
 	}
 
 	@Override
-	protected void initialize() {
-		super.initialize();
+	protected void initialize(boolean noContent) {
+		super.initialize(noContent);
 		addStyleName(ITEM_CSS_CLASS);
 
 		removeIcon();

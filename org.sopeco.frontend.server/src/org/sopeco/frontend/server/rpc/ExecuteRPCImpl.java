@@ -1,11 +1,16 @@
 package org.sopeco.frontend.server.rpc;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
 import org.sopeco.config.Configuration;
 import org.sopeco.config.exception.ConfigurationException;
+import org.sopeco.engine.measurementenvironment.IMeasurementEnvironmentController;
+import org.sopeco.engine.measurementenvironment.rmi.RmiMEConnector;
 import org.sopeco.frontend.client.rpc.ExecuteRPC;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 import org.sopeco.runner.SoPeCoRunner;
@@ -46,6 +51,21 @@ public class ExecuteRPCImpl extends SuperRemoteServlet implements ExecuteRPC {
 			throw new RuntimeException(e);
 		}
 	}
+
+//	private void releaseMEC(String url) {
+//		try {
+//			IMeasurementEnvironmentController meCotnroller = RmiMEConnector.connectToMEController(new URI(
+//					url));
+//
+//			meCotnroller.releaseMEController(getSessionId());
+//		} catch (URISyntaxException e) {
+//			e.printStackTrace();
+//			LOGGER.warning("Cant release controller '" + url + "'");
+//		} catch (RemoteException e) {
+//			e.printStackTrace();
+//			LOGGER.warning("Cant release controller '" + url + "'");
+//		}
+//	}
 
 	@Override
 	public long isRunning(String url) {

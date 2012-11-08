@@ -43,7 +43,7 @@ public class FrontendEntryPoint implements EntryPoint {
 		frontend = this;
 
 		loadFirstStep();
-		
+
 		// TODO: alle callbacks die am anfang etwas laden muessen, als
 		// parallelcallback in die batch..
 		ParallelCallback<ExtensionContainer> loadExtensions = Extensions.getLoadingCallback();
@@ -172,4 +172,9 @@ public class FrontendEntryPoint implements EntryPoint {
 	public static FrontendEntryPoint get() {
 		return frontend;
 	}
+
+	public static native String getDocumentLastModifiedDate()
+	/*-{
+		return document.lastModified;
+	}-*/;
 }

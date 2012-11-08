@@ -1,11 +1,8 @@
 package org.sopeco.frontend.client.layout.center.execute;
 
 import org.sopeco.frontend.client.R;
-import org.sopeco.frontend.client.layout.MainLayoutPanel;
 import org.sopeco.frontend.client.layout.center.CenterPanel;
-import org.sopeco.frontend.client.layout.center.CenterType;
 import org.sopeco.frontend.client.layout.center.ICenterController;
-import org.sopeco.frontend.client.layout.center.environment.EnvironmentController;
 import org.sopeco.frontend.client.layout.popups.Message;
 import org.sopeco.frontend.client.model.Manager;
 import org.sopeco.frontend.client.rpc.RPC;
@@ -96,8 +93,7 @@ public class ExecuteController implements ICenterController, ClickHandler {
 	}
 
 	private void pollingCheckStatus(final boolean repeate) {
-		String url = ((EnvironmentController) MainLayoutPanel.get().getCenterController(CenterType.Environment))
-				.getControllerUrl();
+		String url = Manager.get().getControllerUrl();
 
 		if (url.isEmpty()) {
 			return;
