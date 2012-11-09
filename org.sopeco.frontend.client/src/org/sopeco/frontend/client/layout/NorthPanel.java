@@ -1,5 +1,6 @@
 package org.sopeco.frontend.client.layout;
 
+import org.sopeco.frontend.client.FrontendEntryPoint;
 import org.sopeco.frontend.client.R;
 import org.sopeco.frontend.client.event.EventControl;
 import org.sopeco.frontend.client.event.ScenarioChangedEvent;
@@ -13,8 +14,6 @@ import org.sopeco.frontend.client.resources.FrontEndResources;
 import org.sopeco.frontend.client.rpc.RPC;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style.Cursor;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -27,7 +26,6 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * The Panel of the top. It displays the current database and scenario.
@@ -35,28 +33,32 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Marius Oehler
  * 
  */
-public class NorthPanel extends FlowPanel implements ClickHandler {
+public class NorthPanel extends FlowPanel implements ClickHandler, ChangeHandler {
 
-	private static final String IMAGE_SATELLITE = "images/satellite.png";
+	private static final String GRADIENT_CSS = "gradient-blue";
+	private static final String IMG_BUTTON_CSS_CLASS = "imgButton";
+
+	private static final String IMAGE_SATELLITE = "images/satellite_invert.png";
+	private static final String IMAGE_EXPORT = "images/download_invert.png";
 	private static final String SAP_RESEARCH_LOGO = "images/sap_research.png";
 	private static final String SAP_RESEARCH_LOGO_ID = "sapResearchLogo";
 
 	private static final String NAVI_PANEL_HEIGHT = "2.8em";
-	
-	private static final String SEPARATOR_CSS_CLASS = "topBarSeparator";
-	
+
+	private static final String SEPARATOR_CSS_CLASS = "separator";
+
 	private static final int EXPORT_MARGIN = 4;
 
 	private ListBox listboxScenarios;
-	private HTML connectedToText;
+	private HTML connectedToText, htmlSelectScenario;
 	private boolean scenariosAvailable = false;
-	private Anchor addScenario, removeScenario;
-	private Image imageSatellite;
+	private Anchor anchorAddScenario, anchorRemoveScenario;
+	private Image imageSatellite, imageExport, researchLogo;
 
 	private Anchor anchorChangeAccount;
-	
+
 	private HorizontalPanel navigationPanel;
-	
+
 	private MainLayoutPanel parentPanel;
 	/**
 	 * The height of this panel in EM.
@@ -67,16 +69,17 @@ public class NorthPanel extends FlowPanel implements ClickHandler {
 		parentPanel = parent;
 
 		FrontEndResources.loadNavigationCSS();
-		
+
 		initialize();
 	}
 
-	private HTML createSeparator(){
+	private HTML createSeparator() {
 		HTML ret = new HTML();
 		ret.addStyleName(SEPARATOR_CSS_CLASS);
+		ret.addStyleName(GRADIENT_CSS);
 		return ret;
 	}
-	
+
 	/**
 	 * initialize the user interface.
 	 */
@@ -84,134 +87,60 @@ public class NorthPanel extends FlowPanel implements ClickHandler {
 		setSize("100%", NAVI_PANEL_HEIGHT); // .nPanel in CSS Style
 		addStyleName("nPanel");
 
-		
 		navigationPanel = new HorizontalPanel();
 		navigationPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
 		navigationPanel.addStyleName("north_hPanel");
-//		navigationPanel.setHeight(NAVI_PANEL_HEIGHT);
-//		
-//		connectedToText = new HTML();
-//		navigationPanel.add(connectedToText);
-//		
-//		anchorChangeAccount = new Anchor(R.get("change_account"));
-//		navigationPanel.add(anchorChangeAccount);
-//		
-//		navigationPanel.add(createSeparator());
-//		
-		add(navigationPanel);
+		navigationPanel.setHeight(NAVI_PANEL_HEIGHT);
 
-		/** ######################################### */
-		
-		// Adding Logo to the Top
-		Image researchLogo = new Image(SAP_RESEARCH_LOGO);
-		researchLogo.getElement().setId(SAP_RESEARCH_LOGO_ID);
-		getElement().appendChild(researchLogo.getElement());
+		connectedToText = new HTML();
+		navigationPanel.add(connectedToText);
 
-		HorizontalPanel firstHoPanel = new HorizontalPanel();
-		firstHoPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
-		navigationPanel.add(firstHoPanel); // ####
-		
-		connectedToText = new HTML(); // ###
-		firstHoPanel.add(connectedToText); // ####
-		firstHoPanel.addStyleName("tabStyle");
+		anchorChangeAccount = new Anchor(R.get("change_account"));
+		anchorChangeAccount.addClickHandler(this);
+		navigationPanel.add(anchorChangeAccount);
 
-		anchorChangeAccount = new Anchor(R.get("change_account")); // ####
-		firstHoPanel.add(anchorChangeAccount); // ####
-		anchorChangeAccount.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				parentPanel.getParentModule().changeDatabase();
-			}
-		});
+		navigationPanel.add(createSeparator());
 
-		// Test
-		HTML sep = new HTML();
-		sep.addStyleName("topBarSeparator");
-		firstHoPanel.add(sep);
-
-		HorizontalPanel secondHoPanel = new HorizontalPanel();
-		navigationPanel.add(secondHoPanel); // ####
-		secondHoPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
-		secondHoPanel.addStyleName("tabStyle");
-
-		HTML htmlSelectScenario = new HTML(R.get("scenario_select") + ":");
-		secondHoPanel.add(htmlSelectScenario);
+		htmlSelectScenario = new HTML(R.get("scenario_select") + ":");
+		navigationPanel.add(htmlSelectScenario);
 
 		listboxScenarios = new ListBox();
-		secondHoPanel.add(listboxScenarios);
 		listboxScenarios.setSize("120px", "1.8em");
 		listboxScenarios.setVisibleItemCount(1);
-		listboxScenarios.addItem(" ---");
-		listboxScenarios.addChangeHandler(new ChangeHandler() {
-			@Override
-			public void onChange(ChangeEvent event) {
-				switchScenario();
-			}
-		});
+		listboxScenarios.addChangeHandler(this);
+		navigationPanel.add(listboxScenarios);
 
-		addScenario = new Anchor(R.get("scenario_add"));
-		secondHoPanel.add(addScenario);
+		anchorAddScenario = new Anchor(R.get("scenario_add"));
+		anchorAddScenario.addClickHandler(this);
+		navigationPanel.add(anchorAddScenario);
 
-		final NorthPanel mySelf = this;
+		anchorRemoveScenario = new Anchor(R.get("scenario_remove"));
+		anchorRemoveScenario.addClickHandler(this);
+		navigationPanel.add(anchorRemoveScenario);
 
-		addScenario.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				AddScenarioDialog addScenarioDialog = new AddScenarioDialog(mySelf);
-				addScenarioDialog.center();
-			}
-		});
+		navigationPanel.add(createSeparator());
 
-		removeScenario = new Anchor(R.get("scenario_remove"));
-		secondHoPanel.add(removeScenario);
-		removeScenario.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				String msg = R.get("confRemoveScenario") + " <b>'"
-						+ listboxScenarios.getItemText(listboxScenarios.getSelectedIndex()) + "'</b>?";
+		imageExport = new Image(IMAGE_EXPORT);
+		imageExport.addClickHandler(this);
+		imageExport.addStyleName(IMG_BUTTON_CSS_CLASS);
+		imageExport.setTitle(R.get("exportModel")); // TODO: text
+		navigationPanel.add(imageExport);
 
-				Confirmation.confirm(msg, new ClickHandler() {
-					@Override
-					public void onClick(ClickEvent event) {
-						String name = listboxScenarios.getItemText(listboxScenarios.getSelectedIndex());
-						RPC.getScenarioManager().removeScenario(name, new AsyncCallback<Boolean>() {
-							@Override
-							public void onFailure(Throwable caught) {
-								Message.error(caught.getMessage());
-							}
-
-							@Override
-							public void onSuccess(Boolean result) {
-								updateScenarioList();
-							}
-						});
-					}
-				});
-			}
-		});
-
-		for (Widget w : new Widget[] { htmlSelectScenario, anchorChangeAccount, listboxScenarios, addScenario,
-				removeScenario, secondHoPanel }) {
-			w.addStyleName("hDefaultMargin");
-		}
-
-		Anchor export = new Anchor("export");
-		export.getElement().getStyle().setMarginLeft(EXPORT_MARGIN, Unit.EM);
-		export.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				ExportBox.showExportBox();
-			}
-		});
-		secondHoPanel.add(export);
+		navigationPanel.add(createSeparator());
 
 		imageSatellite = new Image(IMAGE_SATELLITE);
 		imageSatellite.addClickHandler(this);
-		imageSatellite.getElement().getStyle().setMarginLeft(EXPORT_MARGIN, Unit.EM);
-		imageSatellite.getElement().getStyle().setCursor(Cursor.POINTER);
-		imageSatellite.setHeight("24px");
-		imageSatellite.setWidth("24px");
-		secondHoPanel.add(imageSatellite);
+		imageSatellite.addStyleName(IMG_BUTTON_CSS_CLASS);
+		imageSatellite.setTitle(R.get("mecSettings")); // TODO: text
+		navigationPanel.add(imageSatellite);
+
+		navigationPanel.add(createSeparator());
+
+		researchLogo = new Image(SAP_RESEARCH_LOGO);
+		researchLogo.getElement().setId(SAP_RESEARCH_LOGO_ID);
+		getElement().appendChild(researchLogo.getElement());
+
+		add(navigationPanel);
 
 		setConnectedAccountName(parentPanel.getParentModule().getConnectedDatabase().getDbName());
 
@@ -222,7 +151,51 @@ public class NorthPanel extends FlowPanel implements ClickHandler {
 	public void onClick(ClickEvent event) {
 		if (event.getSource() == imageSatellite) {
 			MEControllerBox.showBox();
+		} else if (event.getSource() == imageExport) {
+			ExportBox.showExportBox();
+		} else if (event.getSource() == anchorAddScenario) {
+			AddScenarioDialog addScenarioDialog = new AddScenarioDialog(this);
+			addScenarioDialog.center();
+		} else if (event.getSource() == anchorRemoveScenario) {
+			removeScenario();
+		} else if (event.getSource() == anchorChangeAccount) {
+			FrontendEntryPoint.get().changeDatabase();
 		}
+	}
+
+	@Override
+	public void onChange(ChangeEvent event) {
+		if (event.getSource() == listboxScenarios) {
+			switchScenario();
+		}
+	}
+
+	/**
+	 * 
+	 */
+	private void removeScenario() {
+		String msg = R.get("confRemoveScenario") + " <b>'"
+				+ listboxScenarios.getItemText(listboxScenarios.getSelectedIndex()) + "'</b>?";
+
+		Confirmation.confirm(msg, new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				String name = listboxScenarios.getItemText(listboxScenarios.getSelectedIndex());
+				RPC.getScenarioManager().removeScenario(name, new AsyncCallback<Boolean>() {
+
+					@Override
+					public void onFailure(Throwable caught) {
+						Message.error(caught.getMessage());
+					}
+
+					@Override
+					public void onSuccess(Boolean result) {
+						updateScenarioList();
+					}
+				});
+			}
+		});
 	}
 
 	/**
@@ -244,7 +217,7 @@ public class NorthPanel extends FlowPanel implements ClickHandler {
 
 		RPC.getScenarioManager().getScenarioNames(new AsyncCallback<String[]>() {
 			@Override
-			public void onSuccess(String[] result) {				
+			public void onSuccess(String[] result) {
 				updateScenarioList(result);
 				Loader.hideLoader();
 			}
@@ -270,13 +243,13 @@ public class NorthPanel extends FlowPanel implements ClickHandler {
 			listboxScenarios.addItem(R.get("no_scenarios"));
 			listboxScenarios.setEnabled(false);
 			scenariosAvailable = false;
-			removeScenario.setEnabled(false);
-			removeScenario.addStyleName("disabled");
+			anchorRemoveScenario.setEnabled(false);
+			anchorRemoveScenario.addStyleName("disabled");
 		} else {
 			listboxScenarios.setEnabled(true);
 			scenariosAvailable = true;
-			removeScenario.setEnabled(true);
-			removeScenario.removeStyleName("disabled");
+			anchorRemoveScenario.setEnabled(true);
+			anchorRemoveScenario.removeStyleName("disabled");
 
 			int count = 0;
 			for (String name : names) {

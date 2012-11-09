@@ -8,7 +8,7 @@
 
 .transparent-50 {
 	opacity: 0.5;
-	filter: alpha(opacity =                   50);
+	filter: alpha(opacity =                     50);
 }
 
 .spc-seperator {
@@ -182,11 +182,6 @@ p {
 	margin: 12px;
 	height: 12px;
 	width: 121px;
-}
-
-.north_hPanel {
-	margin-left: 1em;
-	float: left;
 }
 
 .north_hPanel .tabStyle {
@@ -539,16 +534,16 @@ p {
 #changeSpecPanel #addSpecification {
 	color: #333;
 	opacity: 0.5;
-	filter: alpha(opacity =      
+	filter: alpha(opacity =       
 		                                                         
-		        50);
+		         50);
 }
 
 #changeSpecPanel #addSpecification:hover {
 	opacity: 1;
-	filter: alpha(opacity =     
+	filter: alpha(opacity =      
 		                                                         
-		         100);
+		          100);
 }
 
 #changeSpecPanel #addSpecification>img {
@@ -668,12 +663,12 @@ p {
 
 .addExperimentNaviItem {
 	opacity: 0.5;
-	filter: alpha(opacity =                   50);
+	filter: alpha(opacity =                     50);
 }
 
 .addExperimentNaviItem:hover {
 	opacity: 1;
-	filter: alpha(opacity =                   100);
+	filter: alpha(opacity =                     100);
 }
 
 .addExperimentNaviItem img {
@@ -686,20 +681,15 @@ p {
 	color: #468;
 }
 
-.topBarSeparator {
-	width: 1px;
-	height: 39px;
-	top: 0;
-	right: -10px;
-	display: block;
-	
+.gradient-blue {
 	background: #223344;
-background: -moz-linear-gradient(top,  #223344 5%, #43597c 50%, #223344 95%);
-background: -webkit-gradient(linear, left top, left bottom, color-stop(5%,#223344), color-stop(50%,#43597c), color-stop(95%,#223344));
-background: -webkit-linear-gradient(top,  #223344 5%,#43597c 50%,#223344 95%);
-background: -o-linear-gradient(top,  #223344 5%,#43597c 50%,#223344 95%);
-background: -ms-linear-gradient(top,  #223344 5%,#43597c 50%,#223344 95%);
-background: linear-gradient(to bottom,  #223344 5%,#43597c 50%,#223344 95%);
-filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#223344', endColorstr='#223344',GradientType=0 );
-
+	background: -moz-linear-gradient(top, #223344 5%, #838ead 50%, #223344 95%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(5%, #223344),
+		color-stop(50%, #838ead), color-stop(95%, #223344) );
+	background: -webkit-linear-gradient(top, #223344 5%, #838ead 50%, #223344 95%);
+	background: -o-linear-gradient(top, #223344 5%, #838ead 50%, #223344 95%);
+	background: -ms-linear-gradient(top, #223344 5%, #838ead 50%, #223344 95%);
+	background: linear-gradient(to bottom, #223344 5%, #838ead 50%, #223344 95%);
+	filter: progid:DXImageTransform.Microsoft.gradient(  startColorstr='#223344',
+		endColorstr='#223344', GradientType=0 );
 }

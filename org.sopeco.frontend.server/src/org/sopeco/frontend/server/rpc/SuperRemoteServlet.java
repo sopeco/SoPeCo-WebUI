@@ -25,4 +25,10 @@ public class SuperRemoteServlet extends RemoteServiceServlet {
 		return UserManager.getUser(getSessionId());
 	}
 
+private static int testVar = test();
+	
+	private static int test () {
+		System.out.println("test");
+		return 0;
+	}
 }

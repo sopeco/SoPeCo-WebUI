@@ -21,7 +21,7 @@ public class StartupServiceImpl extends SuperRemoteServlet implements StartupSer
 	private final String CONFIGURATION_FILE = "sopeco-gui.conf";
 
 	private static boolean loaded = false;
-
+	
 	@Override
 	public boolean start() {
 		if (!loaded) {
@@ -37,7 +37,7 @@ public class StartupServiceImpl extends SuperRemoteServlet implements StartupSer
 	private void load() {
 		loaded = true;
 
-		EmbeddedBroker.startMessagingBroker();
+		//EmbeddedBroker.startMessagingBroker();
 		
 		try {
 			Configuration.getSessionSingleton(getThreadLocalRequest().getSession().getId()).loadConfiguration(
