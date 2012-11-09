@@ -3,9 +3,11 @@ package org.sopeco.frontend.client.layout.center.specification;
 import org.sopeco.frontend.client.event.EnvironmentDefinitionChangedEvent;
 import org.sopeco.frontend.client.event.EventControl;
 import org.sopeco.frontend.client.event.MEControllerEvent;
+import org.sopeco.frontend.client.event.ScenarioChangedEvent;
 import org.sopeco.frontend.client.event.SpecificationChangedEvent;
 import org.sopeco.frontend.client.event.handler.EnvironmentDefinitionChangedEventHandler;
 import org.sopeco.frontend.client.event.handler.MEControllerEventHandler;
+import org.sopeco.frontend.client.event.handler.ScenarioChangedEventHandler;
 import org.sopeco.frontend.client.event.handler.SpecificationChangedEventHandler;
 import org.sopeco.frontend.client.model.Manager;
 import org.sopeco.frontend.client.model.ScenarioManager;
@@ -61,6 +63,13 @@ public class SelectionController {
 				// }
 			}
 		});
+
+//		EventControl.get().addHandler(ScenarioChangedEvent.TYPE, new ScenarioChangedEventHandler() {
+//			@Override
+//			public void onScenarioChanged(ScenarioChangedEvent scenarioChangedEvent) {
+//				updateMEControllerElements();
+//			}
+//		});
 	}
 
 	private void updateMEControllerElements() {

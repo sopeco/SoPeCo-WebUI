@@ -5,8 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.sopeco.config.Configuration;
 import org.sopeco.config.exception.ConfigurationException;
 import org.sopeco.frontend.client.rpc.StartupService;
-
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import org.sopeco.frontend.server.messaging.EmbeddedBroker;
 
 /**
  * Class which loading all important server-settings etc.
@@ -14,7 +13,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
  * @author Marius Oehler
  * 
  */
-public class StartupServiceImpl extends RemoteServiceServlet implements StartupService {
+public class StartupServiceImpl extends SuperRemoteServlet implements StartupService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(StartupServiceImpl.class);
 
@@ -38,6 +37,8 @@ public class StartupServiceImpl extends RemoteServiceServlet implements StartupS
 	private void load() {
 		loaded = true;
 
+		EmbeddedBroker.startMessagingBroker();
+		
 		try {
 			Configuration.getSessionSingleton(getThreadLocalRequest().getSession().getId()).loadConfiguration(
 					this.getClass().getClassLoader(), CONFIGURATION_FILE);

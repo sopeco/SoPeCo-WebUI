@@ -83,9 +83,9 @@ public class User {
 	public void setWorkingSpecification(String workingSpecification) {
 		this.workingSpecification = workingSpecification;
 
-		MeasurementSpecification specification = getCurrentScenarioDefinitionBuilder().getMeasurementSpecification(workingSpecification);
-		MeasurementSpecificationBuilder specificationBuilder = new MeasurementSpecificationBuilder(
-				specification);
+		MeasurementSpecification specification = getCurrentScenarioDefinitionBuilder().getMeasurementSpecification(
+				workingSpecification);
+		MeasurementSpecificationBuilder specificationBuilder = new MeasurementSpecificationBuilder(specification);
 		getCurrentScenarioDefinitionBuilder().setSpecificationBuilder(specificationBuilder);
 	}
 
@@ -94,9 +94,9 @@ public class User {
 	 */
 	public void storeCurrentScenarioDefinition() {
 		LOGGER.info("store current ScenarioDefinition");
-		
+
 		ScenarioDefinition scenarioDef = currentScenarioDefinitionBuilder.getBuiltScenario();
-		
+
 		currentPersistenceProvider.store(scenarioDef);
 	}
 }

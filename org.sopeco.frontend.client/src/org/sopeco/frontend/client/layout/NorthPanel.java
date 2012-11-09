@@ -8,6 +8,8 @@ import org.sopeco.frontend.client.layout.dialog.AddScenarioDialog;
 import org.sopeco.frontend.client.layout.popups.Confirmation;
 import org.sopeco.frontend.client.layout.popups.Loader;
 import org.sopeco.frontend.client.layout.popups.Message;
+import org.sopeco.frontend.client.model.Manager;
+import org.sopeco.frontend.client.resources.FrontEndResources;
 import org.sopeco.frontend.client.rpc.RPC;
 
 import com.google.gwt.core.client.GWT;
@@ -39,6 +41,10 @@ public class NorthPanel extends FlowPanel implements ClickHandler {
 	private static final String SAP_RESEARCH_LOGO = "images/sap_research.png";
 	private static final String SAP_RESEARCH_LOGO_ID = "sapResearchLogo";
 
+	private static final String NAVI_PANEL_HEIGHT = "2.8em";
+	
+	private static final String SEPARATOR_CSS_CLASS = "topBarSeparator";
+	
 	private static final int EXPORT_MARGIN = 4;
 
 	private ListBox listboxScenarios;
@@ -47,6 +53,10 @@ public class NorthPanel extends FlowPanel implements ClickHandler {
 	private Anchor addScenario, removeScenario;
 	private Image imageSatellite;
 
+	private Anchor anchorChangeAccount;
+	
+	private HorizontalPanel navigationPanel;
+	
 	private MainLayoutPanel parentPanel;
 	/**
 	 * The height of this panel in EM.
@@ -56,21 +66,42 @@ public class NorthPanel extends FlowPanel implements ClickHandler {
 	public NorthPanel(MainLayoutPanel parent) {
 		parentPanel = parent;
 
+		FrontEndResources.loadNavigationCSS();
+		
 		initialize();
 	}
 
+	private HTML createSeparator(){
+		HTML ret = new HTML();
+		ret.addStyleName(SEPARATOR_CSS_CLASS);
+		return ret;
+	}
+	
 	/**
 	 * initialize the user interface.
 	 */
 	private void initialize() {
-		setSize("100%", "2.8em"); // .nPanel in CSS Style
+		setSize("100%", NAVI_PANEL_HEIGHT); // .nPanel in CSS Style
 		addStyleName("nPanel");
 
-		HorizontalPanel mainHoPanel = new HorizontalPanel();
-		mainHoPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
-		mainHoPanel.addStyleName("north_hPanel");
-		add(mainHoPanel);
+		
+		navigationPanel = new HorizontalPanel();
+		navigationPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+		navigationPanel.addStyleName("north_hPanel");
+//		navigationPanel.setHeight(NAVI_PANEL_HEIGHT);
+//		
+//		connectedToText = new HTML();
+//		navigationPanel.add(connectedToText);
+//		
+//		anchorChangeAccount = new Anchor(R.get("change_account"));
+//		navigationPanel.add(anchorChangeAccount);
+//		
+//		navigationPanel.add(createSeparator());
+//		
+		add(navigationPanel);
 
+		/** ######################################### */
+		
 		// Adding Logo to the Top
 		Image researchLogo = new Image(SAP_RESEARCH_LOGO);
 		researchLogo.getElement().setId(SAP_RESEARCH_LOGO_ID);
@@ -78,13 +109,14 @@ public class NorthPanel extends FlowPanel implements ClickHandler {
 
 		HorizontalPanel firstHoPanel = new HorizontalPanel();
 		firstHoPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
-		mainHoPanel.add(firstHoPanel);
-		connectedToText = new HTML();
-		firstHoPanel.add(connectedToText);
+		navigationPanel.add(firstHoPanel); // ####
+		
+		connectedToText = new HTML(); // ###
+		firstHoPanel.add(connectedToText); // ####
 		firstHoPanel.addStyleName("tabStyle");
 
-		Anchor anchorChangeAccount = new Anchor(R.get("change_account"));
-		firstHoPanel.add(anchorChangeAccount);
+		anchorChangeAccount = new Anchor(R.get("change_account")); // ####
+		firstHoPanel.add(anchorChangeAccount); // ####
 		anchorChangeAccount.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -92,8 +124,13 @@ public class NorthPanel extends FlowPanel implements ClickHandler {
 			}
 		});
 
+		// Test
+		HTML sep = new HTML();
+		sep.addStyleName("topBarSeparator");
+		firstHoPanel.add(sep);
+
 		HorizontalPanel secondHoPanel = new HorizontalPanel();
-		mainHoPanel.add(secondHoPanel);
+		navigationPanel.add(secondHoPanel); // ####
 		secondHoPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
 		secondHoPanel.addStyleName("tabStyle");
 
@@ -207,7 +244,7 @@ public class NorthPanel extends FlowPanel implements ClickHandler {
 
 		RPC.getScenarioManager().getScenarioNames(new AsyncCallback<String[]>() {
 			@Override
-			public void onSuccess(String[] result) {
+			public void onSuccess(String[] result) {				
 				updateScenarioList(result);
 				Loader.hideLoader();
 			}
@@ -241,10 +278,16 @@ public class NorthPanel extends FlowPanel implements ClickHandler {
 			removeScenario.setEnabled(true);
 			removeScenario.removeStyleName("disabled");
 
+			int count = 0;
 			for (String name : names) {
 				listboxScenarios.addItem(name);
-			}
 
+				if (Manager.get().getAccountDetails().getSelectedScenario() != null
+						&& name.equals(Manager.get().getAccountDetails().getSelectedScenario())) {
+					listboxScenarios.setSelectedIndex(count);
+				}
+				count++;
+			}
 		}
 
 		switchScenario();
@@ -274,27 +317,5 @@ public class NorthPanel extends FlowPanel implements ClickHandler {
 		}
 
 		EventControl.get().fireEvent(new ScenarioChangedEvent(name));
-		// ScenarioManager.get().switchScenario(name);
-
-		// Loader.showLoader();
-		// RPC.getScenarioManager().switchScenario(name, new
-		// AsyncCallback<Boolean>() {
-		// @Override
-		// public void onFailure(Throwable caught) {
-		// Loader.hideLoader();
-		// Message.error(caught.getMessage());
-		// }
-		//
-		// @Override
-		// public void onSuccess(Boolean result) {
-		// parentPanel.createNewCenterPanels();
-		//
-		// ((SpecificationController)
-		// parentPanel.getCenterController(CenterType.Specification))
-		// .loadSpecificationNames();
-		//
-		// Loader.hideLoader();
-		// }
-		// });
 	}
 }

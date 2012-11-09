@@ -2,6 +2,7 @@ package org.sopeco.frontend.client.rpc;
 
 import java.util.List;
 
+import org.sopeco.frontend.client.entities.AccountDetails;
 import org.sopeco.persistence.metadata.entities.DatabaseInstance;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -9,7 +10,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 /**
  * 
  * @author Marius Oehler
- *
+ * 
  */
 public interface DatabaseManagerRPCAsync {
 
@@ -23,4 +24,7 @@ public interface DatabaseManagerRPCAsync {
 
 	void checkPassword(DatabaseInstance databaseInstance, String passwd, AsyncCallback<Boolean> callback);
 
+	void getAccountDetails(AsyncCallback<AccountDetails> callback);
+
+	void storeAccountDetails(AccountDetails details, AsyncCallback<Void> callback);
 }

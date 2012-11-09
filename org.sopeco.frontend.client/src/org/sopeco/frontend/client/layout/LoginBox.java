@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.sopeco.frontend.client.FrontendEntryPoint;
 import org.sopeco.frontend.client.R;
+import org.sopeco.frontend.client.entities.AccountDetails;
 import org.sopeco.frontend.client.helper.DBManager;
 import org.sopeco.frontend.client.helper.INotifyHandler;
 import org.sopeco.frontend.client.helper.serverstatus.Deactivatable;
@@ -15,6 +16,7 @@ import org.sopeco.frontend.client.layout.popups.Message;
 import org.sopeco.frontend.client.layout.popups.TextInput;
 import org.sopeco.frontend.client.layout.popups.TextInput.Icon;
 import org.sopeco.frontend.client.layout.popups.TextInputOkHandler;
+import org.sopeco.frontend.client.model.Manager;
 import org.sopeco.persistence.metadata.entities.DatabaseInstance;
 
 import com.google.gwt.core.client.GWT;
@@ -251,12 +253,29 @@ public class LoginBox extends DialogBox implements ClickHandler, Deactivatable {
 				Loader.hideLoader();
 
 				if (result) {
-					hide();
-
-					parentModule.initializeMainView(instance);
+					getAccountSettings(instance);
+//					hide();
+//					parentModule.initializeMainView(instance);
 				} else {
 					Message.error(R.get("wrong_db_credentials"));
 				}
+			}
+		});
+	}
+
+	private void getAccountSettings(final DatabaseInstance instance) {
+		DBManager.getDbManager().getAccountDetails(new AsyncCallback<AccountDetails>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				Message.error(caught.getMessage());
+			}
+
+			@Override
+			public void onSuccess(AccountDetails result) {
+				hide();
+				Manager.get().setAccountDetails(result);
+				parentModule.initializeMainView(instance);
 			}
 		});
 	}

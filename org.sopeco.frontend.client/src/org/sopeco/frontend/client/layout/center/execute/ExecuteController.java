@@ -107,7 +107,6 @@ public class ExecuteController implements ICenterController, ClickHandler {
 
 			@Override
 			public void onSuccess(Long result) {
-				GWT.log("res" + result);
 				if (result != -1) {
 					long temp = (System.currentTimeMillis() - result) / 1000;
 

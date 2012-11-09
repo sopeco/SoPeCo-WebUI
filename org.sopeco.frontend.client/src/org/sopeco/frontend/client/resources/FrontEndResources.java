@@ -75,6 +75,24 @@ public final class FrontEndResources {
 	}
 
 	/**
+	 * 
+	 */
+	public static void loadNavigationCSS() {
+		GWT.runAsync(new RunAsyncCallback() {
+			@Override
+			public void onFailure(Throwable reason) {
+				Window.alert(R.get("errorCssLoading"));
+			}
+
+			@Override
+			public void onSuccess() {
+				ResourceBundle rsc = GWT.create(ResourceBundle.class);
+				rsc.navigationCss().ensureInjected();
+			}
+		});
+	}
+
+	/**
 	 * ClientBundle to load Resources.
 	 */
 	interface ResourceBundle extends ClientBundle {
@@ -89,6 +107,10 @@ public final class FrontEndResources {
 		@Source("specificationView.css")
 		@CssResource.NotStrict
 		CssResource specificationCss();
+
+		@Source("navigation.css")
+		@CssResource.NotStrict
+		CssResource navigationCss();
 	}
 
 }

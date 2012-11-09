@@ -10,7 +10,6 @@ import org.sopeco.frontend.client.layout.center.CenterType;
 import org.sopeco.frontend.client.layout.center.ICenterController;
 import org.sopeco.frontend.client.layout.center.MessagePanel;
 import org.sopeco.frontend.client.layout.center.NoScenario;
-import org.sopeco.frontend.client.layout.center.environment.EnvironmentController;
 import org.sopeco.frontend.client.layout.center.execute.ExecuteController;
 import org.sopeco.frontend.client.layout.center.experiment.ExperimentController;
 import org.sopeco.frontend.client.layout.center.result.ResultController;
@@ -45,7 +44,7 @@ public final class MainLayoutPanel extends DockLayoutPanel implements ValueChang
 
 	private MainLayoutPanel(FrontendEntryPoint parent) {
 		super(Unit.EM);
-
+		
 		parentModule = parent;
 
 		initialize();
@@ -88,7 +87,7 @@ public final class MainLayoutPanel extends DockLayoutPanel implements ValueChang
 
 		// centerScrollPanel = new ScrollPanel();
 		currentCenterPanel = DEFAULT_CENTER_TYPE;
-
+		
 		addNorth(getNorthPanel(), Float.parseFloat(NorthPanel.PANEL_HEIGHT));
 		addWest(getNavigationController().getView(), Float.parseFloat(NavigationView.PANEL_WIDTH));
 
@@ -208,7 +207,7 @@ public final class MainLayoutPanel extends DockLayoutPanel implements ValueChang
 	 * 
 	 * @return see description
 	 */
-	private NorthPanel getNorthPanel() {
+	public NorthPanel getNorthPanel() {
 		if (northPanel == null) {
 			northPanel = new NorthPanel(this);
 		}

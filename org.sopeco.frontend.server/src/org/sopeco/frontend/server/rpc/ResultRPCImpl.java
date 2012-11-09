@@ -32,11 +32,10 @@ public class ResultRPCImpl extends SuperRemoteServlet implements ResultRPC {
 			DataSetAggregated d = new DataSetAggregated();
 
 			SimpleDataSet sd = d.convertToSimpleDataSet();
-			
-			
+
 			DataSetCsvHandler handler = new DataSetCsvHandler(';', '#', true);
 			// handler.store(dataset, fileName)
-//			handler.
+			// handler.
 		} catch (DataNotFoundException e) {
 			throw new RuntimeException(e);
 		}
@@ -45,7 +44,8 @@ public class ResultRPCImpl extends SuperRemoteServlet implements ResultRPC {
 	@Override
 	public List<SharedScenarioInstance> getInstances(String scenarioName) {
 		try {
-			List<ScenarioInstance> scenarioList = getUser().getCurrentPersistenceProvider().loadScenarioInstances(scenarioName);
+			List<ScenarioInstance> scenarioList = getUser().getCurrentPersistenceProvider().loadScenarioInstances(
+					scenarioName);
 
 			List<SharedScenarioInstance> retList = new ArrayList<SharedScenarioInstance>();
 			for (ScenarioInstance instance : scenarioList) {

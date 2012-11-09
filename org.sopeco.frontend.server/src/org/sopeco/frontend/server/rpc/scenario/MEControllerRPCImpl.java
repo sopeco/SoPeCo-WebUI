@@ -16,16 +16,12 @@ import org.sopeco.frontend.server.db.entities.MEControllerUrl;
 import org.sopeco.frontend.server.helper.ServerCheck;
 import org.sopeco.frontend.server.rpc.PushRPCImpl;
 import org.sopeco.frontend.server.rpc.SuperRemoteServlet;
-import org.sopeco.frontend.server.user.User;
-import org.sopeco.frontend.server.user.UserManager;
 import org.sopeco.frontend.shared.builder.MeasurementEnvironmentBuilder;
-import org.sopeco.frontend.shared.builder.ScenarioDefinitionBuilder;
 import org.sopeco.frontend.shared.definitions.PushPackage;
 import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.entities.definition.ParameterNamespace;
 import org.sopeco.persistence.entities.definition.ParameterRole;
-import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 import org.sopeco.persistence.exceptions.DataNotFoundException;
 
 /**
@@ -33,8 +29,7 @@ import org.sopeco.persistence.exceptions.DataNotFoundException;
  * @author Marius Oehler
  * 
  */
-public class MEControllerRPCImpl extends SuperRemoteServlet implements
-		MEControllerRPC {
+public class MEControllerRPCImpl extends SuperRemoteServlet implements MEControllerRPC {
 
 	/**
 	 * 
@@ -77,8 +72,7 @@ public class MEControllerRPCImpl extends SuperRemoteServlet implements
 		}
 
 		try {
-			IMeasurementEnvironmentController meCotnroller = RmiMEConnector.connectToMEController(new URI(
-					url));
+			IMeasurementEnvironmentController meCotnroller = RmiMEConnector.connectToMEController(new URI(url));
 
 			MeasurementEnvironmentDefinition med = meCotnroller.getMEDefinition();
 
@@ -140,8 +134,8 @@ public class MEControllerRPCImpl extends SuperRemoteServlet implements
 	@Override
 	public MeasurementEnvironmentDefinition getMEDefinitionFromMEC(String controllerUrl) {
 		try {
-			IMeasurementEnvironmentController meCotnroller = RmiMEConnector.connectToMEController(new URI(
-					controllerUrl));
+			IMeasurementEnvironmentController meCotnroller = RmiMEConnector
+					.connectToMEController(new URI(controllerUrl));
 
 			MeasurementEnvironmentDefinition med = meCotnroller.getMEDefinition();
 
@@ -163,7 +157,8 @@ public class MEControllerRPCImpl extends SuperRemoteServlet implements
 
 	@Override
 	public MeasurementEnvironmentDefinition getBlankMEDefinition() {
-		MeasurementEnvironmentDefinition meDefinition = MeasurementEnvironmentBuilder.createBlankEnvironmentDefinition();
+		MeasurementEnvironmentDefinition meDefinition = MeasurementEnvironmentBuilder
+				.createBlankEnvironmentDefinition();
 
 		setNewMEDefinition(meDefinition);
 
@@ -187,7 +182,8 @@ public class MEControllerRPCImpl extends SuperRemoteServlet implements
 	public boolean addNamespace(String path) {
 		LOGGER.debug("rpc: addNamespace: {}", path);
 
-		ParameterNamespace ns = getUser().getCurrentScenarioDefinitionBuilder().getEnvironmentBuilder().addNamespaces(path);
+		ParameterNamespace ns = getUser().getCurrentScenarioDefinitionBuilder().getEnvironmentBuilder()
+				.addNamespaces(path);
 
 		if (ns == null) {
 			return false;
@@ -203,7 +199,8 @@ public class MEControllerRPCImpl extends SuperRemoteServlet implements
 	public boolean removeNamespace(String path) {
 		LOGGER.debug("rpc: removeNamespace: {}", path);
 
-		ParameterNamespace ns = getUser().getCurrentScenarioDefinitionBuilder().getEnvironmentBuilder().getNamespace(path);
+		ParameterNamespace ns = getUser().getCurrentScenarioDefinitionBuilder().getEnvironmentBuilder()
+				.getNamespace(path);
 
 		if (ns == null) {
 			LOGGER.debug("nothing found");
@@ -227,7 +224,8 @@ public class MEControllerRPCImpl extends SuperRemoteServlet implements
 	public boolean renameNamespace(String namespacePath, String newName) {
 		LOGGER.debug("rpc: renameNamespace: {}", namespacePath);
 
-		ParameterNamespace ns = getUser().getCurrentScenarioDefinitionBuilder().getEnvironmentBuilder().getNamespace(namespacePath);
+		ParameterNamespace ns = getUser().getCurrentScenarioDefinitionBuilder().getEnvironmentBuilder()
+				.getNamespace(namespacePath);
 
 		if (ns == null) {
 			LOGGER.debug("no namespace '{}' found", ns);
@@ -246,7 +244,8 @@ public class MEControllerRPCImpl extends SuperRemoteServlet implements
 	public boolean addParameter(String path, String name, String type, ParameterRole role) {
 		LOGGER.debug("rpc: addParameter: {} to '{}'", name, path);
 
-		ParameterNamespace ns = getUser().getCurrentScenarioDefinitionBuilder().getEnvironmentBuilder().getNamespace(path);
+		ParameterNamespace ns = getUser().getCurrentScenarioDefinitionBuilder().getEnvironmentBuilder()
+				.getNamespace(path);
 
 		if (ns == null) {
 			LOGGER.debug("no namespace '{}' found", ns);
@@ -265,7 +264,8 @@ public class MEControllerRPCImpl extends SuperRemoteServlet implements
 	public boolean removeParameter(String path, String name) {
 		LOGGER.debug("rpc: removeParameter: {} from '{}'", name, path);
 
-		ParameterNamespace ns = getUser().getCurrentScenarioDefinitionBuilder().getEnvironmentBuilder().getNamespace(path);
+		ParameterNamespace ns = getUser().getCurrentScenarioDefinitionBuilder().getEnvironmentBuilder()
+				.getNamespace(path);
 
 		if (ns == null) {
 			LOGGER.debug("no namespace '{}' found", ns);
@@ -284,14 +284,16 @@ public class MEControllerRPCImpl extends SuperRemoteServlet implements
 	public boolean updateParameter(String path, String oldName, String newName, String type, ParameterRole role) {
 		LOGGER.debug("rpc: updateParameter: {} from '{}'", oldName, path);
 
-		ParameterNamespace ns = getUser().getCurrentScenarioDefinitionBuilder().getEnvironmentBuilder().getNamespace(path);
+		ParameterNamespace ns = getUser().getCurrentScenarioDefinitionBuilder().getEnvironmentBuilder()
+				.getNamespace(path);
 
 		if (ns == null) {
 			LOGGER.debug("no namespace '{}' found", ns);
 			return false;
 		}
 
-		ParameterDefinition parameter = getUser().getCurrentScenarioDefinitionBuilder().getEnvironmentBuilder().getParameter(oldName, ns);
+		ParameterDefinition parameter = getUser().getCurrentScenarioDefinitionBuilder().getEnvironmentBuilder()
+				.getParameter(oldName, ns);
 
 		if (parameter == null) {
 			LOGGER.debug("no parameter '{}' found", oldName);

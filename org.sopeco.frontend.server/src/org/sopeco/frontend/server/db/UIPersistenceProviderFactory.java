@@ -5,7 +5,6 @@ import java.util.Map;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import javax.servlet.http.HttpSession;
 
 /**
  * 
@@ -34,8 +33,8 @@ public final class UIPersistenceProviderFactory {
 	 * 
 	 * @return
 	 */
-	public static UIPersistenceProvider createUIPersistenceProvider( String host, String port,
-			String dbName, String password) {
+	public static UIPersistenceProvider createUIPersistenceProvider(String host, String port, String dbName,
+			String password) {
 
 		databaseHost = host;
 		databasePort = port;
@@ -50,7 +49,8 @@ public final class UIPersistenceProviderFactory {
 
 			EntityManagerFactory factory = Persistence.createEntityManagerFactory("sopeco-frontend", configOverrides);
 
-//			PersistenceProvider.setUIPersistenceProvider(new UIPersistenceProvider(factory), session);
+			// PersistenceProvider.setUIPersistenceProvider(new
+			// UIPersistenceProvider(factory), session);
 
 			return new UIPersistenceProvider(factory);
 		} catch (Exception e) {

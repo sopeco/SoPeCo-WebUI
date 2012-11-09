@@ -173,17 +173,18 @@ public final class MEControllerBox extends DialogBox implements ValueChangeHandl
 	}
 
 	private void refreshUI() {
-		if (Manager.get().getControllerProtocol().equals("rmi://")) {
+		String protocol = Manager.get().getCurrentScenarioDetails().getControllerProtocol();
+		if (protocol.equals("rmi://")) {
 			cbProtocol.setSelectedIndex(0);
-		} else if (Manager.get().getControllerProtocol().equals("http://")) {
+		} else if (protocol.equals("http://")) {
 			cbProtocol.setSelectedIndex(1);
-		} else if (Manager.get().getControllerProtocol().equals("https://")) {
+		} else if (protocol.equals("https://")) {
 			cbProtocol.setSelectedIndex(2);
 		}
 
-		tbHostname.setText(Manager.get().getControllerHost());
-		tbPort.setText("" + Manager.get().getControllerPort());
-		cbController.setText(Manager.get().getControllerName());
+		tbHostname.setText(Manager.get().getCurrentScenarioDetails().getControllerHost());
+		tbPort.setText("" + Manager.get().getCurrentScenarioDetails().getControllerPort());
+		cbController.setText(Manager.get().getCurrentScenarioDetails().getControllerName());
 
 	}
 
@@ -208,10 +209,11 @@ public final class MEControllerBox extends DialogBox implements ValueChangeHandl
 			hide();
 		} else if (event.getSource() == btnOk) {
 			if (!Manager.get().getControllerUrl().equals(getUrl())) {
-				Manager.get().setControllerHost(tbHostname.getText());
-				Manager.get().setControllerProtocol(cbProtocol.getText());
-				Manager.get().setControllerPort(Integer.parseInt(tbPort.getText()));
-				Manager.get().setControllerName(cbController.getText());
+				Manager.get().getCurrentScenarioDetails().setControllerHost(tbHostname.getText());
+				Manager.get().getCurrentScenarioDetails().setControllerProtocol(cbProtocol.getText());
+				Manager.get().getCurrentScenarioDetails().setControllerPort(Integer.parseInt(tbPort.getText()));
+				Manager.get().getCurrentScenarioDetails().setControllerName(cbController.getText());
+				Manager.get().storeAccountDetails();
 
 				EventControl.get().fireEvent(new MEControllerEvent(EventType.CONTROLLER_CHANGED));
 
@@ -250,7 +252,8 @@ public final class MEControllerBox extends DialogBox implements ValueChangeHandl
 					setBoxStatus(BoxStatus.OFFLINE);
 				}
 
-				if (host.equals(Manager.get().getControllerHost()) && port == Manager.get().getControllerPort()) {
+				if (host.equals(Manager.get().getCurrentScenarioDetails().getControllerHost())
+						&& port == Manager.get().getCurrentScenarioDetails().getControllerPort()) {
 					if (result) {
 						Manager.get().setControllerLastStatus(ControllerStatus.ONLINE);
 					} else {

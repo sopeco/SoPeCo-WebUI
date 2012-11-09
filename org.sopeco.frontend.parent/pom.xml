@@ -37,6 +37,12 @@
 			<name>Remote Repositories</name>
 			<url>http://deqkal276.qkal.sap.corp:8080/artifactory/remote-repos</url>
 		</repository>
+		
+		<!-- <repository>
+			<id>apache repo</id>
+			<name>apache repository</name>
+			<url>https://repository.apache.org/content/repositories/snapshots/</url>
+		</repository> -->
 	</repositories>
 
 

@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.sopeco.frontend.client.entities.AccountDetails;
 import org.sopeco.frontend.client.rpc.DatabaseManagerRPC;
 import org.sopeco.frontend.server.db.FlexiblePersistenceProviderFactory;
 import org.sopeco.frontend.server.db.UIPersistenceProvider;
@@ -33,7 +34,7 @@ public class DatabaseManagerRPCImpl extends SuperRemoteServlet implements Databa
 
 	private static IMetaDataPersistenceProvider getMetaProvider() {
 		double metering = Metering.start();
-		
+
 		if (metaPersistenceProvider == null) {
 			metaPersistenceProvider = PersistenceProviderFactory.getInstance().getMetaDataPersistenceProvider();
 		}
@@ -145,7 +146,7 @@ public class DatabaseManagerRPCImpl extends SuperRemoteServlet implements Databa
 	 */
 	public boolean instanceEqual(DatabaseInstance i1, DatabaseInstance i2) {
 		double metering = Metering.start();
-		
+
 		if (!i1.getDbName().equals(i2.getDbName())) {
 			return false;
 		}
@@ -175,7 +176,7 @@ public class DatabaseManagerRPCImpl extends SuperRemoteServlet implements Databa
 	@Override
 	public boolean selectDatabase(DatabaseInstance databaseInstance, String passwd) {
 		double metering = Metering.start();
-		
+
 		DatabaseInstance dbInstance = getRealInstance(databaseInstance);
 
 		if (dbInstance == null || databaseInstance == null) {
@@ -213,8 +214,16 @@ public class DatabaseManagerRPCImpl extends SuperRemoteServlet implements Databa
 		getUser().setCurrentPersistenceProvider(dbConnection);
 		getUser().setUiPesistenceProvider(uiProvider);
 
+		AccountDetails details = uiProvider.getAccountDetails(dbInstance.getId());
+		if (details == null) {
+			details = new AccountDetails();
+			details.setId(dbInstance.getId());
+			details.setAccountName(dbInstance.getDbName());
+			uiProvider.storeAccountDetails(details);
+		}
+
 		Metering.stop(metering);
-		
+
 		return true;
 	}
 
@@ -245,5 +254,16 @@ public class DatabaseManagerRPCImpl extends SuperRemoteServlet implements Databa
 		}
 
 		return true;
+	}
+
+	@Override
+	public AccountDetails getAccountDetails() {
+		String accountId = getUser().getCurrentDatabaseId();
+		return getUser().getUiPesistenceProvider().getAccountDetails(accountId);
+	}
+
+	@Override
+	public void storeAccountDetails(AccountDetails details) {
+		getUser().getUiPesistenceProvider().storeAccountDetails(details);
 	}
 }

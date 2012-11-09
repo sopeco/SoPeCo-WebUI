@@ -4,9 +4,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sopeco.config.Configuration;
-import org.sopeco.config.exception.ConfigurationException;
-import org.sopeco.engine.exception.SoPeCoException;
 import org.sopeco.engine.model.ScenarioDefinitionWriter;
 import org.sopeco.frontend.client.rpc.ScenarioManagerRPC;
 import org.sopeco.frontend.server.rpc.SuperRemoteServlet;
@@ -14,9 +11,6 @@ import org.sopeco.frontend.shared.builder.ScenarioDefinitionBuilder;
 import org.sopeco.persistence.IPersistenceProvider;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 import org.sopeco.persistence.exceptions.DataNotFoundException;
-import org.sopeco.runner.SoPeCoRunner;
-
-
 
 /**
  * Implementation of the ScenarioManagerRPC. The Frontend is getting all
@@ -25,8 +19,7 @@ import org.sopeco.runner.SoPeCoRunner;
  * @author Marius Oehler
  * 
  */
-public class ScenarioManagerRPCImpl extends SuperRemoteServlet implements
-		ScenarioManagerRPC {
+public class ScenarioManagerRPCImpl extends SuperRemoteServlet implements ScenarioManagerRPC {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ScenarioManagerRPCImpl.class);
 	private static final long serialVersionUID = 1L;

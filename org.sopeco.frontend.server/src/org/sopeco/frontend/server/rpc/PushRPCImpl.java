@@ -7,14 +7,12 @@ import org.sopeco.frontend.server.user.User;
 import org.sopeco.frontend.server.user.UserManager;
 import org.sopeco.frontend.shared.definitions.PushPackage;
 
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
-
 /**
  * 
  * @author Marius Oehler
  * 
  */
-public class PushRPCImpl extends RemoteServiceServlet implements PushRPC {
+public class PushRPCImpl extends SuperRemoteServlet implements PushRPC {
 
 	private static final long serialVersionUID = 1L;
 	private static final int TIMEOUT = 30000;

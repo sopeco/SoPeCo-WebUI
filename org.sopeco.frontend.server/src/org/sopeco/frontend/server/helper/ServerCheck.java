@@ -1,7 +1,6 @@
 package org.sopeco.frontend.server.helper;
 
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.Socket;
@@ -12,8 +11,6 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
-
-import com.google.gwt.core.client.GWT;
 
 /**
  * 
@@ -54,8 +51,7 @@ public final class ServerCheck {
 		} catch (UnknownHostException e) {
 			LOGGER.info("unknown host '" + host + ":" + port + "'");
 		} catch (IOException e) {
-			LOGGER.info("IOException at connection to '" + host + ":" + port
-					+ "'");
+			LOGGER.info("IOException at connection to '" + host + ":" + port + "'");
 		}
 		return false;
 	}
@@ -109,8 +105,7 @@ public final class ServerCheck {
 	public static List<String> getRMIController(String host, int port) {
 		try {
 			String prefix = "rmi://";
-			if (host.length() <= prefix.length()
-					|| !host.substring(0, prefix.length()).equals(prefix)) {
+			if (host.length() <= prefix.length() || !host.substring(0, prefix.length()).equals(prefix)) {
 				host = prefix + host;
 			}
 

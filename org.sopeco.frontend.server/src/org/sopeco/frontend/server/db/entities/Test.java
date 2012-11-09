@@ -12,13 +12,13 @@ public class Test implements Serializable {
 	@Id
 	@Column(name = "id")
 	private String id;
-	
+
 	@Column(name = "stringName")
 	private String name;
 
-	public Test () {
+	public Test() {
 	}
-	
+
 	public Test(String name) {
 		this.name = name;
 		this.id = name;

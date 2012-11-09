@@ -20,8 +20,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
  * @author Marius Oehler
  * 
  */
-public class ExtensionRPCImpl extends RemoteServiceServlet implements
-		ExtensionRPC {
+public class ExtensionRPCImpl extends SuperRemoteServlet implements ExtensionRPC {
 
 	private static final long serialVersionUID = 1L;
 
@@ -32,19 +31,24 @@ public class ExtensionRPCImpl extends RemoteServiceServlet implements
 		for (ExtensionTypes type : ExtensionTypes.values()) {
 			switch (type) {
 			case EXPLORATIONSTRATEGY:
-				container.getMap().put(ExtensionTypes.EXPLORATIONSTRATEGY, createExtension(IExplorationStrategyExtension.class));
+				container.getMap().put(ExtensionTypes.EXPLORATIONSTRATEGY,
+						createExtension(IExplorationStrategyExtension.class));
 				break;
-//			case TERMINATIONCONDITION:
-//				container.getMap().put(ExtensionTypes.TERMINATIONCONDITION, createExtension(ITerminationConditionExtension.class));
-//				break;
+			// case TERMINATIONCONDITION:
+			// container.getMap().put(ExtensionTypes.TERMINATIONCONDITION,
+			// createExtension(ITerminationConditionExtension.class));
+			// break;
 			case CONSTANTASSIGNMENT:
-				container.getMap().put(ExtensionTypes.CONSTANTASSIGNMENT, createExtension(IConstantAssignmentExtension.class));
+				container.getMap().put(ExtensionTypes.CONSTANTASSIGNMENT,
+						createExtension(IConstantAssignmentExtension.class));
 				break;
 			case PARAMETERVARIATION:
-				container.getMap().put(ExtensionTypes.PARAMETERVARIATION, createExtension(IParameterVariationExtension.class));
+				container.getMap().put(ExtensionTypes.PARAMETERVARIATION,
+						createExtension(IParameterVariationExtension.class));
 				break;
 			case PROCESSINGSTRATEGY:
-				container.getMap().put(ExtensionTypes.PROCESSINGSTRATEGY, createExtension(IProcessingStrategyExtension.class));
+				container.getMap().put(ExtensionTypes.PROCESSINGSTRATEGY,
+						createExtension(IProcessingStrategyExtension.class));
 				break;
 			}
 		}

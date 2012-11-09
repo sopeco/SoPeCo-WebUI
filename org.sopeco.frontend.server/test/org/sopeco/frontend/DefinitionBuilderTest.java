@@ -11,6 +11,7 @@ import org.sopeco.frontend.shared.builder.MeasurementSpecificationBuilder;
 import org.sopeco.frontend.shared.builder.ScenarioDefinitionBuilder;
 import org.sopeco.persistence.entities.definition.ParameterNamespace;
 import org.sopeco.persistence.entities.definition.ParameterRole;
+
 //import org.sopeco.persistence.EntityFactory;
 
 /**
@@ -110,7 +111,7 @@ public class DefinitionBuilderTest {
 
 		builder.addNamespaces("first/second/third");
 		assertNull(builder.getNamespace("root/first/second/third"));
-		
+
 		builder.addNamespaces("root/first/second/third");
 
 		assertNull(builder.getNamespace("root/first/second/thi"));
@@ -137,7 +138,7 @@ public class DefinitionBuilderTest {
 		assertEquals(newNamespace.getAllParameters().get(0).getName(), "First");
 		assertEquals(newNamespace.getAllParameters().get(0).getType(), "FirstType".toUpperCase());
 		assertEquals(newNamespace.getAllParameters().get(0).getRole(), ParameterRole.INPUT);
-		
+
 		assertEquals(newNamespace.getAllParameters().get(1).getName(), "Second");
 		assertEquals(newNamespace.getAllParameters().get(1).getType(), "SecondType".toUpperCase());
 		assertEquals(newNamespace.getAllParameters().get(1).getRole(), ParameterRole.OBSERVATION);
@@ -171,69 +172,93 @@ public class DefinitionBuilderTest {
 		assertEquals(builder2.getBuiltSpecification().getName(), TESTNAME);
 	}
 
-//	@Test
-//	public void addInitAssignments() {
-//		ScenarioDefinitionBuilder sdb = new ScenarioDefinitionBuilder();
-//		
-//		MeasurementSpecificationBuilder builder = new MeasurementSpecificationBuilder(sdb, TESTNAME);
-//
-////		ParameterDefinition para = EntityFactory.createParameterDefinition("First", "FirstType", ParameterRole.INPUT);
-//
-//		assertEquals(builder.getBuiltSpecification().getInitializationAssignemts().size(), 0);
-//
-////		assertTrue(builder.addInitAssignment(para, "FirstVal"));
-//
-//		assertEquals(builder.getBuiltSpecification().getInitializationAssignemts().size(), 1);
-//		assertEquals(builder.getBuiltSpecification().getInitializationAssignemts().get(0).getValue(), "FirstVal");
-////		assertEquals(builder.getBuiltSpecification().getInitializationAssignemts().get(0).getParameter(), para);
-//
-////		assertTrue(builder.removeInitialAssignment(para));
-//
-//		assertEquals(builder.getBuiltSpecification().getInitializationAssignemts().size(), 0);
-//
-////		ConstantValueAssignment cva = EntityFactory.createConstantValueAssignment(para, "vvvv");
-//
-////		assertTrue(builder.addInitAssignment(cva));
-//		assertEquals(builder.getBuiltSpecification().getInitializationAssignemts().size(), 1);
-//
-//		// Parameter(fullname) must be unique in assignment list
-////		assertFalse(builder.addInitAssignment(cva));
-//		assertEquals(builder.getBuiltSpecification().getInitializationAssignemts().size(), 1);
-//
-//		assertEquals(builder.getBuiltSpecification().getInitializationAssignemts().get(0).getValue(), "vvvv");
-////		assertEquals(builder.getBuiltSpecification().getInitializationAssignemts().get(0).getParameter(), para);
-//
-////		assertTrue(builder.removeInitialAssignment(cva));
-//
-//		assertEquals(builder.getBuiltSpecification().getInitializationAssignemts().size(), 0);
-//	}
+	// @Test
+	// public void addInitAssignments() {
+	// ScenarioDefinitionBuilder sdb = new ScenarioDefinitionBuilder();
+	//
+	// MeasurementSpecificationBuilder builder = new
+	// MeasurementSpecificationBuilder(sdb, TESTNAME);
+	//
+	// // ParameterDefinition para =
+	// EntityFactory.createParameterDefinition("First", "FirstType",
+	// ParameterRole.INPUT);
+	//
+	// assertEquals(builder.getBuiltSpecification().getInitializationAssignemts().size(),
+	// 0);
+	//
+	// // assertTrue(builder.addInitAssignment(para, "FirstVal"));
+	//
+	// assertEquals(builder.getBuiltSpecification().getInitializationAssignemts().size(),
+	// 1);
+	// assertEquals(builder.getBuiltSpecification().getInitializationAssignemts().get(0).getValue(),
+	// "FirstVal");
+	// //
+	// assertEquals(builder.getBuiltSpecification().getInitializationAssignemts().get(0).getParameter(),
+	// para);
+	//
+	// // assertTrue(builder.removeInitialAssignment(para));
+	//
+	// assertEquals(builder.getBuiltSpecification().getInitializationAssignemts().size(),
+	// 0);
+	//
+	// // ConstantValueAssignment cva =
+	// EntityFactory.createConstantValueAssignment(para, "vvvv");
+	//
+	// // assertTrue(builder.addInitAssignment(cva));
+	// assertEquals(builder.getBuiltSpecification().getInitializationAssignemts().size(),
+	// 1);
+	//
+	// // Parameter(fullname) must be unique in assignment list
+	// // assertFalse(builder.addInitAssignment(cva));
+	// assertEquals(builder.getBuiltSpecification().getInitializationAssignemts().size(),
+	// 1);
+	//
+	// assertEquals(builder.getBuiltSpecification().getInitializationAssignemts().get(0).getValue(),
+	// "vvvv");
+	// //
+	// assertEquals(builder.getBuiltSpecification().getInitializationAssignemts().get(0).getParameter(),
+	// para);
+	//
+	// // assertTrue(builder.removeInitialAssignment(cva));
+	//
+	// assertEquals(builder.getBuiltSpecification().getInitializationAssignemts().size(),
+	// 0);
+	// }
 
 	@Test
 	public void addExperimentSeriesDefinition() {
 		ScenarioDefinitionBuilder sdb = new ScenarioDefinitionBuilder();
-		
+
 		MeasurementSpecificationBuilder builder = new MeasurementSpecificationBuilder(sdb, TESTNAME);
 
-//		ExperimentTerminationCondition terminition = EntityFactory.createTimeOutTerminationCondition(10);
-//
-//		assertEquals(builder.getBuiltSpecification().getExperimentSeriesDefinitions().size(), 0);
-//
-//		ExperimentSeriesDefinition def = builder.addExperimentSeries(TESTNAME, terminition);
-//
-//		assertEquals(builder.getBuiltSpecification().getExperimentSeriesDefinitions().size(), 1);
-//		assertEquals(def, builder.getBuiltSpecification().getExperimentSeriesDefinitions().get(0));
-//
-//		assertFalse(builder.addExperimentSeries(def));
-//		assertNull(builder.addExperimentSeries(TESTNAME, terminition));
-//
-//		assertEquals(builder.getBuiltSpecification().getExperimentSeriesDefinitions().size(), 1);
-//
-//		assertFalse(builder.removeExperimentSeries("no exp"));
-//
-//		assertNull(builder.getExperimentSeries("abcd"));
-//		ExperimentSeriesDefinition defGet = builder.getExperimentSeries(TESTNAME);
-//		assertTrue(builder.removeExperimentSeries(defGet));
-//
-//		assertEquals(builder.getBuiltSpecification().getExperimentSeriesDefinitions().size(), 0);
+		// ExperimentTerminationCondition terminition =
+		// EntityFactory.createTimeOutTerminationCondition(10);
+		//
+		// assertEquals(builder.getBuiltSpecification().getExperimentSeriesDefinitions().size(),
+		// 0);
+		//
+		// ExperimentSeriesDefinition def =
+		// builder.addExperimentSeries(TESTNAME, terminition);
+		//
+		// assertEquals(builder.getBuiltSpecification().getExperimentSeriesDefinitions().size(),
+		// 1);
+		// assertEquals(def,
+		// builder.getBuiltSpecification().getExperimentSeriesDefinitions().get(0));
+		//
+		// assertFalse(builder.addExperimentSeries(def));
+		// assertNull(builder.addExperimentSeries(TESTNAME, terminition));
+		//
+		// assertEquals(builder.getBuiltSpecification().getExperimentSeriesDefinitions().size(),
+		// 1);
+		//
+		// assertFalse(builder.removeExperimentSeries("no exp"));
+		//
+		// assertNull(builder.getExperimentSeries("abcd"));
+		// ExperimentSeriesDefinition defGet =
+		// builder.getExperimentSeries(TESTNAME);
+		// assertTrue(builder.removeExperimentSeries(defGet));
+		//
+		// assertEquals(builder.getBuiltSpecification().getExperimentSeriesDefinitions().size(),
+		// 0);
 	}
 }

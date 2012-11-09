@@ -8,6 +8,7 @@ import javax.persistence.Query;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.sopeco.frontend.client.entities.AccountDetails;
 import org.sopeco.frontend.server.db.entities.MEControllerUrl;
 import org.sopeco.persistence.exceptions.DataNotFoundException;
 
@@ -19,12 +20,51 @@ import org.sopeco.persistence.exceptions.DataNotFoundException;
 public class UIPersistenceProvider {
 
 	private EntityManagerFactory emf;
-	private static Logger logger = LoggerFactory.getLogger(UIPersistenceProvider.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(UIPersistenceProvider.class);
 
 	public UIPersistenceProvider(EntityManagerFactory factory) {
 
 		emf = factory;
 
+	}
+
+	/**
+	 * Returns the AccountDetails object with the given key.
+	 * 
+	 * @param scenarioName
+	 * @return
+	 */
+	public AccountDetails getAccountDetails(String accountId) {
+		EntityManager em = emf.createEntityManager();
+
+		AccountDetails foundDetails = em.find(AccountDetails.class, accountId);
+		em.close();
+		
+		if (foundDetails == null) {
+			LOGGER.warn("No AccountDetails with key '" + accountId + "' found.");
+		}
+		
+		return foundDetails;
+	}
+
+	/**
+	 * Stores the given AccountDetails object in the database.
+	 * 
+	 * @param details
+	 */
+	public void storeAccountDetails(AccountDetails details) {
+		EntityManager em = emf.createEntityManager();
+
+		try {
+			em.getTransaction().begin();
+			em.merge(details);
+			em.getTransaction().commit();
+		} finally {
+			if (em.getTransaction().isActive()) {
+				em.getTransaction().rollback();
+			}
+			em.close();
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -41,7 +81,7 @@ public class UIPersistenceProvider {
 
 		} catch (Exception e) {
 
-			logger.error(errorMsg);
+			LOGGER.error(errorMsg);
 			throw new DataNotFoundException(errorMsg, e);
 		} finally {
 			em.close();
@@ -51,7 +91,7 @@ public class UIPersistenceProvider {
 		if (coltrollerUrls != null) {
 			return coltrollerUrls;
 		} else {
-			logger.debug(errorMsg);
+			LOGGER.debug(errorMsg);
 			throw new DataNotFoundException(errorMsg);
 		}
 	}

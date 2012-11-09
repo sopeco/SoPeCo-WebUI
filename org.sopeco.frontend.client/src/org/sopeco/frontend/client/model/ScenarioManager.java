@@ -117,6 +117,9 @@ public final class ScenarioManager {
 	 *            name of the new scenario
 	 */
 	private void switchScenario(final String scenarioName) {
+		Manager.get().getAccountDetails().setSelectedScenario(scenarioName);
+		Manager.get().storeAccountDetails();
+
 		RPC.getScenarioManager().switchScenario(scenarioName, new AsyncCallback<Boolean>() {
 			@Override
 			public void onFailure(Throwable caught) {
@@ -196,7 +199,7 @@ public final class ScenarioManager {
 	 */
 	public void storeScenario() {
 		Helper.whoCalledMe();
-		
+
 		RPC.getScenarioManager().storeScenarioDefinition(getCurrentScenarioDefinition(), new AsyncCallback<Boolean>() {
 			@Override
 			public void onFailure(Throwable caught) {
@@ -355,5 +358,25 @@ public final class ScenarioManager {
 		builder.getBuiltScenario().setMeasurementEnvironmentDefinition(environment);
 
 		EventControl.get().fireEvent(new EnvironmentDefinitionChangedEvent());
+	}
+
+	public void createScenario(String scenarioName) {
+		final String realScenarioName = scenarioName.replaceAll("[^a-zA-Z0-9_]", "_");
+
+		RPC.getScenarioManager().addScenario(realScenarioName, new AsyncCallback<Boolean>() {
+			@Override
+			public void onSuccess(Boolean result) {
+				Manager.get().getAccountDetails().addScenarioDetails(realScenarioName);
+				Manager.get().getAccountDetails().setSelectedScenario(realScenarioName);
+				Manager.get().storeAccountDetails();
+
+				MainLayoutPanel.get().getNorthPanel().updateScenarioList();
+			}
+
+			@Override
+			public void onFailure(Throwable caught) {
+				Message.error("Failed adding new scenario.");
+			}
+		});
 	}
 }

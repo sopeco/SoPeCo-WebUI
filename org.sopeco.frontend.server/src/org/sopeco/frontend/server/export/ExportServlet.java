@@ -29,8 +29,7 @@ public class ExportServlet extends HttpServlet {
 	private HttpSession session;
 
 	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
 		session = req.getSession();
 
@@ -52,13 +51,13 @@ public class ExportServlet extends HttpServlet {
 			return;
 		}
 
-		ScenarioDefinition definition = UserManager.getUser(session.getId()).getCurrentScenarioDefinitionBuilder().getBuiltScenario();
+		ScenarioDefinition definition = UserManager.getUser(session.getId()).getCurrentScenarioDefinitionBuilder()
+				.getBuiltScenario();
 
 		if (definition != null) {
 			ScenarioDefinitionWriter writer = new ScenarioDefinitionWriter();
 			String definitionXML = writer.convertToXMLString(definition);
-			String fileName = "scenario-" + definition.getScenarioName()
-					+ ".xml";
+			String fileName = "scenario-" + definition.getScenarioName() + ".xml";
 
 			sendXML(resp, definitionXML, fileName);
 		} else {
@@ -72,12 +71,10 @@ public class ExportServlet extends HttpServlet {
 	 * @param xmlContent
 	 * @throws IOException
 	 */
-	private void sendXML(HttpServletResponse resp, String xmlContent, String fileName)
-			throws IOException {
+	private void sendXML(HttpServletResponse resp, String xmlContent, String fileName) throws IOException {
 
 		resp.setContentType("text/xml");
-		resp.addHeader("Content-Disposition", "attachment; filename="
-				+ fileName);
+		resp.addHeader("Content-Disposition", "attachment; filename=" + fileName);
 		resp.setContentLength((int) xmlContent.length());
 
 		resp.getWriter().write(xmlContent);

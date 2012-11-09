@@ -2,6 +2,7 @@ package org.sopeco.frontend.client.rpc;
 
 import java.util.List;
 
+import org.sopeco.frontend.client.entities.AccountDetails;
 import org.sopeco.persistence.metadata.entities.DatabaseInstance;
 
 import com.google.gwt.user.client.rpc.RemoteService;
@@ -9,8 +10,9 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 /**
  * RPCs for accessing the database.
+ * 
  * @author D059149
- *
+ * 
  */
 @RemoteServiceRelativePath("databaseManagerRPC")
 public interface DatabaseManagerRPC extends RemoteService {
@@ -48,6 +50,10 @@ public interface DatabaseManagerRPC extends RemoteService {
 	 * @return true if succeeded
 	 */
 	boolean selectDatabase(DatabaseInstance databaseInstance, String passwd);
-	
+
 	boolean checkPassword(DatabaseInstance databaseInstance, String passwd);
+
+	AccountDetails getAccountDetails();
+	
+	void storeAccountDetails(AccountDetails details);
 }

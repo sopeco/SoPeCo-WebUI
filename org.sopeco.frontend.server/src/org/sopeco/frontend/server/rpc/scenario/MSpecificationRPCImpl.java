@@ -16,8 +16,7 @@ import org.sopeco.persistence.entities.definition.MeasurementSpecification;
  * @author Marius Oehler
  * 
  */
-public class MSpecificationRPCImpl extends SuperRemoteServlet implements
-		MSpecificationRPC {
+public class MSpecificationRPCImpl extends SuperRemoteServlet implements MSpecificationRPC {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(MSpecificationRPCImpl.class);
 	private static final long serialVersionUID = 1L;
@@ -27,7 +26,8 @@ public class MSpecificationRPCImpl extends SuperRemoteServlet implements
 		double metering = Metering.start();
 
 		List<String> returnList = new ArrayList<String>();
-		for (MeasurementSpecification ms : getUser().getCurrentScenarioDefinitionBuilder().getBuiltScenario().getMeasurementSpecifications()) {
+		for (MeasurementSpecification ms : getUser().getCurrentScenarioDefinitionBuilder().getBuiltScenario()
+				.getMeasurementSpecifications()) {
 
 			returnList.add(ms.getName());
 
@@ -42,7 +42,8 @@ public class MSpecificationRPCImpl extends SuperRemoteServlet implements
 		double metering = Metering.start();
 
 		List<MeasurementSpecification> returnList = new ArrayList<MeasurementSpecification>();
-		for (MeasurementSpecification ms : getUser().getCurrentScenarioDefinitionBuilder().getBuiltScenario().getMeasurementSpecifications()) {
+		for (MeasurementSpecification ms : getUser().getCurrentScenarioDefinitionBuilder().getBuiltScenario()
+				.getMeasurementSpecifications()) {
 			returnList.add(ms);
 		}
 
@@ -53,7 +54,7 @@ public class MSpecificationRPCImpl extends SuperRemoteServlet implements
 	@Override
 	public boolean setWorkingSpecification(String specificationName) {
 		double metering = Metering.start();
-		
+
 		LOGGER.debug("Set working specification on: " + specificationName);
 
 		if (!existSpecification(specificationName)) {
@@ -75,8 +76,9 @@ public class MSpecificationRPCImpl extends SuperRemoteServlet implements
 	 */
 	private boolean existSpecification(String specification) {
 		double metering = Metering.start();
-		
-		for (MeasurementSpecification ms : getUser().getCurrentScenarioDefinitionBuilder().getBuiltScenario().getMeasurementSpecifications()) {
+
+		for (MeasurementSpecification ms : getUser().getCurrentScenarioDefinitionBuilder().getBuiltScenario()
+				.getMeasurementSpecifications()) {
 			if (specification.equals(ms.getName())) {
 				return true;
 			}
@@ -88,13 +90,14 @@ public class MSpecificationRPCImpl extends SuperRemoteServlet implements
 	@Override
 	public boolean createSpecification(String name) {
 		double metering = Metering.start();
-		
+
 		if (existSpecification(name)) {
 			LOGGER.warn("Specification with the name '{}' already exists.", name);
 			return false;
 		}
 
-		MeasurementSpecificationBuilder newBuilder = getUser().getCurrentScenarioDefinitionBuilder().addNewMeasurementSpecification();
+		MeasurementSpecificationBuilder newBuilder = getUser().getCurrentScenarioDefinitionBuilder()
+				.addNewMeasurementSpecification();
 		if (newBuilder == null) {
 			LOGGER.warn("Error at adding new specification '{}'", name);
 			return false;
@@ -102,7 +105,7 @@ public class MSpecificationRPCImpl extends SuperRemoteServlet implements
 
 		newBuilder.setName(name);
 		getUser().storeCurrentScenarioDefinition();
-		
+
 		Metering.stop(metering);
 		return true;
 	}
@@ -110,7 +113,7 @@ public class MSpecificationRPCImpl extends SuperRemoteServlet implements
 	@Override
 	public boolean renameWorkingSpecification(String newName) {
 		double metering = Metering.start();
-		
+
 		if (existSpecification(newName)) {
 			LOGGER.warn("Can't rename, because specification with the name '{}' already exists.", newName);
 			return false;
@@ -118,7 +121,7 @@ public class MSpecificationRPCImpl extends SuperRemoteServlet implements
 
 		getUser().getCurrentScenarioDefinitionBuilder().getSpecificationBuilder().setName(newName);
 		getUser().storeCurrentScenarioDefinition();
-		
+
 		Metering.stop(metering);
 		return true;
 	}

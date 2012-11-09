@@ -26,8 +26,7 @@ public class DataSetExportServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
 		// long run = Long.parseLong(req.getParameter("run"));
 		// String series = Base64.decodeString(req.getParameter("series"));
@@ -63,8 +62,7 @@ public class DataSetExportServlet extends HttpServlet {
 			DataSetCsvHandler handler = new DataSetCsvHandler(';', '#', true);
 			String csvData = handler.convertToCSVString(simpleDataset);
 
-			sendData(resp, csvData, run.getLabel().replaceAll(" ", "_")
-					+ ".csv");
+			sendData(resp, csvData, run.getLabel().replaceAll(" ", "_") + ".csv");
 
 		} catch (DataNotFoundException e) {
 			resp.sendError(204);
@@ -75,8 +73,7 @@ public class DataSetExportServlet extends HttpServlet {
 		}
 	}
 
-	private void sendData(HttpServletResponse resp, String data, String name)
-			throws IOException {
+	private void sendData(HttpServletResponse resp, String data, String name) throws IOException {
 		resp.setContentType("text/xml");
 		resp.addHeader("Content-Disposition", "attachment; filename=" + name);
 		resp.setContentLength((int) data.length());
@@ -87,33 +84,28 @@ public class DataSetExportServlet extends HttpServlet {
 	/**
 	 *
 	 */
-	private ExperimentSeriesRun getRun(ExperimentSeries series, Long timestamp)
-			throws DataNotFoundException {
+	private ExperimentSeriesRun getRun(ExperimentSeries series, Long timestamp) throws DataNotFoundException {
 		for (ExperimentSeriesRun run : series.getExperimentSeriesRuns()) {
 			System.out.println(run.getTimestamp() + " " + timestamp);
-			if (timestamp.equals( run.getTimestamp() ) ) {
+			if (timestamp.equals(run.getTimestamp())) {
 				return run;
 			}
 		}
 
-		throw new DataNotFoundException(
-				"No ExperimentSeriesRun with timestamp '" + timestamp
-						+ "' found..");
+		throw new DataNotFoundException("No ExperimentSeriesRun with timestamp '" + timestamp + "' found..");
 	}
 
 	/**
 	 * 
 	 */
-	private ExperimentSeries getSeries(ScenarioInstance instance, String name)
-			throws DataNotFoundException {
+	private ExperimentSeries getSeries(ScenarioInstance instance, String name) throws DataNotFoundException {
 		for (ExperimentSeries series : instance.getExperimentSeriesList()) {
 			if (series.getName().equals(name)) {
 				return series;
 			}
 		}
 
-		throw new DataNotFoundException("No ExperimentSeries '" + name
-				+ "' found..");
+		throw new DataNotFoundException("No ExperimentSeries '" + name + "' found..");
 	}
 
 	/**
@@ -123,8 +115,7 @@ public class DataSetExportServlet extends HttpServlet {
 			throws DataNotFoundException {
 		User user = UserManager.getUser(sId);
 		if (user == null) {
-			throw new DataNotFoundException("No user at session '" + sId
-					+ "' found..");
+			throw new DataNotFoundException("No user at session '" + sId + "' found..");
 		}
 		ScenarioInstance instance = user.getCurrentPersistenceProvider().loadScenarioInstance(scenarioName, url);
 		return instance;

@@ -25,10 +25,11 @@ public interface ScenarioManagerRPC extends RemoteService {
 	boolean removeScenario(String name);
 
 	boolean switchScenario(String name);
-	
+
 	ScenarioDefinition getCurrentScenarioDefinition();
-	
+
 	boolean storeScenarioDefinition(ScenarioDefinition definition);
-	
+
 	String getScenarioAsXML();
+
 }

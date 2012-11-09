@@ -3,6 +3,7 @@ package org.sopeco.frontend.client.layout.dialog;
 import org.sopeco.frontend.client.layout.NorthPanel;
 import org.sopeco.frontend.client.layout.popups.Loader;
 import org.sopeco.frontend.client.layout.popups.Message;
+import org.sopeco.frontend.client.model.ScenarioManager;
 import org.sopeco.frontend.client.rpc.RPC;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -117,21 +118,9 @@ public class AddScenarioDialog extends DialogBox {
 			return;
 		}
 
-		Loader.showLoader();
-		RPC.getScenarioManager().addScenario(scenarioName, new AsyncCallback<Boolean>() {
-			@Override
-			public void onSuccess(Boolean result) {
-				parentPanel.updateScenarioList();
-				Loader.hideLoader();
-			}
-
-			@Override
-			public void onFailure(Throwable caught) {
-				Loader.hideLoader();
-				Message.error("Failed adding new scenario.");
-			}
-		});
+		ScenarioManager.get().createScenario(scenarioName);
 
 		hide();
 	}
+
 }
