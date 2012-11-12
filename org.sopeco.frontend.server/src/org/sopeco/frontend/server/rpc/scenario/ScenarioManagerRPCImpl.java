@@ -9,6 +9,7 @@ import org.sopeco.frontend.client.rpc.ScenarioManagerRPC;
 import org.sopeco.frontend.server.rpc.SuperRemoteServlet;
 import org.sopeco.frontend.shared.builder.ScenarioDefinitionBuilder;
 import org.sopeco.persistence.IPersistenceProvider;
+import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 import org.sopeco.persistence.exceptions.DataNotFoundException;
 
@@ -56,6 +57,27 @@ public class ScenarioManagerRPCImpl extends SuperRemoteServlet implements Scenar
 		name = name.replaceAll("[^a-zA-Z0-9_]", "_");
 
 		ScenarioDefinition emptyScenario = ScenarioDefinitionBuilder.buildEmptyScenario(name);
+
+		IPersistenceProvider dbCon = getUser().getCurrentPersistenceProvider();
+
+		if (dbCon == null) {
+			LOGGER.warn("No database connection found.");
+			return false;
+		}
+
+		dbCon.store(emptyScenario);
+
+		return true;
+	}
+
+	@Override
+	public boolean addScenario(String scenarioName, String specificationName, ExperimentSeriesDefinition experiment) {
+		scenarioName = scenarioName.replaceAll("[^a-zA-Z0-9_]", "_");
+
+		ScenarioDefinition emptyScenario = ScenarioDefinitionBuilder.buildEmptyScenario(scenarioName);
+
+		emptyScenario.getMeasurementSpecifications().get(0).setName(specificationName);
+		emptyScenario.getMeasurementSpecifications().get(0).getExperimentSeriesDefinitions().add(experiment);
 
 		IPersistenceProvider dbCon = getUser().getCurrentPersistenceProvider();
 

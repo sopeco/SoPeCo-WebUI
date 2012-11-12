@@ -24,6 +24,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -88,7 +89,7 @@ public class AddDBDialog extends DialogBox {
 		grid.setWidget(3, 0, lblPassword);
 		grid.getCellFormatter().setVerticalAlignment(3, 1, HasVerticalAlignment.ALIGN_MIDDLE);
 
-		textboxPasswd = new TextBox();
+		textboxPasswd = new PasswordTextBox();
 		grid.setWidget(3, 1, textboxPasswd);
 
 		HorizontalPanel horizontalPanel_2 = new HorizontalPanel();

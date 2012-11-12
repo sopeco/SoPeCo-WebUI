@@ -16,12 +16,15 @@ import org.sopeco.frontend.client.layout.center.result.ResultController;
 import org.sopeco.frontend.client.layout.center.specification.SpecificationController;
 import org.sopeco.frontend.client.layout.navigation.NavigationController;
 import org.sopeco.frontend.client.layout.navigation.NavigationView;
+import org.sopeco.frontend.client.model.Manager;
 import org.sopeco.frontend.shared.helper.Metering;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * The main-layout of the web-application.
@@ -31,6 +34,9 @@ import com.google.gwt.user.client.ui.DockLayoutPanel;
  */
 public final class MainLayoutPanel extends DockLayoutPanel implements ValueChangeHandler<String> {
 
+
+	private static final String NAVIGATION_PANEL_ID = "mainNavigation";
+	
 	private static MainLayoutPanel singletonLayoutPanel;
 	private static final CenterType DEFAULT_CENTER_TYPE = CenterType.Specification;
 
@@ -44,7 +50,7 @@ public final class MainLayoutPanel extends DockLayoutPanel implements ValueChang
 
 	private MainLayoutPanel(FrontendEntryPoint parent) {
 		super(Unit.EM);
-		
+
 		parentModule = parent;
 
 		initialize();
@@ -69,6 +75,31 @@ public final class MainLayoutPanel extends DockLayoutPanel implements ValueChang
 	}
 
 	/**
+	 * Hides the navigation panel.
+	 */
+	public void hideNavigation() {
+		GWT.log("hide Navigation");
+		remove(navigationController.getView());
+	}
+
+	/**
+	 * Show the navigation panel.
+	 */
+	public void showNavigation() {
+		// if (!getNavigationController().getView().isAttached()) {
+		Widget center = getCenter();
+		if (center != null) {
+			remove(center);
+		}
+		addWest(getNavigationController().getView(), Float.parseFloat(NavigationView.PANEL_WIDTH));
+		getWidgetContainerElement(getNavigationController().getView()).setId(NAVIGATION_PANEL_ID);
+		if (center != null) {
+			add(center);
+		}
+		// }
+	}
+
+	/**
 	 * @return the viewSwitch
 	 */
 	public ViewSwitch getViewSwitch() {
@@ -87,13 +118,13 @@ public final class MainLayoutPanel extends DockLayoutPanel implements ValueChang
 
 		// centerScrollPanel = new ScrollPanel();
 		currentCenterPanel = DEFAULT_CENTER_TYPE;
-		
+
 		addNorth(getNorthPanel(), Float.parseFloat(NorthPanel.PANEL_HEIGHT));
 		addWest(getNavigationController().getView(), Float.parseFloat(NavigationView.PANEL_WIDTH));
+		getWidgetContainerElement(getNavigationController().getView()).setId(NAVIGATION_PANEL_ID);
 
-		getWidgetContainerElement(getNavigationController().getView()).setId("mainNavigation");
-
-		//centerController.put(CenterType.Environment, new EnvironmentController());
+		// centerController.put(CenterType.Environment, new
+		// EnvironmentController());
 		centerController.put(CenterType.Specification, new SpecificationController());
 		centerController.put(CenterType.Execute, new ExecuteController());
 		centerController.put(CenterType.Result, new ResultController());
@@ -170,23 +201,18 @@ public final class MainLayoutPanel extends DockLayoutPanel implements ValueChang
 			getCenter().removeFromParent();
 		}
 		currentCenterPanel = type;
-		// centerScrollPanel.clear();
-
-		// if (newHistoryItem) {
-		// History.newItem(type.name());
-		// }
 
 		getNavigationController().setCurrentCenterType(type);
 
-		if (northPanel.getSelectedScenario().isEmpty() || type == CenterType.NoScenario) {
+		if (Manager.get().getCurrentScenarioDetails() == null || type == CenterType.NoScenario) {
+			hideNavigation();
 			add(new NoScenario());
 
 			Metering.stop(metering);
 			return;
 		}
+		showNavigation();
 
-		// centerScrollPanel.add(centerController.get(type).getView());
-		// add(centerScrollPanel);
 		add(centerController.get(type).getView());
 
 		Metering.stop(metering);
@@ -198,7 +224,7 @@ public final class MainLayoutPanel extends DockLayoutPanel implements ValueChang
 		}
 
 		currentCenterPanel = CenterType.Other;
-		
+
 		add(MessagePanel.createMessagePanel(headline, text));
 	}
 

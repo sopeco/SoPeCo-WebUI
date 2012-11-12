@@ -23,10 +23,14 @@
 	cursor: pointer;
 	height: 24px;
 	width: 24px;
-	
 	background-color: #AACCFF;
 }
 
 .north_hPanel .imgButton:hover {
 	background-color: #FFF;
+}
+
+.north_hPanel .imgButton.disabled {
+	background-color: lightSlateGray;
+	cursor: default;
 }

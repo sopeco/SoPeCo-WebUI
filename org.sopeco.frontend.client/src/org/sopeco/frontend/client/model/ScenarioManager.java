@@ -8,6 +8,7 @@ import org.sopeco.frontend.client.event.ScenarioChangedEvent;
 import org.sopeco.frontend.client.event.ScenarioLoadedEvent;
 import org.sopeco.frontend.client.event.SpecificationChangedEvent;
 import org.sopeco.frontend.client.event.handler.ScenarioChangedEventHandler;
+import org.sopeco.frontend.client.helper.INotifyHandler;
 import org.sopeco.frontend.client.layout.MainLayoutPanel;
 import org.sopeco.frontend.client.layout.center.CenterType;
 import org.sopeco.frontend.client.layout.center.specification.SpecificationController;
@@ -17,6 +18,7 @@ import org.sopeco.frontend.shared.builder.MeasurementSpecificationBuilder;
 import org.sopeco.frontend.shared.builder.ScenarioDefinitionBuilder;
 import org.sopeco.frontend.shared.helper.Helper;
 import org.sopeco.persistence.entities.definition.ConstantValueAssignment;
+import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
 import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
 import org.sopeco.persistence.entities.definition.MeasurementSpecification;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
@@ -135,6 +137,26 @@ public final class ScenarioManager {
 	}
 
 	/**
+	 * Removes the scenario with the given name.
+	 * 
+	 * @param scenarioName
+	 */
+	public void removeScenario(String scenarioName) {
+		RPC.getScenarioManager().removeScenario(scenarioName, new AsyncCallback<Boolean>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				Message.error(caught.getMessage());
+			}
+
+			@Override
+			public void onSuccess(Boolean result) {
+
+				MainLayoutPanel.get().getNorthPanel().updateScenarioList();
+			}
+		});
+	}
+
+	/**
 	 * Returns the scenario definition of the current scenario builder.
 	 * 
 	 * @return ScenarioDefinition
@@ -156,11 +178,22 @@ public final class ScenarioManager {
 	 * Renames the current workingSpecification to the given name.
 	 */
 	public void renameWorkingSpecification(String newName) {
+		renameWorkingSpecification(newName, null);
+	}
+
+	/**
+	 * Renames the current workingSpecification to the given name.
+	 */
+	public void renameWorkingSpecification(String newName, INotifyHandler<Boolean> hanlder) {
 		getBuilder().getSpecificationBuilder().setName(newName);
 		MainLayoutPanel.get().getNavigationController().updateSpecifications();
 		EventControl.get().fireEvent(new SpecificationChangedEvent(newName));
 
 		storeScenario();
+
+		if (hanlder != null) {
+			hanlder.call(true, true);
+		}
 	}
 
 	/**
@@ -236,6 +269,11 @@ public final class ScenarioManager {
 
 		MainLayoutPanel.get().getNavigationController().addSpecifications(name);
 		EventControl.get().fireEvent(new SpecificationChangedEvent(name));
+	}
+
+	public void createSet(String scenarioName, String specificationName, String experimentName) {
+		MeasurementSpecificationBuilder newBuilder = getBuilder().addNewMeasurementSpecification();
+		newBuilder.setName(scenarioName);
 	}
 
 	/**
@@ -361,6 +399,10 @@ public final class ScenarioManager {
 	}
 
 	public void createScenario(String scenarioName) {
+		createScenario(scenarioName, null);
+	}
+
+	public void createScenario(String scenarioName, final INotifyHandler<Boolean> handler) {
 		final String realScenarioName = scenarioName.replaceAll("[^a-zA-Z0-9_]", "_");
 
 		RPC.getScenarioManager().addScenario(realScenarioName, new AsyncCallback<Boolean>() {
@@ -371,12 +413,55 @@ public final class ScenarioManager {
 				Manager.get().storeAccountDetails();
 
 				MainLayoutPanel.get().getNorthPanel().updateScenarioList();
+
+				if (handler != null) {
+					handler.call(true, true);
+				}
 			}
 
 			@Override
 			public void onFailure(Throwable caught) {
 				Message.error("Failed adding new scenario.");
+				if (handler != null) {
+					handler.call(false, false);
+				}
 			}
 		});
+	}
+
+	public void createScenario(String scenarioName, String specificationName, ExperimentSeriesDefinition experiment) {
+		final String realScenarioName = scenarioName.replaceAll("[^a-zA-Z0-9_]", "_");
+
+		RPC.getScenarioManager().addScenario(realScenarioName, specificationName, experiment,
+				new AsyncCallback<Boolean>() {
+					@Override
+					public void onSuccess(Boolean result) {
+						Manager.get().getAccountDetails().addScenarioDetails(realScenarioName);
+						Manager.get().getAccountDetails().setSelectedScenario(realScenarioName);
+						Manager.get().storeAccountDetails();
+
+						MainLayoutPanel.get().getNorthPanel().updateScenarioList();
+					}
+
+					@Override
+					public void onFailure(Throwable caught) {
+						Message.error("Failed adding new scenario.");
+					}
+				});
+	}
+
+	/**
+	 * Returns whether a scenario with the given name exists.
+	 * 
+	 * @param name
+	 * @return
+	 */
+	public boolean existScenario(String name) {
+		for (String sName : Manager.get().getAvailableScenarios()) {
+			if (sName.equals(name)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

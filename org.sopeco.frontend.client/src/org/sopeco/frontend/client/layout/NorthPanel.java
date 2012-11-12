@@ -10,6 +10,7 @@ import org.sopeco.frontend.client.layout.popups.Confirmation;
 import org.sopeco.frontend.client.layout.popups.Loader;
 import org.sopeco.frontend.client.layout.popups.Message;
 import org.sopeco.frontend.client.model.Manager;
+import org.sopeco.frontend.client.model.ScenarioManager;
 import org.sopeco.frontend.client.resources.FrontEndResources;
 import org.sopeco.frontend.client.rpc.RPC;
 
@@ -26,6 +27,7 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.UIObject;
 
 /**
  * The Panel of the top. It displays the current database and scenario.
@@ -37,6 +39,7 @@ public class NorthPanel extends FlowPanel implements ClickHandler, ChangeHandler
 
 	private static final String GRADIENT_CSS = "gradient-blue";
 	private static final String IMG_BUTTON_CSS_CLASS = "imgButton";
+	private static final String DISABLED_CSS_CLASS = "disabled";
 
 	private static final String IMAGE_SATELLITE = "images/satellite_invert.png";
 	private static final String IMAGE_EXPORT = "images/download_invert.png";
@@ -46,8 +49,6 @@ public class NorthPanel extends FlowPanel implements ClickHandler, ChangeHandler
 	private static final String NAVI_PANEL_HEIGHT = "2.8em";
 
 	private static final String SEPARATOR_CSS_CLASS = "separator";
-
-	private static final int EXPORT_MARGIN = 4;
 
 	private ListBox listboxScenarios;
 	private HTML connectedToText, htmlSelectScenario;
@@ -68,7 +69,7 @@ public class NorthPanel extends FlowPanel implements ClickHandler, ChangeHandler
 	public NorthPanel(MainLayoutPanel parent) {
 		parentPanel = parent;
 
-		FrontEndResources.loadNavigationCSS();
+		FrontEndResources.loadTopNavigationCSS();
 
 		initialize();
 	}
@@ -149,14 +150,14 @@ public class NorthPanel extends FlowPanel implements ClickHandler, ChangeHandler
 
 	@Override
 	public void onClick(ClickEvent event) {
-		if (event.getSource() == imageSatellite) {
+		if (event.getSource() == imageSatellite && isEnabled(imageSatellite)) {
 			MEControllerBox.showBox();
-		} else if (event.getSource() == imageExport) {
+		} else if (event.getSource() == imageExport && isEnabled(imageExport)) {
 			ExportBox.showExportBox();
-		} else if (event.getSource() == anchorAddScenario) {
-			AddScenarioDialog addScenarioDialog = new AddScenarioDialog(this);
+		} else if (event.getSource() == anchorAddScenario && isEnabled(anchorAddScenario)) {
+			AddScenarioDialog addScenarioDialog = new AddScenarioDialog();
 			addScenarioDialog.center();
-		} else if (event.getSource() == anchorRemoveScenario) {
+		} else if (event.getSource() == anchorRemoveScenario && isEnabled(anchorRemoveScenario)) {
 			removeScenario();
 		} else if (event.getSource() == anchorChangeAccount) {
 			FrontendEntryPoint.get().changeDatabase();
@@ -182,18 +183,8 @@ public class NorthPanel extends FlowPanel implements ClickHandler, ChangeHandler
 			@Override
 			public void onClick(ClickEvent event) {
 				String name = listboxScenarios.getItemText(listboxScenarios.getSelectedIndex());
-				RPC.getScenarioManager().removeScenario(name, new AsyncCallback<Boolean>() {
 
-					@Override
-					public void onFailure(Throwable caught) {
-						Message.error(caught.getMessage());
-					}
-
-					@Override
-					public void onSuccess(Boolean result) {
-						updateScenarioList();
-					}
-				});
+				ScenarioManager.get().removeScenario(name);
 			}
 		});
 	}
@@ -231,6 +222,51 @@ public class NorthPanel extends FlowPanel implements ClickHandler, ChangeHandler
 	}
 
 	/**
+	 * Disables or enables the buttons....
+	 * 
+	 * @param enabled
+	 */
+	public void setButtonsEnabled(boolean enabled) {
+		if (enabled) {
+			listboxScenarios.setEnabled(true);
+			scenariosAvailable = true;
+			anchorAddScenario.setEnabled(true);
+			anchorAddScenario.removeStyleName(DISABLED_CSS_CLASS);
+			anchorRemoveScenario.setEnabled(true);
+			anchorRemoveScenario.removeStyleName(DISABLED_CSS_CLASS);
+			imageExport.removeStyleName(DISABLED_CSS_CLASS);
+			imageSatellite.removeStyleName(DISABLED_CSS_CLASS);
+		} else {
+			listboxScenarios.addItem(R.get("no_scenarios"));
+			listboxScenarios.setEnabled(false);
+			scenariosAvailable = false;
+			anchorRemoveScenario.setEnabled(false);
+			anchorRemoveScenario.addStyleName(DISABLED_CSS_CLASS);
+			anchorAddScenario.setEnabled(false);
+			anchorAddScenario.addStyleName(DISABLED_CSS_CLASS);
+			imageExport.addStyleName(DISABLED_CSS_CLASS);
+			imageSatellite.addStyleName(DISABLED_CSS_CLASS);
+			Manager.get().getAccountDetails().setSelectedScenario(null);
+		}
+	}
+
+	/**
+	 * Returns whether the UIObject is enabled or not. It only checks, if the
+	 * class attribute contains the "disabled" class.
+	 * 
+	 * @param object
+	 * @return
+	 */
+	private boolean isEnabled(UIObject object) {
+		for (String c : object.getStyleName().split(" ")) {
+			if (c.equals(DISABLED_CSS_CLASS)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
 	 * Updates the scenario listbox with the given names.
 	 * 
 	 * @param names
@@ -239,18 +275,14 @@ public class NorthPanel extends FlowPanel implements ClickHandler, ChangeHandler
 	private void updateScenarioList(String[] names) {
 		listboxScenarios.clear();
 
-		if (names == null || names.length == 0) {
-			listboxScenarios.addItem(R.get("no_scenarios"));
-			listboxScenarios.setEnabled(false);
-			scenariosAvailable = false;
-			anchorRemoveScenario.setEnabled(false);
-			anchorRemoveScenario.addStyleName("disabled");
-		} else {
-			listboxScenarios.setEnabled(true);
-			scenariosAvailable = true;
-			anchorRemoveScenario.setEnabled(true);
-			anchorRemoveScenario.removeStyleName("disabled");
+		Manager.get().setAvailableScenarios(names);
 
+		if (names == null || names.length == 0) {
+			setButtonsEnabled(false);
+		} else {
+			setButtonsEnabled(true);
+
+			String foundSelectedScenario = null;
 			int count = 0;
 			for (String name : names) {
 				listboxScenarios.addItem(name);
@@ -258,8 +290,13 @@ public class NorthPanel extends FlowPanel implements ClickHandler, ChangeHandler
 				if (Manager.get().getAccountDetails().getSelectedScenario() != null
 						&& name.equals(Manager.get().getAccountDetails().getSelectedScenario())) {
 					listboxScenarios.setSelectedIndex(count);
+					foundSelectedScenario = name;
 				}
 				count++;
+			}
+
+			if (foundSelectedScenario != null) {
+				Manager.get().getAccountDetails().setSelectedScenario(foundSelectedScenario);
 			}
 		}
 
@@ -285,9 +322,9 @@ public class NorthPanel extends FlowPanel implements ClickHandler, ChangeHandler
 	private void switchScenario() {
 		String name = getSelectedScenario();
 
-		if (name.isEmpty()) {
-			return;
-		}
+		// if (name.isEmpty()) {
+		// return;
+		// }
 
 		EventControl.get().fireEvent(new ScenarioChangedEvent(name));
 	}

@@ -12,6 +12,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -46,12 +47,12 @@ public final class TextInput extends DialogBox implements KeyPressHandler {
 	private TextInputOkHandler okHandler;
 	private Button btnNewButton;
 
-	private TextInput(String iconURL, String title, String message, TextInputOkHandler action) {
+	private TextInput(String iconURL, String title, String message, boolean isPassword, TextInputOkHandler action) {
 		super(false, true);
 
 		okHandler = action;
 
-		initialize(iconURL, title, message);
+		initialize(iconURL, title, message, isPassword);
 	}
 
 	/**
@@ -64,7 +65,7 @@ public final class TextInput extends DialogBox implements KeyPressHandler {
 	 * @param message
 	 *            the message in the dialog box
 	 */
-	private void initialize(String iconUrl, String title, String message) {
+	private void initialize(String iconUrl, String title, String message, boolean isPassword) {
 		setGlassEnabled(true);
 
 		setText(title);
@@ -90,7 +91,11 @@ public final class TextInput extends DialogBox implements KeyPressHandler {
 		HTML htmlNewHtml = new HTML(message, true);
 		horizontalPanel2.add(htmlNewHtml);
 
-		textboxText = new TextBox();
+		if (isPassword) {
+			textboxText = new PasswordTextBox();
+		} else {
+			textboxText = new TextBox();
+		}
 		horizontalPanel2.add(textboxText);
 		textboxText.addKeyPressHandler(this);
 
@@ -163,14 +168,20 @@ public final class TextInput extends DialogBox implements KeyPressHandler {
 	 *            the handler of the ok button
 	 */
 	public static void doInput(Icon icon, String title, String message, TextInputOkHandler action) {
-		TextInput input = new TextInput(ICON_URLS[icon.getValue()], title, message, action);
+		doInput(ICON_URLS[icon.getValue()], title, message, false, action);
+	}
 
-		input.center();
-		input.setFocus();
+	public static void doInput(Icon icon, String title, String message, boolean isPassword, TextInputOkHandler action) {
+		doInput(ICON_URLS[icon.getValue()], title, message, isPassword, action);
 	}
 
 	public static void doInput(String iconUrl, String title, String message, TextInputOkHandler action) {
-		TextInput input = new TextInput(iconUrl, title, message, action);
+		doInput(iconUrl, title, message, false, action);
+	}
+
+	public static void doInput(String iconUrl, String title, String message, boolean isPassword,
+			TextInputOkHandler action) {
+		TextInput input = new TextInput(iconUrl, title, message, isPassword, action);
 
 		input.center();
 		input.setFocus();

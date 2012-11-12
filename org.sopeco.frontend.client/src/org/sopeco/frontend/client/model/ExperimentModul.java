@@ -179,9 +179,7 @@ public class ExperimentModul {
 	public void createExperimentSeries(String name) {
 		LOGGER.info("Create experiment '" + name + "'");
 
-		ExperimentSeriesDefinition experiment = SimpleEntityFactory.createExperimentSeriesDefinition(name);
-
-		experiment.setExplorationStrategy(createDefaultExplorationStrategy());
+		ExperimentSeriesDefinition experiment = getNewExperimentSeries(name);
 
 		manager.getBuilder().getSpecificationBuilder().addExperimentSeries(experiment);
 
@@ -189,6 +187,21 @@ public class ExperimentModul {
 		MainLayoutPanel.get().getViewSwitch().switchToExperiment(name);
 
 		manager.storeScenario();
+	}
+
+	/**
+	 * Creates a new experiment series with the given name.
+	 * 
+	 * @param name
+	 */
+	public ExperimentSeriesDefinition getNewExperimentSeries(String name) {
+		LOGGER.info("Create (and return) experiment '" + name + "'");
+
+		ExperimentSeriesDefinition experiment = SimpleEntityFactory.createExperimentSeriesDefinition(name);
+
+		experiment.setExplorationStrategy(createDefaultExplorationStrategy());
+
+		return experiment;
 	}
 
 	/**

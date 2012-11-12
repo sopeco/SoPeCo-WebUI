@@ -225,7 +225,7 @@ public class LoginBox extends DialogBox implements ClickHandler, Deactivatable {
 
 				if (instance.isProtectedByPassword()) {
 					TextInput.doInput(Icon.Password, R.get("insert_db_passwd_for") + " '" + instance.getDbName() + "'",
-							R.get("db_passwd") + ":", new TextInputOkHandler() {
+							R.get("db_passwd") + ":", true, new TextInputOkHandler() {
 								@Override
 								public void onInput(ClickEvent event, String input) {
 									switchDatabaseRequest(instance, input);
@@ -254,8 +254,8 @@ public class LoginBox extends DialogBox implements ClickHandler, Deactivatable {
 
 				if (result) {
 					getAccountSettings(instance);
-//					hide();
-//					parentModule.initializeMainView(instance);
+					// hide();
+					// parentModule.initializeMainView(instance);
 				} else {
 					Message.error(R.get("wrong_db_credentials"));
 				}
@@ -294,26 +294,27 @@ public class LoginBox extends DialogBox implements ClickHandler, Deactivatable {
 		}
 
 		if (instance.isProtectedByPassword()) {
-			TextInput.doInput(Icon.Password, R.get("pw_remove_db"), R.get("db_passwd") + ":", new TextInputOkHandler() {
-				@Override
-				public void onInput(ClickEvent event, String input) {
-					DBManager.getDbManager().checkPassword(instance, input, new AsyncCallback<Boolean>() {
+			TextInput.doInput(Icon.Password, R.get("pw_remove_db"), R.get("db_passwd") + ":", true,
+					new TextInputOkHandler() {
 						@Override
-						public void onSuccess(Boolean result) {
-							if (result) {
-								deleteDatabase(instance);
-							} else {
-								Message.error(R.get("wrong_pw_cant_remove_db"));
-							}
-						}
+						public void onInput(ClickEvent event, String input) {
+							DBManager.getDbManager().checkPassword(instance, input, new AsyncCallback<Boolean>() {
+								@Override
+								public void onSuccess(Boolean result) {
+									if (result) {
+										deleteDatabase(instance);
+									} else {
+										Message.error(R.get("wrong_pw_cant_remove_db"));
+									}
+								}
 
-						@Override
-						public void onFailure(Throwable caught) {
-							Message.error(caught.getMessage());
+								@Override
+								public void onFailure(Throwable caught) {
+									Message.error(caught.getMessage());
+								}
+							});
 						}
 					});
-				}
-			});
 		} else {
 			deleteDatabase(instance);
 		}

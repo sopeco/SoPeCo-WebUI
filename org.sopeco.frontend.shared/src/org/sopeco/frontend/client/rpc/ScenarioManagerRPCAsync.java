@@ -1,5 +1,6 @@
 package org.sopeco.frontend.client.rpc;
 
+import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -19,6 +20,9 @@ public interface ScenarioManagerRPCAsync {
 	void getScenarioNames(AsyncCallback<String[]> callback);
 
 	void addScenario(String name, AsyncCallback<Boolean> callback);
+
+	void addScenario(String scenarioName, String specificationName, ExperimentSeriesDefinition experiment,
+			AsyncCallback<Boolean> callback);
 
 	void removeScenario(String name, AsyncCallback<Boolean> callback);
 

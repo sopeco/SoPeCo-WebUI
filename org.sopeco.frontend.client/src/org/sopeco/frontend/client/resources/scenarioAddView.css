@@ -1,0 +1,66 @@
+.scenarioAddView {
+	padding: 1em;
+}
+
+.scenarioAddView table {
+	width: 100%;
+}
+
+.scenarioAddView>h3 {
+	margin: 0;
+	margin-bottom: 6px;
+}
+
+.scenarioAddView>p {
+	text-align: justify;
+	color: #633;
+	font-weight: normal;
+}
+
+.scenarioAddView table .gwt-HTML {
+	padding: 0 4px;
+	color: #333;
+}
+
+.scenarioAddView table .gwt-TextBox {
+	padding: 3px 4px;
+	margin-right: 4px;
+	margin-top: 6px;
+	width: 200px;
+}
+
+.scenarioAddView table .gwt-TextBox.invalid {
+	border-color: #E66;
+	border-top-color: #B33;
+	background-color: #FFF5F5;
+}
+
+.scenarioAddView table td:nth-child\(2n\) {
+	text-align: right;
+}
+
+.scenarioAddView>div {
+	margin-top: 6px;
+	text-align: right;
+}
+
+.scenarioAddView .gwt-Button {
+	margin-right: 7px;
+	width: 100px;
+}
+
+.scenarioAddView .errorText {
+	float: left;
+	line-height: 30px;
+	color: #D33;
+}
+
+.noScenarioBox {
+	position: absolute;
+	left: 50%;
+	margin-left: -200px;
+	top: 10%;
+	border: 1px solid #CCC;
+	border-radius: 8px;
+	box-shadow: 0 0 13px 0 #BCD;
+}

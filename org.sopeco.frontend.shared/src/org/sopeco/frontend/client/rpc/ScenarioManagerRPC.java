@@ -1,5 +1,6 @@
 package org.sopeco.frontend.client.rpc;
 
+import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 
 import com.google.gwt.user.client.rpc.RemoteService;
@@ -21,6 +22,8 @@ public interface ScenarioManagerRPC extends RemoteService {
 	String[] getScenarioNames();
 
 	boolean addScenario(String name);
+
+	boolean addScenario(String scenarioName, String specificationName, ExperimentSeriesDefinition experiment);
 
 	boolean removeScenario(String name);
 

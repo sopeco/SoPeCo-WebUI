@@ -59,11 +59,11 @@ public class AccountDetails implements Serializable {
 	}
 
 	/**
-	 * @param selectedScenario
+	 * @param pSelectedScenario
 	 *            the selectedScenario to set
 	 */
-	public void setSelectedScenario(String selectedScenario) {
-		this.selectedScenario = selectedScenario;
+	public void setSelectedScenario(String pSelectedScenario) {
+		this.selectedScenario = pSelectedScenario;
 	}
 
 	/**
@@ -118,6 +118,9 @@ public class AccountDetails implements Serializable {
 	 * @return
 	 */
 	public ScenarioDetails getScenarioDetail(String scenarioName) {
+		if (scenarioName == null) {
+			return null;
+		}
 		for (ScenarioDetails detail : scenarioDetails) {
 			if (detail.getScenarioName().equals(scenarioName)) {
 				return detail;

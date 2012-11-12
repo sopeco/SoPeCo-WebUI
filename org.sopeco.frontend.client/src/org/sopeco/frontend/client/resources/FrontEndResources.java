@@ -77,7 +77,7 @@ public final class FrontEndResources {
 	/**
 	 * 
 	 */
-	public static void loadNavigationCSS() {
+	public static void loadTopNavigationCSS() {
 		GWT.runAsync(new RunAsyncCallback() {
 			@Override
 			public void onFailure(Throwable reason) {
@@ -87,7 +87,25 @@ public final class FrontEndResources {
 			@Override
 			public void onSuccess() {
 				ResourceBundle rsc = GWT.create(ResourceBundle.class);
-				rsc.navigationCss().ensureInjected();
+				rsc.topNavigationCss().ensureInjected();
+			}
+		});
+	}
+
+	/**
+	 * 
+	 */
+	public static void loadScenarioAddCSS() {
+		GWT.runAsync(new RunAsyncCallback() {
+			@Override
+			public void onFailure(Throwable reason) {
+				Window.alert(R.get("errorCssLoading"));
+			}
+
+			@Override
+			public void onSuccess() {
+				ResourceBundle rsc = GWT.create(ResourceBundle.class);
+				rsc.scenarioAddCss().ensureInjected();
 			}
 		});
 	}
@@ -108,9 +126,13 @@ public final class FrontEndResources {
 		@CssResource.NotStrict
 		CssResource specificationCss();
 
-		@Source("navigation.css")
+		@Source("topNavigation.css")
 		@CssResource.NotStrict
-		CssResource navigationCss();
+		CssResource topNavigationCss();
+
+		@Source("scenarioAddView.css")
+		@CssResource.NotStrict
+		CssResource scenarioAddCss();
 	}
 
 }

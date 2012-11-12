@@ -1,5 +1,6 @@
 package org.sopeco.frontend.client.model;
 
+import java.util.Collection;
 import java.util.logging.Logger;
 
 import org.sopeco.frontend.client.entities.AccountDetails;
@@ -37,6 +38,7 @@ public final class Manager {
 	private long controllerLastCheck = -1;
 	private ControllerStatus controllerLastStatus = ControllerStatus.UNKNOWN;
 	private AccountDetails accountDetails = null;
+	private String[] availableScenarios = null;
 
 	/**
 	 * Sends the current AccountDetails to the backend to store it in the
@@ -77,6 +79,21 @@ public final class Manager {
 	 */
 	public void setAccountDetails(AccountDetails pAccountDetails) {
 		this.accountDetails = pAccountDetails;
+	}
+
+	/**
+	 * @return the availableScenarios
+	 */
+	public String[] getAvailableScenarios() {
+		return availableScenarios;
+	}
+
+	/**
+	 * @param pAvailableScenarios
+	 *            the availableScenarios to set
+	 */
+	public void setAvailableScenarios(String[] pAvailableScenarios) {
+		this.availableScenarios = pAvailableScenarios;
 	}
 
 	/**
@@ -123,59 +140,6 @@ public final class Manager {
 	public void setControllerLastCheck(long pControllerLastCheck) {
 		this.controllerLastCheck = pControllerLastCheck;
 	}
-
-	// /**
-	// * @param pControllerProtocol
-	// * the controllerProtocol to set
-	// */
-	// public void setControllerProtocol(String pControllerProtocol) {
-	// this.controllerProtocol = pControllerProtocol;
-	// }
-	//
-	// /**
-	// * @return the controllerHost
-	// */
-	// public String getControllerHost() {
-	// return controllerHost;
-	// }
-	//
-	// /**
-	// * @param pControllerHost
-	// * the controllerHost to set
-	// */
-	// public void setControllerHost(String pControllerHost) {
-	// this.controllerHost = pControllerHost;
-	// }
-	//
-	// /**
-	// * @return the controllerName
-	// */
-	// public String getControllerName() {
-	// return controllerName;
-	// }
-	//
-	// /**
-	// * @param pControllerName
-	// * the controllerName to set
-	// */
-	// public void setControllerName(String pControllerName) {
-	// this.controllerName = pControllerName;
-	// }
-	//
-	// /**
-	// * @return the controllerPort
-	// */
-	// public int getControllerPort() {
-	// return controllerPort;
-	// }
-	//
-	// /**
-	// * @param pControllerPort
-	// * the controllerPort to set
-	// */
-	// public void setControllerPort(int pControllerPort) {
-	// this.controllerPort = pControllerPort;
-	// }
 
 	private Manager() {
 	}
