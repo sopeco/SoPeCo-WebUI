@@ -21,9 +21,6 @@ import org.sopeco.persistence.entities.definition.ParameterNamespace;
  */
 public class ParameterTreeController {
 
-	/** temporarily. */
-	public static ParameterTreeController treeController;
-
 	private ParameterTreeView view;
 	private Tree tree;
 
@@ -31,8 +28,6 @@ public class ParameterTreeController {
 
 	public ParameterTreeController() {
 		initialize();
-
-		treeController = this;
 	}
 
 	/**
@@ -93,7 +88,7 @@ public class ParameterTreeController {
 		double metering = Metering.start();
 
 		ParameterNamespace root = treeData.getRoot();
-		TreeItem rootItem = new TreeItem(root.getName());
+		TreeItem rootItem = new TreeItem(root.getName(), true);
 
 		recursiveAddTreeItems(root, rootItem);
 

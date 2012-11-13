@@ -109,6 +109,24 @@ public final class FrontEndResources {
 			}
 		});
 	}
+	
+	/**
+	 * 
+	 */
+	public static void loadExperimentTabPanelCSS() {
+		GWT.runAsync(new RunAsyncCallback() {
+			@Override
+			public void onFailure(Throwable reason) {
+				Window.alert(R.get("errorCssLoading"));
+			}
+
+			@Override
+			public void onSuccess() {
+				ResourceBundle rsc = GWT.create(ResourceBundle.class);
+				rsc.experimentTabPanelCss().ensureInjected();
+			}
+		});
+	}
 
 	/**
 	 * ClientBundle to load Resources.
@@ -133,6 +151,10 @@ public final class FrontEndResources {
 		@Source("scenarioAddView.css")
 		@CssResource.NotStrict
 		CssResource scenarioAddCss();
+		
+		@Source("experimentTabPanel.css")
+		@CssResource.NotStrict
+		CssResource experimentTabPanelCss();
 	}
 
 }

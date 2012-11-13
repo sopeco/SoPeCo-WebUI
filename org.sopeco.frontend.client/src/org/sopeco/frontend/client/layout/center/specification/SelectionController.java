@@ -11,6 +11,7 @@ import org.sopeco.frontend.client.event.handler.ScenarioChangedEventHandler;
 import org.sopeco.frontend.client.event.handler.SpecificationChangedEventHandler;
 import org.sopeco.frontend.client.model.Manager;
 import org.sopeco.frontend.client.model.ScenarioManager;
+import org.sopeco.frontend.shared.helper.Helper;
 import org.sopeco.frontend.shared.helper.Metering;
 import org.sopeco.gwt.widgets.tree.TreeItem;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;

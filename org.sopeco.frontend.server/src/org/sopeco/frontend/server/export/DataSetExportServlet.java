@@ -18,6 +18,11 @@ import org.sopeco.persistence.entities.ScenarioInstance;
 import org.sopeco.persistence.exceptions.DataNotFoundException;
 import org.sopeco.persistence.util.DataSetCsvHandler;
 
+/**
+ * 
+ * @author Marius Oehler
+ *
+ */
 public class DataSetExportServlet extends HttpServlet {
 
 	/**
@@ -41,7 +46,7 @@ public class DataSetExportServlet extends HttpServlet {
 		String param = Base64.decodeString(req.getParameter("param"));
 		String[] splittedParameter = param.split("\\|");
 
-		if (splittedParameter.length != 4) {
+		if (splittedParameter.length != 5) {
 			resp.sendError(400);
 			return;
 		}
@@ -50,6 +55,7 @@ public class DataSetExportServlet extends HttpServlet {
 		String seriesName = splittedParameter[1];
 		String url = splittedParameter[2];
 		String scenario = splittedParameter[3];
+		char[] separator = Base64.decodeString(splittedParameter[4]).toCharArray();
 
 		try {
 			ScenarioInstance instance = getScenarioInstance(req.getSession().getId(), scenario, url);
@@ -59,7 +65,7 @@ public class DataSetExportServlet extends HttpServlet {
 			DataSetAggregated dataset = run.getSuccessfulResultDataSet();
 			SimpleDataSet simpleDataset = dataset.convertToSimpleDataSet();
 
-			DataSetCsvHandler handler = new DataSetCsvHandler(';', '#', true);
+			DataSetCsvHandler handler = new DataSetCsvHandler(separator[0], separator[1], separator[2], true);
 			String csvData = handler.convertToCSVString(simpleDataset);
 
 			sendData(resp, csvData, run.getLabel().replaceAll(" ", "_") + ".csv");

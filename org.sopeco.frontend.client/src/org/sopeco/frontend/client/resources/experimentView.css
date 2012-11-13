@@ -1,27 +1,26 @@
-/* CSS of the ExperimentView */
+/* ############################# */
+/* ############################# */
 #expSettingsPanel {
 	position: absolute;
 	top: 0;
 	left: 0;
 	bottom: 0;
-	border-right: 2px solid #CCC;
+	/* border-right: 2px solid #CCC; */
 	overflow-x: hidden;
 	overflow-y: auto;
+	width: 100%;
 }
 
-/** */
-.selectionTreeItemLeaf>span.text {
-	position: absolute;
-	left: 10px;
-	right: 60px;
-	overflow: hidden;
+#expSettingsPanel h3 {
+	margin: 1em;
 }
 
+/* ############################# */
+/* ############################# */
 /** expSettingsNamePanel */
 #expSettingsNamePanel {
 	width: 100%;
-	height: 50px;
-	border-bottom: 2px solid #CCC;
+	border-bottom: 1px solid #CCC;
 }
 
 #expSettingsNamePanel td {
@@ -29,22 +28,33 @@
 	position: relative;
 }
 
-#expSettingsNamePanel .gwt-HTML,#expSettingsTerminationPanel table .gwt-HTML
-	{
+#expSettingsNamePanel .gwt-HTML {
+	color: #333;
+	/*font-weight: bold;*/
+}
+
+#expSettingsNamePanel .gwt-TextBox {
+	width: 200px;
+	padding: 3px 4px;
+}
+/* ############################# */
+/* ############################# */
+.selectionTreeItemLeaf>span.text {
+	position: absolute;
+	left: 10px;
+	right: 60px;
+	overflow: hidden;
+}
+
+#expSettingsTerminationPanel table .gwt-HTML {
 	color: #333;
 	font-weight: bold;
 }
 
-#expSettingsNamePanel .gwt-TextBox,#expSettingsTerminationPanel table .gwt-TextBox
-	{
+#expSettingsTerminationPanel table .gwt-TextBox {
 	width: 90%;
 	padding: 4px;
 	float: right;
-}
-
-/** expSettingsPanel */
-#expSettingsPanel h3 {
-	margin: 1em;
 }
 
 /** explorationPanel */
@@ -112,6 +122,7 @@
 #expPreperationPanel {
 	padding: 1em;
 	position: relative;
+	margin-left: 400px;
 }
 
 /** ExperimentAssignmentsPanel */
@@ -169,7 +180,7 @@
 	padding: 10px;
 	background-color: white;
 	margin-left: 1px;
-	box-shadow: 0 0 12px 1px lightSlateGray;
+	border-right: 1px solid #ccc;
 	overflow-y: auto;
 }
 

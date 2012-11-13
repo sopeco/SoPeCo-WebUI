@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.sopeco.frontend.client.layout.center.CenterPanel;
 import org.sopeco.frontend.client.layout.center.ICenterController;
+import org.sopeco.frontend.client.layout.dialog.ExportCsvDialog;
 import org.sopeco.frontend.client.layout.popups.Message;
 import org.sopeco.frontend.client.model.ScenarioManager;
 import org.sopeco.frontend.client.rpc.RPC;
@@ -29,8 +30,6 @@ public class ResultController implements ICenterController, ClickHandler {
 	private ResultView view;
 	private List<SharedScenarioInstance> currentScenarioInstanceList;
 
-	private static final String DOWNLOAD_DATASET_URL = "sopeco_frontend/dataset";
-
 	public ResultController() {
 		reset();
 	}
@@ -54,8 +53,6 @@ public class ResultController implements ICenterController, ClickHandler {
 		} else if (event.getSource() instanceof TreeLeaf) {
 			SharedExperimentRuns run = ((TreeLeaf) event.getSource()).getExperimentRun();
 
-			String downloadUrl = DOWNLOAD_DATASET_URL;
-
 			StringBuffer param = new StringBuffer();
 			
 			param.append(run.getTimestamp());
@@ -66,9 +63,10 @@ public class ResultController implements ICenterController, ClickHandler {
 			param.append("|");
 			param.append(run.getParentSeries().getParentInstance().getScenarioName());
 			
-			downloadUrl += "?param=" + Base64.encodeString(param.toString());
+			//downloadUrl += "?param=" + Base64.encodeString(param.toString());
 
-			Window.open(downloadUrl, "_blank", "");
+			//Window.open(downloadUrl, "_blank", "");
+			ExportCsvDialog.show(param.toString());
 		}
 	}
 

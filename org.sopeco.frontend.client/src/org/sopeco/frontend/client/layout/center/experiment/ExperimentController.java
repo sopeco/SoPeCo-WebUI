@@ -40,8 +40,12 @@ public class ExperimentController implements ICenterController, ValueChangeHandl
 
 	private AssignmentController assignmentPreperation, assignmentExperiment;
 
+	private ExperimentTabPanel tabPanel;
+
 	public ExperimentController() {
 		FrontEndResources.loadExperimentCSS();
+
+		tabPanel = new ExperimentTabPanel();
 
 		explorationExtController = new ExperimentExtensionController(this, ExperimentView.EXP_SETTINGS_PANEL_WIDTH);
 
@@ -53,21 +57,40 @@ public class ExperimentController implements ICenterController, ValueChangeHandl
 		view = new ExperimentView();
 		treeController = new ParameterTreeController();
 
-		view.getSettingsView().addExtensionView(explorationExtController.getView());
-		view.getSettingsView().add(terminationController.getView());
-
-		view.getParameterView().add(assignmentPreperation.getView());
-		view.getParameterView().add(assignmentExperiment.getView());
-		view.add(treeController.getView());
+		getSettingsView().addExtensionView(explorationExtController.getView());
+		getSettingsView().add(terminationController.getView());
+		getParameterView().add(assignmentPreperation.getView());
+		getParameterView().add(assignmentExperiment.getView());
+		getParameterView().add(treeController.getView());
 
 		explorationExtController.setHeadline(R.get("explStrategy"));
 
 		explorationExtController.setExtensionType(ExtensionTypes.EXPLORATIONSTRATEGY);
 
-		view.getSettingsView().getTextboxName().addValueChangeHandler(this);
-		view.getSettingsView().getRemoveExperimentImage().addClickHandler(this);
+		getSettingsView().getTextboxName().addValueChangeHandler(this);
+		getSettingsView().getRemoveExperimentImage().addClickHandler(this);
 
 		registerEventHandlers();
+	}
+
+	/**
+	 * Returns the settings view of the experiment series.
+	 * 
+	 * @return
+	 */
+	public ExperimentSettingsView getSettingsView() {
+		return tabPanel.getSettingsView();
+		// return view.getSettingsView();
+	}
+
+	/**
+	 * Returns the parameter view of the experiment series.
+	 * 
+	 * @return
+	 */
+	public ExperimentParameterView getParameterView() {
+		return tabPanel.getParameterView();
+		// return view.getParameterView();
 	}
 
 	@Override
@@ -91,7 +114,7 @@ public class ExperimentController implements ICenterController, ValueChangeHandl
 
 	@Override
 	public void onValueChange(ValueChangeEvent<String> event) {
-		if (event.getSource() == view.getSettingsView().getTextboxName()) {
+		if (event.getSource() == getSettingsView().getTextboxName()) {
 			ScenarioManager.get().experiment().renameCurrentExpSeries(event.getValue());
 		}
 	}
@@ -119,7 +142,7 @@ public class ExperimentController implements ICenterController, ValueChangeHandl
 		ExperimentSeriesDefinition experiment = ScenarioManager.get().getBuilder().getSpecificationBuilder()
 				.getExperimentSeries(experimentName);
 
-		view.getSettingsView().getTextboxName().setText(experiment.getName());
+		getSettingsView().getTextboxName().setText(experiment.getName());
 
 		String explorationName = ScenarioManager.get().experiment().getCurrentExperiment().getExplorationStrategy()
 				.getName();
@@ -132,7 +155,8 @@ public class ExperimentController implements ICenterController, ValueChangeHandl
 
 	@Override
 	public Widget getView() {
-		return view;
+		// return view;
+		return tabPanel;
 	}
 
 	@Override

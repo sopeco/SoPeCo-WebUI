@@ -36,6 +36,15 @@ public class AccountDetails implements Serializable {
 	@Column(name = "selectedScenario")
 	private String selectedScenario;
 
+	@Column(name = "csvValueSeparator")
+	private String csvValueSeparator = ";";
+
+	@Column(name = "csvCommentSeparator")
+	private String csvCommentSeparator = "#";
+
+	@Column(name = "csvDecimalDelimiter")
+	private String csvDecimalDelimiter = ".";
+
 	public AccountDetails() {
 		scenarioDetails = new ArrayList<ScenarioDetails>();
 	}
@@ -109,6 +118,51 @@ public class AccountDetails implements Serializable {
 	 */
 	public void setScenarioDetails(List<ScenarioDetails> pScenarioDetails) {
 		this.scenarioDetails = pScenarioDetails;
+	}
+
+	/**
+	 * @return the csvValueSeparator
+	 */
+	public String getCsvValueSeparator() {
+		return csvValueSeparator;
+	}
+
+	/**
+	 * @param pCsvValueSeparator
+	 *            the csvValueSeparator to set
+	 */
+	public void setCsvValueSeparator(String pCsvValueSeparator) {
+		this.csvValueSeparator = pCsvValueSeparator;
+	}
+
+	/**
+	 * @return the csvCommentSeparator
+	 */
+	public String getCsvCommentSeparator() {
+		return csvCommentSeparator;
+	}
+
+	/**
+	 * @param pCsvCommentSeparator
+	 *            the csvCommentSeparator to set
+	 */
+	public void setCsvCommentSeparator(String pCsvCommentSeparator) {
+		this.csvCommentSeparator = pCsvCommentSeparator;
+	}
+
+	/**
+	 * @return the csvDecimalDelimiter
+	 */
+	public String getCsvDecimalDelimiter() {
+		return csvDecimalDelimiter;
+	}
+
+	/**
+	 * @param pCsvDecimalDelimiter
+	 *            the csvDecimalDelimiter to set
+	 */
+	public void setCsvDecimalDelimiter(String pCsvDecimalDelimiter) {
+		this.csvDecimalDelimiter = pCsvDecimalDelimiter;
 	}
 
 	/**

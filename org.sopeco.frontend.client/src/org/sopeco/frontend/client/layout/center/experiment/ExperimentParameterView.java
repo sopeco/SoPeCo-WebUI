@@ -1,6 +1,5 @@
 package org.sopeco.frontend.client.layout.center.experiment;
 
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.FlowPanel;
 
 /**
@@ -26,6 +25,5 @@ public class ExperimentParameterView extends FlowPanel {
 	 */
 	private void initialize() {
 		getElement().setId(EXP_PARAMETER_PANEL_ID);
-		getElement().getStyle().setLeft(ExperimentView.EXP_SETTINGS_PANEL_WIDTH, Unit.PX);
 	}
 }

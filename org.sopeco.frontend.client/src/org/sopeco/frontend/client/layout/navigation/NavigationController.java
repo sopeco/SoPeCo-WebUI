@@ -192,7 +192,7 @@ public class NavigationController implements ClickHandler {
 			expItem.addClickHandler(this);
 		}
 
-		NavigationSubItem addExperiment = view.addExperimentItem("Add Experiment");
+		NavigationSubItem addExperiment = view.addExperimentItem(R.get("addExperiment"));
 		addExperiment.addStyleName("addExperimentNaviItem");
 		addExperiment.addAddImage();
 		addExperiment.addClickHandler(getAddExperimentClickHandler());

@@ -132,8 +132,8 @@ public class AssignmentController {
 	 * The called method at an PreperationAssignmentRenderedEvent.
 	 */
 	private void assignmentRenderedEvent() {
-		namespacePropertyAligner.alignWith();
-		typePropertyAligner.offsetWidth();
+		//namespacePropertyAligner.alignWith();
+		//typePropertyAligner.offsetWidth();
 	}
 
 	/**

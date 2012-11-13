@@ -41,6 +41,9 @@ public class NorthPanel extends FlowPanel implements ClickHandler, ChangeHandler
 	private static final String IMG_BUTTON_CSS_CLASS = "imgButton";
 	private static final String DISABLED_CSS_CLASS = "disabled";
 
+	private static final String IMAGE_CHANGE_ACCOUNT = "images/change_account_invert.png";
+	private static final String IMAGE_SCENARIO_ADD = "images/scenario_add_invert.png";
+	private static final String IMAGE_SCENARIO_REMOVE = "images/scenario_delete_invert.png";
 	private static final String IMAGE_SATELLITE = "images/satellite_invert.png";
 	private static final String IMAGE_EXPORT = "images/download_invert.png";
 	private static final String SAP_RESEARCH_LOGO = "images/sap_research.png";
@@ -53,8 +56,7 @@ public class NorthPanel extends FlowPanel implements ClickHandler, ChangeHandler
 	private ListBox listboxScenarios;
 	private HTML connectedToText, htmlSelectScenario;
 	private boolean scenariosAvailable = false;
-	private Anchor anchorAddScenario, anchorRemoveScenario;
-	private Image imageSatellite, imageExport, researchLogo;
+	private Image imageSatellite, imageExport, researchLogo, imageScenarioAdd, imageScenarioRemove, imageChangeAccount;
 
 	private Anchor anchorChangeAccount;
 
@@ -96,6 +98,11 @@ public class NorthPanel extends FlowPanel implements ClickHandler, ChangeHandler
 		connectedToText = new HTML();
 		navigationPanel.add(connectedToText);
 
+//		imageChangeAccount = new Image(IMAGE_CHANGE_ACCOUNT);
+//		imageChangeAccount.addStyleName(IMG_BUTTON_CSS_CLASS);
+//		imageChangeAccount.setTitle(R.get("change_account"));
+//		imageChangeAccount.addClickHandler(this);
+//		navigationPanel.add(imageChangeAccount);
 		anchorChangeAccount = new Anchor(R.get("change_account"));
 		anchorChangeAccount.addClickHandler(this);
 		navigationPanel.add(anchorChangeAccount);
@@ -111,13 +118,17 @@ public class NorthPanel extends FlowPanel implements ClickHandler, ChangeHandler
 		listboxScenarios.addChangeHandler(this);
 		navigationPanel.add(listboxScenarios);
 
-		anchorAddScenario = new Anchor(R.get("scenario_add"));
-		anchorAddScenario.addClickHandler(this);
-		navigationPanel.add(anchorAddScenario);
+		imageScenarioAdd = new Image(IMAGE_SCENARIO_ADD);
+		imageScenarioAdd.addStyleName(IMG_BUTTON_CSS_CLASS);
+		imageScenarioAdd.setTitle(R.get("scenario_add"));
+		imageScenarioAdd.addClickHandler(this);
+		navigationPanel.add(imageScenarioAdd);
 
-		anchorRemoveScenario = new Anchor(R.get("scenario_remove"));
-		anchorRemoveScenario.addClickHandler(this);
-		navigationPanel.add(anchorRemoveScenario);
+		imageScenarioRemove = new Image(IMAGE_SCENARIO_REMOVE);
+		imageScenarioRemove.addStyleName(IMG_BUTTON_CSS_CLASS);
+		imageScenarioRemove.setTitle(R.get("scenario_remove"));
+		imageScenarioRemove.addClickHandler(this);
+		navigationPanel.add(imageScenarioRemove);
 
 		navigationPanel.add(createSeparator());
 
@@ -154,10 +165,10 @@ public class NorthPanel extends FlowPanel implements ClickHandler, ChangeHandler
 			MEControllerBox.showBox();
 		} else if (event.getSource() == imageExport && isEnabled(imageExport)) {
 			ExportBox.showExportBox();
-		} else if (event.getSource() == anchorAddScenario && isEnabled(anchorAddScenario)) {
+		} else if (event.getSource() == imageScenarioAdd && isEnabled(imageScenarioAdd)) {
 			AddScenarioDialog addScenarioDialog = new AddScenarioDialog();
 			addScenarioDialog.center();
-		} else if (event.getSource() == anchorRemoveScenario && isEnabled(anchorRemoveScenario)) {
+		} else if (event.getSource() == imageScenarioRemove && isEnabled(imageScenarioRemove)) {
 			removeScenario();
 		} else if (event.getSource() == anchorChangeAccount) {
 			FrontendEntryPoint.get().changeDatabase();
@@ -230,20 +241,16 @@ public class NorthPanel extends FlowPanel implements ClickHandler, ChangeHandler
 		if (enabled) {
 			listboxScenarios.setEnabled(true);
 			scenariosAvailable = true;
-			anchorAddScenario.setEnabled(true);
-			anchorAddScenario.removeStyleName(DISABLED_CSS_CLASS);
-			anchorRemoveScenario.setEnabled(true);
-			anchorRemoveScenario.removeStyleName(DISABLED_CSS_CLASS);
+			imageScenarioAdd.removeStyleName(DISABLED_CSS_CLASS);
+			imageScenarioRemove.removeStyleName(DISABLED_CSS_CLASS);
 			imageExport.removeStyleName(DISABLED_CSS_CLASS);
 			imageSatellite.removeStyleName(DISABLED_CSS_CLASS);
 		} else {
 			listboxScenarios.addItem(R.get("no_scenarios"));
 			listboxScenarios.setEnabled(false);
 			scenariosAvailable = false;
-			anchorRemoveScenario.setEnabled(false);
-			anchorRemoveScenario.addStyleName(DISABLED_CSS_CLASS);
-			anchorAddScenario.setEnabled(false);
-			anchorAddScenario.addStyleName(DISABLED_CSS_CLASS);
+			imageScenarioAdd.addStyleName(DISABLED_CSS_CLASS);
+			imageScenarioRemove.addStyleName(DISABLED_CSS_CLASS);
 			imageExport.addStyleName(DISABLED_CSS_CLASS);
 			imageSatellite.addStyleName(DISABLED_CSS_CLASS);
 			Manager.get().getAccountDetails().setSelectedScenario(null);

@@ -61,7 +61,7 @@ public class LoginBox extends DialogBox implements ClickHandler, Deactivatable {
 
 		initialize();
 
-		loadDatabaseList();
+		loadDatabaseList(null);
 	}
 
 	private void initialize() {
@@ -159,16 +159,28 @@ public class LoginBox extends DialogBox implements ClickHandler, Deactivatable {
 
 			String cookie = Cookies.getCookie(COOKIE_DATABSE);
 			if (cookie != null) {
-				for (int i = 0; i < databases.size() && i < listboxDatabases.getItemCount(); i++) {
-					if (databases.get(i).getDbName().equals(cookie)) {
-						listboxDatabases.setSelectedIndex(i);
-					}
-				}
+				setSelectedAccount(cookie);
 			}
 		}
 	}
 
-	public void loadDatabaseList() {
+	/**
+	 * Sets the selected item in the listboxDatabases to the given
+	 * String/Item/Name.
+	 * 
+	 * @param name
+	 *            String which will be selected
+	 */
+	private void setSelectedAccount(String name) {
+		for (int i = 0; i < listboxDatabases.getItemCount(); i++) {
+			if (listboxDatabases.getItemText(i).equals(name) || listboxDatabases.getItemText(i).equals("* " + name)) {
+				listboxDatabases.setSelectedIndex(i);
+				return;
+			}
+		}
+	}
+
+	public void loadDatabaseList(final String loginScenario) {
 		Loader.showLoader();
 
 		DBManager.loadDatabases(new INotifyHandler<List<DatabaseInstance>>() {
@@ -177,18 +189,15 @@ public class LoginBox extends DialogBox implements ClickHandler, Deactivatable {
 				if (success) {
 					setDatabaseList(result);
 
-					// TODO
-					if (FrontendEntryPoint.DEVELOPMENT) {
+					if (loginScenario != null) {
+						setSelectedAccount(loginScenario);
 						btnConnect.fireEvent(new ClickEvent() {
 						});
 					}
-
 				} else {
 					Serverstatus.setOffline();
-
 					Message.error(R.get("faild_loading_accounts"));
 				}
-
 				Loader.hideLoader();
 			}
 		});
@@ -339,7 +348,7 @@ public class LoginBox extends DialogBox implements ClickHandler, Deactivatable {
 					public void onSuccess(Boolean result) {
 						Loader.hideLoader();
 
-						loadDatabaseList();
+						loadDatabaseList(null);
 					}
 				});
 			}

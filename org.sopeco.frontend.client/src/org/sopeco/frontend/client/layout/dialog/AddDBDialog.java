@@ -1,5 +1,6 @@
 package org.sopeco.frontend.client.layout.dialog;
 
+import org.sopeco.frontend.client.R;
 import org.sopeco.frontend.client.helper.SystemDetails;
 import org.sopeco.frontend.client.helper.handler.NumbersOnlyHandler;
 import org.sopeco.frontend.client.layout.LoginBox;
@@ -49,7 +50,7 @@ public class AddDBDialog extends DialogBox {
 	private void initializeGui() {
 		setGlassEnabled(true);
 
-		setText("Add new database");
+		setText(R.get("addAccount"));
 
 		VerticalPanel verticalPanel_0 = new VerticalPanel();
 		setWidget(verticalPanel_0);
@@ -64,7 +65,7 @@ public class AddDBDialog extends DialogBox {
 		grid.setCellPadding(10);
 		grid.setSize("300px", "225px");
 
-		Label lblName = new Label("Database");
+		Label lblName = new Label(R.get("account")+":");
 		grid.setWidget(0, 0, lblName);
 
 		textboxDbName = new TextBox();
@@ -135,7 +136,8 @@ public class AddDBDialog extends DialogBox {
 	private void addNewDatabase() {
 		DatabaseInstance newDb = new DatabaseInstance();
 
-		newDb.setDbName(textboxDbName.getText());
+		final String accountName = textboxDbName.getText();
+		newDb.setDbName(accountName);
 		newDb.setHost(textboxHost.getText());
 		newDb.setPort(textboxPort.getText());
 		String passwd;
@@ -161,7 +163,7 @@ public class AddDBDialog extends DialogBox {
 			public void onSuccess(Boolean result) {
 				Loader.hideLoader();
 				close();
-				parentPanel.loadDatabaseList();
+				parentPanel.loadDatabaseList(accountName);
 			}
 		});
 	}

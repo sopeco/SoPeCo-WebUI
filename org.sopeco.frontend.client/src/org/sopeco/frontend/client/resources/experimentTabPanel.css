@@ -1,0 +1,30 @@
+#experimentTabPanel {
+	height: 100%;
+	width: 100%;
+}
+
+#experimentTabPanel td {
+}
+
+#experimentTabPanel .gwt-TabBar {
+	background: #4B545D;
+	height: 32px;
+}
+
+#experimentTabPanel .gwt-TabBarItem {
+	background-color: #758390;
+	border-radius: 2px 2px 0px 0px;
+}
+
+#experimentTabPanel .gwt-TabBarItem-selected {
+	background-color: #FFF;
+}
+
+#experimentTabPanel .gwt-TabPanelBottom {
+	position: absolute;
+	top: 32px;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	padding: 0;
+}

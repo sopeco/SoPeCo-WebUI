@@ -52,6 +52,14 @@ public class ExtendedTextBox extends TextBox implements FocusHandler,
 		check();
 	}
 
+	@Override
+	public void setText(String text) {
+		super.setText(text);
+		if (defaultValue == null || !text.equals(defaultValue)) {
+			getElement().getStyle().clearColor();
+		}
+	}
+
 	/**
 	 * Checks checks whether the vauel is the default value and reset textbox if
 	 * neccesarry.
