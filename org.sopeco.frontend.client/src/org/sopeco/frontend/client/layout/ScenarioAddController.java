@@ -12,6 +12,9 @@ import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -24,26 +27,43 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Marius Oehler
  * 
  */
-public class ScenarioAddController implements ClickHandler, BlurHandler {
+public class ScenarioAddController implements ClickHandler, BlurHandler, KeyPressHandler {
 
-	private static final int VIEW_WIDTH_PX = 400;
 	private static final String VIEW_CSS_CLASS = "scenarioAddView";
 	private static final String INVALID_CSS_CLASS = "invalid";
 	private static final String ERROR_TEXT_CSS_CLASS = "errorText";
 	private static final String DEFAULT_SPECIFICATION_NAME = "MySpecification";
 	private static final String DEFAULT_EXPERIMENT_NAME = "MyExperiment";
+	private static final String DEFAULT_SCENARIO_NAME = "MyScenario";
 
 	private ScenarioAddView view;
-	private boolean hasInfoText, hasCancelButton;
+	private boolean hasInfoText, hasCancelButton, hasAddButton;
 	private ClickHandler hideHandler;
 
-	public ScenarioAddController(boolean pHasInfoText, boolean pHasCancelButton) {
+	public ScenarioAddController(boolean pHasInfoText, boolean pHasCancelButton, boolean pHasAddButton) {
 		FrontEndResources.loadScenarioAddCSS();
 
 		hasInfoText = pHasInfoText;
 		hasCancelButton = pHasCancelButton;
+		hasAddButton = pHasAddButton;
 
 		view = new ScenarioAddView();
+
+		setDefaultScenarioName();
+	}
+
+	/**
+	 * Sets the Textbox of the Scenarioname to a default value. Care must be
+	 * taken that the scenario name is not present.
+	 */
+	private void setDefaultScenarioName() {
+		String name = DEFAULT_SCENARIO_NAME;
+		int count = 1;
+		while (ScenarioManager.get().existScenario(name)) {
+			count++;
+			name = DEFAULT_SCENARIO_NAME + "_" + count;
+		}
+		view.getScenarioName().setText(name);
 	}
 
 	/**
@@ -66,12 +86,29 @@ public class ScenarioAddController implements ClickHandler, BlurHandler {
 	}
 
 	/**
+	 * Adds the given handler to the scenarioNmeTextbox.
+	 * 
+	 * @param handler
+	 */
+	public void addBlurHandlerSName(BlurHandler handler) {
+		view.getScenarioName().addBlurHandler(handler);
+	}
+
+	/**
+	 * Adds the given handler to the scenarioNmeTextbox.
+	 * 
+	 * @param handler
+	 */
+	public void addKeyUpHandlerSName(KeyUpHandler handler) {
+		view.getScenarioName().addKeyUpHandler(handler);
+	}
+
+	/**
 	 * Checks all input fields, whether the entered values are valid!
 	 */
-	private boolean checkForm() {
+	public boolean checkForm() {
 		if (view.getScenarioName().getText().isEmpty()) {
 			view.getScenarioName().addStyleName(INVALID_CSS_CLASS);
-			//setErrorText(R.get("scenarioNameNotEmpty"));
 			return false;
 		} else if (ScenarioManager.get().existScenario(view.getScenarioName().getText())) {
 			view.getScenarioName().addStyleName(INVALID_CSS_CLASS);
@@ -86,6 +123,11 @@ public class ScenarioAddController implements ClickHandler, BlurHandler {
 
 	@Override
 	public void onBlur(BlurEvent event) {
+		checkForm();
+	}
+
+	@Override
+	public void onKeyPress(KeyPressEvent event) {
 		checkForm();
 	}
 
@@ -143,7 +185,6 @@ public class ScenarioAddController implements ClickHandler, BlurHandler {
 		 */
 		private void init() {
 			addStyleName(VIEW_CSS_CLASS);
-			setWidth(VIEW_WIDTH_PX + "PX");
 
 			headline = new Headline(R.get("addScenario"));
 
@@ -172,7 +213,9 @@ public class ScenarioAddController implements ClickHandler, BlurHandler {
 
 			FlowPanel panelBtnWrapper = new FlowPanel();
 			panelBtnWrapper.add(errorText);
-			panelBtnWrapper.add(btnOk);
+			if (hasAddButton) {
+				panelBtnWrapper.add(btnOk);
+			}
 			if (hasCancelButton) {
 				panelBtnWrapper.add(btnCancel);
 			}

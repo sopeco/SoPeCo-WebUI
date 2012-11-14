@@ -1,6 +1,7 @@
 package org.sopeco.frontend.client.layout.center.specification;
 
 import org.sopeco.frontend.client.R;
+import org.sopeco.frontend.client.layout.MEControllerBox;
 import org.sopeco.frontend.client.model.Manager.ControllerStatus;
 import org.sopeco.frontend.client.widget.ClickPanel;
 import org.sopeco.gwt.widgets.Headline;

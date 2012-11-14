@@ -1,0 +1,67 @@
+.controllerView {
+	padding: 1em;
+}
+
+.controllerView>h3 {
+	margin: 0px;
+}
+
+.controllerView>p {
+	text-align: justify;
+	color: #633;
+	font-weight: normal;
+	margin-bottom: 6px;
+}
+
+.controllerView>table {
+	border-spacing: 0;
+}
+
+.controllerView .tbHost {
+	width: 175px;
+	margin: 0px;
+}
+
+.controllerView .tbPort {
+	width: 40px;
+	margin: 0px;
+}
+
+.controllerView .cbProtocol {
+	
+}
+
+.controllerView .gwt-Button {
+	width: 80px;
+	margin-left: 6px;
+}
+
+.controllerView .htmlStatus {
+	color: #555;
+	display: inline-block;
+}
+
+.controllerView .imageStatus {
+	margin-left: 0.5em;
+	vertical-align: middle;
+	padding-bottom: 2px;
+}
+
+.controllerView .imageReCheck {
+	vertical-align: middle;
+	padding-bottom: 2px;
+	margin-left: 1em;
+	cursor: pointer;
+	opacity: 0.8;
+	height: 14px;
+	width: 14px;
+}
+
+.controllerView .panelStatus {
+	margin-top: 6px;
+}
+
+.controllerView .panelButtons {
+	margin-top: 6px;
+	text-align: right;
+}

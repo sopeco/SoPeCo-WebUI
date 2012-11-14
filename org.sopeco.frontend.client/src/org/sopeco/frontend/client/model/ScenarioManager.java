@@ -17,6 +17,7 @@ import org.sopeco.frontend.client.rpc.RPC;
 import org.sopeco.frontend.shared.builder.MeasurementSpecificationBuilder;
 import org.sopeco.frontend.shared.builder.ScenarioDefinitionBuilder;
 import org.sopeco.frontend.shared.helper.Helper;
+import org.sopeco.frontend.shared.helper.Utilities;
 import org.sopeco.persistence.entities.definition.ConstantValueAssignment;
 import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
 import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
@@ -403,7 +404,7 @@ public final class ScenarioManager {
 	}
 
 	public void createScenario(String scenarioName, final INotifyHandler<Boolean> handler) {
-		final String realScenarioName = scenarioName.replaceAll("[^a-zA-Z0-9_]", "_");
+		final String realScenarioName = Utilities.cleanString(scenarioName);
 
 		RPC.getScenarioManager().addScenario(realScenarioName, new AsyncCallback<Boolean>() {
 			@Override
@@ -430,14 +431,14 @@ public final class ScenarioManager {
 	}
 
 	public void createScenario(String scenarioName, String specificationName, ExperimentSeriesDefinition experiment) {
-		final String realScenarioName = scenarioName.replaceAll("[^a-zA-Z0-9_]", "_");
+		final String cleanedScenarioName = Utilities.cleanString(scenarioName);
 
-		RPC.getScenarioManager().addScenario(realScenarioName, specificationName, experiment,
+		RPC.getScenarioManager().addScenario(cleanedScenarioName, specificationName, experiment,
 				new AsyncCallback<Boolean>() {
 					@Override
 					public void onSuccess(Boolean result) {
-						Manager.get().getAccountDetails().addScenarioDetails(realScenarioName);
-						Manager.get().getAccountDetails().setSelectedScenario(realScenarioName);
+						Manager.get().getAccountDetails().addScenarioDetails(cleanedScenarioName);
+						Manager.get().getAccountDetails().setSelectedScenario(cleanedScenarioName);
 						Manager.get().storeAccountDetails();
 
 						MainLayoutPanel.get().getNorthPanel().updateScenarioList();
@@ -457,6 +458,9 @@ public final class ScenarioManager {
 	 * @return
 	 */
 	public boolean existScenario(String name) {
+		if (Manager.get().getAvailableScenarios() == null) {
+			return false;
+		}
 		for (String sName : Manager.get().getAvailableScenarios()) {
 			if (sName.equals(name)) {
 				return true;

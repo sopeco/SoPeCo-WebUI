@@ -1,6 +1,5 @@
 package org.sopeco.frontend.client.model;
 
-import java.util.Collection;
 import java.util.logging.Logger;
 
 import org.sopeco.frontend.client.entities.AccountDetails;
@@ -31,10 +30,6 @@ public final class Manager {
 	}
 
 	/** Attributes with default values */
-	// private String controllerProtocol = "rmi://";
-	// private String controllerHost = "localhost";
-	// private String controllerName = "";
-	// private int controllerPort = 1099;
 	private long controllerLastCheck = -1;
 	private ControllerStatus controllerLastStatus = ControllerStatus.UNKNOWN;
 	private AccountDetails accountDetails = null;

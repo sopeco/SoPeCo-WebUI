@@ -109,7 +109,7 @@ public final class FrontEndResources {
 			}
 		});
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -124,6 +124,24 @@ public final class FrontEndResources {
 			public void onSuccess() {
 				ResourceBundle rsc = GWT.create(ResourceBundle.class);
 				rsc.experimentTabPanelCss().ensureInjected();
+			}
+		});
+	}
+
+	/**
+	 * 
+	 */
+	public static void loadControllerViewCSS() {
+		GWT.runAsync(new RunAsyncCallback() {
+			@Override
+			public void onFailure(Throwable reason) {
+				Window.alert(R.get("errorCssLoading"));
+			}
+
+			@Override
+			public void onSuccess() {
+				ResourceBundle rsc = GWT.create(ResourceBundle.class);
+				rsc.controllerViewCss().ensureInjected();
 			}
 		});
 	}
@@ -151,10 +169,15 @@ public final class FrontEndResources {
 		@Source("scenarioAddView.css")
 		@CssResource.NotStrict
 		CssResource scenarioAddCss();
-		
+
 		@Source("experimentTabPanel.css")
 		@CssResource.NotStrict
 		CssResource experimentTabPanelCss();
+
+		@Source("controllerView.css")
+		@CssResource.NotStrict
+		CssResource controllerViewCss();
+
 	}
 
 }

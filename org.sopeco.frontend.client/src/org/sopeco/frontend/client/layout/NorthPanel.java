@@ -4,7 +4,6 @@ import org.sopeco.frontend.client.FrontendEntryPoint;
 import org.sopeco.frontend.client.R;
 import org.sopeco.frontend.client.event.EventControl;
 import org.sopeco.frontend.client.event.ScenarioChangedEvent;
-import org.sopeco.frontend.client.layout.center.specification.MEControllerBox;
 import org.sopeco.frontend.client.layout.dialog.AddScenarioDialog;
 import org.sopeco.frontend.client.layout.popups.Confirmation;
 import org.sopeco.frontend.client.layout.popups.Loader;
@@ -98,11 +97,11 @@ public class NorthPanel extends FlowPanel implements ClickHandler, ChangeHandler
 		connectedToText = new HTML();
 		navigationPanel.add(connectedToText);
 
-//		imageChangeAccount = new Image(IMAGE_CHANGE_ACCOUNT);
-//		imageChangeAccount.addStyleName(IMG_BUTTON_CSS_CLASS);
-//		imageChangeAccount.setTitle(R.get("change_account"));
-//		imageChangeAccount.addClickHandler(this);
-//		navigationPanel.add(imageChangeAccount);
+		// imageChangeAccount = new Image(IMAGE_CHANGE_ACCOUNT);
+		// imageChangeAccount.addStyleName(IMG_BUTTON_CSS_CLASS);
+		// imageChangeAccount.setTitle(R.get("change_account"));
+		// imageChangeAccount.addClickHandler(this);
+		// navigationPanel.add(imageChangeAccount);
 		anchorChangeAccount = new Anchor(R.get("change_account"));
 		anchorChangeAccount.addClickHandler(this);
 		navigationPanel.add(anchorChangeAccount);
@@ -289,7 +288,6 @@ public class NorthPanel extends FlowPanel implements ClickHandler, ChangeHandler
 		} else {
 			setButtonsEnabled(true);
 
-			String foundSelectedScenario = null;
 			int count = 0;
 			for (String name : names) {
 				listboxScenarios.addItem(name);
@@ -297,14 +295,12 @@ public class NorthPanel extends FlowPanel implements ClickHandler, ChangeHandler
 				if (Manager.get().getAccountDetails().getSelectedScenario() != null
 						&& name.equals(Manager.get().getAccountDetails().getSelectedScenario())) {
 					listboxScenarios.setSelectedIndex(count);
-					foundSelectedScenario = name;
 				}
 				count++;
 			}
 
-			if (foundSelectedScenario != null) {
-				Manager.get().getAccountDetails().setSelectedScenario(foundSelectedScenario);
-			}
+			Manager.get().getAccountDetails()
+					.setSelectedScenario(listboxScenarios.getItemText(listboxScenarios.getSelectedIndex()));
 		}
 
 		switchScenario();
@@ -328,10 +324,6 @@ public class NorthPanel extends FlowPanel implements ClickHandler, ChangeHandler
 	 */
 	private void switchScenario() {
 		String name = getSelectedScenario();
-
-		// if (name.isEmpty()) {
-		// return;
-		// }
 
 		EventControl.get().fireEvent(new ScenarioChangedEvent(name));
 	}

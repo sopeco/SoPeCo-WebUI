@@ -17,7 +17,7 @@ public class AddScenarioDialog extends DialogBox implements ClickHandler {
 		super(false, true);
 		setGlassEnabled(true);
 		
-		ScenarioAddController sca = new ScenarioAddController(false, true);
+		ScenarioAddController sca = new ScenarioAddController(false, true, true);
 		sca.addHideHandler(this);
 		add(sca.getView());
 	}

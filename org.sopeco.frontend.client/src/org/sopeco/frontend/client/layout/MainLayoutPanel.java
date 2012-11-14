@@ -34,9 +34,8 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public final class MainLayoutPanel extends DockLayoutPanel implements ValueChangeHandler<String> {
 
-
 	private static final String NAVIGATION_PANEL_ID = "mainNavigation";
-	
+
 	private static MainLayoutPanel singletonLayoutPanel;
 	private static final CenterType DEFAULT_CENTER_TYPE = CenterType.Specification;
 
@@ -203,8 +202,9 @@ public final class MainLayoutPanel extends DockLayoutPanel implements ValueChang
 		currentCenterPanel = type;
 
 		getNavigationController().setCurrentCenterType(type);
-
-		if (Manager.get().getCurrentScenarioDetails() == null || type == CenterType.NoScenario) {
+		// Manager.get().getCurrentScenarioDetails() == null
+		if (Manager.get().getAvailableScenarios() == null || Manager.get().getAvailableScenarios().length == 0
+				|| type == CenterType.NoScenario) {
 			hideNavigation();
 			add(new NoScenario());
 

@@ -8,6 +8,7 @@ import org.sopeco.frontend.client.layout.popups.Loader;
 import org.sopeco.frontend.client.layout.popups.Message;
 import org.sopeco.frontend.client.rpc.DatabaseManagerRPC;
 import org.sopeco.frontend.client.rpc.DatabaseManagerRPCAsync;
+import org.sopeco.frontend.shared.helper.Utilities;
 import org.sopeco.persistence.metadata.entities.DatabaseInstance;
 
 import com.google.gwt.core.client.GWT;
@@ -65,7 +66,7 @@ public class AddDBDialog extends DialogBox {
 		grid.setCellPadding(10);
 		grid.setSize("300px", "225px");
 
-		Label lblName = new Label(R.get("account")+":");
+		Label lblName = new Label(R.get("account") + ":");
 		grid.setWidget(0, 0, lblName);
 
 		textboxDbName = new TextBox();
@@ -136,7 +137,7 @@ public class AddDBDialog extends DialogBox {
 	private void addNewDatabase() {
 		DatabaseInstance newDb = new DatabaseInstance();
 
-		final String accountName = textboxDbName.getText();
+		final String accountName = Utilities.cleanString(textboxDbName.getText());
 		newDb.setDbName(accountName);
 		newDb.setHost(textboxHost.getText());
 		newDb.setPort(textboxPort.getText());

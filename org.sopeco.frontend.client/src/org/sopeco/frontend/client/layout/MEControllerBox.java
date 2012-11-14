@@ -1,4 +1,4 @@
-package org.sopeco.frontend.client.layout.center.specification;
+package org.sopeco.frontend.client.layout;
 
 import java.util.List;
 
@@ -48,12 +48,6 @@ public final class MEControllerBox extends DialogBox implements ValueChangeHandl
 	private TextBox tbHostname, tbPort;
 	private Button btnOk, btnCancel;
 	private Image imgStatus, imgRecheck;
-
-	private BoxStatus boxStatus;
-
-	// private String currentProtocol = "rmi://", currentHostname = "localhost",
-	// currentPort = "1099",
-	// currentController = "";
 
 	private long latestCheckRun;
 	private boolean isChecking = false;
@@ -304,7 +298,6 @@ public final class MEControllerBox extends DialogBox implements ValueChangeHandl
 	}
 
 	private void setBoxStatus(BoxStatus status) {
-		boxStatus = status;
 
 		boolean btnOkEnabled = false;
 		String btnOkText = R.get("Ok");
@@ -344,39 +337,6 @@ public final class MEControllerBox extends DialogBox implements ValueChangeHandl
 
 		imgRecheck.getElement().getStyle().setOpacity(imgRecheckOpacity);
 	}
-
-	// public String getControllerUrl() {
-	// return currentProtocol + currentHostname + ":" + currentPort + "/" +
-	// currentController;
-	// }
-	//
-	// /**
-	// * @return the currentProtocol
-	// */
-	// public String getCurrentProtocol() {
-	// return currentProtocol;
-	// }
-	//
-	// /**
-	// * @return the currentHostname
-	// */
-	// public String getCurrentHostname() {
-	// return currentHostname;
-	// }
-	//
-	// /**
-	// * @return the currentPort
-	// */
-	// public int getCurrentPort() {
-	// return Integer.parseInt(currentPort);
-	// }
-	//
-	// /**
-	// * @return the currentController
-	// */
-	// public String getCurrentController() {
-	// return currentController;
-	// }
 
 	private static MEControllerBox getBox() {
 		if (box == null) {
