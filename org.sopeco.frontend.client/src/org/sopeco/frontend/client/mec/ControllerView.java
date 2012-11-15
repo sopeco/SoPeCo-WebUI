@@ -44,7 +44,7 @@ public class ControllerView extends FlowPanel {
 	private Image imgStatus, imgReCheck;
 
 	/** */
-	public enum BoxStatus {
+	public enum ViewStatus {
 		/** */
 		ONLINE, UNKNOWN, OFFLINE, CHECKING
 	}
@@ -139,9 +139,14 @@ public class ControllerView extends FlowPanel {
 		}
 		add(table);
 
-		setBoxStatus(BoxStatus.UNKNOWN);
+		setViewStatus(ViewStatus.UNKNOWN);
 	}
 
+	/**
+	 * 
+	 * @param valueHandler
+	 * @param clickHandler
+	 */
 	public void addAllHandler(ValueChangeHandler<String> valueHandler, ClickHandler clickHandler) {
 		imgReCheck.addClickHandler(clickHandler);
 
@@ -156,11 +161,11 @@ public class ControllerView extends FlowPanel {
 		cbProtocol.addValueChangeHandler(valueHandler);
 	}
 
-	private String getUrl() {
-		return cbProtocol.getText() + tbHostname.getText() + ":" + tbPort.getText() + "/" + cbController.getText();
-	}
-
-	private void setBoxStatus(BoxStatus status) {
+	/**
+	 * 
+	 * @param status
+	 */
+	public void setViewStatus(ViewStatus status) {
 
 		boolean btnOkEnabled = false;
 		String btnOkText = R.get("Ok");
@@ -197,6 +202,22 @@ public class ControllerView extends FlowPanel {
 		imgStatus.setTitle(imgTitle);
 
 		imgReCheck.getElement().getStyle().setOpacity(imgRecheckOpacity);
+	}
+
+	/**
+	 * Sets the given array as the items of the controller ComboBox.
+	 * 
+	 * @param controller
+	 */
+	public void setAvailableController(String[] controller) {
+		String selectedItem = cbController.getText();
+		cbController.clear();
+
+		for (String item : controller) {
+			cbController.addItem(item);
+		}
+
+		cbController.setSelectedText(selectedItem);
 	}
 
 	/**

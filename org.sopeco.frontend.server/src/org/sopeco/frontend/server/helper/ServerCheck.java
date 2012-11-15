@@ -7,10 +7,14 @@ import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.UnknownHostException;
 import java.rmi.Naming;
+import java.rmi.NotBoundException;
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+
+import org.sopeco.engine.measurementenvironment.IMeasurementEnvironmentController;
 
 /**
  * 
@@ -115,8 +119,17 @@ public final class ServerCheck {
 
 			for (String name : lookupArray) {
 				if (name.matches("\\/\\/[a-zA-Z0-9\\.\\-]*:[0-9]{1,5}\\/[a-zA-Z0-9]+")) {
-					String controllerName = name.substring(name.lastIndexOf("/") + 1);
-					retList.add(controllerName);
+					try {
+						Remote remoteStub = Naming.lookup(name);
+						if (remoteStub instanceof IMeasurementEnvironmentController) {
+							String controllerName = name.substring(name.lastIndexOf("/") + 1);
+							retList.add(controllerName);
+						} else {
+							LOGGER.info(name + " is not a MEC-RMI");
+						}
+					} catch (NotBoundException e) {
+						e.printStackTrace();
+					}
 				}
 			}
 			return retList;

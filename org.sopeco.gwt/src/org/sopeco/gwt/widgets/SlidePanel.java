@@ -51,11 +51,18 @@ public class SlidePanel extends FlowPanel {
 	private void init() {
 		getElement().getStyle().setOverflow(Overflow.HIDDEN);
 
+//		overflowHidePanel = new FlowPanel();
+//		overflowHidePanel.getElement().getStyle().setPosition(Position.ABSOLUTE);
+//		overflowHidePanel.getElement().getStyle().setTop(0, Unit.PX);
+//		overflowHidePanel.getElement().getStyle().setWidth(width, Unit.PX);
+//		overflowHidePanel.getElement().getStyle().setHeight(height * 2, Unit.PX);
+//		overflowHidePanel.getElement().getStyle().setOverflow(Overflow.HIDDEN);
+		
 		slidingPanel = new FlowPanel();
 		slidingPanel.setHeight(height + "px");
 		slidingPanel.getElement().getStyle().setPosition(Position.ABSOLUTE);
 		slidingPanel.getElement().getStyle().setLeft(0, Unit.PX);
-
+		
 		footerPanel = new FlowPanel();
 
 		sliderLayout = new VerticalPanel();
@@ -65,6 +72,8 @@ public class SlidePanel extends FlowPanel {
 		sliderLayout.setCellHeight(slidingPanel, height + "px");
 		sliderLayout.setCellWidth(slidingPanel, width + "px");
 
+		
+		
 		add(sliderLayout);
 	}
 

@@ -35,7 +35,8 @@ public class ParameterTreeItemLeaf extends TreeItem implements ValueChangeHandle
 
 		if (preperation) {
 			preperationCheckBox.setValue(true);
-		} else if (experiment) {
+		}
+		if (experiment) {
 			experimentCheckBox.setValue(true);
 		}
 	}
@@ -71,14 +72,15 @@ public class ParameterTreeItemLeaf extends TreeItem implements ValueChangeHandle
 	public void onValueChange(ValueChangeEvent<Boolean> event) {
 		if (event.getSource() == preperationCheckBox) {
 			if (event.getValue()) {
-				experimentCheckBox.setValue(false, true);
+				// experimentCheckBox.setValue(false, true);
 				ScenarioManager.get().experiment().addPreperationAssignment(parameter);
 			} else {
 				ScenarioManager.get().experiment().removePreperationAssignment(parameter);
 			}
-		} else if (event.getSource() == experimentCheckBox) {
+		}
+		if (event.getSource() == experimentCheckBox) {
 			if (event.getValue()) {
-				preperationCheckBox.setValue(false, true);
+				// preperationCheckBox.setValue(false, true);
 				ScenarioManager.get().experiment().addExperimentAssignment(parameter);
 			} else {
 				ScenarioManager.get().experiment().removeExperimentAssignment(parameter);

@@ -40,7 +40,7 @@ public class NorthPanel extends FlowPanel implements ClickHandler, ChangeHandler
 	private static final String IMG_BUTTON_CSS_CLASS = "imgButton";
 	private static final String DISABLED_CSS_CLASS = "disabled";
 
-	private static final String IMAGE_CHANGE_ACCOUNT = "images/change_account_invert.png";
+	private static final String IMAGE_CHANGE_ACCOUNT = "images/logout_invert.png";
 	private static final String IMAGE_SCENARIO_ADD = "images/scenario_add_invert.png";
 	private static final String IMAGE_SCENARIO_REMOVE = "images/scenario_delete_invert.png";
 	private static final String IMAGE_SATELLITE = "images/satellite_invert.png";
@@ -97,14 +97,11 @@ public class NorthPanel extends FlowPanel implements ClickHandler, ChangeHandler
 		connectedToText = new HTML();
 		navigationPanel.add(connectedToText);
 
-		// imageChangeAccount = new Image(IMAGE_CHANGE_ACCOUNT);
-		// imageChangeAccount.addStyleName(IMG_BUTTON_CSS_CLASS);
-		// imageChangeAccount.setTitle(R.get("change_account"));
-		// imageChangeAccount.addClickHandler(this);
-		// navigationPanel.add(imageChangeAccount);
-		anchorChangeAccount = new Anchor(R.get("change_account"));
-		anchorChangeAccount.addClickHandler(this);
-		navigationPanel.add(anchorChangeAccount);
+		 imageChangeAccount = new Image(IMAGE_CHANGE_ACCOUNT);
+		 imageChangeAccount.addStyleName(IMG_BUTTON_CSS_CLASS);
+		 imageChangeAccount.setTitle(R.get("Logout"));
+		 imageChangeAccount.addClickHandler(this);
+		 navigationPanel.add(imageChangeAccount);
 
 		navigationPanel.add(createSeparator());
 
@@ -169,7 +166,7 @@ public class NorthPanel extends FlowPanel implements ClickHandler, ChangeHandler
 			addScenarioDialog.center();
 		} else if (event.getSource() == imageScenarioRemove && isEnabled(imageScenarioRemove)) {
 			removeScenario();
-		} else if (event.getSource() == anchorChangeAccount) {
+		} else if (event.getSource() == imageChangeAccount) {
 			FrontendEntryPoint.get().changeDatabase();
 		}
 	}

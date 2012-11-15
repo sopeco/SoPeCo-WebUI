@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.sopeco.frontend.client.FrontendEntryPoint;
 import org.sopeco.frontend.client.R;
-import org.sopeco.frontend.client.entities.AccountDetails;
 import org.sopeco.frontend.client.helper.DBManager;
 import org.sopeco.frontend.client.helper.INotifyHandler;
 import org.sopeco.frontend.client.helper.serverstatus.Deactivatable;
@@ -17,6 +16,7 @@ import org.sopeco.frontend.client.layout.popups.TextInput;
 import org.sopeco.frontend.client.layout.popups.TextInput.Icon;
 import org.sopeco.frontend.client.layout.popups.TextInputOkHandler;
 import org.sopeco.frontend.client.model.Manager;
+import org.sopeco.frontend.shared.entities.AccountDetails;
 import org.sopeco.persistence.metadata.entities.DatabaseInstance;
 
 import com.google.gwt.core.client.GWT;
@@ -185,9 +185,9 @@ public class LoginBox extends DialogBox implements ClickHandler, Deactivatable {
 
 		DBManager.loadDatabases(new INotifyHandler<List<DatabaseInstance>>() {
 			@Override
-			public void call(boolean success, List<DatabaseInstance> result) {
-				if (success) {
-					setDatabaseList(result);
+			public void call(Result<List<DatabaseInstance>> callResult) {
+				if (callResult.wasSuccessful()) {
+					setDatabaseList(callResult.getValue());
 
 					if (loginScenario != null) {
 						setSelectedAccount(loginScenario);

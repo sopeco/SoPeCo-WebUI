@@ -1,6 +1,7 @@
 package org.sopeco.frontend.client.layout;
 
 import org.sopeco.frontend.client.R;
+import org.sopeco.frontend.client.helper.SimpleNotify;
 import org.sopeco.frontend.client.model.ScenarioManager;
 import org.sopeco.frontend.client.resources.FrontEndResources;
 import org.sopeco.gwt.widgets.ExtendedTextBox;
@@ -78,7 +79,7 @@ public class ScenarioAddController implements ClickHandler, BlurHandler, KeyPres
 	@Override
 	public void onClick(ClickEvent event) {
 		if (event.getSource() == view.getBtnOk() && checkForm()) {
-			createAndAddScenario();
+			createAndAddScenario(null);
 		} else {
 			event.stopPropagation();
 			event.preventDefault();
@@ -143,14 +144,16 @@ public class ScenarioAddController implements ClickHandler, BlurHandler, KeyPres
 	/**
 	 * 
 	 */
-	private void createAndAddScenario() {
+	public void createAndAddScenario(SimpleNotify simpleNotify) {
 		ExperimentSeriesDefinition experiment = ScenarioManager.get().experiment()
 				.getNewExperimentSeries(view.getExperimentName().getText());
 
 		ScenarioManager.get().createScenario(view.getScenarioName().getText(), view.getSpecificationName().getText(),
-				experiment);
+				experiment, simpleNotify);
 
-		hideHandler.onClick(null);
+		if (hideHandler != null) {
+			hideHandler.onClick(null);
+		}
 	}
 
 	/**

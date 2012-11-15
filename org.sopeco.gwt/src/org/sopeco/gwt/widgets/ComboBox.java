@@ -3,6 +3,8 @@ package org.sopeco.gwt.widgets;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.sopeco.gwt.widgets.resources.WidgetResources;
+
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
@@ -23,6 +25,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -32,7 +35,8 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  * @author Marius Oehler
  * 
  */
-public class ComboBox extends FlowPanel implements HasValueChangeHandlers<String> {
+public class ComboBox extends FlowPanel implements
+		HasValueChangeHandlers<String> {
 
 	private static final String CCS_CLASS_NAME = "spc-ComboBox";
 	private static final String CCS_DROPDOWN_VIEW_NAME = "spc-ComboBox-DropDownView";
@@ -63,6 +67,7 @@ public class ComboBox extends FlowPanel implements HasValueChangeHandlers<String
 	private boolean userEditedText;
 
 	public ComboBox() {
+		WidgetResources.loadComboBoxCSS();
 		initialize();
 	}
 
@@ -116,6 +121,7 @@ public class ComboBox extends FlowPanel implements HasValueChangeHandlers<String
 		itemList.clear();
 		dropdownView.clear();
 		userEditedText = false;
+		setText("");
 	}
 
 	/**
@@ -153,6 +159,23 @@ public class ComboBox extends FlowPanel implements HasValueChangeHandlers<String
 	}
 
 	/**
+	 * Selects the item, that equals the given text. If no item equals the given
+	 * text, nothing happens.
+	 * 
+	 * @param text
+	 */
+	public void setSelectedText(String text) {
+		int count = 0;
+		for (FocusPanel panel : itemList) {
+			if (((Label) panel.getWidget()).getText().equals(text)) {
+				setSelectedIndex(count);
+				return;
+			}
+			count++;
+		}
+	}
+
+	/**
 	 * Set the combobox to the selected element.
 	 * 
 	 * @param i
@@ -179,7 +202,8 @@ public class ComboBox extends FlowPanel implements HasValueChangeHandlers<String
 			ValueChangeEvent.fire(ComboBox.this, getText());
 			return;
 		} else if (i < 0 || i >= itemList.size()) {
-			throw new IndexOutOfBoundsException("Index " + i + " is out of the list size of " + itemList.size());
+			throw new IndexOutOfBoundsException("Index " + i
+					+ " is out of the list size of " + itemList.size());
 		}
 
 		selectedIndex = i;
@@ -232,7 +256,7 @@ public class ComboBox extends FlowPanel implements HasValueChangeHandlers<String
 	 * Hides the dropdown list.
 	 */
 	private void hideDropdownList() {
-		dropdownView.setVisible(false);
+		dropdownView.removeFromParent();
 	}
 
 	/**
@@ -248,7 +272,6 @@ public class ComboBox extends FlowPanel implements HasValueChangeHandlers<String
 
 		addStyleName(CCS_CLASS_NAME);
 		dropdownView.addStyleName(CCS_DROPDOWN_VIEW_NAME);
-		dropdownView.setVisible(false);
 
 		dummyPanel.getElement().getStyle().setPosition(Position.FIXED);
 		dummyPanel.getElement().getStyle().setTop(OUT_OF_SCREEN, Unit.PX);
@@ -259,7 +282,7 @@ public class ComboBox extends FlowPanel implements HasValueChangeHandlers<String
 		dropdownIcon.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				if (dropdownView.isVisible()) {
+				if (dropdownView.isAttached()) {
 					hideDropdownList();
 				} else {
 					showDropdownList();
@@ -273,7 +296,6 @@ public class ComboBox extends FlowPanel implements HasValueChangeHandlers<String
 		add(inputField);
 		add(dropdownIcon);
 		getElement().appendChild(clearDiv);
-		add(dropdownView);
 		add(dummyPanel);
 
 		setWidth(DEFAULT_WIDTH);
@@ -298,7 +320,12 @@ public class ComboBox extends FlowPanel implements HasValueChangeHandlers<String
 	 * Shows the dropdown list.
 	 */
 	private void showDropdownList() {
-		dropdownView.setVisible(true);
+		RootPanel.get().add(dropdownView);
+
+		int left = getElement().getAbsoluteLeft();
+		int top = getElement().getAbsoluteTop() + getOffsetHeight();
+		dropdownView.getElement().getStyle().setLeft(left, Unit.PX);
+		dropdownView.getElement().getStyle().setTop(top, Unit.PX);
 
 		if (selectedIndex != -1) {
 			itemList.get(selectedIndex).setFocus(true);
@@ -318,7 +345,8 @@ public class ComboBox extends FlowPanel implements HasValueChangeHandlers<String
 	 * @author Marius Oehler
 	 * 
 	 */
-	private class ComboBoxItemHandler implements ClickHandler, BlurHandler, MouseOverHandler, MouseOutHandler {
+	private class ComboBoxItemHandler implements ClickHandler, BlurHandler,
+			MouseOverHandler, MouseOutHandler {
 		private boolean isOverElement = false;
 
 		@Override

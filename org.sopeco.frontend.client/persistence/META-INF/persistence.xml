@@ -6,7 +6,7 @@
 		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
 		<class>org.sopeco.frontend.server.db.entities.Test</class>
 		<class>org.sopeco.frontend.server.db.entities.MEControllerUrl</class>
-		<class>org.sopeco.frontend.client.entities.AccountDetails</class>
+		<class>org.sopeco.frontend.shared.entities.AccountDetails</class>
 		
 		<properties>
 			

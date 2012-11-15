@@ -2,9 +2,9 @@ package org.sopeco.frontend.client.model;
 
 import java.util.logging.Logger;
 
-import org.sopeco.frontend.client.entities.AccountDetails;
-import org.sopeco.frontend.client.entities.ScenarioDetails;
 import org.sopeco.frontend.client.helper.DBManager;
+import org.sopeco.frontend.shared.entities.AccountDetails;
+import org.sopeco.frontend.shared.entities.ScenarioDetails;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 

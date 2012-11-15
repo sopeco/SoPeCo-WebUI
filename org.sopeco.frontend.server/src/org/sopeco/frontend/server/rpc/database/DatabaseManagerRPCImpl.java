@@ -5,12 +5,12 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sopeco.frontend.client.entities.AccountDetails;
 import org.sopeco.frontend.client.rpc.DatabaseManagerRPC;
 import org.sopeco.frontend.server.db.FlexiblePersistenceProviderFactory;
 import org.sopeco.frontend.server.db.UIPersistenceProvider;
 import org.sopeco.frontend.server.db.UIPersistenceProviderFactory;
 import org.sopeco.frontend.server.rpc.SuperRemoteServlet;
+import org.sopeco.frontend.shared.entities.AccountDetails;
 import org.sopeco.frontend.shared.helper.Metering;
 import org.sopeco.persistence.IMetaDataPersistenceProvider;
 import org.sopeco.persistence.IPersistenceProvider;

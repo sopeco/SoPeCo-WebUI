@@ -1,4 +1,4 @@
-package org.sopeco.frontend.client.entities;
+package org.sopeco.frontend.shared.entities;
 
 import java.io.Serializable;
 

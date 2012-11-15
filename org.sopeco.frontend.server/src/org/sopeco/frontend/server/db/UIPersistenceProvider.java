@@ -8,8 +8,8 @@ import javax.persistence.Query;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sopeco.frontend.client.entities.AccountDetails;
 import org.sopeco.frontend.server.db.entities.MEControllerUrl;
+import org.sopeco.frontend.shared.entities.AccountDetails;
 import org.sopeco.persistence.exceptions.DataNotFoundException;
 
 /**

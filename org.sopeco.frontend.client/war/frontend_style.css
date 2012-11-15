@@ -38,70 +38,7 @@
 
 /* ******************************************* */
 /* SOPECO - COMBOBOX */
-.spc-ComboBox {
-	border: 1px solid #AAA;
-	border-radius: 3px;
-	padding: 0px 0px;
-	position: relative;
-}
 
-.spc-ComboBox>input {
-	border: none;
-	outline: none;
-	margin: 1px 2px;
-	padding: 3px;
-	background: transparent;
-	color: #333 !important;
-	float: left;
-}
-
-.spc-ComboBox>img {
-	margin: 0px;
-	padding: 2px 8px;
-	float: right;
-	border-left: 1px solid #AAA;
-	background-color: #F7F7F7;
-	cursor: pointer;
-	border-radius: 0px 2px 2px 0px;
-}
-
-.spc-ComboBox>img:hover {
-	background-color: #FFF;
-}
-
-.spc-ComboBox>.spc-ComboBox-DropDownView {
-	position: absolute;
-	z-index: 999;
-	background-color: white;
-	margin-top: 2px;
-	border: 1px solid #AAA;
-	min-width: 100px;
-	border-radius: 3px;
-	left: 0;
-}
-
-.spc-ComboBox>.spc-ComboBox-DropDownView .spc-ComboBox-FocusPanel {
-	padding: 3px 8px;
-	cursor: pointer;
-	margin: 1px 0;
-	cursor: pointer;
-}
-
-.spc-ComboBox>.spc-ComboBox-DropDownView .spc-ComboBox-FocusPanel:hover
-	{
-	background-color: #DDEEFF;
-}
-
-.spc-ComboBox>.spc-ComboBox-DropDownView .spc-ComboBox-FocusPanel:focus
-	{
-	background-color: #CDF;
-	outline: 0;
-}
-
-.spc-ComboBox>.spc-ComboBox-DropDownView .spc-ComboBox-FocusPanel.highlight
-	{
-	background-color: #DDEEFF;
-}
 
 .sopeco-Tree {
 	

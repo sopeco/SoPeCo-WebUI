@@ -2,7 +2,7 @@ package org.sopeco.frontend.client.rpc;
 
 import java.util.List;
 
-import org.sopeco.frontend.client.entities.AccountDetails;
+import org.sopeco.frontend.shared.entities.AccountDetails;
 import org.sopeco.persistence.metadata.entities.DatabaseInstance;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;

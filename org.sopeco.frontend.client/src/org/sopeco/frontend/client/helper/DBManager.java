@@ -2,6 +2,7 @@ package org.sopeco.frontend.client.helper;
 
 import java.util.List;
 
+import org.sopeco.frontend.client.helper.INotifyHandler.Result;
 import org.sopeco.frontend.client.layout.popups.Message;
 import org.sopeco.frontend.client.rpc.DatabaseManagerRPC;
 import org.sopeco.frontend.client.rpc.DatabaseManagerRPCAsync;
@@ -73,7 +74,8 @@ public final class DBManager {
 			Message.error(caught.getLocalizedMessage());
 
 			if (notify != null) {
-				notify.call(false, null);
+				Result<List<DatabaseInstance>> callResult = new Result<List<DatabaseInstance>>(false, null);
+				notify.call(callResult);
 			}
 		}
 
@@ -82,7 +84,8 @@ public final class DBManager {
 			databaseList = result;
 
 			if (notify != null) {
-				notify.call(true, result);
+				Result<List<DatabaseInstance>> callResult = new Result<List<DatabaseInstance>>(true, result);
+				notify.call(callResult);
 			}
 		}
 	}

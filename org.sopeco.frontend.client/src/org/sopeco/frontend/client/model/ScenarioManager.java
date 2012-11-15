@@ -9,6 +9,8 @@ import org.sopeco.frontend.client.event.ScenarioLoadedEvent;
 import org.sopeco.frontend.client.event.SpecificationChangedEvent;
 import org.sopeco.frontend.client.event.handler.ScenarioChangedEventHandler;
 import org.sopeco.frontend.client.helper.INotifyHandler;
+import org.sopeco.frontend.client.helper.SimpleNotify;
+import org.sopeco.frontend.client.helper.INotifyHandler.Result;
 import org.sopeco.frontend.client.layout.MainLayoutPanel;
 import org.sopeco.frontend.client.layout.center.CenterType;
 import org.sopeco.frontend.client.layout.center.specification.SpecificationController;
@@ -185,15 +187,16 @@ public final class ScenarioManager {
 	/**
 	 * Renames the current workingSpecification to the given name.
 	 */
-	public void renameWorkingSpecification(String newName, INotifyHandler<Boolean> hanlder) {
+	public void renameWorkingSpecification(String newName, INotifyHandler<Boolean> handler) {
 		getBuilder().getSpecificationBuilder().setName(newName);
 		MainLayoutPanel.get().getNavigationController().updateSpecifications();
 		EventControl.get().fireEvent(new SpecificationChangedEvent(newName));
 
 		storeScenario();
 
-		if (hanlder != null) {
-			hanlder.call(true, true);
+		if (handler != null) {
+			Result<Boolean> callResult = new Result<Boolean>(true, true);
+			handler.call(callResult);
 		}
 	}
 
@@ -416,7 +419,8 @@ public final class ScenarioManager {
 				MainLayoutPanel.get().getNorthPanel().updateScenarioList();
 
 				if (handler != null) {
-					handler.call(true, true);
+					Result<Boolean> callResult = new Result<Boolean>(true, true);
+					handler.call(callResult);
 				}
 			}
 
@@ -424,13 +428,15 @@ public final class ScenarioManager {
 			public void onFailure(Throwable caught) {
 				Message.error("Failed adding new scenario.");
 				if (handler != null) {
-					handler.call(false, false);
+					Result<Boolean> callResult = new Result<Boolean>(false, false);
+					handler.call(callResult);
 				}
 			}
 		});
 	}
 
-	public void createScenario(String scenarioName, String specificationName, ExperimentSeriesDefinition experiment) {
+	public void createScenario(String scenarioName, String specificationName, ExperimentSeriesDefinition experiment,
+			final SimpleNotify simpleNotify) {
 		final String cleanedScenarioName = Utilities.cleanString(scenarioName);
 
 		RPC.getScenarioManager().addScenario(cleanedScenarioName, specificationName, experiment,
@@ -441,7 +447,13 @@ public final class ScenarioManager {
 						Manager.get().getAccountDetails().setSelectedScenario(cleanedScenarioName);
 						Manager.get().storeAccountDetails();
 
-						MainLayoutPanel.get().getNorthPanel().updateScenarioList();
+						if (simpleNotify != null) {
+							simpleNotify.call();
+						} else {
+							Manager.get().storeAccountDetails();
+							
+							MainLayoutPanel.get().getNorthPanel().updateScenarioList();
+						}
 					}
 
 					@Override

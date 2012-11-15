@@ -306,9 +306,9 @@ public class ExperimentModul {
 	 * Adds a parameterdefinition as a preperation assignment.
 	 */
 	public void addExperimentAssignment(ParameterDefinition definition) {
-		if (isPreperationAssignment(definition)) {
-			return;
-		}
+//		if (isPreperationAssignment(definition)) {
+//			return;
+//		}
 		ConstantValueAssignment cva = new ConstantValueAssignment();
 		cva.setParameter(definition);
 		cva.setValue("");
