@@ -22,8 +22,6 @@ import org.sopeco.persistence.entities.definition.ParameterNamespace;
 
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -122,30 +120,11 @@ public class SpecificationController implements ICenterController {
 
 		addExistingAssignments();
 		addRenameSpecificationHandler();
-		addToggleSelectionPanelClickHandler();
 	}
 
 	@Override
 	public Widget getView() {
 		return view;
-	}
-
-	/**
-	 * 
-	 */
-	private void addToggleSelectionPanelClickHandler() {
-		assignmentController.getEditIamge().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				if (view.isSelectionPanelVisible()) {
-					view.setSelectionPanelVisible(false);
-					// view.setToggleSelectionElementText(R.get("showEnvParameter"));
-				} else {
-					view.setSelectionPanelVisible(true);
-					// view.setToggleSelectionElementText(R.get("hideEnvParameter"));
-				}
-			}
-		});
 	}
 
 	/**
@@ -197,11 +176,11 @@ public class SpecificationController implements ICenterController {
 		for (ConstantValueAssignment cva : ScenarioManager.get().getBuilder()
 				.getMeasurementSpecification(specificationName).getInitializationAssignemts()) {
 
-//			String path = cva.getParameter().getFullName();
-//			path = path.substring(0, path.lastIndexOf(".") + 1);
+			// String path = cva.getParameter().getFullName();
+			// path = path.substring(0, path.lastIndexOf(".") + 1);
 
 			String path = cva.getParameter().getNamespace().getFullName();
-			
+
 			AssignmentItem item = new AssignmentItem(path, cva.getParameter().getName(), cva.getParameter().getType(),
 					cva.getValue());
 			assignmentController.addAssignment(item);

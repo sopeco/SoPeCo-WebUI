@@ -89,6 +89,7 @@ public class ScenarioManagerRPCImpl extends SuperRemoteServlet implements Scenar
 
 		dbCon.store(emptyScenario);
 
+		switchScenario(scenarioName);		
 		return true;
 	}
 

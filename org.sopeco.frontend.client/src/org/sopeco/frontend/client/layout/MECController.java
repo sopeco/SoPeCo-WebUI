@@ -5,6 +5,7 @@ import org.sopeco.frontend.client.mec.ControllerInteraction;
 import org.sopeco.frontend.client.mec.ControllerInteraction.Protocol;
 import org.sopeco.frontend.client.mec.ControllerView;
 import org.sopeco.frontend.client.mec.ControllerView.ViewStatus;
+import org.sopeco.frontend.client.model.Manager;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -29,8 +30,8 @@ public class MECController extends FlowPanel implements ValueChangeHandler<Strin
 	private boolean mecIsOnline = false;
 	private ControllerView view;
 
-	public MECController() {
-		view = new ControllerView(true, false);
+	public MECController(boolean hasInfoText, boolean hasButtons) {
+		view = new ControllerView(hasInfoText, hasButtons);
 		view.addAllHandler(this, this);
 	}
 
@@ -116,5 +117,24 @@ public class MECController extends FlowPanel implements ValueChangeHandler<Strin
 	public String getUrl() {
 		return view.getCbProtocol().getText() + view.getTbHostname().getText() + ":" + view.getTbPort().getText() + "/"
 				+ view.getCbController().getText();
+	}
+
+	/**
+	 * 
+	 */
+	public void refreshUI() {
+		String protocol = Manager.get().getCurrentScenarioDetails().getControllerProtocol();
+		if (protocol.equals("rmi://")) {
+			view.getCbProtocol().setSelectedIndex(0);
+		} else if (protocol.equals("http://")) {
+			view.getCbProtocol().setSelectedIndex(1);
+		} else if (protocol.equals("https://")) {
+			view.getCbProtocol().setSelectedIndex(2);
+		}
+
+		view.getTbHostname().setText(Manager.get().getCurrentScenarioDetails().getControllerHost());
+		view.getTbPort().setText("" + Manager.get().getCurrentScenarioDetails().getControllerPort());
+		view.getCbController().setText(Manager.get().getCurrentScenarioDetails().getControllerName());
+
 	}
 }

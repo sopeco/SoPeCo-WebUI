@@ -416,11 +416,11 @@ public final class ScenarioManager {
 				Manager.get().getAccountDetails().setSelectedScenario(realScenarioName);
 				Manager.get().storeAccountDetails();
 
-				MainLayoutPanel.get().getNorthPanel().updateScenarioList();
-
 				if (handler != null) {
 					Result<Boolean> callResult = new Result<Boolean>(true, true);
 					handler.call(callResult);
+				} else {
+					MainLayoutPanel.get().getNorthPanel().updateScenarioList();
 				}
 			}
 
@@ -450,8 +450,6 @@ public final class ScenarioManager {
 						if (simpleNotify != null) {
 							simpleNotify.call();
 						} else {
-							Manager.get().storeAccountDetails();
-							
 							MainLayoutPanel.get().getNorthPanel().updateScenarioList();
 						}
 					}

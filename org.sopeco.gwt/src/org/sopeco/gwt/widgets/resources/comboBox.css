@@ -31,7 +31,7 @@
 
 .spc-ComboBox-DropDownView {
 	position: absolute;
-	z-index: 999;
+	z-index: 1099;
 	background-color: white;
 	margin-top: 2px;
 	border: 1px solid #AAA;

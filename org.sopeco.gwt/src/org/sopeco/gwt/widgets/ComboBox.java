@@ -12,6 +12,8 @@ import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.FocusEvent;
+import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
@@ -63,6 +65,7 @@ public class ComboBox extends FlowPanel implements
 
 	private List<FocusPanel> itemList;
 	private int selectedIndex = -1;
+	private boolean editable;
 
 	private boolean userEditedText;
 
@@ -268,6 +271,7 @@ public class ComboBox extends FlowPanel implements
 		dropdownView = new VerticalPanel();
 		itemList = new ArrayList<FocusPanel>();
 		userEditedText = false;
+		editable = true;
 		dummyPanel = new FocusPanel();
 
 		addStyleName(CCS_CLASS_NAME);
@@ -291,6 +295,7 @@ public class ComboBox extends FlowPanel implements
 		});
 
 		inputField.addValueChangeHandler(getInputFieldHandler());
+		inputField.addFocusHandler(getInputFieldHandler());
 		dummyPanel.addBlurHandler(getComboBoxItemHandler());
 
 		add(inputField);
@@ -304,8 +309,9 @@ public class ComboBox extends FlowPanel implements
 	/**
 	 * Sets whether the text of the combobox is editable.
 	 */
-	public void setEditable(boolean editable) {
-		inputField.setEnabled(editable);
+	public void setEditable(boolean pEditable) {
+		// inputField.setEnabled(editable);
+		editable = pEditable;
 	}
 
 	/**
@@ -380,10 +386,19 @@ public class ComboBox extends FlowPanel implements
 	 * @author Marius Oehler
 	 * 
 	 */
-	private class InputFieldHandler implements ValueChangeHandler<String> {
+	private class InputFieldHandler implements ValueChangeHandler<String>,
+			FocusHandler {
 		@Override
 		public void onValueChange(ValueChangeEvent<String> event) {
 			setUserEdited();
+		}
+
+		@Override
+		public void onFocus(FocusEvent event) {
+			if (!editable) {
+				inputField.setFocus(false);
+				showDropdownList();
+			}
 		}
 	}
 }

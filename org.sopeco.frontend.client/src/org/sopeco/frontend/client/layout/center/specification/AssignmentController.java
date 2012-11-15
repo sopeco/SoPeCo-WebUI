@@ -9,7 +9,6 @@ import org.sopeco.frontend.shared.helper.Metering;
 
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -47,15 +46,6 @@ class AssignmentController implements BlurHandler {
 	 */
 	public Widget getAssignmentView() {
 		return view.getInScrollPanel();
-	}
-
-	/**
-	 * Returns the image wo toggle the environment tree.
-	 * 
-	 * @return
-	 */
-	public Image getEditIamge() {
-		return view.getEditImage();
 	}
 
 	/**

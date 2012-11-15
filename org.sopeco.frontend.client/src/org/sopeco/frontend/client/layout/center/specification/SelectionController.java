@@ -64,13 +64,6 @@ public class SelectionController {
 				// }
 			}
 		});
-
-//		EventControl.get().addHandler(ScenarioChangedEvent.TYPE, new ScenarioChangedEventHandler() {
-//			@Override
-//			public void onScenarioChanged(ScenarioChangedEvent scenarioChangedEvent) {
-//				updateMEControllerElements();
-//			}
-//		});
 	}
 
 	private void updateMEControllerElements() {

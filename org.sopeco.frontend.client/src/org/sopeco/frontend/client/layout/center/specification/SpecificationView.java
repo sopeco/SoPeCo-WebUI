@@ -77,7 +77,7 @@ public class SpecificationView extends FlowPanel {
 		// toggleSelectionPanel.getElement().setInnerHTML(R.get("showEnvParameter"));
 
 
-		setSelectionPanelPosition(0);
+		setSelectionPanelPosition(1);
 		selectionPanelIsVisible = false;
 
 		// ADDING

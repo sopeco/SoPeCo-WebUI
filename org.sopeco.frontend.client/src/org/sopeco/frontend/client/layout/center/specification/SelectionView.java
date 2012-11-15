@@ -56,48 +56,50 @@ public class SelectionView extends ScrollPanel {
 		// ************************
 		// ************************
 		// TODO cleanup
-		Headline headlineW = new Headline(R.get("meController"));
-		wrapper.add(headlineW);
-
-		lastCheck = System.currentTimeMillis();
-
-		ClickPanel cpa = new ClickPanel();
-		FlowPanel par = new FlowPanel();
-		par.getElement().setId(MECONTROLLER_URL_ID);
-
-		imgControllerStatus = new Image("images/status-green.png");
-		imgControllerStatus.getElement().getStyle().setVerticalAlign(VerticalAlign.MIDDLE);
-		imgControllerStatus.getElement().getStyle().setPaddingBottom(1, Unit.PX);
-		imgControllerStatus.getElement().getStyle().setMarginRight(6, Unit.PX);
-		imgControllerStatus.addMouseOverHandler(new MouseOverHandler() {
-			@Override
-			public void onMouseOver(MouseOverEvent event) {
-				long dif = (System.currentTimeMillis() - lastCheck) / 1000;
-				String text = "Last check: ";
-				if (dif >= 60) {
-					text += (dif / 60) + " minutes";
-				} else {
-					text += dif + " seconds";
-				}
-
-				imgControllerStatus.setTitle(text);
-			}
-		});
-		cpa.add(par);
-		cpa.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				MEControllerBox.showBox();
-			}
-		});
-
-		par.add(imgControllerStatus);
-
-		htmlControllerUrl = new HTML("");
-		htmlControllerUrl.getElement().getStyle().setDisplay(Display.INLINE_BLOCK);
-		par.add(htmlControllerUrl);
-
-		wrapper.add(cpa);
+		// Headline headlineW = new Headline(R.get("meController"));
+		// wrapper.add(headlineW);
+		//
+		// lastCheck = System.currentTimeMillis();
+		//
+		// ClickPanel cpa = new ClickPanel();
+		// FlowPanel par = new FlowPanel();
+		// par.getElement().setId(MECONTROLLER_URL_ID);
+		//
+		// imgControllerStatus = new Image("images/status-green.png");
+		// imgControllerStatus.getElement().getStyle().setVerticalAlign(VerticalAlign.MIDDLE);
+		// imgControllerStatus.getElement().getStyle().setPaddingBottom(1,
+		// Unit.PX);
+		// imgControllerStatus.getElement().getStyle().setMarginRight(6,
+		// Unit.PX);
+		// imgControllerStatus.addMouseOverHandler(new MouseOverHandler() {
+		// @Override
+		// public void onMouseOver(MouseOverEvent event) {
+		// long dif = (System.currentTimeMillis() - lastCheck) / 1000;
+		// String text = "Last check: ";
+		// if (dif >= 60) {
+		// text += (dif / 60) + " minutes";
+		// } else {
+		// text += dif + " seconds";
+		// }
+		//
+		// imgControllerStatus.setTitle(text);
+		// }
+		// });
+		// cpa.add(par);
+		// cpa.addClickHandler(new ClickHandler() {
+		// @Override
+		// public void onClick(ClickEvent event) {
+		// MEControllerBox.showBox();
+		// }
+		// });
+		//
+		// par.add(imgControllerStatus);
+		//
+		// htmlControllerUrl = new HTML("");
+		// htmlControllerUrl.getElement().getStyle().setDisplay(Display.INLINE_BLOCK);
+		// par.add(htmlControllerUrl);
+		//
+		// wrapper.add(cpa);
 
 		// ************************
 		// ************************
@@ -114,26 +116,26 @@ public class SelectionView extends ScrollPanel {
 	}
 
 	public void setControllerUrl(String controllerUrl) {
-		htmlControllerUrl.setText(controllerUrl);
+//		htmlControllerUrl.setText(controllerUrl);
 	}
 
 	public void setControllerStatus(ControllerStatus status, long lastUpdate) {
-		String imgUrl = "images/status-";
-		switch (status) {
-		case ONLINE:
-			imgUrl += "green.png";
-			break;
-		case OFFLINE:
-			imgUrl += "red.png";
-			break;
-		default:
-		case UNKNOWN:
-			imgUrl += "gray.png";
-			break;
-		}
-
-		imgControllerStatus.setUrl(imgUrl);
-		lastCheck = lastUpdate;
+//		String imgUrl = "images/status-";
+//		switch (status) {
+//		case ONLINE:
+//			imgUrl += "green.png";
+//			break;
+//		case OFFLINE:
+//			imgUrl += "red.png";
+//			break;
+//		default:
+//		case UNKNOWN:
+//			imgUrl += "gray.png";
+//			break;
+//		}
+//
+//		imgControllerStatus.setUrl(imgUrl);
+//		lastCheck = lastUpdate;
 	}
 
 	/**
