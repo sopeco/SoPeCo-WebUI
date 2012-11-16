@@ -7,7 +7,7 @@ import java.util.HashMap;
  * @author Marius Oehler
  * 
  */
-public class Metering {
+public final class Metering {
 	private static HashMap<Double, Long> map = new HashMap<Double, Long>();
 
 	private Metering() {
@@ -17,7 +17,7 @@ public class Metering {
 		double rand = Math.random();
 
 		map.put(rand, System.currentTimeMillis());
-		
+
 		return rand;
 	}
 
@@ -27,7 +27,10 @@ public class Metering {
 
 		long duration = System.currentTimeMillis() - map.get(key);
 
-		System.err.println("Metering: " + stackTop.getClassName() + " "
-				+ stackTop.getMethodName() + "() : " + duration + "ms");
+		String text = "Metering: " + stackTop.getClassName() + " " + stackTop.getMethodName() + "() : " + duration
+				+ "ms";
+		// System.err.println("Metering: " + stackTop.getClassName() + " "
+		// + stackTop.getMethodName() + "() : " + duration + "ms");
+		UiLog.debug(text);
 	}
 }

@@ -25,7 +25,7 @@ public class NavigationItem extends FocusPanel {
 
 	private static final String CSS_SUB_TEXT_CLASS = "subText";
 	private static final String CHANGE_SPECIFICATION_ICON_ID = "changeSpecImage";
-	private static final String CHANGE_SPECIFICATION_ICON = "images/change_2.png";
+	private static final String CHANGE_SPECIFICATION_ICON = "images/switch.png";
 
 	private FlowPanel contentPanel;
 	private boolean isActive;

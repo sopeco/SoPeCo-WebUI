@@ -5,6 +5,7 @@ import org.sopeco.frontend.client.R;
 import org.sopeco.frontend.client.event.EventControl;
 import org.sopeco.frontend.client.event.ScenarioChangedEvent;
 import org.sopeco.frontend.client.layout.dialog.AddScenarioDialog;
+import org.sopeco.frontend.client.layout.dialog.LogDialog;
 import org.sopeco.frontend.client.layout.popups.Confirmation;
 import org.sopeco.frontend.client.layout.popups.Loader;
 import org.sopeco.frontend.client.layout.popups.Message;
@@ -40,6 +41,7 @@ public class NorthPanel extends FlowPanel implements ClickHandler, ChangeHandler
 	private static final String IMG_BUTTON_CSS_CLASS = "imgButton";
 	private static final String DISABLED_CSS_CLASS = "disabled";
 
+	private static final String IMAGE_LOG = "images/log_invert.png";
 	private static final String IMAGE_CHANGE_ACCOUNT = "images/logout_invert.png";
 	private static final String IMAGE_SCENARIO_ADD = "images/scenario_add_invert.png";
 	private static final String IMAGE_SCENARIO_REMOVE = "images/scenario_delete_invert.png";
@@ -55,7 +57,8 @@ public class NorthPanel extends FlowPanel implements ClickHandler, ChangeHandler
 	private ListBox listboxScenarios;
 	private HTML connectedToText, htmlSelectScenario;
 	private boolean scenariosAvailable = false;
-	private Image imageSatellite, imageExport, researchLogo, imageScenarioAdd, imageScenarioRemove, imageChangeAccount;
+	private Image imageSatellite, imageExport, researchLogo, imageScenarioAdd, imageScenarioRemove, imageChangeAccount,
+			imageLog;
 
 	private Anchor anchorChangeAccount;
 
@@ -97,11 +100,11 @@ public class NorthPanel extends FlowPanel implements ClickHandler, ChangeHandler
 		connectedToText = new HTML();
 		navigationPanel.add(connectedToText);
 
-		 imageChangeAccount = new Image(IMAGE_CHANGE_ACCOUNT);
-		 imageChangeAccount.addStyleName(IMG_BUTTON_CSS_CLASS);
-		 imageChangeAccount.setTitle(R.get("Logout"));
-		 imageChangeAccount.addClickHandler(this);
-		 navigationPanel.add(imageChangeAccount);
+		imageChangeAccount = new Image(IMAGE_CHANGE_ACCOUNT);
+		imageChangeAccount.addStyleName(IMG_BUTTON_CSS_CLASS);
+		imageChangeAccount.setTitle(R.get("Logout"));
+		imageChangeAccount.addClickHandler(this);
+		navigationPanel.add(imageChangeAccount);
 
 		navigationPanel.add(createSeparator());
 
@@ -144,6 +147,14 @@ public class NorthPanel extends FlowPanel implements ClickHandler, ChangeHandler
 
 		navigationPanel.add(createSeparator());
 
+		imageLog = new Image(IMAGE_LOG);
+		imageLog.addClickHandler(this);
+		imageLog.addStyleName(IMG_BUTTON_CSS_CLASS);
+		imageLog.setTitle(R.get("log")); // TODO: text
+		navigationPanel.add(imageLog);
+
+		navigationPanel.add(createSeparator());
+
 		researchLogo = new Image(SAP_RESEARCH_LOGO);
 		researchLogo.getElement().setId(SAP_RESEARCH_LOGO_ID);
 		getElement().appendChild(researchLogo.getElement());
@@ -168,6 +179,8 @@ public class NorthPanel extends FlowPanel implements ClickHandler, ChangeHandler
 			removeScenario();
 		} else if (event.getSource() == imageChangeAccount) {
 			FrontendEntryPoint.get().changeDatabase();
+		} else if (event.getSource() == imageLog) {
+			LogDialog.show();
 		}
 	}
 

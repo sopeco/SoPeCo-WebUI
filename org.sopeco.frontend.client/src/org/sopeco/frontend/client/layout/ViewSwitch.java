@@ -1,10 +1,9 @@
 package org.sopeco.frontend.client.layout;
 
-import java.util.logging.Logger;
-
 import org.sopeco.frontend.client.event.EventControl;
 import org.sopeco.frontend.client.event.ExperimentChangedEvent;
 import org.sopeco.frontend.client.layout.center.CenterType;
+import org.sopeco.frontend.shared.helper.UiLog;
 
 /**
  * 
@@ -12,7 +11,7 @@ import org.sopeco.frontend.client.layout.center.CenterType;
  * 
  */
 public class ViewSwitch {
-	private static final Logger LOGGER = Logger.getLogger(ViewSwitch.class.getName());
+	// private static final Logger LOGGER = Logger.getLogger("view");
 
 	/**
 	 * Switch the view to the panel with the given panel-type.
@@ -21,7 +20,8 @@ public class ViewSwitch {
 	 *            type of the panel which will be shown.
 	 */
 	public void switchTo(CenterType type) {
-		LOGGER.info("Switch view to type: " + type.toString());
+		UiLog.debug("Switch view to type: " + type.toString());
+		// LOGGER.info("Switch view to type: " + type.toString());
 
 		MainLayoutPanel.get().updateCenterPanel(type);
 		MainLayoutPanel.get().getNavigationController().hideChangeSpecpanel();
@@ -35,14 +35,14 @@ public class ViewSwitch {
 	 *            name of the experiment
 	 */
 	public void switchToExperiment(String experimentName) {
-		LOGGER.info("Switch view to experiment: " + experimentName);
+		UiLog.debug("Switch view to experiment: " + experimentName);
 
 		if (MainLayoutPanel.get().getCenterType() != CenterType.Experiment) {
 			switchTo(CenterType.Experiment);
 		}
 
 		MainLayoutPanel.get().getNavigationController().highlightExperiment(experimentName);
-		
+
 		ExperimentChangedEvent expChangedEvent = new ExperimentChangedEvent(experimentName);
 		EventControl.get().fireEvent(expChangedEvent);
 	}
