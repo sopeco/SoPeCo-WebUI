@@ -82,6 +82,13 @@ public class TreeItem extends FlowPanel implements ClickHandler {
 	}
 
 	/**
+	 * 
+	 */
+	public List<TreeItem> getChildrenItems() {
+		return new ArrayList<TreeItem>(childrenItems);
+	}
+
+	/**
 	 * Removes the icon to collapse this node.
 	 */
 	protected void removeIcon() {

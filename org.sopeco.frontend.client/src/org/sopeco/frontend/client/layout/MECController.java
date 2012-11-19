@@ -77,13 +77,13 @@ public class MECController extends FlowPanel implements ValueChangeHandler<Strin
 
 	@Override
 	public void call(Result result) {
-		if (result.getKey() == null) {
+		if (result == null) {
+			mecIsOnline = false;
+			view.setViewStatus(ViewStatus.OFFLINE);
 			return;
 		} else if (result.getKey().equals(ControllerInteraction.KEY_PORT_REACHABLE)) {
 			boolean value = (Boolean) result.getValue();
 			if (result.wasSuccessful() && value) {
-				mecIsOnline = true;
-				view.setViewStatus(ViewStatus.ONLINE);
 				retrieveController();
 			} else {
 				mecIsOnline = false;
@@ -95,6 +95,14 @@ public class MECController extends FlowPanel implements ValueChangeHandler<Strin
 		} else if (result.getKey().equals(ControllerInteraction.KEY_RETRIEVE_MEC)) {
 			String[] value = (String[]) result.getValue();
 			view.setAvailableController(value);
+
+			if (value.length > 0) {
+				mecIsOnline = true;
+				view.setViewStatus(ViewStatus.ONLINE);
+			} else {
+				mecIsOnline = false;
+				view.setViewStatus(ViewStatus.UNKNOWN);
+			}
 		}
 	}
 

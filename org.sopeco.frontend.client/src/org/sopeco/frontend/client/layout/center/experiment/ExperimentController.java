@@ -32,11 +32,13 @@ import com.google.gwt.user.client.ui.Widget;
 public class ExperimentController implements ICenterController, ValueChangeHandler<String>, ClickHandler {
 
 	private static final Logger LOGGER = Logger.getLogger(ExperimentController.class.getName());
+	private static final String ENV_TREE_CSS_CLASS = "expEnvTree";
 
 	private ExperimentView view;
 	private ExperimentExtensionController explorationExtController;
-	private ParameterTreeController treeController;
+	// private ParameterTreeController treeController;
 	private TerminationController terminationController;
+	private ExperimentEnvironmentTree expEnvironmentTree;
 
 	private AssignmentController assignmentPreperation, assignmentExperiment;
 
@@ -55,13 +57,17 @@ public class ExperimentController implements ICenterController, ValueChangeHandl
 		terminationController = new TerminationController();
 
 		view = new ExperimentView();
-		treeController = new ParameterTreeController();
+		// treeController = new ParameterTreeController();
+		expEnvironmentTree = new ExperimentEnvironmentTree();
 
 		getSettingsView().addExtensionView(explorationExtController.getView());
 		getSettingsView().add(terminationController.getView());
 		getParameterView().add(assignmentPreperation.getView());
 		getParameterView().add(assignmentExperiment.getView());
-		getParameterView().add(treeController.getView());
+		// getParameterView().add(treeController.getView());
+		getParameterView().add(expEnvironmentTree.getView());
+
+		expEnvironmentTree.getView().addStyleName(ENV_TREE_CSS_CLASS);
 
 		explorationExtController.setHeadline(R.get("explStrategy"));
 

@@ -32,9 +32,11 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class SpecificationController implements ICenterController {
 
+	private static final String TREE_CSS_CLASS = "specificationTreeView";
 	private SpecificationView view;
 	private AssignmentController assignmentController;
-	private SelectionController selectionController;
+	// private SelectionController selectionController;
+	private SpecificationEnvironmentTree envTree;
 
 	public SpecificationController() {
 		FrontEndResources.loadSpecificationCSS();
@@ -110,13 +112,16 @@ public class SpecificationController implements ICenterController {
 			assignmentController.reset();
 		}
 
-		if (selectionController == null) {
-			selectionController = new SelectionController();
-		} else {
-			selectionController.reset();
-		}
+		// if (selectionController == null) {
+		// selectionController = new SelectionController();
+		// } else {
+		// selectionController.reset();
+		// }
+		envTree = new SpecificationEnvironmentTree();
+		envTree.getView().addStyleName(TREE_CSS_CLASS);
+		
 
-		view = new SpecificationView(assignmentController.getAssignmentView(), selectionController.getView());
+		view = new SpecificationView(assignmentController.getAssignmentView(), envTree.getView());
 
 		addExistingAssignments();
 		addRenameSpecificationHandler();

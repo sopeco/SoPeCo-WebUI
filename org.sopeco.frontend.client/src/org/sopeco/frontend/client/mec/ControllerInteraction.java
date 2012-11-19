@@ -88,20 +88,14 @@ public final class ControllerInteraction {
 
 				@Override
 				public void onSuccess(List<String> result) {
+					if (result == null) {
+						handler.call(null);
+						return;
+					}
+
 					String[] resultArray = result.toArray(new String[0]);
 					Result<String[]> callResult = new Result<String[]>(true, resultArray, KEY_RETRIEVE_MEC);
 					handler.call(callResult);
-					//
-					// int count = 0;
-					// for (String name : result) {
-					// cbController.addItem(name);
-					//
-					// if (name.equals(tempSelectedController)) {
-					// cbController.setSelectedIndex(count);
-					// }
-					//
-					// count++;
-					// }
 				}
 			});
 		}

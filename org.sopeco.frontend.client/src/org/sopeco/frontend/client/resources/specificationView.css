@@ -56,3 +56,8 @@
 	margin: 6px 0 0;
 	color: #666;
 }
+
+.specificationTreeView {
+	border-right: 1px solid #CCC;
+	bottom: 0;
+}

@@ -238,3 +238,12 @@
 .editableText:hover {
 	background-color: #E0EAFF;
 }
+
+.expEnvTree {
+	position: absolute;
+	left: 0;
+	top: 0;
+	bottom: 0;
+	border-right: 1px solid #CCC;
+	width: 400px;
+}

@@ -4,13 +4,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.logging.Logger;
 
 import org.sopeco.frontend.client.R;
 import org.sopeco.frontend.client.extensions.Extensions;
 import org.sopeco.frontend.client.model.ScenarioManager;
 import org.sopeco.frontend.shared.helper.ExtensionTypes;
 import org.sopeco.frontend.shared.helper.Metering;
+import org.sopeco.frontend.shared.helper.UiLog;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -24,7 +24,8 @@ import com.google.gwt.user.client.ui.TextBox;
  */
 public class ExperimentExtensionController implements ValueChangeHandler<String> {
 
-	private static final Logger LOGGER = Logger.getLogger(ExperimentExtensionController.class.getName());
+	// private static final Logger LOGGER =
+	// Logger.getLogger(ExperimentExtensionController.class.getName());
 	private static final String VALUE_CHANGED_CSS_CLASS = "valueChanged";
 
 	private ExperimentController parentController;
@@ -78,7 +79,6 @@ public class ExperimentExtensionController implements ValueChangeHandler<String>
 	public void setHeadline(String text) {
 		view.getHeadline().setInnerHTML(text);
 	}
-
 
 	/**
 	 * @param extensionMap
@@ -202,7 +202,7 @@ public class ExperimentExtensionController implements ValueChangeHandler<String>
 		int i = 0;
 		for (String key : keySet) {
 			if (key.equals(name)) {
-				LOGGER.info("Set Extension to: " + name);
+				UiLog.debug("Set Extension to: " + name);
 
 				currentExtensionName = name;
 				view.getCombobox().setSelectedIndex(i);
@@ -230,5 +230,4 @@ public class ExperimentExtensionController implements ValueChangeHandler<String>
 	public String getCurrentExtensionName() {
 		return currentExtensionName;
 	}
-
 }
