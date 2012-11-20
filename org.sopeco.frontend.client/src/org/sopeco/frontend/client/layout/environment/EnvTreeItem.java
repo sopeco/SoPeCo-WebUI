@@ -34,6 +34,11 @@ public class EnvTreeItem extends TreeItem implements ValueChangeHandler<Boolean>
 		addCheckBoxes();
 	}
 
+	public void setCheckboxesEnable(boolean enable) {
+		firstCheckBox.setEnabled(enable);
+		secondCheckBox.setEnabled(enable);
+	}
+
 	public void setFirstCheckboxValue(boolean value) {
 		firstCheckBox.setValue(value);
 	}

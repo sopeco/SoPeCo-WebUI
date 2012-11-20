@@ -1,6 +1,7 @@
 package org.sopeco.gwt.widgets;
 
 import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Style.Float;
 import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
@@ -13,5 +14,6 @@ public class ClearDiv extends SimplePanel {
 	public ClearDiv() {
 		super(Document.get().createElement("div"));
 		getElement().getStyle().setProperty("clear", "both");
+		getElement().getStyle().setFloat(Float.NONE);
 	}
 }

@@ -34,6 +34,7 @@ public final class Manager {
 	private ControllerStatus controllerLastStatus = ControllerStatus.UNKNOWN;
 	private AccountDetails accountDetails = null;
 	private String[] availableScenarios = null;
+	private String selectedExperiment;
 
 	/**
 	 * Sends the current AccountDetails to the backend to store it in the
@@ -53,11 +54,17 @@ public final class Manager {
 	}
 
 	/**
-	 * Returns the ScenariODetail object of the current selected scenario.
+	 * Returns the ScenariODetail object of the current selected scenario. If no
+	 * object exists, it creates one.
 	 * 
 	 * @return
 	 */
 	public ScenarioDetails getCurrentScenarioDetails() {
+		if (accountDetails.getScenarioDetail(accountDetails.getSelectedScenario()) == null) {
+			Manager.get().getAccountDetails().addScenarioDetails(accountDetails.getSelectedScenario());
+			Manager.get().storeAccountDetails();
+		}
+
 		return accountDetails.getScenarioDetail(accountDetails.getSelectedScenario());
 	}
 
@@ -66,6 +73,21 @@ public final class Manager {
 	 */
 	public AccountDetails getAccountDetails() {
 		return accountDetails;
+	}
+
+	/**
+	 * @return the selectedExperiment
+	 */
+	public String getSelectedExperiment() {
+		return selectedExperiment;
+	}
+
+	/**
+	 * @param pSelectedExperiment
+	 *            the selectedExperiment to set
+	 */
+	public void setSelectedExperiment(String pSelectedExperiment) {
+		this.selectedExperiment = pSelectedExperiment;
 	}
 
 	/**

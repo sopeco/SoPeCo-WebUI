@@ -24,6 +24,8 @@ public interface ScenarioManagerRPCAsync {
 	void addScenario(String scenarioName, String specificationName, ExperimentSeriesDefinition experiment,
 			AsyncCallback<Boolean> callback);
 
+	void addScenario(ScenarioDefinition scenario, AsyncCallback<Boolean> callback);
+
 	void removeScenario(String name, AsyncCallback<Boolean> callback);
 
 	void switchScenario(String name, AsyncCallback<Boolean> callback);
@@ -33,4 +35,5 @@ public interface ScenarioManagerRPCAsync {
 	void storeScenarioDefinition(ScenarioDefinition definition, AsyncCallback<Boolean> callback);
 
 	void getScenarioAsXML(AsyncCallback<String> callback);
+
 }

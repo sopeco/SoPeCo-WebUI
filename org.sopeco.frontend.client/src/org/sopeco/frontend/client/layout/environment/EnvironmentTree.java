@@ -194,6 +194,7 @@ public abstract class EnvironmentTree implements ClickHandler, ValueChangeHandle
 				allTreeItemsList.add(leaf);
 
 				if (parameter.getRole() == ParameterRole.OBSERVATION) {
+					leaf.setCheckboxesEnable(false);
 					observationItemsList.add(leaf);
 				}
 

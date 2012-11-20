@@ -1,5 +1,6 @@
 package org.sopeco.frontend.server.rpc;
 
+import org.sopeco.frontend.server.StartUp;
 import org.sopeco.frontend.server.user.User;
 import org.sopeco.frontend.server.user.UserManager;
 
@@ -25,10 +26,10 @@ public class SuperRemoteServlet extends RemoteServiceServlet {
 		return UserManager.getUser(getSessionId());
 	}
 
-private static int testVar = test();
-	
-	private static int test () {
-		System.out.println("test");
-		return 0;
+	@Override
+	protected void onAfterResponseSerialized(String serializedResponse) {
+		StartUp.start(getSessionId());
+
+		getUser().setLastRequestTime(System.currentTimeMillis());
 	}
 }

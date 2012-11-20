@@ -3,7 +3,6 @@ package org.sopeco.frontend.client.model;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import org.sopeco.frontend.client.event.EventControl;
 import org.sopeco.frontend.client.event.ExperimentAssignmentsChangedEvent;
@@ -16,6 +15,7 @@ import org.sopeco.frontend.client.layout.center.experiment.ExperimentController;
 import org.sopeco.frontend.shared.builder.SimpleEntityFactory;
 import org.sopeco.frontend.shared.helper.ExtensionTypes;
 import org.sopeco.frontend.shared.helper.Metering;
+import org.sopeco.frontend.shared.helper.UiLog;
 import org.sopeco.persistence.entities.definition.ConstantValueAssignment;
 import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
 import org.sopeco.persistence.entities.definition.ExperimentTerminationCondition;
@@ -41,7 +41,8 @@ public class ExperimentModul {
 
 	private static final String DEFAULT_EXPLORATION = "Full Exploration Strategy";
 
-	private static final Logger LOGGER = Logger.getLogger(ExperimentModul.class.getName());
+	// private static final Logger LOGGER =
+	// Logger.getLogger(ExperimentModul.class.getName());
 	private ScenarioManager manager;
 
 	private String currentExperiment;
@@ -108,7 +109,7 @@ public class ExperimentModul {
 	 *            the currentExperiment to set
 	 */
 	public void setCurrentExperiment(String newExperiment) {
-		LOGGER.info("Switch experiment to '" + newExperiment + "'");
+		UiLog.debug("Switch experiment to '" + newExperiment + "'");
 		currentExperiment = newExperiment;
 	}
 
@@ -119,7 +120,7 @@ public class ExperimentModul {
 	 */
 	public void saveExperimentConfig(ExperimentController experimentController) {
 		double metering = Metering.start();
-		LOGGER.info("Save experiment configuration");
+		UiLog.debug("Save experiment configuration");
 
 		ExperimentSeriesDefinition experiment = getCurrentExperiment();
 		if (experiment == null) {
@@ -177,7 +178,7 @@ public class ExperimentModul {
 	 * @param name
 	 */
 	public void createExperimentSeries(String name) {
-		LOGGER.info("Create experiment '" + name + "'");
+		UiLog.debug("Create experiment '" + name + "'");
 
 		ExperimentSeriesDefinition experiment = getNewExperimentSeries(name);
 
@@ -195,7 +196,7 @@ public class ExperimentModul {
 	 * @param name
 	 */
 	public ExperimentSeriesDefinition getNewExperimentSeries(String name) {
-		LOGGER.info("Create (and return) experiment '" + name + "'");
+		UiLog.debug("Create (and return) experiment '" + name + "'");
 
 		ExperimentSeriesDefinition experiment = SimpleEntityFactory.createExperimentSeriesDefinition(name);
 
@@ -306,9 +307,9 @@ public class ExperimentModul {
 	 * Adds a parameterdefinition as a preperation assignment.
 	 */
 	public void addExperimentAssignment(ParameterDefinition definition) {
-//		if (isPreperationAssignment(definition)) {
-//			return;
-//		}
+		// if (isPreperationAssignment(definition)) {
+		// return;
+		// }
 		ConstantValueAssignment cva = new ConstantValueAssignment();
 		cva.setParameter(definition);
 		cva.setValue("");
@@ -386,7 +387,7 @@ public class ExperimentModul {
 	 */
 	public void addTermination(ExperimentTerminationCondition termination) {
 		if (isSetTermination(termination)) {
-			LOGGER.info("is already as t-condition set => updating config.");
+			UiLog.debug("is already as t-condition set => updating config.");
 			getTerminationCondition(termination).getParametersValues().clear();
 			getTerminationCondition(termination).getParametersValues().putAll(termination.getParametersValues());
 		} else {
@@ -438,7 +439,7 @@ public class ExperimentModul {
 		if (search != null) {
 			getCurrentExperiment().getTerminationConditions().remove(search);
 		} else {
-			LOGGER.info("is not set as t-condition set.");
+			UiLog.debug("is not set as t-condition set.");
 		}
 
 		manager.storeScenario();
@@ -457,5 +458,19 @@ public class ExperimentModul {
 		EventControl.get().fireEvent(new ExperimentChangedEvent(newName));
 
 		manager.storeScenario();
+	}
+
+	public void cloneCurrentExperiment(String targetName) {
+		ExperimentSeriesDefinition source = ScenarioManager.get().experiment().getCurrentExperiment();
+
+		ExperimentSeriesDefinition clone = Duplicator.cloneExperiment(source);
+		clone.setName(targetName);
+
+		ScenarioManager.get().specification().getWorkingSpecification().getExperimentSeriesDefinitions().add(clone);
+
+		ScenarioManager.get().storeScenario();
+
+		MainLayoutPanel.get().getNavigationController().loadExperiments();
+		MainLayoutPanel.get().getViewSwitch().switchToExperiment(targetName);
 	}
 }

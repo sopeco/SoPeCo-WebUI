@@ -25,6 +25,7 @@ public class User {
 	private IPersistenceProvider currentPersistenceProvider;
 	private UIPersistenceProvider uiPesistenceProvider;
 	private static final Logger LOGGER = Logger.getLogger(User.class.getName());
+	private long lastRequestTime;
 
 	public User(String sId) {
 		sessionId = sId;
@@ -42,6 +43,14 @@ public class User {
 
 	public UIPersistenceProvider getUiPesistenceProvider() {
 		return uiPesistenceProvider;
+	}
+
+	public long getLastRequestTime() {
+		return lastRequestTime;
+	}
+
+	public void setLastRequestTime(long pLastRequestTime) {
+		this.lastRequestTime = pLastRequestTime;
 	}
 
 	public void setUiPesistenceProvider(UIPersistenceProvider pesistenceProvider) {
@@ -70,6 +79,10 @@ public class User {
 
 	// *******************************************************************************************************
 
+	public void kill() {
+		// TODO - close connections..
+	}
+
 	public String getWorkingSpecification() {
 		return workingSpecification;
 	}
@@ -78,13 +91,13 @@ public class User {
 	 * Set the current specification, which is in the builder as default/working
 	 * spec.
 	 * 
-	 * @param workingSpecification
+	 * @param pWorkingSpecification
 	 */
-	public void setWorkingSpecification(String workingSpecification) {
-		this.workingSpecification = workingSpecification;
+	public void setWorkingSpecification(String pWorkingSpecification) {
+		this.workingSpecification = pWorkingSpecification;
 
 		MeasurementSpecification specification = getCurrentScenarioDefinitionBuilder().getMeasurementSpecification(
-				workingSpecification);
+				pWorkingSpecification);
 		MeasurementSpecificationBuilder specificationBuilder = new MeasurementSpecificationBuilder(specification);
 		getCurrentScenarioDefinitionBuilder().setSpecificationBuilder(specificationBuilder);
 	}

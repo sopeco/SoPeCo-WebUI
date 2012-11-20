@@ -14,16 +14,16 @@
 	<stylesheet src="../frontend_style.css" />
 
 	<!-- Other module inherits -->
-	<!-- <inherits name='org.sopeco.config.Configuration' />
-	<inherits name='org.sopeco.config.exception.ConfigurationException' />-->
+	<!-- <inherits name='org.sopeco.config.Configuration' /> <inherits name='org.sopeco.config.exception.ConfigurationException' 
+		/> -->
 	<inherits name='org.sopeco.persistence' />
 	<inherits name='org.sopeco.gwt' />
 	<inherits name="com.google.gwt.resources.Resources" />
-	
-	<inherits name="com.google.gwt.logging.Logging"/>
-	<set-property name="gwt.logging.enabled" value="TRUE"/>
+
+	<inherits name="com.google.gwt.logging.Logging" />
+	<set-property name="gwt.logging.enabled" value="TRUE" />
 	<set-property name="gwt.logging.popupHandler" value="DISABLED" />
-	
+
 	<!-- Specify the app entry point class. -->
 	<entry-point class='org.sopeco.frontend.client.FrontendEntryPoint' />
 

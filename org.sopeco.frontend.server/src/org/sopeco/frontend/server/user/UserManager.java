@@ -1,6 +1,7 @@
 package org.sopeco.frontend.server.user;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -77,5 +78,14 @@ public final class UserManager {
 		}
 
 		return userList;
+	}
+
+	public static HashMap<String, User> getAllUsers() {
+		return new HashMap<String, User>(userMap);
+	}
+
+	public static void removeUser(User u) {
+		userMap.remove(u.getSessionId());
+		u.kill();
 	}
 }

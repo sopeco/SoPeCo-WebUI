@@ -9,6 +9,8 @@ import org.sopeco.frontend.client.layout.dialog.LogDialog;
 import org.sopeco.frontend.client.layout.popups.Confirmation;
 import org.sopeco.frontend.client.layout.popups.Loader;
 import org.sopeco.frontend.client.layout.popups.Message;
+import org.sopeco.frontend.client.layout.popups.TextInput;
+import org.sopeco.frontend.client.layout.popups.TextInputOkHandler;
 import org.sopeco.frontend.client.model.Manager;
 import org.sopeco.frontend.client.model.ScenarioManager;
 import org.sopeco.frontend.client.resources.FrontEndResources;
@@ -44,6 +46,7 @@ public class NorthPanel extends FlowPanel implements ClickHandler, ChangeHandler
 	private static final String IMAGE_LOG = "images/log_invert.png";
 	private static final String IMAGE_CHANGE_ACCOUNT = "images/logout_invert.png";
 	private static final String IMAGE_SCENARIO_ADD = "images/scenario_add_invert.png";
+	private static final String IMAGE_SCENARIO_CLONE = "images/scenario_clone_invert.png";
 	private static final String IMAGE_SCENARIO_REMOVE = "images/scenario_delete_invert.png";
 	private static final String IMAGE_SATELLITE = "images/satellite_invert.png";
 	private static final String IMAGE_EXPORT = "images/download_invert.png";
@@ -58,7 +61,7 @@ public class NorthPanel extends FlowPanel implements ClickHandler, ChangeHandler
 	private HTML connectedToText, htmlSelectScenario;
 	private boolean scenariosAvailable = false;
 	private Image imageSatellite, imageExport, researchLogo, imageScenarioAdd, imageScenarioRemove, imageChangeAccount,
-			imageLog;
+			imageLog, imageScenarioClone;
 
 	private Anchor anchorChangeAccount;
 
@@ -123,6 +126,12 @@ public class NorthPanel extends FlowPanel implements ClickHandler, ChangeHandler
 		imageScenarioAdd.addClickHandler(this);
 		navigationPanel.add(imageScenarioAdd);
 
+		imageScenarioClone = new Image(IMAGE_SCENARIO_CLONE);
+		imageScenarioClone.addStyleName(IMG_BUTTON_CSS_CLASS);
+		imageScenarioClone.setTitle(R.get("scenario_clone"));
+		imageScenarioClone.addClickHandler(this);
+		navigationPanel.add(imageScenarioClone);
+
 		imageScenarioRemove = new Image(IMAGE_SCENARIO_REMOVE);
 		imageScenarioRemove.addStyleName(IMG_BUTTON_CSS_CLASS);
 		imageScenarioRemove.setTitle(R.get("scenario_remove"));
@@ -150,7 +159,7 @@ public class NorthPanel extends FlowPanel implements ClickHandler, ChangeHandler
 		imageLog = new Image(IMAGE_LOG);
 		imageLog.addClickHandler(this);
 		imageLog.addStyleName(IMG_BUTTON_CSS_CLASS);
-		imageLog.setTitle(R.get("log")); // TODO: text
+		imageLog.setTitle(R.get("showLog")); // TODO: text
 		navigationPanel.add(imageLog);
 
 		navigationPanel.add(createSeparator());
@@ -175,6 +184,8 @@ public class NorthPanel extends FlowPanel implements ClickHandler, ChangeHandler
 		} else if (event.getSource() == imageScenarioAdd && isEnabled(imageScenarioAdd)) {
 			AddScenarioDialog addScenarioDialog = new AddScenarioDialog();
 			addScenarioDialog.center();
+		} else if (event.getSource() == imageScenarioClone && isEnabled(imageScenarioClone)) {
+			cloneScenario();
 		} else if (event.getSource() == imageScenarioRemove && isEnabled(imageScenarioRemove)) {
 			removeScenario();
 		} else if (event.getSource() == imageChangeAccount) {
@@ -189,6 +200,15 @@ public class NorthPanel extends FlowPanel implements ClickHandler, ChangeHandler
 		if (event.getSource() == listboxScenarios) {
 			switchScenario();
 		}
+	}
+
+	private void cloneScenario() {
+		TextInput.doInput(R.get("scenario_clone"), R.get("cloneScenarioName") + ":", new TextInputOkHandler() {
+			@Override
+			public void onInput(ClickEvent event, String input) {
+				ScenarioManager.get().cloneCurrentScenario(input);
+			}
+		});
 	}
 
 	/**
@@ -230,6 +250,38 @@ public class NorthPanel extends FlowPanel implements ClickHandler, ChangeHandler
 			@Override
 			public void onSuccess(String[] result) {
 				updateScenarioList(result);
+				Loader.hideLoader();
+			}
+
+			@Override
+			public void onFailure(Throwable caught) {
+				Message.error(caught.getMessage());
+				Loader.hideLoader();
+			}
+		});
+	}
+
+	/**
+	 *
+	 */
+	public void updateScenarioListAndSwitch(final String scenarioName) {
+		GWT.log("update scenariolist");
+
+		RPC.getScenarioManager().getScenarioNames(new AsyncCallback<String[]>() {
+			@Override
+			public void onSuccess(String[] result) {
+				updateScenarioList(result);
+				GWT.log("switch");
+
+				for (int i = 0; i < listboxScenarios.getItemCount(); i++) {
+					if (scenarioName.equals(listboxScenarios.getItemText(i))) {
+						listboxScenarios.setSelectedIndex(i);
+						break;
+					}
+				}
+				Manager.get().getAccountDetails().setSelectedScenario(scenarioName);
+				switchScenario();
+
 				Loader.hideLoader();
 			}
 

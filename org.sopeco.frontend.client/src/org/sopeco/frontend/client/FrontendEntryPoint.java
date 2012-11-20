@@ -1,5 +1,7 @@
 package org.sopeco.frontend.client;
 
+import java.util.HashMap;
+
 import org.sopeco.frontend.client.extensions.Extensions;
 import org.sopeco.frontend.client.helper.SystemDetails;
 import org.sopeco.frontend.client.helper.callback.CallbackBatch;
@@ -9,15 +11,11 @@ import org.sopeco.frontend.client.layout.MainLayoutPanel;
 import org.sopeco.frontend.client.layout.popups.Message;
 import org.sopeco.frontend.client.model.ScenarioManager;
 import org.sopeco.frontend.client.rpc.RPC;
-import org.sopeco.frontend.client.rpc.StartupService;
-import org.sopeco.frontend.client.rpc.StartupServiceAsync;
 import org.sopeco.frontend.shared.helper.ExtensionContainer;
 import org.sopeco.persistence.metadata.entities.DatabaseInstance;
 
 import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 
 /**
@@ -33,9 +31,6 @@ public class FrontendEntryPoint implements EntryPoint {
 
 	private CallbackBatch loadingBatch;
 
-	// Fast login
-	public static final boolean DEVELOPMENT = false;
-
 	/**
 	 * will be executed at the start of the application.
 	 */
@@ -47,11 +42,12 @@ public class FrontendEntryPoint implements EntryPoint {
 		// TODO: alle callbacks die am anfang etwas laden muessen, als
 		// parallelcallback in die batch..
 		ParallelCallback<ExtensionContainer> loadExtensions = Extensions.getLoadingCallback();
+		ParallelCallback<HashMap<String, String>> loadSystemDetails = SystemDetails.getLoadingCallback();
 
-		loadingBatch = new CallbackBatch(loadExtensions) {
+		loadingBatch = new CallbackBatch(loadExtensions, loadSystemDetails) {
 			@Override
 			protected void onSuccess() {
-				System.out.println();
+				System.out.println("loading finished...");
 			}
 
 			@Override
@@ -61,8 +57,7 @@ public class FrontendEntryPoint implements EntryPoint {
 		};
 
 		RPC.getExtensionRPC().getExtensions(loadExtensions);
-
-		startup();
+		RPC.getSystemDetailsRPC().getMetaDatabaseDetails(loadSystemDetails);
 	}
 
 	private void loadFirstStep() {
@@ -79,8 +74,6 @@ public class FrontendEntryPoint implements EntryPoint {
 	}
 
 	private void loadSecondStep() {
-		SystemDetails.load();
-
 		changeDatabase();
 	}
 
@@ -98,8 +91,6 @@ public class FrontendEntryPoint implements EntryPoint {
 
 		RootLayoutPanel rootLayoutPanel = RootLayoutPanel.get();
 		rootLayoutPanel.add(MainLayoutPanel.get());
-
-		// ServerPush.start();
 	}
 
 	/**
@@ -122,45 +113,12 @@ public class FrontendEntryPoint implements EntryPoint {
 	}
 
 	/**
-	 * Returns the main-layout-panel. If it doesn't exists, it will be created.
-	 * 
-	 * @param createNew
-	 *            should it be recreated
-	 * @return the main layout panel
-	 */
-	// public MainLayoutPanel getMainLayoutPanel(boolean createNew) {
-	// if (mainLayoutPanel == null || createNew) {
-	// mainLayoutPanel = new MainLayoutPanel(this);
-	// }
-	// return mainLayoutPanel;
-	// }
-
-	/**
 	 * returns the database instance of the current connection/session.
 	 * 
 	 * @return database instance
 	 */
 	public DatabaseInstance getConnectedDatabase() {
 		return connectedDatabase;
-	}
-
-	/**
-	 * calls the startup procedure on the server.
-	 */
-	private void startup() {
-		StartupServiceAsync startup = GWT.create(StartupService.class);
-
-		startup.start(new AsyncCallback<Boolean>() {
-			@Override
-			public void onSuccess(Boolean result) {
-				GWT.log("startup passed");
-			}
-
-			@Override
-			public void onFailure(Throwable caught) {
-				Message.error("Error at startup");
-			}
-		});
 	}
 
 	/**

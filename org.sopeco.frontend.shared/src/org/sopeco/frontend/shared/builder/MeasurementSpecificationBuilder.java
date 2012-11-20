@@ -19,7 +19,6 @@ public class MeasurementSpecificationBuilder {
 	private static final Logger LOGGER = Logger.getLogger(MeasurementSpecificationBuilder.class.getName());
 	private MeasurementSpecification specification;
 
-	// private ScenarioDefinitionBuilder scenarioBuilder;
 
 	public MeasurementSpecificationBuilder(ScenarioDefinitionBuilder sBuilder) {
 		this(sBuilder, "MeasurementSpecification");

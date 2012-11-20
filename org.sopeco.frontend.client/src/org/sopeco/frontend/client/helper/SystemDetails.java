@@ -2,11 +2,7 @@ package org.sopeco.frontend.client.helper;
 
 import java.util.HashMap;
 
-import org.sopeco.frontend.client.layout.popups.Loader;
-import org.sopeco.frontend.client.layout.popups.Message;
-import org.sopeco.frontend.client.rpc.RPC;
-
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.sopeco.frontend.client.helper.callback.ParallelCallback;
 
 /**
  * 
@@ -15,7 +11,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  */
 public final class SystemDetails {
 
-	// MetaDatabaseDetails
 	private static boolean metaDatabaseDetailsAvailable = false;
 
 	private static String metaHost;
@@ -24,38 +19,16 @@ public final class SystemDetails {
 	private SystemDetails() {
 	}
 
-	/**
-	 * 
-	 */
-	public static void load() {
-		loadMetaDatabaseDetails();
-	}
-
-	/**
-	 * 
-	 */
-	private static void loadMetaDatabaseDetails() {
-		if (!metaDatabaseDetailsAvailable) {
-			Loader.showLoader();
-
-			RPC.getSystemDetailsRPC().getMetaDatabaseDetails(new AsyncCallback<HashMap<String, String>>() {
-				@Override
-				public void onSuccess(HashMap<String, String> result) {
-					metaHost = result.get("host");
-					metaPort = result.get("port");
-
-					Loader.hideLoader();
-				}
-
-				@Override
-				public void onFailure(Throwable caught) {
-					Loader.hideLoader();
-
-					Message.error("Can't load system details!");
-				}
-			});
-		}
-		metaDatabaseDetailsAvailable = true;
+	public static ParallelCallback<HashMap<String, String>> getLoadingCallback() {
+		return new ParallelCallback<HashMap<String, String>>() {
+			@Override
+			public void onSuccess(HashMap<String, String> result) {
+				metaHost = result.get("host");
+				metaPort = result.get("port");
+				metaDatabaseDetailsAvailable = true;
+				super.onSuccess(result);
+			}
+		};
 	}
 
 	/**

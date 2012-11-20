@@ -23,16 +23,6 @@
 	</servlet-mapping>
 
 	<servlet>
-		<servlet-name>startupService</servlet-name>
-		<servlet-class>org.sopeco.frontend.server.rpc.StartupServiceImpl
-		</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>startupService</servlet-name>
-		<url-pattern>/sopeco_frontend/startupService</url-pattern>
-	</servlet-mapping>
-
-	<servlet>
 		<servlet-name>systemDetailsRPC</servlet-name>
 		<servlet-class>org.sopeco.frontend.server.rpc.SystemDetailsRPCImpl
 		</servlet-class>

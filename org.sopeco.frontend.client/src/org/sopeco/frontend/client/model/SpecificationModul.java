@@ -40,6 +40,10 @@ public class SpecificationModul {
 		};
 	}
 
+	public MeasurementSpecification getWorkingSpecification() {
+		return manager.getBuilder().getMeasurementSpecification(workingSpecification);
+	}
+
 	/**
 	 * Changing the current working specification.
 	 */

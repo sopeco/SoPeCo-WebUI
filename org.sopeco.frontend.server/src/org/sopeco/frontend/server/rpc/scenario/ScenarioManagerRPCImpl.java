@@ -89,7 +89,22 @@ public class ScenarioManagerRPCImpl extends SuperRemoteServlet implements Scenar
 
 		dbCon.store(emptyScenario);
 
-		switchScenario(scenarioName);		
+		switchScenario(scenarioName);
+		return true;
+	}
+
+	@Override
+	public boolean addScenario(ScenarioDefinition scenario) {
+		IPersistenceProvider dbCon = getUser().getCurrentPersistenceProvider();
+
+		if (dbCon == null) {
+			LOGGER.warn("No database connection found.");
+			return false;
+		}
+
+		dbCon.store(scenario);
+
+		switchScenario(scenario.getScenarioName());
 		return true;
 	}
 

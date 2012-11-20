@@ -13,6 +13,7 @@ import org.sopeco.frontend.client.layout.center.CenterType;
 import org.sopeco.frontend.client.layout.popups.TextInput;
 import org.sopeco.frontend.client.layout.popups.TextInput.Icon;
 import org.sopeco.frontend.client.layout.popups.TextInputOkHandler;
+import org.sopeco.frontend.client.model.Manager;
 import org.sopeco.frontend.client.model.ScenarioManager;
 import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
 import org.sopeco.persistence.entities.definition.MeasurementSpecification;
@@ -76,6 +77,7 @@ public class NavigationController implements ClickHandler {
 		if (source.getType() == CenterType.Experiment) {
 			String experimentName = ((NavigationSubItem) source).getExperimentName();
 			MainLayoutPanel.get().getViewSwitch().switchToExperiment(experimentName);
+			Manager.get().setSelectedExperiment(experimentName);
 		} else {
 			MainLayoutPanel.get().getViewSwitch().switchTo(source.getType());
 		}

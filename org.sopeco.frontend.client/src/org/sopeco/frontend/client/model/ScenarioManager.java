@@ -9,8 +9,8 @@ import org.sopeco.frontend.client.event.ScenarioLoadedEvent;
 import org.sopeco.frontend.client.event.SpecificationChangedEvent;
 import org.sopeco.frontend.client.event.handler.ScenarioChangedEventHandler;
 import org.sopeco.frontend.client.helper.INotifyHandler;
-import org.sopeco.frontend.client.helper.SimpleNotify;
 import org.sopeco.frontend.client.helper.INotifyHandler.Result;
+import org.sopeco.frontend.client.helper.SimpleNotify;
 import org.sopeco.frontend.client.layout.MainLayoutPanel;
 import org.sopeco.frontend.client.layout.center.CenterType;
 import org.sopeco.frontend.client.layout.center.specification.SpecificationController;
@@ -19,6 +19,7 @@ import org.sopeco.frontend.client.rpc.RPC;
 import org.sopeco.frontend.shared.builder.MeasurementSpecificationBuilder;
 import org.sopeco.frontend.shared.builder.ScenarioDefinitionBuilder;
 import org.sopeco.frontend.shared.helper.Helper;
+import org.sopeco.frontend.shared.helper.UiLog;
 import org.sopeco.frontend.shared.helper.Utilities;
 import org.sopeco.persistence.entities.definition.ConstantValueAssignment;
 import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
@@ -204,7 +205,7 @@ public final class ScenarioManager {
 	 * Loading the scenario definition of the current selected scenario from the
 	 * server and stored it at the client.
 	 */
-	private void loadCurrentScenarioFromServer() {
+	public void loadCurrentScenarioFromServer() {
 		RPC.getScenarioManager().getCurrentScenarioDefinition(new AsyncCallback<ScenarioDefinition>() {
 			@Override
 			public void onFailure(Throwable caught) {
@@ -477,5 +478,29 @@ public final class ScenarioManager {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * 
+	 */
+	public void cloneCurrentScenario(final String targetName) {
+		ScenarioDefinition clone = Duplicator.cloneScenario(builder.getBuiltScenario());
+		clone.setScenarioName(Utilities.cleanString(targetName));
+		RPC.getScenarioManager().addScenario(clone, new AsyncCallback<Boolean>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				UiLog.error(caught.getLocalizedMessage());
+				Message.error(caught.getMessage());
+			}
+
+			@Override
+			public void onSuccess(Boolean result) {
+				Manager.get().getAccountDetails().addScenarioDetails(Utilities.cleanString(targetName));
+				Manager.get().getAccountDetails().setSelectedScenario(Utilities.cleanString(targetName));
+				Manager.get().storeAccountDetails();
+
+				MainLayoutPanel.get().getNorthPanel().updateScenarioListAndSwitch(Utilities.cleanString(targetName));
+			}
+		});
 	}
 }

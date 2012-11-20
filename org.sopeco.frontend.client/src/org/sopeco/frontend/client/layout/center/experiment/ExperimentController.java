@@ -2,7 +2,6 @@ package org.sopeco.frontend.client.layout.center.experiment;
 
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import org.sopeco.frontend.client.R;
 import org.sopeco.frontend.client.event.EventControl;
@@ -13,9 +12,12 @@ import org.sopeco.frontend.client.layout.center.ICenterController;
 import org.sopeco.frontend.client.layout.center.experiment.assignment.AssignmentController;
 import org.sopeco.frontend.client.layout.center.experiment.assignment.AssignmentController.Type;
 import org.sopeco.frontend.client.layout.popups.Confirmation;
+import org.sopeco.frontend.client.layout.popups.TextInput;
+import org.sopeco.frontend.client.layout.popups.TextInputOkHandler;
 import org.sopeco.frontend.client.model.ScenarioManager;
 import org.sopeco.frontend.client.resources.FrontEndResources;
 import org.sopeco.frontend.shared.helper.ExtensionTypes;
+import org.sopeco.frontend.shared.helper.UiLog;
 import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -31,7 +33,8 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class ExperimentController implements ICenterController, ValueChangeHandler<String>, ClickHandler {
 
-	private static final Logger LOGGER = Logger.getLogger(ExperimentController.class.getName());
+	// private static final Logger LOGGER =
+	// Logger.getLogger(ExperimentController.class.getName());
 	private static final String ENV_TREE_CSS_CLASS = "expEnvTree";
 
 	private ExperimentView view;
@@ -73,8 +76,9 @@ public class ExperimentController implements ICenterController, ValueChangeHandl
 
 		explorationExtController.setExtensionType(ExtensionTypes.EXPLORATIONSTRATEGY);
 
-		getSettingsView().getTextboxName().addValueChangeHandler(this);
-		getSettingsView().getRemoveExperimentImage().addClickHandler(this);
+		getSettingsView().getImgRemove().addClickHandler(this);
+		getSettingsView().getImgRename().addClickHandler(this);
+		getSettingsView().getImgDuplicate().addClickHandler(this);
 
 		registerEventHandlers();
 	}
@@ -86,7 +90,6 @@ public class ExperimentController implements ICenterController, ValueChangeHandl
 	 */
 	public ExperimentSettingsView getSettingsView() {
 		return tabPanel.getSettingsView();
-		// return view.getSettingsView();
 	}
 
 	/**
@@ -96,11 +99,38 @@ public class ExperimentController implements ICenterController, ValueChangeHandl
 	 */
 	public ExperimentParameterView getParameterView() {
 		return tabPanel.getParameterView();
-		// return view.getParameterView();
 	}
 
 	@Override
 	public void onClick(ClickEvent event) {
+		if (event.getSource() == getSettingsView().getImgRemove()) {
+			removeExperiment();
+		} else if (event.getSource() == getSettingsView().getImgRename()) {
+			showRenameDialog();
+		} else if (event.getSource() == getSettingsView().getImgDuplicate()) {
+			duplicateExperiment();
+		}
+	}
+
+	private void duplicateExperiment() {
+		TextInput.doInput(R.get("cloneExperiment"), R.get("nameForExperimentClone") + ":", new TextInputOkHandler() {
+			@Override
+			public void onInput(ClickEvent event, String input) {
+				ScenarioManager.get().experiment().cloneCurrentExperiment(input);
+			}
+		});
+	}
+
+	private void showRenameDialog() {
+		TextInput.doInput(R.get("renameExperiment"), R.get("newExpName") + ":", new TextInputOkHandler() {
+			@Override
+			public void onInput(ClickEvent event, String input) {
+				ScenarioManager.get().experiment().renameCurrentExpSeries(input);
+			}
+		});
+	}
+
+	private void removeExperiment() {
 		Confirmation.confirm(R.get("removeTihsExp"), new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -120,9 +150,9 @@ public class ExperimentController implements ICenterController, ValueChangeHandl
 
 	@Override
 	public void onValueChange(ValueChangeEvent<String> event) {
-		if (event.getSource() == getSettingsView().getTextboxName()) {
-			ScenarioManager.get().experiment().renameCurrentExpSeries(event.getValue());
-		}
+		// if (event.getSource() == getSettingsView().getTextboxName()) {
+		// ScenarioManager.get().experiment().renameCurrentExpSeries(event.getValue());
+		// }
 	}
 
 	/**
@@ -143,12 +173,12 @@ public class ExperimentController implements ICenterController, ValueChangeHandl
 	 * @param experimentName
 	 */
 	private void experimentChange(final String experimentName) {
-		LOGGER.info("Change experiment to '" + experimentName + "'");
+		UiLog.debug("Change experiment to '" + experimentName + "'");
 
 		ExperimentSeriesDefinition experiment = ScenarioManager.get().getBuilder().getSpecificationBuilder()
 				.getExperimentSeries(experimentName);
 
-		getSettingsView().getTextboxName().setText(experiment.getName());
+		getSettingsView().setExperimentName(experiment.getName());
 
 		String explorationName = ScenarioManager.get().experiment().getCurrentExperiment().getExplorationStrategy()
 				.getName();

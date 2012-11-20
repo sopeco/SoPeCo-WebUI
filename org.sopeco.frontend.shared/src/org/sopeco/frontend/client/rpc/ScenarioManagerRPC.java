@@ -25,6 +25,8 @@ public interface ScenarioManagerRPC extends RemoteService {
 
 	boolean addScenario(String scenarioName, String specificationName, ExperimentSeriesDefinition experiment);
 
+	boolean addScenario(ScenarioDefinition scenario);
+
 	boolean removeScenario(String name);
 
 	boolean switchScenario(String name);
