@@ -15,6 +15,7 @@ import org.sopeco.frontend.client.layout.popups.Message;
 import org.sopeco.frontend.client.model.ScenarioManager;
 import org.sopeco.frontend.client.resources.FrontEndResources;
 import org.sopeco.frontend.client.rpc.RPC;
+import org.sopeco.frontend.client.widget.grid.EditGridItem;
 import org.sopeco.frontend.shared.helper.Metering;
 import org.sopeco.persistence.entities.definition.ConstantValueAssignment;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
@@ -88,8 +89,10 @@ public class SpecificationController implements ICenterController {
 	 * Add new assignment.
 	 */
 	private void addNewAssignment(ParameterDefinition parameter, String path) {
-		AssignmentItem assignment = new AssignmentItem(path, parameter.getName(), parameter.getType());
-		assignmentController.addAssignment(assignment);
+		// EditGridItem item = new EditGridItem(path, parameter.getName(),
+		// parameter.getType());
+		EditGridItem item = new EditGridItem(parameter, "");
+		assignmentController.addAssignment(item);
 		assignmentController.refreshUI();
 		ScenarioManager.get().getBuilder().getSpecificationBuilder().addInitAssignment(parameter, "");
 	}
@@ -98,8 +101,10 @@ public class SpecificationController implements ICenterController {
 	 * removes initial assignment.
 	 */
 	private void removeAssignment(ParameterDefinition parameter, String path) {
-		AssignmentItem assignment = new AssignmentItem(path, parameter.getName(), "");
-		assignmentController.removeAssignment(assignment);
+		// EditGridItem assignment = new EditGridItem(path, parameter.getName(),
+		// "");
+		EditGridItem item = new EditGridItem(parameter, "");
+		assignmentController.removeAssignment(item);
 		assignmentController.refreshUI();
 		ScenarioManager.get().getBuilder().getSpecificationBuilder().removeInitialAssignment(parameter);
 	}
@@ -185,8 +190,7 @@ public class SpecificationController implements ICenterController {
 
 			String path = cva.getParameter().getNamespace().getFullName();
 
-			AssignmentItem item = new AssignmentItem(path, cva.getParameter().getName(), cva.getParameter().getType(),
-					cva.getValue());
+			EditGridItem item = new EditGridItem(cva);
 			assignmentController.addAssignment(item);
 		}
 

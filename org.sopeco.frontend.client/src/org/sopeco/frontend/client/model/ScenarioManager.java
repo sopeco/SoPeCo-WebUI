@@ -29,6 +29,7 @@ import org.sopeco.persistence.entities.definition.ParameterNamespace;
 import org.sopeco.persistence.entities.definition.ParameterRole;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -223,7 +224,7 @@ public final class ScenarioManager {
 				// builder.getBuiltScenario().getMeasurementSpecifications().get(0).getName();
 				String newSpecification = builder.getBuiltScenario().getMeasurementSpecifications().get(0).getName();
 				specification().setWorkingSpecification(newSpecification);
-
+				
 				EventControl.get().fireEvent(new ScenarioLoadedEvent());
 				EventControl.get().fireEvent(new SpecificationChangedEvent(newSpecification));
 				EventControl.get().fireEvent(new EnvironmentDefinitionChangedEvent());

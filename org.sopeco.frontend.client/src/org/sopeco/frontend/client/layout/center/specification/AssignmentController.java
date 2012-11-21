@@ -4,6 +4,8 @@ import java.util.TreeMap;
 
 import org.sopeco.frontend.client.layout.popups.Message;
 import org.sopeco.frontend.client.model.ScenarioManager;
+import org.sopeco.frontend.client.widget.grid.EditGridHandler;
+import org.sopeco.frontend.client.widget.grid.EditGridItem;
 import org.sopeco.frontend.shared.helper.Metering;
 
 import com.google.gwt.user.client.ui.Widget;
@@ -13,17 +15,17 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Marius Oehler
  * 
  */
-class AssignmentController {
+class AssignmentController implements EditGridHandler {
 
 	private AssignmentView view;
-	private TreeMap<String, AssignmentItem> assignmentMap;
+	private TreeMap<String, EditGridItem> assignmentMap;
 
 	public AssignmentController() {
 		init();
 	}
 
 	private void init() {
-		assignmentMap = new TreeMap<String, AssignmentItem>();
+		assignmentMap = new TreeMap<String, EditGridItem>();
 		view = new AssignmentView();
 	}
 
@@ -46,9 +48,9 @@ class AssignmentController {
 	 * 
 	 * @param assignment
 	 */
-	public void addAssignment(AssignmentItem assignment) {
-		assignment.setController(this);
-		assignmentMap.put(assignment.getFullName(), assignment);
+	public void addAssignment(EditGridItem item) {
+		item.setHandler(this);
+		assignmentMap.put(item.getFullName(), item);
 	}
 
 	/**
@@ -57,10 +59,10 @@ class AssignmentController {
 	public void refreshUI() {
 		double metering = Metering.start();
 
-		view.getItemTable().resizeRows(assignmentMap.size() + 1);
+		view.getGrid().resizeRows(assignmentMap.size() + 1);
 		int c = 1;
 		for (String key : assignmentMap.keySet()) {
-			view.setAssignmentItem(c++, assignmentMap.get(key));
+			view.getGrid().addItem(c++, assignmentMap.get(key));
 		}
 		view.getHtmlNoAssignments().setVisible(c == 1);
 
@@ -70,7 +72,7 @@ class AssignmentController {
 	/**
 	 * Removes the assignment which have the same FullName.
 	 */
-	public void removeAssignment(AssignmentItem assignment) {
+	public void removeAssignment(EditGridItem assignment) {
 		assignmentMap.remove(assignment.getFullName());
 	}
 
@@ -83,7 +85,16 @@ class AssignmentController {
 		}
 	}
 
-	public void onValueChange(AssignmentItem item) {
+//	public void onValueChange(AssignmentItem item) {
+//		if (ScenarioManager.get().changeInitAssignmentValue(item.getNamespace(), item.getName(), item.getValue())) {
+//			ScenarioManager.get().storeScenario();
+//		} else {
+//			Message.error("error");
+//		}
+//	}
+	
+	@Override
+	public void onValueChange(EditGridItem item) {
 		if (ScenarioManager.get().changeInitAssignmentValue(item.getNamespace(), item.getName(), item.getValue())) {
 			ScenarioManager.get().storeScenario();
 		} else {

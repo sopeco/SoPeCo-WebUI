@@ -46,14 +46,14 @@ public class AssignmentController {
 		assignmentType = type;
 
 		String headline = "";
-		switch (type) {
-		case PREPERATION:
-			headline = R.get("prepAssignments");
-			break;
-		default:
-		case EXPERIMENT:
+//		switch (type) {
+//		case PREPERATION:
+//			headline = R.get("prepAssignments");
+//			break;
+//		default:
+//		case EXPERIMENT:
 			headline = R.get("expAssignsments");
-		}
+//		}
 
 		assignmentItems = new ArrayList<AssignmentItem>();
 		namespacePropertyAligner = new ElementPropertyAligner();
@@ -61,32 +61,12 @@ public class AssignmentController {
 
 		view = new AssignmentView(headline);
 
-		if (type == Type.PREPERATION) {
-			registerHandlerPreperation();
-		} else if (type == Type.EXPERIMENT) {
+//		if (type == Type.PREPERATION) {
+//			registerHandlerPreperation();
+//		} else if (type == Type.EXPERIMENT) {
 			registerHandlerExperiment();
-		}
+//		}
 		registerHandlerCommon();
-	}
-
-	/**
-	 * 
-	 */
-	private void registerHandlerPreperation() {
-		EventControl.get().addHandler(PreperationAssignmentRenderedEvent.TYPE,
-				new PreperationAssignmentRenderedEventHandler() {
-					@Override
-					public void onAssignmentLoadedEvent(PreperationAssignmentRenderedEvent event) {
-						assignmentRenderedEvent();
-					}
-				});
-		EventControl.get().addHandler(PreperationAssignmentsChangedEvent.TYPE,
-				new PreperationAssignmentsChangedEventHandler() {
-					@Override
-					public void onAssignmentChangedEvent(PreperationAssignmentsChangedEvent event) {
-						assignmentsChanged();
-					}
-				});
 	}
 
 	/**
@@ -164,17 +144,17 @@ public class AssignmentController {
 
 		Map<String, ParameterValueAssignment> sortedMap = new TreeMap<String, ParameterValueAssignment>();
 
-		if (assignmentType == Type.EXPERIMENT) {
+//		if (assignmentType == Type.EXPERIMENT) {
 			for (ParameterValueAssignment pva : ScenarioManager.get().experiment().getCurrentExperiment()
 					.getExperimentAssignments()) {
 				sortedMap.put(pva.getParameter().getFullName(), pva);
 			}
-		} else {
-			for (ConstantValueAssignment cva : ScenarioManager.get().experiment().getCurrentExperiment()
-					.getPreperationAssignments()) {
-				sortedMap.put(cva.getParameter().getFullName(), cva);
-			}
-		}
+//		} else {
+//			for (ConstantValueAssignment cva : ScenarioManager.get().experiment().getCurrentExperiment()
+//					.getPreperationAssignments()) {
+//				sortedMap.put(cva.getParameter().getFullName(), cva);
+//			}
+//		}
 
 		Iterator<ParameterValueAssignment> iter = sortedMap.values().iterator();
 		while (iter.hasNext()) {
@@ -195,11 +175,11 @@ public class AssignmentController {
 	public void addAssignment(ParameterValueAssignment valueAssignment, boolean onLoadEvent) {
 		AssignmentItem item;
 
-		if (assignmentType == Type.EXPERIMENT) {
+//		if (assignmentType == Type.EXPERIMENT) {
 			item = new ExperimentAssignmentItem(valueAssignment);
-		} else {
-			item = new PreperationAssignmentItem(valueAssignment);
-		}
+//		} else {
+//			item = new PreperationAssignmentItem(valueAssignment);
+//		}
 
 		item.setFireOnLoadEvent(onLoadEvent);
 		

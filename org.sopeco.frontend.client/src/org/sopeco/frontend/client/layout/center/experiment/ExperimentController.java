@@ -12,6 +12,7 @@ import org.sopeco.frontend.client.layout.MainLayoutPanel;
 import org.sopeco.frontend.client.layout.center.ICenterController;
 import org.sopeco.frontend.client.layout.center.experiment.assignment.AssignmentController;
 import org.sopeco.frontend.client.layout.center.experiment.assignment.AssignmentController.Type;
+import org.sopeco.frontend.client.layout.center.experiment.assignment.PreparationController;
 import org.sopeco.frontend.client.layout.popups.Confirmation;
 import org.sopeco.frontend.client.layout.popups.TextInput;
 import org.sopeco.frontend.client.layout.popups.TextInputOkHandler;
@@ -20,10 +21,14 @@ import org.sopeco.frontend.client.resources.FrontEndResources;
 import org.sopeco.frontend.shared.helper.ExtensionTypes;
 import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
 
+import com.google.gwt.dom.client.Style.Overflow;
+import com.google.gwt.dom.client.Style.Position;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -43,6 +48,7 @@ public class ExperimentController implements ICenterController, ValueChangeHandl
 	private ExperimentEnvironmentTree expEnvironmentTree;
 
 	private AssignmentController assignmentPreperation, assignmentExperiment;
+	private PreparationController preparationController;
 
 	private ExperimentTabPanel tabPanel;
 
@@ -53,8 +59,10 @@ public class ExperimentController implements ICenterController, ValueChangeHandl
 
 		explorationExtController = new ExperimentExtensionController(this, ExperimentView.EXP_SETTINGS_PANEL_WIDTH);
 
-		assignmentPreperation = new AssignmentController(Type.PREPERATION);
+		// assignmentPreperation = new AssignmentController(Type.PREPERATION);
 		assignmentExperiment = new AssignmentController(Type.EXPERIMENT);
+
+		preparationController = new PreparationController();
 
 		terminationController = new TerminationController();
 
@@ -64,8 +72,24 @@ public class ExperimentController implements ICenterController, ValueChangeHandl
 
 		getSettingsView().addExtensionView(explorationExtController.getView());
 		getSettingsView().add(terminationController.getView());
-		getParameterView().add(assignmentPreperation.getView());
-		getParameterView().add(assignmentExperiment.getView());
+		// getParameterView().add(assignmentPreperation.getView());
+		// getParameterView().add(preparationController.getView());
+
+		// TODO clean this up
+		FlowPanel rightCol = new FlowPanel();
+		rightCol.getElement().getStyle().setPosition(Position.ABSOLUTE);
+		rightCol.getElement().getStyle().setTop(0, Unit.PX);
+		rightCol.getElement().getStyle().setLeft(400, Unit.PX);
+		rightCol.getElement().getStyle().setRight(0, Unit.PX);
+		rightCol.getElement().getStyle().setBottom(0, Unit.PX);
+		rightCol.getElement().getStyle().setOverflow(Overflow.AUTO);
+
+		rightCol.add(preparationController.getView());
+		rightCol.add(assignmentExperiment.getView());
+		getParameterView().add(rightCol);
+
+		
+		
 		// getParameterView().add(treeController.getView());
 		getParameterView().add(expEnvironmentTree.getView());
 

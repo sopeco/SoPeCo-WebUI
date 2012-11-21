@@ -63,6 +63,7 @@ public abstract class EnvironmentTree implements ClickHandler, ValueChangeHandle
 		EventControl.get().addHandler(SpecificationChangedEvent.TYPE, new SpecificationChangedEventHandler() {
 			@Override
 			public void onSpecificationChangedEvent(SpecificationChangedEvent event) {
+				GWT.log("event - SpecificationChangedEvent");
 				generateTree();
 			}
 		});
@@ -71,6 +72,7 @@ public abstract class EnvironmentTree implements ClickHandler, ValueChangeHandle
 				new EnvironmentDefinitionChangedEventHandler() {
 					@Override
 					public void onEnvironmentChangedEvent(EnvironmentDefinitionChangedEvent event) {
+						GWT.log("event - EnvironmentDefinitionChangedEvent");
 						generateTree();
 					}
 				});

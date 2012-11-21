@@ -1,10 +1,10 @@
 package org.sopeco.frontend.client.layout.center.specification;
 
 import org.sopeco.frontend.client.R;
+import org.sopeco.frontend.client.widget.grid.EditGrid;
 import org.sopeco.gwt.widgets.Headline;
 
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.ScrollPanel;
 
@@ -21,7 +21,7 @@ class AssignmentView extends FlowPanel {
 	private static final String ASSIGNMENT_ITEM_TABLE_HEADER_CSS = "headerRow";
 	private static final String NO_ASSIGNMENTS_CSS_CLASS = "noAssignments";
 
-	private Grid itemTable;
+	private EditGrid grid;
 	private HTML htmlNoAssignments;
 
 	public AssignmentView() {
@@ -36,24 +36,14 @@ class AssignmentView extends FlowPanel {
 
 		Headline headline = new Headline(R.get("initAssignments"));
 
-		itemTable = new Grid(1, 4);
-		itemTable.addStyleName(ASSIGNMENT_ITEM_TABLE);
-		itemTable.getRowFormatter().addStyleName(0, ASSIGNMENT_ITEM_TABLE_HEADER_CSS);
-		itemTable.getColumnFormatter().setWidth(0, "1px");
-		itemTable.getColumnFormatter().setWidth(1, "1px");
-		itemTable.getColumnFormatter().setWidth(2, "1px");
-
-		itemTable.setText(0, 0, R.get("Namespace"));
-		itemTable.setText(0, 1, R.get("Parameter"));
-		itemTable.setText(0, 2, R.get("Type"));
-		itemTable.setText(0, 3, R.get("Value"));
+		grid = new EditGrid(1, 4);
 
 		htmlNoAssignments = new HTML(R.get("noInitAssignments"));
 		htmlNoAssignments.setVisible(false);
 		htmlNoAssignments.addStyleName(NO_ASSIGNMENTS_CSS_CLASS);
 
 		add(headline);
-		add(itemTable);
+		add(grid);
 		add(htmlNoAssignments);
 	}
 
@@ -63,19 +53,8 @@ class AssignmentView extends FlowPanel {
 		return panel;
 	}
 
-	public Grid getItemTable() {
-		return itemTable;
-	}
-
-	public void setAssignmentItem(int row, AssignmentItem item) {
-		itemTable.setText(row, 0, item.getNamespace());
-		itemTable.setText(row, 1, item.getName());
-		itemTable.setText(row, 2, item.getType());
-		itemTable.setWidget(row, 3, item.getEditText());
-
-		itemTable.getCellFormatter().addStyleName(row, 0, "namespace");
-		itemTable.getCellFormatter().addStyleName(row, 1, "name");
-		itemTable.getCellFormatter().addStyleName(row, 2, "type");
+	public EditGrid getGrid() {
+		return grid;
 	}
 
 	public HTML getHtmlNoAssignments() {

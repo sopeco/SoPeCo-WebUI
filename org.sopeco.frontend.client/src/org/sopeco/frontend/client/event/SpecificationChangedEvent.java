@@ -2,6 +2,7 @@ package org.sopeco.frontend.client.event;
 
 import org.sopeco.frontend.client.event.handler.SpecificationChangedEventHandler;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.GwtEvent;
 
 /**

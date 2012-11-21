@@ -1,6 +1,8 @@
 package org.sopeco.frontend.client.widget.grid;
 
 import org.sopeco.gwt.widgets.EditableText;
+import org.sopeco.persistence.entities.definition.ConstantValueAssignment;
+import org.sopeco.persistence.entities.definition.ParameterDefinition;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -8,28 +10,42 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 /**
  * 
  * @author Marius Oehler
- *
+ * 
  */
 public class EditGridItem implements ValueChangeHandler<String> {
 
-	private String namespace, name, type, value;
+	private String /* namespace, name, type, */value;
 	private EditableText editText;
+	private ParameterDefinition parameter;
 
 	private EditGridHandler handler;
 
-	public EditGridItem(String pNamespace, String pName, String pType) {
-		this(pNamespace, pName, pType, "");
+	public EditGridItem(ConstantValueAssignment cva) {
+		this(cva.getParameter(), cva.getValue());
 	}
 
-	public EditGridItem(String pNamespace, String pName, String pType, String pValue) {
-		this.namespace = pNamespace;
-		this.name = pName;
-		this.type = pType;
+	public EditGridItem(ParameterDefinition pParameter, String pValue) {
+		parameter = pParameter;
 		this.value = pValue;
 
 		editText = new EditableText(value);
 		editText.addValueChangeHandler(this);
 	}
+
+	// public EditGridItem(String pNamespace, String pName, String pType) {
+	// this(pNamespace, pName, pType, "");
+	// }
+	//
+	// public EditGridItem(String pNamespace, String pName, String pType, String
+	// pValue) {
+	// this.namespace = pNamespace;
+	// this.name = pName;
+	// this.type = pType;
+	// this.value = pValue;
+	//
+	// editText = new EditableText(value);
+	// editText.addValueChangeHandler(this);
+	// }
 
 	/**
 	 * Returns the namespace path.
@@ -37,16 +53,7 @@ public class EditGridItem implements ValueChangeHandler<String> {
 	 * @return
 	 */
 	public String getNamespace() {
-		return namespace;
-	}
-
-	/**
-	 * Sets the namespace attribute.
-	 * 
-	 * @param newNamespace
-	 */
-	public void setNamespace(String newNamespace) {
-		namespace = newNamespace;
+		return parameter.getNamespace().getFullName();
 	}
 
 	/**
@@ -55,18 +62,18 @@ public class EditGridItem implements ValueChangeHandler<String> {
 	 * @return
 	 */
 	public String getFullName() {
-		return namespace + name;
+		return parameter.getFullName();
 	}
 
 	/**
 	 * @return the name
 	 */
 	public String getName() {
-		return name;
+		return parameter.getName();
 	}
 
 	public String getType() {
-		return type;
+		return parameter.getType();
 	}
 
 	public String getValue() {
@@ -85,8 +92,13 @@ public class EditGridItem implements ValueChangeHandler<String> {
 		}
 	}
 
-	public void setController(EditGridHandler pHandler) {
+	public void setHandler(EditGridHandler pHandler) {
 		this.handler = pHandler;
 	}
 
+	public ParameterDefinition getParameter() {
+		return parameter;
+	}
+
+	
 }

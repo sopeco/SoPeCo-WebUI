@@ -48,21 +48,21 @@
 	bottom: 0;
 }
 
-#assignmentListPanel .namespace {
+.assignmentItemTable .namespace {
 	
 }
 
-#assignmentListPanel .name {
+.assignmentItemTable .name {
 	font-weight: bold;
 	color: #333;
 }
 
-#assignmentListPanel .type {
+.assignmentItemTable .type {
 	color: #AAA;
 	white-space: nowrap;
 }
 
-#assignmentListPanel .noAssignments {
+.noAssignments {
 	color: #AAA;
 	padding: 4px;
 }
