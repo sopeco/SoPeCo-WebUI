@@ -2,6 +2,7 @@ package org.sopeco.frontend.client.layout.center.experiment;
 
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import org.sopeco.frontend.client.R;
 import org.sopeco.frontend.client.event.EventControl;
@@ -17,7 +18,6 @@ import org.sopeco.frontend.client.layout.popups.TextInputOkHandler;
 import org.sopeco.frontend.client.model.ScenarioManager;
 import org.sopeco.frontend.client.resources.FrontEndResources;
 import org.sopeco.frontend.shared.helper.ExtensionTypes;
-import org.sopeco.frontend.shared.helper.UiLog;
 import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -33,8 +33,7 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class ExperimentController implements ICenterController, ValueChangeHandler<String>, ClickHandler {
 
-	// private static final Logger LOGGER =
-	// Logger.getLogger(ExperimentController.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(ExperimentController.class.getName());
 	private static final String ENV_TREE_CSS_CLASS = "expEnvTree";
 
 	private ExperimentView view;
@@ -173,7 +172,7 @@ public class ExperimentController implements ICenterController, ValueChangeHandl
 	 * @param experimentName
 	 */
 	private void experimentChange(final String experimentName) {
-		UiLog.debug("Change experiment to '" + experimentName + "'");
+		LOGGER.fine("Change experiment to '" + experimentName + "'");
 
 		ExperimentSeriesDefinition experiment = ScenarioManager.get().getBuilder().getSpecificationBuilder()
 				.getExperimentSeries(experimentName);

@@ -29,8 +29,6 @@ public final class Metering {
 
 		String text = "Metering: " + stackTop.getClassName() + " " + stackTop.getMethodName() + "() : " + duration
 				+ "ms";
-		// System.err.println("Metering: " + stackTop.getClassName() + " "
-		// + stackTop.getMethodName() + "() : " + duration + "ms");
-		UiLog.debug(text);
+		System.err.println("Metering: " + stackTop.getClassName() + " " + stackTop.getMethodName() + "() : " + duration + "ms");
 	}
 }

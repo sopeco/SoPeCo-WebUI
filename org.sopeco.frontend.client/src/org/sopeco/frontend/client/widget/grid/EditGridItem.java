@@ -1,4 +1,4 @@
-package org.sopeco.frontend.client.layout.center.specification;
+package org.sopeco.frontend.client.widget.grid;
 
 import org.sopeco.gwt.widgets.EditableText;
 
@@ -8,20 +8,20 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 /**
  * 
  * @author Marius Oehler
- * 
+ *
  */
-class AssignmentItem implements ValueChangeHandler<String> {
+public class EditGridItem implements ValueChangeHandler<String> {
 
 	private String namespace, name, type, value;
 	private EditableText editText;
 
-	private AssignmentController controller;
+	private EditGridHandler handler;
 
-	public AssignmentItem(String pNamespace, String pName, String pType) {
+	public EditGridItem(String pNamespace, String pName, String pType) {
 		this(pNamespace, pName, pType, "");
 	}
 
-	public AssignmentItem(String pNamespace, String pName, String pType, String pValue) {
+	public EditGridItem(String pNamespace, String pName, String pType, String pValue) {
 		this.namespace = pNamespace;
 		this.name = pName;
 		this.type = pType;
@@ -80,13 +80,13 @@ class AssignmentItem implements ValueChangeHandler<String> {
 	@Override
 	public void onValueChange(ValueChangeEvent<String> event) {
 		value = event.getValue();
-		if (controller != null) {
-			controller.onValueChange(this);
+		if (handler != null) {
+			handler.onValueChange(this);
 		}
 	}
 
-	public void setController(AssignmentController pController) {
-		this.controller = pController;
+	public void setController(EditGridHandler pHandler) {
+		this.handler = pHandler;
 	}
 
 }

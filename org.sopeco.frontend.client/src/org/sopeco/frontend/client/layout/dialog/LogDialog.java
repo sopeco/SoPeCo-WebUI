@@ -1,12 +1,12 @@
 package org.sopeco.frontend.client.layout.dialog;
 
-import java.util.ListIterator;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
 
 import org.sopeco.frontend.client.R;
-import org.sopeco.frontend.shared.helper.LogNotifier;
-import org.sopeco.frontend.shared.helper.UiLog;
-import org.sopeco.frontend.shared.helper.UiLog.Level;
-import org.sopeco.frontend.shared.helper.UiLog.LogMessage;
 import org.sopeco.gwt.widgets.Headline;
 import org.sopeco.gwt.widgets.Preformatted;
 
@@ -31,40 +31,18 @@ public final class LogDialog {
 	private static Preformatted preLog;
 	private static final int WIDTH = 500, HEIGHT = 300;
 	private static ScrollPanel scrollPanel;
-	private static LogNotifier notifier;
+
+	private static List<LogRecord> logList;
+	private static StringBuffer logText = new StringBuffer();
 
 	private LogDialog() {
-	}
-
-	/**
-	 *  
-	 */
-	private static void updateLogArea() {
-		// ListIterator<LogMessage> iter =
-		// UiLog.getLogList().listIterator(UiLog.getLogList().size());
-		ListIterator<LogMessage> iter = UiLog.getLogList().listIterator(0);
-
-		StringBuffer buffer = new StringBuffer();
-		while (iter.hasNext()) {
-			LogMessage log = iter.next();
-			if (log.getLevel().ordinal() >= Level.WARNING.ordinal()) {
-				buffer.append("<span style=\"color:red;\">");
-			}
-			buffer.append(log.getMessage());
-			if (log.getLevel().ordinal() >= Level.WARNING.ordinal()) {
-				buffer.append("</span>");
-			}
-			buffer.append("\n");
-		}
-
-		preLog.setHTML(buffer.toString());
-		scrollPanel.scrollToBottom();
 	}
 
 	/**
 	 * 
 	 */
 	private static void initDialog() {
+		logList = new LinkedList<LogRecord>();
 		preLog = new Preformatted();
 
 		scrollPanel = new ScrollPanel();
@@ -98,17 +76,33 @@ public final class LogDialog {
 		dialog = new DialogBox(false, false);
 		dialog.setGlassEnabled(false);
 		dialog.add(panel);
+	}
 
-		notifier = new LogNotifier() {
-			@Override
-			public void onNewLog(LogMessage log) {
-				if (dialog.isShowing()) {
-					updateLogArea();
-				}
-			}
-		};
+	public static void pushLogRecord(LogRecord log) {
+		if (dialog == null) {
+			initDialog();
+		}
+		logList.add(log);
 
-		UiLog.addLogNotifier(notifier);
+		if (log.getLevel().equals(Level.WARNING) || log.getLevel().equals(Level.SEVERE)) {
+			logText.append("<span style=\"color:red;\">");
+		}
+
+		logText.append(log.getLevel());
+		logText.append(" ");
+		logText.append(new Date(log.getMillis()).toString());
+		logText.append(" - ");
+		logText.append(log.getLoggerName());
+		logText.append("\n\t");
+		logText.append(log.getMessage());
+		logText.append("\n");
+
+		if (log.getLevel().equals(Level.INFO) || log.getLevel().equals(Level.SEVERE)) {
+			logText.append("</span>");
+		}
+
+		preLog.setHTML(logText.toString());
+		scrollPanel.scrollToBottom();
 	}
 
 	/**
@@ -119,7 +113,7 @@ public final class LogDialog {
 			initDialog();
 		}
 
-		updateLogArea();
+		// updateLogArea();
 		dialog.center();
 		scrollPanel.scrollToBottom();
 	}

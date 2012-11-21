@@ -1,6 +1,8 @@
 package org.sopeco.frontend.client;
 
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.sopeco.frontend.client.extensions.Extensions;
 import org.sopeco.frontend.client.helper.SystemDetails;
@@ -9,6 +11,7 @@ import org.sopeco.frontend.client.helper.callback.ParallelCallback;
 import org.sopeco.frontend.client.layout.LoginBox;
 import org.sopeco.frontend.client.layout.MainLayoutPanel;
 import org.sopeco.frontend.client.layout.popups.Message;
+import org.sopeco.frontend.client.log.LogHandler;
 import org.sopeco.frontend.client.model.ScenarioManager;
 import org.sopeco.frontend.client.rpc.RPC;
 import org.sopeco.frontend.shared.helper.ExtensionContainer;
@@ -26,6 +29,8 @@ import com.google.gwt.user.client.ui.RootLayoutPanel;
  */
 public class FrontendEntryPoint implements EntryPoint {
 
+	private static final Logger LOGGER = Logger.getLogger("");
+
 	private DatabaseInstance connectedDatabase;
 	private static FrontendEntryPoint frontend;
 
@@ -37,10 +42,12 @@ public class FrontendEntryPoint implements EntryPoint {
 	public void onModuleLoad() {
 		frontend = this;
 
+		LOGGER.setLevel(Level.FINE);
+		LOGGER.addHandler(LogHandler.get());
+
 		loadFirstStep();
 
-		// TODO: alle callbacks die am anfang etwas laden muessen, als
-		// parallelcallback in die batch..
+		//
 		ParallelCallback<ExtensionContainer> loadExtensions = Extensions.getLoadingCallback();
 		ParallelCallback<HashMap<String, String>> loadSystemDetails = SystemDetails.getLoadingCallback();
 

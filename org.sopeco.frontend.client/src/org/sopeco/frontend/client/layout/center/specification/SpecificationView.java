@@ -1,15 +1,12 @@
 package org.sopeco.frontend.client.layout.center.specification;
 
 import org.sopeco.frontend.client.R;
-import org.sopeco.frontend.client.widget.ClickPanel;
 
-import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -24,13 +21,9 @@ public class SpecificationView extends FlowPanel {
 	private HorizontalPanel topPanel;
 	private TextBox textboxName;
 	private Widget selectionView, assignmentListPanel;
-	// private ClickPanel toggleSelectionPanel;
 	private int selectionPanelPosition;
 	private boolean selectionPanelIsVisible;
 
-	// private static final String TOGGLE_SELECTION_PANEL_ID =
-	// "toggleSelectionPanel";
-	// private static final int TOGGLE_SELECTION_PANEL_BORDER_WIDTH = 3;
 	private static final String TOP_PANEL_ID = "specificationTopPanel";
 	private static final String TOP_PANEL_HEIGHT = "60";
 	private static final int SELECTION_PANEL_WIDTH = 400;
@@ -72,36 +65,14 @@ public class SpecificationView extends FlowPanel {
 		assignmentListPanel.getElement().getStyle().setPosition(Position.ABSOLUTE);
 		assignmentListPanel.getElement().getStyle().setTop(Double.parseDouble(TOP_PANEL_HEIGHT), Unit.PX);
 
-		// toggleSelectionPanel = new ClickPanel();
-		// toggleSelectionPanel.getElement().setId(TOGGLE_SELECTION_PANEL_ID);
-		// toggleSelectionPanel.getElement().setInnerHTML(R.get("showEnvParameter"));
-
-
 		setSelectionPanelPosition(1);
 		selectionPanelIsVisible = false;
 
 		// ADDING
 		add(topPanel);
 		add(assignmentListPanel);
-		// add(toggleSelectionPanel);
 		add(selectionView);
 	}
-
-	// /**
-	// * Set the text of the toggleSelectionElement.
-	// *
-	// * @param html
-	// */
-	// public void setToggleSelectionElementText(String html) {
-	// toggleSelectionPanel.getElement().setInnerHTML(html);
-	// }
-	//
-	// /**
-	// * Returns the toggleSelectionElement.
-	// */
-	// public ClickPanel getToggleSelectionElement() {
-	// return toggleSelectionPanel;
-	// }
 
 	/**
 	 * Set the position of the selection panel and of all related elements like
@@ -112,17 +83,10 @@ public class SpecificationView extends FlowPanel {
 	 */
 	private void setSelectionPanelPosition(float x) {
 		x = Math.max(0F, Math.min(1F, x));
-		selectionPanelPosition = (int) (SELECTION_PANEL_WIDTH * x) /*- TOGGLE_SELECTION_PANEL_BORDER_WIDTH*/;
+		selectionPanelPosition = (int) (SELECTION_PANEL_WIDTH * x);
 
 		selectionView.getElement().getStyle().setLeft(selectionPanelPosition - SELECTION_PANEL_WIDTH, Unit.PX);
 		assignmentListPanel.getElement().getStyle().setLeft(selectionPanelPosition, Unit.PX);
-
-		int togglePosition = selectionPanelPosition/*
-													 * +
-													 * TOGGLE_SELECTION_PANEL_BORDER_WIDTH
-													 */- 1;
-		// toggleSelectionPanel.getElement().getStyle().setLeft(Math.max(0,
-		// togglePosition), Unit.PX);
 	}
 
 	/**

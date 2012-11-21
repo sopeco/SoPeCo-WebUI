@@ -2,13 +2,10 @@ package org.sopeco.frontend.client.layout.center.specification;
 
 import java.util.TreeMap;
 
-import org.sopeco.frontend.client.helper.ElementPropertyAligner;
 import org.sopeco.frontend.client.layout.popups.Message;
 import org.sopeco.frontend.client.model.ScenarioManager;
 import org.sopeco.frontend.shared.helper.Metering;
 
-import com.google.gwt.event.dom.client.BlurEvent;
-import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -16,27 +13,22 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Marius Oehler
  * 
  */
-class AssignmentController implements BlurHandler {
+class AssignmentController {
 
 	private AssignmentView view;
 	private TreeMap<String, AssignmentItem> assignmentMap;
 
-	private ElementPropertyAligner namespaceAligner, typeAligner;
-
 	public AssignmentController() {
-		reset();
+		init();
 	}
 
-	/**
-	 * Creates a new assignmentView.
-	 */
-	public void reset() {
+	private void init() {
 		assignmentMap = new TreeMap<String, AssignmentItem>();
-
-		namespaceAligner = new ElementPropertyAligner();
-		typeAligner = new ElementPropertyAligner();
-
 		view = new AssignmentView();
+	}
+
+	public void reset() {
+
 	}
 
 	/**
@@ -55,68 +47,47 @@ class AssignmentController implements BlurHandler {
 	 * @param assignment
 	 */
 	public void addAssignment(AssignmentItem assignment) {
-		double metering = Metering.start();
-
+		assignment.setController(this);
 		assignmentMap.put(assignment.getFullName(), assignment);
-
-		assignment.addBlurHandler(this);
-
-		namespaceAligner.addElement(assignment.getHtmlNamespace().getElement());
-		typeAligner.addElement(assignment.getHtmlType().getElement(), assignment.getHtmlNamespace().getElement(),
-				assignment.getHtmlName().getElement());
-
-		assignment.setNamespaceAligner(namespaceAligner);
-		assignment.setTypeAligner(typeAligner);
-
-		Metering.stop(metering);
 	}
 
 	/**
 	 * Clear the assignmentListPanel and adds all assignments again.
 	 */
-	public void refreshAssignmentListPanel() {
+	public void refreshUI() {
 		double metering = Metering.start();
 
-		clearAssignments(false);
+		view.getItemTable().resizeRows(assignmentMap.size() + 1);
+		int c = 1;
 		for (String key : assignmentMap.keySet()) {
-			view.addAssignmentitem(assignmentMap.get(key));
+			view.setAssignmentItem(c++, assignmentMap.get(key));
 		}
+		view.getHtmlNoAssignments().setVisible(c == 1);
 
 		Metering.stop(metering);
 	}
 
 	/**
-	 * Remmoves the assignment which have the same namespace + name.
+	 * Removes the assignment which have the same FullName.
 	 */
 	public void removeAssignment(AssignmentItem assignment) {
-		if (assignmentMap.containsKey(assignment.getFullName())) {
-			view.removeAssignmentitem(assignmentMap.get(assignment.getFullName()));
-			assignmentMap.remove(assignment.getFullName());
-		}
-	}
-
-	@Override
-	public void onBlur(BlurEvent event) {
-		AssignmentItem item = (AssignmentItem) event.getSource();
-
-		if (ScenarioManager.get().changeInitAssignmentValue(item.getNamespace(), item.getName(),
-				item.getTextboxValue().getText())) {
-			ScenarioManager.get().storeScenario();
-		} else {
-			Message.error("error");
-		}
+		assignmentMap.remove(assignment.getFullName());
 	}
 
 	/**
 	 * Removes all existing assignments.
 	 */
 	public void clearAssignments(boolean clearMap) {
-		for (AssignmentItem item : assignmentMap.values()) {
-			item.removeFromParent();
-		}
-
 		if (clearMap) {
 			assignmentMap.clear();
+		}
+	}
+
+	public void onValueChange(AssignmentItem item) {
+		if (ScenarioManager.get().changeInitAssignmentValue(item.getNamespace(), item.getName(), item.getValue())) {
+			ScenarioManager.get().storeScenario();
+		} else {
+			Message.error("error");
 		}
 	}
 }

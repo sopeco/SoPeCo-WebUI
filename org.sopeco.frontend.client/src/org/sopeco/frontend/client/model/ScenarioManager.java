@@ -19,7 +19,6 @@ import org.sopeco.frontend.client.rpc.RPC;
 import org.sopeco.frontend.shared.builder.MeasurementSpecificationBuilder;
 import org.sopeco.frontend.shared.builder.ScenarioDefinitionBuilder;
 import org.sopeco.frontend.shared.helper.Helper;
-import org.sopeco.frontend.shared.helper.UiLog;
 import org.sopeco.frontend.shared.helper.Utilities;
 import org.sopeco.persistence.entities.definition.ConstantValueAssignment;
 import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
@@ -489,8 +488,7 @@ public final class ScenarioManager {
 		RPC.getScenarioManager().addScenario(clone, new AsyncCallback<Boolean>() {
 			@Override
 			public void onFailure(Throwable caught) {
-				UiLog.error(caught.getLocalizedMessage());
-				Message.error(caught.getMessage());
+				LOGGER.severe(caught.getMessage());
 			}
 
 			@Override

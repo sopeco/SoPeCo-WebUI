@@ -1,9 +1,10 @@
 package org.sopeco.frontend.client.layout;
 
+import java.util.logging.Logger;
+
 import org.sopeco.frontend.client.event.EventControl;
 import org.sopeco.frontend.client.event.ExperimentChangedEvent;
 import org.sopeco.frontend.client.layout.center.CenterType;
-import org.sopeco.frontend.shared.helper.UiLog;
 
 /**
  * 
@@ -11,7 +12,7 @@ import org.sopeco.frontend.shared.helper.UiLog;
  * 
  */
 public class ViewSwitch {
-	// private static final Logger LOGGER = Logger.getLogger("view");
+	private static final Logger LOGGER = Logger.getLogger("view");
 
 	/**
 	 * Switch the view to the panel with the given panel-type.
@@ -20,7 +21,7 @@ public class ViewSwitch {
 	 *            type of the panel which will be shown.
 	 */
 	public void switchTo(CenterType type) {
-		UiLog.debug("Switch view to type: " + type.toString());
+		LOGGER.fine("Switch view to type: " + type.toString());
 		// LOGGER.info("Switch view to type: " + type.toString());
 
 		MainLayoutPanel.get().updateCenterPanel(type);
@@ -35,7 +36,7 @@ public class ViewSwitch {
 	 *            name of the experiment
 	 */
 	public void switchToExperiment(String experimentName) {
-		UiLog.debug("Switch view to experiment: " + experimentName);
+		LOGGER.fine("Switch view to experiment: " + experimentName);
 
 		if (MainLayoutPanel.get().getCenterType() != CenterType.Experiment) {
 			switchTo(CenterType.Experiment);

@@ -22,20 +22,6 @@
 	margin: 0 0 0 1em;
 }
 
-#assignmentListPanel .assignmentItem .namespace {
-	
-}
-
-#assignmentListPanel .assignmentItem .name {
-	font-weight: bold;
-	color: #333;
-}
-
-#assignmentListPanel .assignmentItem .type {
-	color: #AAA;
-	white-space: nowrap;
-}
-
 #selectionViewPanel h3 {
 	margin-bottom: 8px;
 }
@@ -60,4 +46,57 @@
 .specificationTreeView {
 	border-right: 1px solid #CCC;
 	bottom: 0;
+}
+
+#assignmentListPanel .namespace {
+	
+}
+
+#assignmentListPanel .name {
+	font-weight: bold;
+	color: #333;
+}
+
+#assignmentListPanel .type {
+	color: #AAA;
+	white-space: nowrap;
+}
+
+#assignmentListPanel .noAssignments {
+	color: #AAA;
+	padding: 4px;
+}
+
+.assignmentItemTable {
+	width: 100%;
+	border-spacing: 0;
+}
+
+.assignmentItemTable td {
+	padding: 3px 30px 3px 1px;
+}
+
+.assignmentItemTable tr>td:last-child {
+	padding-right: 0;
+}
+
+.assignmentItemTable tr:hover {
+	background-color: #EFF3F7;
+}
+
+.assignmentItemTable .headerRow,.assignmentItemTable .headerRow:hover {
+	background-color: #F7F7F7;
+}
+
+.assignmentItemTable .headerRow td {
+	border-bottom: 1px solid #CCC;
+	font-weight: bold;
+	color: #333;
+}
+
+.assignmentItemTable .sopeco-EditableText .gwt-HTML {
+	border: 1px dotted #D1E1F0;
+	background-color: #F2F7FF;
+	padding: 1px 2px;
+	white-space: nowrap;
 }

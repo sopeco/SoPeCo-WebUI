@@ -3,6 +3,7 @@ package org.sopeco.frontend.client.model;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import org.sopeco.frontend.client.event.EventControl;
 import org.sopeco.frontend.client.event.ExperimentAssignmentsChangedEvent;
@@ -15,7 +16,6 @@ import org.sopeco.frontend.client.layout.center.experiment.ExperimentController;
 import org.sopeco.frontend.shared.builder.SimpleEntityFactory;
 import org.sopeco.frontend.shared.helper.ExtensionTypes;
 import org.sopeco.frontend.shared.helper.Metering;
-import org.sopeco.frontend.shared.helper.UiLog;
 import org.sopeco.persistence.entities.definition.ConstantValueAssignment;
 import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
 import org.sopeco.persistence.entities.definition.ExperimentTerminationCondition;
@@ -41,8 +41,7 @@ public class ExperimentModul {
 
 	private static final String DEFAULT_EXPLORATION = "Full Exploration Strategy";
 
-	// private static final Logger LOGGER =
-	// Logger.getLogger(ExperimentModul.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(ExperimentModul.class.getName());
 	private ScenarioManager manager;
 
 	private String currentExperiment;
@@ -109,7 +108,7 @@ public class ExperimentModul {
 	 *            the currentExperiment to set
 	 */
 	public void setCurrentExperiment(String newExperiment) {
-		UiLog.debug("Switch experiment to '" + newExperiment + "'");
+		LOGGER.fine("Switch experiment to '" + newExperiment + "'");
 		currentExperiment = newExperiment;
 	}
 
@@ -120,7 +119,7 @@ public class ExperimentModul {
 	 */
 	public void saveExperimentConfig(ExperimentController experimentController) {
 		double metering = Metering.start();
-		UiLog.debug("Save experiment configuration");
+		LOGGER.fine("Save experiment configuration");
 
 		ExperimentSeriesDefinition experiment = getCurrentExperiment();
 		if (experiment == null) {
@@ -178,7 +177,7 @@ public class ExperimentModul {
 	 * @param name
 	 */
 	public void createExperimentSeries(String name) {
-		UiLog.debug("Create experiment '" + name + "'");
+		LOGGER.fine("Create experiment '" + name + "'");
 
 		ExperimentSeriesDefinition experiment = getNewExperimentSeries(name);
 
@@ -196,7 +195,7 @@ public class ExperimentModul {
 	 * @param name
 	 */
 	public ExperimentSeriesDefinition getNewExperimentSeries(String name) {
-		UiLog.debug("Create (and return) experiment '" + name + "'");
+		LOGGER.fine("Create (and return) experiment '" + name + "'");
 
 		ExperimentSeriesDefinition experiment = SimpleEntityFactory.createExperimentSeriesDefinition(name);
 
@@ -387,7 +386,7 @@ public class ExperimentModul {
 	 */
 	public void addTermination(ExperimentTerminationCondition termination) {
 		if (isSetTermination(termination)) {
-			UiLog.debug("is already as t-condition set => updating config.");
+			LOGGER.fine("is already as t-condition set => updating config.");
 			getTerminationCondition(termination).getParametersValues().clear();
 			getTerminationCondition(termination).getParametersValues().putAll(termination.getParametersValues());
 		} else {
@@ -439,7 +438,7 @@ public class ExperimentModul {
 		if (search != null) {
 			getCurrentExperiment().getTerminationConditions().remove(search);
 		} else {
-			UiLog.debug("is not set as t-condition set.");
+			LOGGER.fine("is not set as t-condition set.");
 		}
 
 		manager.storeScenario();

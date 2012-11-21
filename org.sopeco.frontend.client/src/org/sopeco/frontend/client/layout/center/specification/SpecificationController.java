@@ -90,7 +90,7 @@ public class SpecificationController implements ICenterController {
 	private void addNewAssignment(ParameterDefinition parameter, String path) {
 		AssignmentItem assignment = new AssignmentItem(path, parameter.getName(), parameter.getType());
 		assignmentController.addAssignment(assignment);
-		assignmentController.refreshAssignmentListPanel();
+		assignmentController.refreshUI();
 		ScenarioManager.get().getBuilder().getSpecificationBuilder().addInitAssignment(parameter, "");
 	}
 
@@ -100,7 +100,7 @@ public class SpecificationController implements ICenterController {
 	private void removeAssignment(ParameterDefinition parameter, String path) {
 		AssignmentItem assignment = new AssignmentItem(path, parameter.getName(), "");
 		assignmentController.removeAssignment(assignment);
-
+		assignmentController.refreshUI();
 		ScenarioManager.get().getBuilder().getSpecificationBuilder().removeInitialAssignment(parameter);
 	}
 
@@ -119,7 +119,6 @@ public class SpecificationController implements ICenterController {
 		// }
 		envTree = new SpecificationEnvironmentTree();
 		envTree.getView().addStyleName(TREE_CSS_CLASS);
-		
 
 		view = new SpecificationView(assignmentController.getAssignmentView(), envTree.getView());
 
@@ -191,7 +190,7 @@ public class SpecificationController implements ICenterController {
 			assignmentController.addAssignment(item);
 		}
 
-		assignmentController.refreshAssignmentListPanel();
+		assignmentController.refreshUI();
 		Metering.stop(metering);
 	}
 

@@ -1,10 +1,11 @@
 package org.sopeco.frontend.client.layout.center.specification;
 
 import org.sopeco.frontend.client.R;
+import org.sopeco.gwt.widgets.Headline;
 
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.ScrollPanel;
 
 /**
@@ -16,10 +17,12 @@ class AssignmentView extends FlowPanel {
 
 	private static final String ASSIGNMENT_PANEL_ID = "assignmentListPanel";
 	private static final String ASSIGNMENT_PANEL_WRAPPER_ID = "assignmentListPanelWrapper";
-
 	private static final String ASSIGNMENT_ITEM_TABLE = "assignmentItemTable";
+	private static final String ASSIGNMENT_ITEM_TABLE_HEADER_CSS = "headerRow";
+	private static final String NO_ASSIGNMENTS_CSS_CLASS = "noAssignments";
 
-	private FlowPanel assignmentItemTable;
+	private Grid itemTable;
+	private HTML htmlNoAssignments;
 
 	public AssignmentView() {
 		initialize();
@@ -31,15 +34,27 @@ class AssignmentView extends FlowPanel {
 	private void initialize() {
 		getElement().setId(ASSIGNMENT_PANEL_ID);
 
-		Element headline = DOM.createElement("h3");
-		headline.setInnerHTML(R.get("initAssignments"));
+		Headline headline = new Headline(R.get("initAssignments"));
 
-		getElement().appendChild(headline);
+		itemTable = new Grid(1, 4);
+		itemTable.addStyleName(ASSIGNMENT_ITEM_TABLE);
+		itemTable.getRowFormatter().addStyleName(0, ASSIGNMENT_ITEM_TABLE_HEADER_CSS);
+		itemTable.getColumnFormatter().setWidth(0, "1px");
+		itemTable.getColumnFormatter().setWidth(1, "1px");
+		itemTable.getColumnFormatter().setWidth(2, "1px");
 
-		assignmentItemTable = new FlowPanel();
-		assignmentItemTable.getElement().setId(ASSIGNMENT_ITEM_TABLE);
+		itemTable.setText(0, 0, R.get("Namespace"));
+		itemTable.setText(0, 1, R.get("Parameter"));
+		itemTable.setText(0, 2, R.get("Type"));
+		itemTable.setText(0, 3, R.get("Value"));
 
-		add(assignmentItemTable);
+		htmlNoAssignments = new HTML(R.get("noInitAssignments"));
+		htmlNoAssignments.setVisible(false);
+		htmlNoAssignments.addStyleName(NO_ASSIGNMENTS_CSS_CLASS);
+
+		add(headline);
+		add(itemTable);
+		add(htmlNoAssignments);
 	}
 
 	public ScrollPanel getInScrollPanel() {
@@ -48,11 +63,23 @@ class AssignmentView extends FlowPanel {
 		return panel;
 	}
 
-	public void addAssignmentitem(AssignmentItem item) {
-		add(item);
+	public Grid getItemTable() {
+		return itemTable;
 	}
 
-	public void removeAssignmentitem(AssignmentItem item) {
-		remove(item);
+	public void setAssignmentItem(int row, AssignmentItem item) {
+		itemTable.setText(row, 0, item.getNamespace());
+		itemTable.setText(row, 1, item.getName());
+		itemTable.setText(row, 2, item.getType());
+		itemTable.setWidget(row, 3, item.getEditText());
+
+		itemTable.getCellFormatter().addStyleName(row, 0, "namespace");
+		itemTable.getCellFormatter().addStyleName(row, 1, "name");
+		itemTable.getCellFormatter().addStyleName(row, 2, "type");
 	}
+
+	public HTML getHtmlNoAssignments() {
+		return htmlNoAssignments;
+	}
+
 }
