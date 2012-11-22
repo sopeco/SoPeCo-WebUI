@@ -5,6 +5,8 @@ import java.util.logging.Logger;
 import org.sopeco.frontend.client.event.EventControl;
 import org.sopeco.frontend.client.event.SpecificationChangedEvent;
 import org.sopeco.frontend.client.event.handler.SpecificationChangedEventHandler;
+import org.sopeco.frontend.client.layout.MainLayoutPanel;
+import org.sopeco.frontend.client.layout.center.CenterType;
 import org.sopeco.frontend.shared.builder.MeasurementSpecificationBuilder;
 import org.sopeco.persistence.entities.definition.MeasurementSpecification;
 
@@ -72,4 +74,22 @@ public class SpecificationModul {
 		this.workingSpecification = newSpecification;
 	}
 
+	public boolean removeWorkingSpecification() {
+		int msSize = manager.getCurrentScenarioDefinition().getMeasurementSpecifications().size();
+
+		if (msSize <= 1) {
+			return false;
+		}
+
+		manager.getCurrentScenarioDefinition().getMeasurementSpecifications().remove(getWorkingSpecification());
+
+		manager.storeScenario();
+		String name = manager.getCurrentScenarioDefinition().getMeasurementSpecifications().get(0).getName();
+
+		changeWorkingSpecification(name);
+		MainLayoutPanel.get().getNavigationController().updateSpecifications();
+		EventControl.get().fireEvent(new SpecificationChangedEvent(name));
+
+		return true;
+	}
 }

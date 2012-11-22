@@ -36,7 +36,8 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Marius Oehler
  * 
  */
-public class ExperimentController implements ICenterController, ValueChangeHandler<String>, ClickHandler {
+public class ExperimentController implements ICenterController, ValueChangeHandler<String>, ClickHandler,
+		ExperimentChangedEventHandler {
 
 	private static final Logger LOGGER = Logger.getLogger(ExperimentController.class.getName());
 	private static final String ENV_TREE_CSS_CLASS = "expEnvTree";
@@ -88,8 +89,6 @@ public class ExperimentController implements ICenterController, ValueChangeHandl
 		rightCol.add(assignmentExperiment.getView());
 		getParameterView().add(rightCol);
 
-		
-		
 		// getParameterView().add(treeController.getView());
 		getParameterView().add(expEnvironmentTree.getView());
 
@@ -182,12 +181,7 @@ public class ExperimentController implements ICenterController, ValueChangeHandl
 	 * Register handlers to catch events.
 	 */
 	private void registerEventHandlers() {
-		EventControl.get().addHandler(ExperimentChangedEvent.TYPE, new ExperimentChangedEventHandler() {
-			@Override
-			public void onExperimentChanged(ExperimentChangedEvent event) {
-				experimentChange(event.getExperimentName());
-			}
-		});
+		EventControl.get().addHandler(ExperimentChangedEvent.TYPE, this);
 	}
 
 	/**
@@ -195,11 +189,13 @@ public class ExperimentController implements ICenterController, ValueChangeHandl
 	 * 
 	 * @param experimentName
 	 */
-	private void experimentChange(final String experimentName) {
-		LOGGER.fine("Change experiment to '" + experimentName + "'");
+
+	@Override
+	public void onExperimentChanged(ExperimentChangedEvent event) {
+		LOGGER.fine("Change experiment to '" + event.getExperimentName() + "'");
 
 		ExperimentSeriesDefinition experiment = ScenarioManager.get().getBuilder().getSpecificationBuilder()
-				.getExperimentSeries(experimentName);
+				.getExperimentSeries(event.getExperimentName());
 
 		getSettingsView().setExperimentName(experiment.getName());
 
@@ -214,7 +210,6 @@ public class ExperimentController implements ICenterController, ValueChangeHandl
 
 	@Override
 	public Widget getView() {
-		// return view;
 		return tabPanel;
 	}
 

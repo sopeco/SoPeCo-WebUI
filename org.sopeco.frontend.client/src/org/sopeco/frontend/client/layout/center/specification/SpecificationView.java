@@ -1,14 +1,14 @@
 package org.sopeco.frontend.client.layout.center.specification;
 
 import org.sopeco.frontend.client.R;
+import org.sopeco.gwt.widgets.ClearDiv;
 
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HasVerticalAlignment;
-import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -18,14 +18,20 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class SpecificationView extends FlowPanel {
 
-	private HorizontalPanel topPanel;
-	private TextBox textboxName;
+	private static final String IMAGE_DUPLICATE = "images/duplicate.png";
+	private static final String IMAGE_RENAME = "images/rename.png";
+	private static final String IMAGE_REMOVE = "images/trash.png";
+
+
 	private Widget selectionView, assignmentListPanel;
 	private int selectionPanelPosition;
 	private boolean selectionPanelIsVisible;
 
-	private static final String TOP_PANEL_ID = "specificationTopPanel";
-	private static final String TOP_PANEL_HEIGHT = "60";
+	private HTML htmlName;
+	private FlowPanel topWrapper;
+	private Image imgDuplicate, imgRemove, imgRename;
+
+	private static final String TOP_PANEL_HEIGHT = "39";
 	private static final int SELECTION_PANEL_WIDTH = 400;
 
 	public SpecificationView(Widget assignmentView, Widget sView) {
@@ -42,21 +48,30 @@ public class SpecificationView extends FlowPanel {
 		setWidth("100%");
 		setHeight("100%");
 
-		topPanel = new HorizontalPanel();
-		topPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
-		topPanel.getElement().setId(TOP_PANEL_ID);
-		topPanel.setHeight(TOP_PANEL_HEIGHT + "px");
+		htmlName = new HTML("1234567890");
+		htmlName.addStyleName("name");
+
+		imgRename = new Image(IMAGE_RENAME);
+		imgDuplicate = new Image(IMAGE_DUPLICATE);
+		imgRemove = new Image(IMAGE_REMOVE);
+
+		imgRename.setTitle(R.get("Rename"));
+		imgDuplicate.setTitle(R.get("Duplicate"));
+		imgRemove.setTitle(R.get("Remove"));
+
+		topWrapper = new FlowPanel();
+		topWrapper.add(new HTML("Name:"));
+		topWrapper.add(htmlName);
+		topWrapper.add(imgRename);
+		//topWrapper.add(imgDuplicate);
+		topWrapper.add(imgRemove);
+		topWrapper.add(new ClearDiv());
+		topWrapper.addStyleName("expTopWrapper");
+
 
 		Label nameLabel = new Label(R.get("name") + ":");
 		nameLabel.addStyleName("spc-Label");
 
-		textboxName = new TextBox();
-		textboxName.addStyleName("spc-TextBox");
-
-		topPanel.add(nameLabel);
-		topPanel.add(textboxName);
-
-		topPanel.setCellWidth(nameLabel, "100");
 
 		selectionView.getElement().getStyle().setTop(Double.parseDouble(TOP_PANEL_HEIGHT), Unit.PX);
 		selectionView.getElement().getStyle().setPosition(Position.ABSOLUTE);
@@ -69,7 +84,7 @@ public class SpecificationView extends FlowPanel {
 		selectionPanelIsVisible = false;
 
 		// ADDING
-		add(topPanel);
+		add(topWrapper);
 		add(assignmentListPanel);
 		add(selectionView);
 	}
@@ -116,7 +131,20 @@ public class SpecificationView extends FlowPanel {
 	 * @param name
 	 */
 	public void setSpecificationName(String name) {
-		textboxName.setText(name);
+		// textboxName.setText(name);
+		htmlName.setText(name);
+	}
+
+	public Image getImgDuplicate() {
+		return imgDuplicate;
+	}
+
+	public Image getImgRemove() {
+		return imgRemove;
+	}
+
+	public Image getImgRename() {
+		return imgRename;
 	}
 
 	/**
@@ -124,7 +152,8 @@ public class SpecificationView extends FlowPanel {
 	 * 
 	 * @return
 	 */
-	public TextBox getSpecificationNameTextbox() {
-		return textboxName;
-	}
+	// public TextBox getSpecificationNameTextbox() {
+	// return textboxName;
+	// }
+
 }

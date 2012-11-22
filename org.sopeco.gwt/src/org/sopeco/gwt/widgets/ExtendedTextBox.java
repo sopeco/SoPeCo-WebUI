@@ -8,6 +8,11 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.TextBox;
 
+/**
+ * 
+ * @author Marius Oehler
+ * 
+ */
 public class ExtendedTextBox extends TextBox implements FocusHandler,
 		BlurHandler, ValueChangeHandler<String> {
 

@@ -5,6 +5,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.sopeco.frontend.client.extensions.Extensions;
+import org.sopeco.frontend.client.helper.SimpleNotify;
 import org.sopeco.frontend.client.helper.SystemDetails;
 import org.sopeco.frontend.client.helper.callback.CallbackBatch;
 import org.sopeco.frontend.client.helper.callback.ParallelCallback;
@@ -18,7 +19,6 @@ import org.sopeco.frontend.shared.helper.ExtensionContainer;
 import org.sopeco.persistence.metadata.entities.DatabaseInstance;
 
 import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 
 /**
@@ -27,7 +27,7 @@ import com.google.gwt.user.client.ui.RootLayoutPanel;
  * @author Marius Oehler
  * 
  */
-public class FrontendEntryPoint implements EntryPoint {
+public class FrontendEntryPoint implements EntryPoint, SimpleNotify {
 
 	private static final Logger LOGGER = Logger.getLogger("");
 
@@ -45,9 +45,21 @@ public class FrontendEntryPoint implements EntryPoint {
 		LOGGER.setLevel(Level.FINE);
 		LOGGER.addHandler(LogHandler.get());
 
-		loadFirstStep();
+		R.loadLangFile(this);
+	}
 
-		//
+	/**
+	 * Called when the language file was loaded.
+	 */
+	@Override
+	public void call() {
+		rpcLoad();
+	}
+
+	/**
+	 * 
+	 */
+	private void rpcLoad() {
 		ParallelCallback<ExtensionContainer> loadExtensions = Extensions.getLoadingCallback();
 		ParallelCallback<HashMap<String, String>> loadSystemDetails = SystemDetails.getLoadingCallback();
 
@@ -55,6 +67,7 @@ public class FrontendEntryPoint implements EntryPoint {
 			@Override
 			protected void onSuccess() {
 				System.out.println("loading finished...");
+				changeDatabase();
 			}
 
 			@Override
@@ -65,23 +78,6 @@ public class FrontendEntryPoint implements EntryPoint {
 
 		RPC.getExtensionRPC().getExtensions(loadExtensions);
 		RPC.getSystemDetailsRPC().getMetaDatabaseDetails(loadSystemDetails);
-	}
-
-	private void loadFirstStep() {
-		Timer waitForLang = new Timer() {
-			@Override
-			public void run() {
-				if (R.loadLangFile()) {
-					loadSecondStep();
-					cancel();
-				}
-			}
-		};
-		waitForLang.scheduleRepeating(5);
-	}
-
-	private void loadSecondStep() {
-		changeDatabase();
 	}
 
 	/**
@@ -105,7 +101,6 @@ public class FrontendEntryPoint implements EntryPoint {
 	 */
 	private void clearRootLayout() {
 		RootLayoutPanel rootLayoutPanel = RootLayoutPanel.get();
-
 		rootLayoutPanel.clear();
 	}
 
@@ -114,7 +109,6 @@ public class FrontendEntryPoint implements EntryPoint {
 	 */
 	public void changeDatabase() {
 		clearRootLayout();
-
 		LoginBox box = new LoginBox(this);
 		box.center();
 	}

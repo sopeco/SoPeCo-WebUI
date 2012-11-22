@@ -14,7 +14,7 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
  */
 public class EditGridItem implements ValueChangeHandler<String> {
 
-	private String /* namespace, name, type, */value;
+	private String value;
 	private EditableText editText;
 	private ParameterDefinition parameter;
 
@@ -30,22 +30,15 @@ public class EditGridItem implements ValueChangeHandler<String> {
 
 		editText = new EditableText(value);
 		editText.addValueChangeHandler(this);
-	}
 
-	// public EditGridItem(String pNamespace, String pName, String pType) {
-	// this(pNamespace, pName, pType, "");
-	// }
-	//
-	// public EditGridItem(String pNamespace, String pName, String pType, String
-	// pValue) {
-	// this.namespace = pNamespace;
-	// this.name = pName;
-	// this.type = pType;
-	// this.value = pValue;
-	//
-	// editText = new EditableText(value);
-	// editText.addValueChangeHandler(this);
-	// }
+		if (parameter.getType().toLowerCase().equals("integer")) {
+			editText.setValidPattern(EditableText.PATTERN_INTEGER);
+		} else if (parameter.getType().toLowerCase().equals("double")) {
+			editText.setValidPattern(EditableText.PATTERN_DOUBLE);
+		} else if (parameter.getType().toLowerCase().equals("boolean")) {
+			editText.setValidPattern(EditableText.PATTERN_BOOLEAN);
+		}
+	}
 
 	/**
 	 * Returns the namespace path.
@@ -100,5 +93,4 @@ public class EditGridItem implements ValueChangeHandler<String> {
 		return parameter;
 	}
 
-	
 }

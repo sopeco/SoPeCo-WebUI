@@ -2,6 +2,8 @@ package org.sopeco.frontend.client;
 
 import java.util.HashMap;
 
+import org.sopeco.frontend.client.helper.SimpleNotify;
+
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
@@ -15,7 +17,7 @@ import com.google.gwt.http.client.Response;
  */
 public final class R {
 	private static final String DEFAULT_LANG = "rsc/lang/en.ini";
-	private static boolean loaded = false, isLoading = false;
+	private static boolean loaded = false;
 	private static final String LINESEPERATOR = "\n";
 	private static final String PAIRSEPERATOR = "=";
 
@@ -46,41 +48,19 @@ public final class R {
 	 * 
 	 * @return true if file is loaded
 	 */
-	public static boolean loadLangFile() {
-		if (isLoading) {
-			return false;
-		}
+	public static void loadLangFile(final SimpleNotify callback) {
 		if (loaded) {
-			return true;
+			return;
 		}
-
-		isLoading = true;
+		loaded = true;
 
 		try {
 			new RequestBuilder(RequestBuilder.GET, DEFAULT_LANG + "?" + Math.random()).sendRequest("",
 					new RequestCallback() {
 						@Override
 						public void onResponseReceived(Request req, Response resp) {
-							String content = resp.getText();
-
-							for (String row : content.split(LINESEPERATOR)) {
-								if (row.isEmpty()) {
-									continue;
-								}
-
-								row = row.replaceAll("[\\r]", "");
-
-								String[] pair = row.split(PAIRSEPERATOR);
-
-								if (pair == null || pair.length != 2) {
-									continue;
-								}
-
-								langMap.put(pair[0], pair[1]);
-							}
-
-							loaded = true;
-							isLoading = false;
+							buildMap(resp.getText());
+							callback.call();
 						}
 
 						@Override
@@ -91,7 +71,27 @@ public final class R {
 		} catch (RequestException e) {
 			throw new RuntimeException(e);
 		}
+	}
 
-		return false;
+	/**
+	 * 
+	 * @param propertyString
+	 */
+	private static void buildMap(String propertyString) {
+		for (String row : propertyString.split(LINESEPERATOR)) {
+			if (row.isEmpty()) {
+				continue;
+			}
+
+			row = row.replaceAll("[\\r]", "");
+
+			String[] pair = row.split(PAIRSEPERATOR);
+
+			if (pair == null || pair.length != 2) {
+				continue;
+			}
+
+			langMap.put(pair[0], pair[1]);
+		}
 	}
 }

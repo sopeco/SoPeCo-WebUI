@@ -31,7 +31,8 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
  * @author Marius Oehler
  * 
  */
-public abstract class EnvironmentTree implements ClickHandler, ValueChangeHandler<Boolean> {
+public abstract class EnvironmentTree implements ClickHandler, ValueChangeHandler<Boolean>,
+		EnvironmentDefinitionChangedEventHandler, SpecificationChangedEventHandler {
 
 	private TreeView view;
 
@@ -60,22 +61,20 @@ public abstract class EnvironmentTree implements ClickHandler, ValueChangeHandle
 
 		generateTree();
 
-		EventControl.get().addHandler(SpecificationChangedEvent.TYPE, new SpecificationChangedEventHandler() {
-			@Override
-			public void onSpecificationChangedEvent(SpecificationChangedEvent event) {
-				GWT.log("event - SpecificationChangedEvent");
-				generateTree();
-			}
-		});
+		EventControl.get().addHandler(SpecificationChangedEvent.TYPE, this);
+		EventControl.get().addHandler(EnvironmentDefinitionChangedEvent.TYPE, this);
+	}
 
-		EventControl.get().addHandler(EnvironmentDefinitionChangedEvent.TYPE,
-				new EnvironmentDefinitionChangedEventHandler() {
-					@Override
-					public void onEnvironmentChangedEvent(EnvironmentDefinitionChangedEvent event) {
-						GWT.log("event - EnvironmentDefinitionChangedEvent");
-						generateTree();
-					}
-				});
+	@Override
+	public void onSpecificationChangedEvent(SpecificationChangedEvent event) {
+		GWT.log("event - SpecificationChangedEvent");
+		generateTree();
+	}
+
+	@Override
+	public void onEnvironmentChangedEvent(EnvironmentDefinitionChangedEvent event) {
+		GWT.log("event - EnvironmentDefinitionChangedEvent");
+		generateTree();
 	}
 
 	/**

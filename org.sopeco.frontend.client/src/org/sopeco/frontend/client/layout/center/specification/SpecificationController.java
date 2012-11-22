@@ -10,8 +10,11 @@ import org.sopeco.frontend.client.event.handler.InitialAssignmentChangedEventHan
 import org.sopeco.frontend.client.event.handler.SpecificationChangedEventHandler;
 import org.sopeco.frontend.client.layout.MainLayoutPanel;
 import org.sopeco.frontend.client.layout.center.ICenterController;
+import org.sopeco.frontend.client.layout.popups.Confirmation;
 import org.sopeco.frontend.client.layout.popups.Loader;
 import org.sopeco.frontend.client.layout.popups.Message;
+import org.sopeco.frontend.client.layout.popups.TextInput;
+import org.sopeco.frontend.client.layout.popups.TextInputOkHandler;
 import org.sopeco.frontend.client.model.ScenarioManager;
 import org.sopeco.frontend.client.resources.FrontEndResources;
 import org.sopeco.frontend.client.rpc.RPC;
@@ -21,8 +24,8 @@ import org.sopeco.persistence.entities.definition.ConstantValueAssignment;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.entities.definition.ParameterNamespace;
 
-import com.google.gwt.event.dom.client.BlurEvent;
-import com.google.gwt.event.dom.client.BlurHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -31,7 +34,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Marius Oehler
  * 
  */
-public class SpecificationController implements ICenterController {
+public class SpecificationController implements ICenterController, ClickHandler {
 
 	private static final String TREE_CSS_CLASS = "specificationTreeView";
 	private SpecificationView view;
@@ -127,8 +130,11 @@ public class SpecificationController implements ICenterController {
 
 		view = new SpecificationView(assignmentController.getAssignmentView(), envTree.getView());
 
+		view.getImgRename().addClickHandler(this);
+		view.getImgRemove().addClickHandler(this);
+
 		addExistingAssignments();
-		addRenameSpecificationHandler();
+		// addRenameSpecificationHandler();
 	}
 
 	@Override
@@ -136,18 +142,34 @@ public class SpecificationController implements ICenterController {
 		return view;
 	}
 
-	/**
-	 * Adds to the textbox of the specification name a blureHandler, which
-	 * renames the selected specification on blur.
-	 */
-	private void addRenameSpecificationHandler() {
-		view.getSpecificationNameTextbox().addBlurHandler(new BlurHandler() {
-			@Override
-			public void onBlur(BlurEvent event) {
-				final String textboxName = view.getSpecificationNameTextbox().getText();
+	@Override
+	public void onClick(ClickEvent event) {
+		if (event.getSource() == view.getImgRename()) {
+			renameSpecification();
+		} else if (event.getSource() == view.getImgRemove()) {
+			removeSpecification();
+		}
+	}
 
-				if (!textboxName.equals(ScenarioManager.get().specification().getWorkingSpecificationName())) {
-					ScenarioManager.get().renameWorkingSpecification(textboxName);
+	private void renameSpecification() {
+		// TODO text
+		TextInput.doInput("", "", new TextInputOkHandler() {
+			@Override
+			public void onInput(ClickEvent event, String input) {
+				if (!input.equals(ScenarioManager.get().specification().getWorkingSpecificationName())) {
+					ScenarioManager.get().renameWorkingSpecification(input);
+				}
+			}
+		});
+	}
+
+	private void removeSpecification() {
+		// TODO text
+		Confirmation.confirm("", new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				if (!ScenarioManager.get().specification().removeWorkingSpecification()) {
+					Message.warning("There must be at least one specification available.");
 				}
 			}
 		});

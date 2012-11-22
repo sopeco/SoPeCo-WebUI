@@ -4,6 +4,7 @@ import java.util.logging.Logger;
 
 import org.sopeco.frontend.client.event.EnvironmentDefinitionChangedEvent;
 import org.sopeco.frontend.client.event.EventControl;
+import org.sopeco.frontend.client.event.ExperimentChangedEvent;
 import org.sopeco.frontend.client.event.ScenarioChangedEvent;
 import org.sopeco.frontend.client.event.ScenarioLoadedEvent;
 import org.sopeco.frontend.client.event.SpecificationChangedEvent;
@@ -224,10 +225,13 @@ public final class ScenarioManager {
 				// builder.getBuiltScenario().getMeasurementSpecifications().get(0).getName();
 				String newSpecification = builder.getBuiltScenario().getMeasurementSpecifications().get(0).getName();
 				specification().setWorkingSpecification(newSpecification);
-				
+
+
 				EventControl.get().fireEvent(new ScenarioLoadedEvent());
 				EventControl.get().fireEvent(new SpecificationChangedEvent(newSpecification));
 				EventControl.get().fireEvent(new EnvironmentDefinitionChangedEvent());
+				
+				MainLayoutPanel.get().getViewSwitch().switchTo(CenterType.Specification);
 			}
 		});
 	}
