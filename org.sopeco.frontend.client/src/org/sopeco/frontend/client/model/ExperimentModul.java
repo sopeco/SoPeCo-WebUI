@@ -94,13 +94,16 @@ public class ExperimentModul {
 			return null;
 		}
 
+		ExperimentSeriesDefinition foundExperiment = null;
 		for (ExperimentSeriesDefinition experiment : getExperimentsOfCurrentSpecififcation()) {
 			if (experiment.getName().equals(currentExperiment)) {
-				return experiment;
+				if (foundExperiment == null || foundExperiment.getVersion() < experiment.getVersion()) {
+					foundExperiment = experiment;
+				}
 			}
 		}
 
-		return null;
+		return foundExperiment;
 	}
 
 	/**

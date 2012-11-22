@@ -1,5 +1,6 @@
 package org.sopeco.frontend.client.layout.navigation;
 
+import java.util.HashMap;
 import java.util.logging.Logger;
 
 import org.sopeco.frontend.client.R;
@@ -18,7 +19,6 @@ import org.sopeco.frontend.client.model.ScenarioManager;
 import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
 import org.sopeco.persistence.entities.definition.MeasurementSpecification;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.HTML;
@@ -187,8 +187,19 @@ public class NavigationController implements ClickHandler {
 	public void loadExperiments() {
 		view.clearExperiments();
 
+		HashMap<String, ExperimentSeriesDefinition> expMap = new HashMap<String, ExperimentSeriesDefinition>();
 		for (ExperimentSeriesDefinition experiment : ScenarioManager.get().experiment()
 				.getExperimentsOfCurrentSpecififcation()) {
+			if (expMap.containsKey(experiment.getName())) {
+				if (expMap.get(experiment.getName()).getVersion() < experiment.getVersion()) {
+					expMap.put(experiment.getName(), experiment);
+				}
+			} else {
+				expMap.put(experiment.getName(), experiment);
+			}
+		}
+
+		for (ExperimentSeriesDefinition experiment : expMap.values()) {
 			NavigationSubItem expItem = view.addExperimentItem(experiment.getName());
 
 			// expItem.addClickHandler(getNavigationSubItemClickHandler());

@@ -130,17 +130,26 @@ public class ScenarioManagerRPCImpl extends SuperRemoteServlet implements Scenar
 
 	@Override
 	public boolean switchScenario(String name) {
-		try {
-			ScenarioDefinition definition = getUser().getCurrentPersistenceProvider().loadScenarioDefinition(name);
-
-			ScenarioDefinitionBuilder builder = ScenarioDefinitionBuilder.load(definition);
-
-			getUser().setCurrentScenarioDefinitionBuilder(builder);
-
-			return true;
-		} catch (DataNotFoundException e) {
-			LOGGER.warn("Scenario '{}' not found.", name);
+		ScenarioDefinition definition = loadScenarioDefinition(name);
+		if (definition == null) {
 			return false;
+		}
+
+		ScenarioDefinitionBuilder builder = ScenarioDefinitionBuilder.load(definition);
+		getUser().setCurrentScenarioDefinitionBuilder(builder);
+
+		return true;
+
+	}
+
+	private ScenarioDefinition loadScenarioDefinition(String sceName) {
+		try {
+			ScenarioDefinition definition = getUser().getCurrentPersistenceProvider().loadScenarioDefinition(sceName);
+
+			return definition;
+		} catch (DataNotFoundException e) {
+			LOGGER.warn("Scenario '{}' not found.", sceName);
+			return null;
 		}
 	}
 
