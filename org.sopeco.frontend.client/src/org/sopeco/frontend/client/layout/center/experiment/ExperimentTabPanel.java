@@ -6,6 +6,7 @@ import org.sopeco.frontend.client.resources.FrontEndResources;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.TabPanel;
 
 /**
@@ -19,7 +20,7 @@ public class ExperimentTabPanel extends TabPanel implements ClickHandler {
 
 	private ExperimentSettingsView settingsView;
 	private ExperimentParameterView parameterView;
-
+	
 	public ExperimentTabPanel() {
 		FrontEndResources.loadExperimentTabPanelCSS();
 		init();

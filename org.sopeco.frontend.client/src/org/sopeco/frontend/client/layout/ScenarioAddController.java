@@ -117,6 +117,7 @@ public class ScenarioAddController implements ClickHandler, BlurHandler, KeyPres
 			return false;
 		} else {
 			view.getScenarioName().removeStyleName(INVALID_CSS_CLASS);
+			setErrorText("");
 		}
 
 		return true;

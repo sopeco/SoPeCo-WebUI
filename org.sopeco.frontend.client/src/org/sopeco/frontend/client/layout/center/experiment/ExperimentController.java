@@ -14,8 +14,10 @@ import org.sopeco.frontend.client.layout.center.experiment.assignment.Assignment
 import org.sopeco.frontend.client.layout.center.experiment.assignment.AssignmentController.Type;
 import org.sopeco.frontend.client.layout.center.experiment.assignment.PreparationController;
 import org.sopeco.frontend.client.layout.popups.Confirmation;
-import org.sopeco.frontend.client.layout.popups.TextInput;
-import org.sopeco.frontend.client.layout.popups.TextInputOkHandler;
+import org.sopeco.frontend.client.layout.popups.InputDialog;
+import org.sopeco.frontend.client.layout.popups.InputDialogHandler;
+import org.sopeco.frontend.client.layout.popups.InputDialogValidator;
+import org.sopeco.frontend.client.model.Manager;
 import org.sopeco.frontend.client.model.ScenarioManager;
 import org.sopeco.frontend.client.resources.FrontEndResources;
 import org.sopeco.frontend.shared.helper.ExtensionTypes;
@@ -37,7 +39,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  */
 public class ExperimentController implements ICenterController, ValueChangeHandler<String>, ClickHandler,
-		ExperimentChangedEventHandler {
+		ExperimentChangedEventHandler, InputDialogHandler, InputDialogValidator {
 
 	private static final Logger LOGGER = Logger.getLogger(ExperimentController.class.getName());
 	private static final String ENV_TREE_CSS_CLASS = "expEnvTree";
@@ -52,6 +54,8 @@ public class ExperimentController implements ICenterController, ValueChangeHandl
 	private PreparationController preparationController;
 
 	private ExperimentTabPanel tabPanel;
+
+	private InputDialog inputClone, inputRename;
 
 	public ExperimentController() {
 		FrontEndResources.loadExperimentCSS();
@@ -87,6 +91,7 @@ public class ExperimentController implements ICenterController, ValueChangeHandl
 
 		rightCol.add(preparationController.getView());
 		rightCol.add(assignmentExperiment.getView());
+
 		getParameterView().add(rightCol);
 
 		// getParameterView().add(treeController.getView());
@@ -135,21 +140,51 @@ public class ExperimentController implements ICenterController, ValueChangeHandl
 	}
 
 	private void duplicateExperiment() {
-		TextInput.doInput(R.get("cloneExperiment"), R.get("nameForExperimentClone") + ":", new TextInputOkHandler() {
-			@Override
-			public void onInput(ClickEvent event, String input) {
-				ScenarioManager.get().experiment().cloneCurrentExperiment(input);
-			}
-		});
+		if (inputClone == null) {
+			inputClone = new InputDialog(R.get("cloneExperiment"), R.get("nameForExperimentClone") + ":");
+			inputClone.addHandler(this);
+			inputClone.setValidator(this);
+		}
+		inputClone.setValue("");
+		inputClone.center();
 	}
 
 	private void showRenameDialog() {
-		TextInput.doInput(R.get("renameExperiment"), R.get("newExpName") + ":", new TextInputOkHandler() {
-			@Override
-			public void onInput(ClickEvent event, String input) {
-				ScenarioManager.get().experiment().renameCurrentExpSeries(input);
+		if (inputRename == null) {
+			inputRename = new InputDialog(R.get("renameExperiment"), R.get("newExpName") + ":");
+			inputRename.addHandler(this);
+			inputRename.setValidator(this);
+		}
+		inputRename.setValue(Manager.get().getSelectedExperiment());
+		inputRename.center();
+	}
+
+	@Override
+	public void onInput(InputDialog source, String value) {
+		if (source == inputClone) {
+			ScenarioManager.get().experiment().cloneCurrentExperiment(value);
+		} else if (source == inputRename) {
+			ScenarioManager.get().experiment().renameCurrentExpSeries(value);
+		}
+	}
+
+	@Override
+	public boolean validate(InputDialog source, String text) {
+		// if (source == inputRename) {
+		if (text.isEmpty()) {
+			source.showWarning("The name of an Experimentseries must not be empty.");
+			return false;
+		}
+		for (ExperimentSeriesDefinition esd : ScenarioManager.get().specification().getWorkingSpecification()
+				.getExperimentSeriesDefinitions()) {
+			if (text.equals(esd.getName())) {
+				source.showWarning("There is already a ExperimentSeries with this name.");
+				return false;
 			}
-		});
+		}
+		// }
+		source.hideWarning();
+		return true;
 	}
 
 	private void removeExperiment() {

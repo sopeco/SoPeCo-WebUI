@@ -113,6 +113,7 @@ public class ExperimentModul {
 	public void setCurrentExperiment(String newExperiment) {
 		LOGGER.fine("Switch experiment to '" + newExperiment + "'");
 		currentExperiment = newExperiment;
+		Manager.get().setSelectedExperiment(newExperiment);
 	}
 
 	/**

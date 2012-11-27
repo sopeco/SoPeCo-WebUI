@@ -9,8 +9,8 @@ import org.sopeco.frontend.client.layout.dialog.LogDialog;
 import org.sopeco.frontend.client.layout.popups.Confirmation;
 import org.sopeco.frontend.client.layout.popups.Loader;
 import org.sopeco.frontend.client.layout.popups.Message;
-import org.sopeco.frontend.client.layout.popups.TextInput;
-import org.sopeco.frontend.client.layout.popups.TextInputOkHandler;
+import org.sopeco.frontend.client.layout.popups.InputDialog;
+import org.sopeco.frontend.client.layout.popups.InputDialogHandler;
 import org.sopeco.frontend.client.model.Manager;
 import org.sopeco.frontend.client.model.ScenarioManager;
 import org.sopeco.frontend.client.resources.FrontEndResources;
@@ -37,7 +37,7 @@ import com.google.gwt.user.client.ui.UIObject;
  * @author Marius Oehler
  * 
  */
-public class NorthPanel extends FlowPanel implements ClickHandler, ChangeHandler {
+public class NorthPanel extends FlowPanel implements ClickHandler, ChangeHandler, InputDialogHandler {
 
 	private static final String GRADIENT_CSS = "gradient-blue";
 	private static final String IMG_BUTTON_CSS_CLASS = "imgButton";
@@ -64,6 +64,7 @@ public class NorthPanel extends FlowPanel implements ClickHandler, ChangeHandler
 			imageLog, imageScenarioClone;
 
 	private Anchor anchorChangeAccount;
+	private InputDialog inputClone;
 
 	private HorizontalPanel navigationPanel;
 
@@ -203,12 +204,19 @@ public class NorthPanel extends FlowPanel implements ClickHandler, ChangeHandler
 	}
 
 	private void cloneScenario() {
-		TextInput.doInput(R.get("scenario_clone"), R.get("cloneScenarioName") + ":", new TextInputOkHandler() {
-			@Override
-			public void onInput(ClickEvent event, String input) {
-				ScenarioManager.get().cloneCurrentScenario(input);
-			}
-		});
+		if (inputClone == null) {
+			inputClone = new InputDialog(R.get("scenario_clone"), R.get("cloneScenarioName") + ":");
+			inputClone.addHandler(this);
+		}
+		inputClone.setText("");
+		inputClone.center();
+	}
+
+	@Override
+	public void onInput(InputDialog source, String value) {
+		if (source == inputClone) {
+			ScenarioManager.get().cloneCurrentScenario(value);
+		}
 	}
 
 	/**

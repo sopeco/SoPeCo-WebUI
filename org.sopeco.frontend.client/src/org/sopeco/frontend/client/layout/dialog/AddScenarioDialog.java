@@ -28,7 +28,7 @@ public class AddScenarioDialog extends DialogBox implements ClickHandler, Simple
 		// true);
 		// sca.addHideHandler(this);
 		// add(sca.getView());
-		CreateScenarioWizzard wizzard = new CreateScenarioWizzard(410, 240);
+		CreateScenarioWizzard wizzard = new CreateScenarioWizzard(410, 250);
 		wizzard.addSimpleNotifier(this);
 
 		closeButton = new Button(R.get("Close"));

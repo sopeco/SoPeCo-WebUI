@@ -139,6 +139,8 @@
 
 .parameterAssignmentItem>div {
 	display: inline-block;
+	line-height: 28px;
+	vertical-align: middle;
 }
 
 .parameterAssignmentItem .namespace {
@@ -155,6 +157,10 @@
 .parameterAssignmentItem .type {
 	color: #999;
 	margin-right: 25px;
+}
+
+.parameterAssignmentItem .value {
+	border-bottom: 1px dotted #ddd;
 }
 
 .parameterAssignmentItem .gwt-TextBox {
@@ -268,4 +274,45 @@
 	height: 18px;
 	cursor: pointer;
 	margin-right: 10px;
+}
+
+.assignmentItemTable .gwt-TextBox {
+	padding: 2px 4px;
+}
+
+.assignmentItemTable .spc-ComboBox .gwt-TextBox {
+	padding: 1px 4px;
+}
+
+.assignmentItemTable .spc-ComboBox img {
+	padding: 0px 8px;
+}
+
+.assignmentItemTable .valueRow td {
+	padding-top: 0;
+	padding-bottom: 0;
+}
+
+.assignmentItemTable .value {
+	border-bottom: 1px dotted #ddd;
+}
+
+#expPreperationPanel .assignmentItemTable tr:hover {
+	background-color: transparent;
+}
+
+.assignmentItemTable .parameterPanel {
+	border-left: 2px solid #CCC;
+	margin-left: 1em;
+	padding: 0.5em 0em;
+	margin-bottom: 3px;
+}
+
+.assignmentItemTable .parameterPanel td {
+	padding: 0;
+	padding-left: 1em;
+}
+
+.assignmentItemTable .parameterPanel .gwt-Image {
+	vertical-align: middle;
 }

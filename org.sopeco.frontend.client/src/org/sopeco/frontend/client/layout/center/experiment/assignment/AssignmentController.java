@@ -5,22 +5,17 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.logging.Logger;
 
 import org.sopeco.frontend.client.R;
 import org.sopeco.frontend.client.event.EventControl;
-import org.sopeco.frontend.client.event.ExperimentAssignmentRenderedEvent;
 import org.sopeco.frontend.client.event.ExperimentAssignmentsChangedEvent;
 import org.sopeco.frontend.client.event.ExperimentChangedEvent;
-import org.sopeco.frontend.client.event.PreperationAssignmentRenderedEvent;
-import org.sopeco.frontend.client.event.PreperationAssignmentsChangedEvent;
-import org.sopeco.frontend.client.event.handler.ExperimentAssignmentRenderedEventHandler;
 import org.sopeco.frontend.client.event.handler.ExperimentAssignmentsChangedEventHandler;
 import org.sopeco.frontend.client.event.handler.ExperimentChangedEventHandler;
-import org.sopeco.frontend.client.event.handler.PreperationAssignmentRenderedEventHandler;
-import org.sopeco.frontend.client.event.handler.PreperationAssignmentsChangedEventHandler;
-import org.sopeco.frontend.client.helper.ElementPropertyAligner;
+import org.sopeco.frontend.client.layout.center.experiment.assignment.items.AssignmentItem;
 import org.sopeco.frontend.client.model.ScenarioManager;
-import org.sopeco.persistence.entities.definition.ConstantValueAssignment;
+import org.sopeco.frontend.shared.helper.Metering;
 import org.sopeco.persistence.entities.definition.ParameterValueAssignment;
 
 /**
@@ -30,42 +25,27 @@ import org.sopeco.persistence.entities.definition.ParameterValueAssignment;
  */
 public class AssignmentController {
 
+	private static final Logger LOGGER = Logger.getLogger(AssignmentController.class.getName());
+
 	/** Assignment Type. */
 	public enum Type {
 		/** */
 		EXPERIMENT, PREPERATION
 	}
 
-	private Type assignmentType;
 	private AssignmentView view;
 
-	private List<AssignmentItem> assignmentItems;
-	private ElementPropertyAligner namespacePropertyAligner, typePropertyAligner;
+	private List<AssignmentItem> assignmentItems2;
 
 	public AssignmentController(Type type) {
-		assignmentType = type;
-
 		String headline = "";
-//		switch (type) {
-//		case PREPERATION:
-//			headline = R.get("prepAssignments");
-//			break;
-//		default:
-//		case EXPERIMENT:
-			headline = R.get("expAssignsments");
-//		}
+		headline = R.get("expAssignsments");
 
-		assignmentItems = new ArrayList<AssignmentItem>();
-		namespacePropertyAligner = new ElementPropertyAligner();
-		typePropertyAligner = new ElementPropertyAligner();
+		assignmentItems2 = new ArrayList<AssignmentItem>();
 
 		view = new AssignmentView(headline);
 
-//		if (type == Type.PREPERATION) {
-//			registerHandlerPreperation();
-//		} else if (type == Type.EXPERIMENT) {
-			registerHandlerExperiment();
-//		}
+		registerHandlerExperiment();
 		registerHandlerCommon();
 	}
 
@@ -73,13 +53,6 @@ public class AssignmentController {
 	 * 
 	 */
 	private void registerHandlerExperiment() {
-		EventControl.get().addHandler(ExperimentAssignmentRenderedEvent.TYPE,
-				new ExperimentAssignmentRenderedEventHandler() {
-					@Override
-					public void onExperimentAssignmentLoadedEvent(ExperimentAssignmentRenderedEvent event) {
-						assignmentRenderedEvent();
-					}
-				});
 		EventControl.get().addHandler(ExperimentAssignmentsChangedEvent.TYPE,
 				new ExperimentAssignmentsChangedEventHandler() {
 					@Override
@@ -109,28 +82,10 @@ public class AssignmentController {
 	}
 
 	/**
-	 * The called method at an PreperationAssignmentRenderedEvent.
-	 */
-	private void assignmentRenderedEvent() {
-		//namespacePropertyAligner.alignWith();
-		//typePropertyAligner.offsetWidth();
-	}
-
-	/**
 	 * @return the view
 	 */
 	public AssignmentView getView() {
 		return view;
-	}
-
-	/**
-	 * Removes all added assignments.
-	 */
-	private void clearAssignments() {
-		for (AssignmentItem item : assignmentItems) {
-			item.removeFromParent();
-		}
-		assignmentItems.clear();
 	}
 
 	/**
@@ -140,55 +95,47 @@ public class AssignmentController {
 		if (ScenarioManager.get().experiment().getCurrentExperiment() == null) {
 			return;
 		}
-		clearAssignments();
-
+		
 		Map<String, ParameterValueAssignment> sortedMap = new TreeMap<String, ParameterValueAssignment>();
 
-//		if (assignmentType == Type.EXPERIMENT) {
-			for (ParameterValueAssignment pva : ScenarioManager.get().experiment().getCurrentExperiment()
-					.getExperimentAssignments()) {
-				sortedMap.put(pva.getParameter().getFullName(), pva);
-			}
-//		} else {
-//			for (ConstantValueAssignment cva : ScenarioManager.get().experiment().getCurrentExperiment()
-//					.getPreperationAssignments()) {
-//				sortedMap.put(cva.getParameter().getFullName(), cva);
-//			}
-//		}
+
+		for (ParameterValueAssignment pva : ScenarioManager.get().experiment().getCurrentExperiment()
+				.getExperimentAssignments()) {
+			sortedMap.put(pva.getParameter().getFullName(), pva);
+		}
+
+
+		assignmentItems2.clear();
 
 		Iterator<ParameterValueAssignment> iter = sortedMap.values().iterator();
 		while (iter.hasNext()) {
 			ParameterValueAssignment pva = iter.next();
-			addAssignment(pva, !iter.hasNext());
+
+			AssignmentItem item = new AssignmentItem(pva);
+			item.setController(this);
+			assignmentItems2.add(item);
+
 		}
+
+		refreshUI();
 	}
 
-	/**
-	 * 
-	 * @param definition
-	 * @param value
-	 */
-	public void addAssignment(ParameterValueAssignment valueAssignment) {
-		addAssignment(valueAssignment, true);
+	public void refreshUI() {
+		double key = Metering.start();
+
+		view.getGrid().removeAllRows();
+		view.addTableHeader();
+
+		int c = 1;
+		for (AssignmentItem ai : assignmentItems2) {
+			view.addItem(c, ai);
+			c += 2;
+		}
+
+		Metering.stop(key);
 	}
 
-	public void addAssignment(ParameterValueAssignment valueAssignment, boolean onLoadEvent) {
-		AssignmentItem item;
-
-//		if (assignmentType == Type.EXPERIMENT) {
-			item = new ExperimentAssignmentItem(valueAssignment);
-//		} else {
-//			item = new PreperationAssignmentItem(valueAssignment);
-//		}
-
-		item.setFireOnLoadEvent(onLoadEvent);
-		
-		assignmentItems.add(item);
-
-		namespacePropertyAligner.addElement(item.getHtmlNamespace().getElement());
-		typePropertyAligner.addElement(item.getHtmlType().getElement(), item.getHtmlNamespace().getElement(), item
-				.getHtmlName().getElement());
-
-		getView().add(item);
+	public void onValueChange(AssignmentItem item, String value) {
+		LOGGER.fine(value);
 	}
 }

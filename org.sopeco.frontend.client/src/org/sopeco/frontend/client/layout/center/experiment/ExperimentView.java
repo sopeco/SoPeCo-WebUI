@@ -2,6 +2,8 @@ package org.sopeco.frontend.client.layout.center.experiment;
 
 import org.sopeco.frontend.client.layout.center.CenterPanel;
 
+import com.google.gwt.user.client.ui.FlowPanel;
+
 /**
  * 
  * @author Marius Oehler
@@ -15,6 +17,7 @@ public class ExperimentView extends CenterPanel {
 	private ExperimentSettingsView settingsView;
 	private ExperimentParameterView parameterView;
 
+
 	public ExperimentView() {
 		initialize();
 	}
@@ -25,7 +28,7 @@ public class ExperimentView extends CenterPanel {
 	private void initialize() {
 		settingsView = new ExperimentSettingsView();
 		parameterView = new ExperimentParameterView();
-
+		
 		add(settingsView);
 		add(parameterView);
 	}
@@ -47,7 +50,7 @@ public class ExperimentView extends CenterPanel {
 	/**
 	 * @return the parameterView
 	 */
-	public ExperimentParameterView getParameterView() {
+	public FlowPanel getParameterView() {
 		return parameterView;
 	}
 

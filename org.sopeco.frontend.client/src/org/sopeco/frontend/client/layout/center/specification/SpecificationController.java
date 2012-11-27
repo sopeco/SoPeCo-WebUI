@@ -2,6 +2,7 @@ package org.sopeco.frontend.client.layout.center.specification;
 
 import java.util.List;
 
+import org.sopeco.frontend.client.R;
 import org.sopeco.frontend.client.event.EventControl;
 import org.sopeco.frontend.client.event.InitialAssignmentChangedEvent;
 import org.sopeco.frontend.client.event.InitialAssignmentChangedEvent.ChangeType;
@@ -10,17 +11,21 @@ import org.sopeco.frontend.client.event.handler.InitialAssignmentChangedEventHan
 import org.sopeco.frontend.client.event.handler.SpecificationChangedEventHandler;
 import org.sopeco.frontend.client.layout.MainLayoutPanel;
 import org.sopeco.frontend.client.layout.center.ICenterController;
+import org.sopeco.frontend.client.layout.navigation.NavigationController;
 import org.sopeco.frontend.client.layout.popups.Confirmation;
+import org.sopeco.frontend.client.layout.popups.InputDialogValidator;
 import org.sopeco.frontend.client.layout.popups.Loader;
 import org.sopeco.frontend.client.layout.popups.Message;
-import org.sopeco.frontend.client.layout.popups.TextInput;
-import org.sopeco.frontend.client.layout.popups.TextInputOkHandler;
+import org.sopeco.frontend.client.layout.popups.InputDialog;
+import org.sopeco.frontend.client.layout.popups.InputDialogHandler;
+import org.sopeco.frontend.client.layout.popups.InputDialog.Icon;
 import org.sopeco.frontend.client.model.ScenarioManager;
 import org.sopeco.frontend.client.resources.FrontEndResources;
 import org.sopeco.frontend.client.rpc.RPC;
 import org.sopeco.frontend.client.widget.grid.EditGridItem;
 import org.sopeco.frontend.shared.helper.Metering;
 import org.sopeco.persistence.entities.definition.ConstantValueAssignment;
+import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.entities.definition.ParameterNamespace;
 
@@ -34,13 +39,15 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Marius Oehler
  * 
  */
-public class SpecificationController implements ICenterController, ClickHandler {
+public class SpecificationController implements ICenterController, ClickHandler, InputDialogHandler,
+		InputDialogValidator {
 
 	private static final String TREE_CSS_CLASS = "specificationTreeView";
 	private SpecificationView view;
 	private AssignmentController assignmentController;
 	// private SelectionController selectionController;
 	private SpecificationEnvironmentTree envTree;
+	private InputDialog inputRename;
 
 	public SpecificationController() {
 		FrontEndResources.loadSpecificationCSS();
@@ -152,20 +159,40 @@ public class SpecificationController implements ICenterController, ClickHandler 
 	}
 
 	private void renameSpecification() {
-		// TODO text
-		TextInput.doInput("", "", new TextInputOkHandler() {
-			@Override
-			public void onInput(ClickEvent event, String input) {
-				if (!input.equals(ScenarioManager.get().specification().getWorkingSpecificationName())) {
-					ScenarioManager.get().renameWorkingSpecification(input);
-				}
-			}
-		});
+		if (inputRename == null) {
+			inputRename = new InputDialog(R.get("renameSpecification"), R.get("renameSpecificationLabel") + ":");
+			inputRename.addHandler(this);
+			inputRename.setValidator(this);
+		}
+		inputRename.setValue(ScenarioManager.get().specification().getWorkingSpecificationName());
+		inputRename.center();
+	}
+
+	@Override
+	public void onInput(InputDialog source, String value) {
+		if (!value.equals(ScenarioManager.get().specification().getWorkingSpecificationName())) {
+			ScenarioManager.get().renameWorkingSpecification(value);
+		}
+	}
+
+	@Override
+	public boolean validate(InputDialog source, String text) {
+		// if (source == inputRename) {
+		if (text.isEmpty()) {
+			source.showWarning("The name of an Specification must not be empty.");
+			return false;
+		}
+		if (ScenarioManager.get().getBuilder().getMeasurementSpecification(text) != null) {
+			source.showWarning("There is already a Specification with this name.");
+			return false;
+		}
+		// }
+		source.hideWarning();
+		return true;
 	}
 
 	private void removeSpecification() {
-		// TODO text
-		Confirmation.confirm("", new ClickHandler() {
+		Confirmation.confirm(R.get("removeSpecification"), new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				if (!ScenarioManager.get().specification().removeWorkingSpecification()) {

@@ -11,9 +11,10 @@ import org.sopeco.frontend.client.event.handler.ScenarioLoadedEventHandler;
 import org.sopeco.frontend.client.event.handler.SpecificationChangedEventHandler;
 import org.sopeco.frontend.client.layout.MainLayoutPanel;
 import org.sopeco.frontend.client.layout.center.CenterType;
-import org.sopeco.frontend.client.layout.popups.TextInput;
-import org.sopeco.frontend.client.layout.popups.TextInput.Icon;
-import org.sopeco.frontend.client.layout.popups.TextInputOkHandler;
+import org.sopeco.frontend.client.layout.popups.InputDialog;
+import org.sopeco.frontend.client.layout.popups.InputDialog.Icon;
+import org.sopeco.frontend.client.layout.popups.InputDialogHandler;
+import org.sopeco.frontend.client.layout.popups.InputDialogValidator;
 import org.sopeco.frontend.client.model.Manager;
 import org.sopeco.frontend.client.model.ScenarioManager;
 import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
@@ -29,13 +30,15 @@ import com.google.gwt.user.client.ui.HTML;
  * @author Marius Oehler
  * 
  */
-public class NavigationController implements ClickHandler {
+public class NavigationController implements ClickHandler, InputDialogHandler, InputDialogValidator {
 
 	private static final Logger LOGGER = Logger.getLogger(NavigationController.class.getName());
 
 	private NavigationView view;
 	private CenterType currentCenterType;
 	private NavigationItem currentActiveNavigationItem;
+
+	private InputDialog inputAddExperiment, inputAddSpecification;
 
 	public NavigationController() {
 		view = new NavigationView();
@@ -64,6 +67,43 @@ public class NavigationController implements ClickHandler {
 				loadExperiments();
 			}
 		});
+	}
+
+	@Override
+	public void onInput(InputDialog source, String value) {
+		if (source == inputAddExperiment) {
+			ScenarioManager.get().experiment().createExperimentSeries(value);
+		} else if (source == inputAddSpecification) {
+			ScenarioManager.get().createNewSpecification(value);
+		}
+	}
+
+	@Override
+	public boolean validate(InputDialog source, String text) {
+		if (source == inputAddExperiment) {
+			if (text.isEmpty()) {
+				source.showWarning("The name of an Experimentseries must not be empty.");
+				return false;
+			}
+			for (ExperimentSeriesDefinition esd : ScenarioManager.get().specification().getWorkingSpecification()
+					.getExperimentSeriesDefinitions()) {
+				if (text.equals(esd.getName())) {
+					source.showWarning("There is already a ExperimentSeries with this name.");
+					return false;
+				}
+			}
+		} else if (source == inputAddSpecification) {
+			if (text.isEmpty()) {
+				source.showWarning("The name of a Specification must not be empty.");
+				return false;
+			}
+			if (ScenarioManager.get().getBuilder().getMeasurementSpecification(text) != null) {
+				source.showWarning("There is already a Specification with this name.");
+				return false;
+			}
+		}
+		source.hideWarning();
+		return true;
 	}
 
 	@Override
@@ -106,12 +146,14 @@ public class NavigationController implements ClickHandler {
 			public void onClick(ClickEvent event) {
 				view.getChangeSpecificationPanel().setVisible(false);
 
-				TextInput.doInput(Icon.Add, "Add specification", R.get("addExpText") + ":", new TextInputOkHandler() {
-					@Override
-					public void onInput(ClickEvent event, String input) {
-						ScenarioManager.get().createNewSpecification(input);
-					}
-				});
+				if (inputAddSpecification == null) {
+					inputAddSpecification = new InputDialog(R.get("AddSpecification"), R.get("addSpecText") + ":",
+							false, Icon.Add);
+					inputAddSpecification.addHandler(NavigationController.this);
+					inputAddSpecification.setValidator(NavigationController.this);
+				}
+				inputAddSpecification.setValue("");
+				inputAddSpecification.center();
 			}
 		});
 	}
@@ -201,7 +243,7 @@ public class NavigationController implements ClickHandler {
 
 		for (ExperimentSeriesDefinition experiment : expMap.values()) {
 			NavigationSubItem expItem = view.addExperimentItem(experiment.getName());
-
+			expItem.setTitle(experiment.getName());
 			// expItem.addClickHandler(getNavigationSubItemClickHandler());
 			expItem.addClickHandler(this);
 		}
@@ -220,13 +262,14 @@ public class NavigationController implements ClickHandler {
 		return new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				TextInput.doInput(Icon.Add, R.get("addExperiment"), R.get("addExpText") + ":",
-						new TextInputOkHandler() {
-							@Override
-							public void onInput(ClickEvent event, String input) {
-								ScenarioManager.get().experiment().createExperimentSeries(input);
-							}
-						});
+				if (inputAddExperiment == null) {
+					inputAddExperiment = new InputDialog(R.get("addExperiment"), R.get("addExpText") + ":", false,
+							Icon.Add);
+					inputAddExperiment.addHandler(NavigationController.this);
+					inputAddExperiment.setValidator(NavigationController.this);
+				}
+				inputAddExperiment.setValue("");
+				inputAddExperiment.center();
 			}
 		};
 	}

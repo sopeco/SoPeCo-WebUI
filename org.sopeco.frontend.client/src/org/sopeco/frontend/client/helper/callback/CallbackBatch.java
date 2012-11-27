@@ -62,7 +62,11 @@ public abstract class CallbackBatch {
 			if (failedCallbacks.isEmpty()) {
 				onSuccess();
 			} else {
-				onFailure();
+				List<Throwable> exceptionList = new ArrayList<Throwable>();
+				for (int i : failedCallbacks) {
+					exceptionList.add(callbackArray[i].getFailure());
+				}
+				onFailure(null);
 			}
 		}
 	}
@@ -86,7 +90,7 @@ public abstract class CallbackBatch {
 	/**
 	 * Called when at least one callback has failed.
 	 */
-	protected abstract void onFailure();
+	protected abstract void onFailure(List<Throwable> exceptionList);
 
 	/**
 	 * Returns whether the callback on the given index was successful.

@@ -17,17 +17,15 @@ import com.google.gwt.http.client.Response;
  */
 public final class R {
 	private static final String DEFAULT_LANG = "rsc/lang/en.ini";
-	private static boolean loaded = false;
+	private static HashMap<String, String> langMap = new HashMap<String, String>();
 	private static final String LINESEPERATOR = "\n";
+	private static boolean loaded = false;
+
 	private static final String PAIRSEPERATOR = "=";
 
-	private static HashMap<String, String> langMap = new HashMap<String, String>();
-
-	private R() {
-	}
-
 	/**
-	 * Returns the string of the lang. file which is related to the key.
+	 * Returns the string of the language file(map) which is related to the
+	 * given key.
 	 * 
 	 * @param key
 	 *            key
@@ -35,16 +33,16 @@ public final class R {
 	 */
 	public static String get(String key) {
 		String txt = langMap.get(key);
-
 		if (txt == null) {
 			return "{" + key + "}";
 		}
-
 		return txt;
 	}
 
 	/**
-	 * Loads the default lang. file.
+	 * Loads the default language file and calls the callback, if it
+	 * successfully finished the request. If the file was already loaded, the
+	 * method is canceled.
 	 * 
 	 * @return true if file is loaded
 	 */
@@ -58,14 +56,14 @@ public final class R {
 			new RequestBuilder(RequestBuilder.GET, DEFAULT_LANG + "?" + Math.random()).sendRequest("",
 					new RequestCallback() {
 						@Override
-						public void onResponseReceived(Request req, Response resp) {
-							buildMap(resp.getText());
-							callback.call();
+						public void onError(Request res, Throwable throwable) {
+							throw new RuntimeException(throwable);
 						}
 
 						@Override
-						public void onError(Request res, Throwable throwable) {
-							throw new RuntimeException(throwable);
+						public void onResponseReceived(Request req, Response resp) {
+							buildMap(resp.getText());
+							callback.call();
 						}
 					});
 		} catch (RequestException e) {
@@ -74,6 +72,8 @@ public final class R {
 	}
 
 	/**
+	 * Splits key-value-pairs of the given string and sets them in the langMap
+	 * map.
 	 * 
 	 * @param propertyString
 	 */
@@ -93,5 +93,8 @@ public final class R {
 
 			langMap.put(pair[0], pair[1]);
 		}
+	}
+
+	private R() {
 	}
 }

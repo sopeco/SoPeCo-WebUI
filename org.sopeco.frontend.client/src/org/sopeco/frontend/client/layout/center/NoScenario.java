@@ -34,7 +34,7 @@ public class NoScenario extends CenterPanel implements ClickHandler, BlurHandler
 		ValueChangeHandler<Boolean>, SimpleNotify {
 
 	private static final String ADD_SCENARIO_BOX = "noScenarioBox";
-	private static final int SLIDER_HEIGHT = 240, SLIDER_WIDTH = 410;
+	private static final int SLIDER_HEIGHT = 250, SLIDER_WIDTH = 410;
 
 	private static final String FOOTER_CSS_CLASS = "noscFooterPanel";
 

@@ -33,7 +33,7 @@ public class ExecuteRPCImpl extends SuperRemoteServlet implements ExecuteRPC {
 		try {
 			ScenarioDefinition src = getUser().getCurrentScenarioDefinitionBuilder().getBuiltScenario();
 		
-//			src.getExperimentSeriesDefinition("MyExperiment").getTerminationConditions().iterator().next().getParametersDefaultValues().put("repetitions", "3");
+			//src.getExperimentSeriesDefinition("x1").getTerminationConditions().iterator().next().getParametersDefaultValues().put("repetitions", "3");
 			
 			Configuration.getSessionSingleton(getSessionId()).setMeasurementControllerURI(url);
 			Configuration.getSessionSingleton(getSessionId()).setScenarioDescription(src);

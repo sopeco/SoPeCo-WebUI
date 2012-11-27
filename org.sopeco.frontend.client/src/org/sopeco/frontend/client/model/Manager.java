@@ -1,10 +1,12 @@
 package org.sopeco.frontend.client.model;
 
+import java.util.List;
 import java.util.logging.Logger;
 
-import org.sopeco.frontend.client.helper.DBManager;
+import org.sopeco.frontend.client.rpc.RPC;
 import org.sopeco.frontend.shared.entities.AccountDetails;
 import org.sopeco.frontend.shared.entities.ScenarioDetails;
+import org.sopeco.persistence.metadata.entities.DatabaseInstance;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -35,6 +37,7 @@ public final class Manager {
 	private AccountDetails accountDetails = null;
 	private String[] availableScenarios = null;
 	private String selectedExperiment;
+	private List<DatabaseInstance> availableDatabases;
 
 	/**
 	 * Sends the current AccountDetails to the backend to store it in the
@@ -42,7 +45,7 @@ public final class Manager {
 	 */
 	public void storeAccountDetails() {
 		LOGGER.info("Store AccountDetails");
-		DBManager.getDbManager().storeAccountDetails(accountDetails, new AsyncCallback<Void>() {
+		RPC.getDatabaseManagerRPC().storeAccountDetails(accountDetails, new AsyncCallback<Void>() {
 			@Override
 			public void onSuccess(Void result) {
 			}
@@ -66,6 +69,14 @@ public final class Manager {
 		}
 
 		return accountDetails.getScenarioDetail(accountDetails.getSelectedScenario());
+	}
+
+	public List<DatabaseInstance> getAvailableDatabases() {
+		return availableDatabases;
+	}
+
+	public void setAvailableDatabases(List<DatabaseInstance> availableDatabases) {
+		this.availableDatabases = availableDatabases;
 	}
 
 	/**

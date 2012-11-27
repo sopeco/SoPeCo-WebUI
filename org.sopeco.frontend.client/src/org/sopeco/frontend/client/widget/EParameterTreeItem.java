@@ -1,5 +1,7 @@
 package org.sopeco.frontend.client.widget;
 
+import java.util.logging.Logger;
+
 import org.sopeco.frontend.client.R;
 import org.sopeco.frontend.client.layout.popups.Loader;
 import org.sopeco.frontend.client.layout.popups.Message;
@@ -25,6 +27,8 @@ import com.google.gwt.user.client.ui.ListBox;
  * 
  */
 public class EParameterTreeItem extends EnvironmentTreeItem {
+
+	private static final Logger LOGGER = Logger.getLogger(EParameterTreeItem.class.getName());
 
 	private Image parameterImage;
 	private ParameterRole role;
@@ -163,19 +167,16 @@ public class EParameterTreeItem extends EnvironmentTreeItem {
 
 	@Override
 	protected void removeItem() {
-		Loader.showIcon();
 		RPC.getMEControllerRPC().removeParameter(parentItem.getPath(), currentText, new AsyncCallback<Boolean>() {
 			@Override
 			public void onFailure(Throwable caught) {
+				LOGGER.severe(caught.getLocalizedMessage());
 				Message.error(caught.getMessage());
-				Loader.hideIcon();
 			}
 
 			@Override
 			public void onSuccess(Boolean result) {
 				remove();
-
-				Loader.hideIcon();
 			}
 		});
 	}

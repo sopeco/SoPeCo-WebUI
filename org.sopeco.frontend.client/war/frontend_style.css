@@ -8,9 +8,9 @@
 
 .transparent-50 {
 	opacity: 0.5;
-	filter: alpha(opacity =             
+	filter: alpha(opacity =                
 		                                                         
-		               50);
+		                  50);
 }
 
 .spc-seperator {
@@ -199,6 +199,12 @@ p {
 #mainNavigation .tlEntry .subText {
 	color: #AAA;
 	font-size: 0.8em;
+	width: 160px;
+	display: block;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	line-height: 1.8em;
+	white-space: nowrap;
 }
 
 #mainNavigation .slEntry {
@@ -208,6 +214,13 @@ p {
 	position: relative;
 	overflow: hidden;
 	margin: 0.2em 0;
+}
+
+#mainNavigation .slEntry .gwt-HTML:first-child {
+	text-overflow: ellipsis;
+	overflow: hidden;
+	line-height: 1.8em;
+	white-space: nowrap;
 }
 
 #mainNavigation .slEntry:hover {
@@ -471,16 +484,16 @@ p {
 #changeSpecPanel #addSpecification {
 	color: #333;
 	opacity: 0.5;
-	filter: alpha(opacity =                                        
+	filter: alpha(opacity =                                           
 		                                                         
-		                                          50);
+		                                             50);
 }
 
 #changeSpecPanel #addSpecification:hover {
 	opacity: 1;
-	filter: alpha(opacity =                                       
+	filter: alpha(opacity =                                          
 		                                                         
-		                                           100);
+		                                              100);
 }
 
 #changeSpecPanel #addSpecification>img {
@@ -600,7 +613,8 @@ p {
 
 .addExperimentNaviItem {
 	opacity: 0.5;
-	filter: alpha(opacity =                                                     50);
+	filter: alpha(opacity =                                                         
+		 50);
 	padding-left: 23px !important;
 	padding-right: 0 !important;
 	font-weight: normal !important;
@@ -608,8 +622,8 @@ p {
 
 .addExperimentNaviItem:hover {
 	opacity: 1;
-	filter: alpha(opacity =                                                      100
-		);
+	filter: alpha(opacity =                                                         
+		  100);
 }
 
 .addExperimentNaviItem img {
@@ -631,7 +645,7 @@ p {
 	background: -o-linear-gradient(top, #223344 5%, #838ead 50%, #223344 95%);
 	background: -ms-linear-gradient(top, #223344 5%, #838ead 50%, #223344 95%);
 	background: linear-gradient(to bottom, #223344 5%, #838ead 50%, #223344 95%);
-	filter: progid:DXImageTransform.Microsoft.gradient(             
+	filter: progid:DXImageTransform.Microsoft.gradient(                
 		                     startColorstr='#223344', endColorstr='#223344',
 		GradientType=0 );
 }
@@ -738,6 +752,7 @@ p {
 	right: 40px;
 	overflow: hidden;
 	position: absolute;
+	text-overflow: ellipsis;
 }
 
 .envTreeView .rMarker {

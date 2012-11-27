@@ -1,6 +1,7 @@
 package org.sopeco.frontend.client;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -29,23 +30,54 @@ import com.google.gwt.user.client.ui.RootLayoutPanel;
  */
 public class FrontendEntryPoint implements EntryPoint, SimpleNotify {
 
-	private static final Logger LOGGER = Logger.getLogger("");
+	private static FrontendEntryPoint frontend;
+
+	private static final Logger LOGGER = Logger.getLogger(FrontendEntryPoint.class.getName());
+
+	/**
+	 * Returns the FrontendEntryPoint object of this application.
+	 * 
+	 * @return FrontendEntryPoint-Object
+	 */
+	public static FrontendEntryPoint get() {
+		return frontend;
+	}
+
+	/**
+	 * Returns a string, which contains the date when this document was modified
+	 * (normally the tomcat deploy date).
+	 * 
+	 * @return date as a string
+	 */
+	public static native String getDocumentLastModifiedDate()
+	/*-{
+		return document.lastModified;
+	}-*/;
 
 	private DatabaseInstance connectedDatabase;
-	private static FrontendEntryPoint frontend;
 
 	private CallbackBatch loadingBatch;
 
 	/**
-	 * will be executed at the start of the application.
+	 * This method will be executed at the start of the application. It's like
+	 * the "main-method" of the application.
 	 */
+	@Override
 	public void onModuleLoad() {
 		frontend = this;
 
-		LOGGER.setLevel(Level.FINE);
-		LOGGER.addHandler(LogHandler.get());
+		configLogger();
 
 		R.loadLangFile(this);
+	}
+
+	/**
+	 * Sets the level and the handler of the root-logger.
+	 */
+	private void configLogger() {
+		Logger rootLogger = Logger.getLogger("");
+		rootLogger.setLevel(Level.FINE);
+		rootLogger.addHandler(LogHandler.get());
 	}
 
 	/**
@@ -57,7 +89,8 @@ public class FrontendEntryPoint implements EntryPoint, SimpleNotify {
 	}
 
 	/**
-	 * 
+	 * Loading details from SoPeCo and the from the Backend (supported
+	 * exploration extensions, database-host,...).
 	 */
 	private void rpcLoad() {
 		ParallelCallback<ExtensionContainer> loadExtensions = Extensions.getLoadingCallback();
@@ -65,19 +98,39 @@ public class FrontendEntryPoint implements EntryPoint, SimpleNotify {
 
 		loadingBatch = new CallbackBatch(loadExtensions, loadSystemDetails) {
 			@Override
-			protected void onSuccess() {
-				System.out.println("loading finished...");
-				changeDatabase();
+			protected void onFailure(List<Throwable> exceptionList) {
+				for (Throwable t : exceptionList) {
+					LOGGER.severe(t.getLocalizedMessage());
+					Message.error(t.getMessage());
+				}
 			}
 
 			@Override
-			protected void onFailure() {
-				Message.error("Loading data failed..");
+			protected void onSuccess() {
+				changeDatabase();
 			}
 		};
 
 		RPC.getExtensionRPC().getExtensions(loadExtensions);
 		RPC.getSystemDetailsRPC().getMetaDatabaseDetails(loadSystemDetails);
+	}
+
+	/**
+	 * Causing a change of the database.
+	 */
+	public void changeDatabase() {
+		clearRootLayout();
+		LoginBox box = new LoginBox();
+		box.center();
+	}
+
+	/**
+	 * returns the database instance of the current connection/session.
+	 * 
+	 * @return database instance
+	 */
+	public DatabaseInstance getConnectedDatabase() {
+		return connectedDatabase;
 	}
 
 	/**
@@ -97,43 +150,12 @@ public class FrontendEntryPoint implements EntryPoint, SimpleNotify {
 	}
 
 	/**
-	 * clears the root layout panel.
+	 * Clears the root-layout-panel. The browser-window is empty after this
+	 * method.
 	 */
 	private void clearRootLayout() {
 		RootLayoutPanel rootLayoutPanel = RootLayoutPanel.get();
 		rootLayoutPanel.clear();
 	}
 
-	/**
-	 * Causing a change of the database.
-	 */
-	public void changeDatabase() {
-		clearRootLayout();
-		LoginBox box = new LoginBox(this);
-		box.center();
-	}
-
-	/**
-	 * returns the database instance of the current connection/session.
-	 * 
-	 * @return database instance
-	 */
-	public DatabaseInstance getConnectedDatabase() {
-		return connectedDatabase;
-	}
-
-	/**
-	 * Returns the FrontendEntryPoint object, which is like the "main method" of
-	 * the current process.
-	 * 
-	 * @return FrontendEntryPoint-Object
-	 */
-	public static FrontendEntryPoint get() {
-		return frontend;
-	}
-
-	public static native String getDocumentLastModifiedDate()
-	/*-{
-		return document.lastModified;
-	}-*/;
 }

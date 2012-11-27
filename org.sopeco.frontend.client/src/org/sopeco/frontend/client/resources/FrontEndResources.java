@@ -147,6 +147,24 @@ public final class FrontEndResources {
 	}
 
 	/**
+	 * 
+	 */
+	public static void loadLoginBoxCSS() {
+		GWT.runAsync(new RunAsyncCallback() {
+			@Override
+			public void onFailure(Throwable reason) {
+				Window.alert(R.get("errorCssLoading"));
+			}
+
+			@Override
+			public void onSuccess() {
+				ResourceBundle rsc = GWT.create(ResourceBundle.class);
+				rsc.loginBoxCss().ensureInjected();
+			}
+		});
+	}
+
+	/**
 	 * ClientBundle to load Resources.
 	 */
 	interface ResourceBundle extends ClientBundle {
@@ -178,6 +196,9 @@ public final class FrontEndResources {
 		@CssResource.NotStrict
 		CssResource controllerViewCss();
 
+		@Source("loginBox.css")
+		@CssResource.NotStrict
+		CssResource loginBoxCss();
 	}
 
 }

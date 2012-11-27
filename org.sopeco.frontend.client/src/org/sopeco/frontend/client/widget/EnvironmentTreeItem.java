@@ -1,5 +1,7 @@
 package org.sopeco.frontend.client.widget;
 
+import java.util.logging.Logger;
+
 import org.sopeco.frontend.client.R;
 import org.sopeco.frontend.client.helper.handler.NoSpecialCharsHandler;
 import org.sopeco.frontend.client.layout.popups.Loader;
@@ -29,6 +31,8 @@ import com.google.gwt.user.client.ui.TextBox;
  * 
  */
 public class EnvironmentTreeItem extends FrontendTreeItem {
+
+	private static final Logger LOGGER = Logger.getLogger(EnvironmentTreeItem.class.getName());
 
 	protected FlowPanel actionPanel;
 	protected Image removeNamespace, addNamespace, addParameter;
@@ -180,18 +184,15 @@ public class EnvironmentTreeItem extends FrontendTreeItem {
 
 		applyChanges();
 
-		Loader.showIcon();
 		RPC.getMEControllerRPC().renameNamespace(oldPath, currentText, new AsyncCallback<Boolean>() {
 			@Override
 			public void onSuccess(Boolean result) {
-				Loader.hideIcon();
 			}
 
 			@Override
 			public void onFailure(Throwable caught) {
+				LOGGER.severe(caught.getLocalizedMessage());
 				Message.error(caught.getMessage());
-
-				Loader.hideIcon();
 			}
 		});
 	}

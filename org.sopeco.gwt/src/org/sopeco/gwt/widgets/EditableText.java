@@ -65,6 +65,30 @@ public class EditableText extends FocusPanel implements ClickHandler,
 		add(htmlText);
 	}
 
+	/**
+	 * Sets the value.
+	 * 
+	 * @param newValue
+	 */
+	public void setValue(String newValue) {
+		setValue(newValue, false);
+	}
+
+	/**
+	 * Sets the value and fires the valuechange event, if fireEvent is true.
+	 * 
+	 * @param newValue
+	 * @param fireEvent
+	 */
+	public void setValue(String newValue, boolean fireEvent) {
+		value = newValue;
+		htmlText.setText(value);
+		tbValue.getTextbox().setText(value);
+		if (fireEvent) {
+			ValueChangeEvent.fire(this, value);
+		}
+	}
+
 	public void setValidPattern(String pValidPattern) {
 		this.validPattern = pValidPattern;
 	}
