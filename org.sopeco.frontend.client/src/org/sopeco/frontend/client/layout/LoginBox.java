@@ -347,6 +347,7 @@ public class LoginBox extends DialogBox implements ClickHandler, Deactivatable, 
 
 				hide();
 				Manager.get().setAccountDetails(result);
+
 				FrontendEntryPoint.get().initializeMainView(instance);
 			}
 		});

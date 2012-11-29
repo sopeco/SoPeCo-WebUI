@@ -19,7 +19,7 @@ public final class StartUp {
 	private static final String CONFIGURATION_FILE = "sopeco-gui.conf";
 
 	private static Boolean hasStarted = false;
-
+	
 	public static synchronized void start(String sessionId) {
 		if (!hasStarted) {
 			System.out.println(">> Starting backend..");

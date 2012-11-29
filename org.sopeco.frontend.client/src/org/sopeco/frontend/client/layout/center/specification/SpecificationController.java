@@ -164,14 +164,14 @@ public class SpecificationController implements ICenterController, ClickHandler,
 			inputRename.addHandler(this);
 			inputRename.setValidator(this);
 		}
-		inputRename.setValue(ScenarioManager.get().specification().getWorkingSpecificationName());
+		inputRename.setValue(ScenarioManager.get().specification().getSpecificationName());
 		inputRename.center();
 	}
 
 	@Override
 	public void onInput(InputDialog source, String value) {
-		if (!value.equals(ScenarioManager.get().specification().getWorkingSpecificationName())) {
-			ScenarioManager.get().renameWorkingSpecification(value);
+		if (!value.equals(ScenarioManager.get().specification().getSpecificationName())) {
+			ScenarioManager.get().specification().renameWorkingSpecification(value);
 		}
 	}
 
@@ -195,7 +195,7 @@ public class SpecificationController implements ICenterController, ClickHandler,
 		Confirmation.confirm(R.get("removeSpecification"), new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				if (!ScenarioManager.get().specification().removeWorkingSpecification()) {
+				if (!ScenarioManager.get().specification().removeCurrentSpecification()) {
 					Message.warning("There must be at least one specification available.");
 				}
 			}
@@ -216,7 +216,7 @@ public class SpecificationController implements ICenterController, ClickHandler,
 	 * current model to the assignmenListPanel.
 	 */
 	public void addExistingAssignments() {
-		addExistingAssignments(ScenarioManager.get().specification().getWorkingSpecificationName());
+		addExistingAssignments(ScenarioManager.get().specification().getSpecificationName());
 	}
 
 	/**

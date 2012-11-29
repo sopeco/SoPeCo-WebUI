@@ -21,8 +21,11 @@ public class ViewSwitch {
 	 *            type of the panel which will be shown.
 	 */
 	public void switchTo(CenterType type) {
+		switchTo(type, true);
+	}
+
+	private void switchTo(CenterType type, boolean historyEvent) {
 		LOGGER.fine("Switch view to type: " + type.toString());
-		// LOGGER.info("Switch view to type: " + type.toString());
 
 		MainLayoutPanel.get().updateCenterPanel(type);
 		MainLayoutPanel.get().getNavigationController().hideChangeSpecpanel();

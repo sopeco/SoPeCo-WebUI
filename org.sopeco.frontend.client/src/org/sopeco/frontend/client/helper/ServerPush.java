@@ -1,10 +1,6 @@
 package org.sopeco.frontend.client.helper;
 
-import org.sopeco.frontend.client.layout.MainLayoutPanel;
-import org.sopeco.frontend.client.layout.center.CenterType;
-import org.sopeco.frontend.client.layout.center.environment.EnvironmentView;
 import org.sopeco.frontend.client.layout.popups.Message;
-import org.sopeco.frontend.client.layout.popups.Notification;
 import org.sopeco.frontend.client.rpc.PushRPC;
 import org.sopeco.frontend.client.rpc.PushRPCAsync;
 import org.sopeco.frontend.shared.definitions.PushPackage;

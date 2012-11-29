@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.sopeco.frontend.client.event.EventControl;
 import org.sopeco.frontend.client.extensions.Extensions;
 import org.sopeco.frontend.client.helper.SimpleNotify;
 import org.sopeco.frontend.client.helper.SystemDetails;
@@ -14,6 +15,7 @@ import org.sopeco.frontend.client.layout.LoginBox;
 import org.sopeco.frontend.client.layout.MainLayoutPanel;
 import org.sopeco.frontend.client.layout.popups.Message;
 import org.sopeco.frontend.client.log.LogHandler;
+import org.sopeco.frontend.client.model.Manager;
 import org.sopeco.frontend.client.model.ScenarioManager;
 import org.sopeco.frontend.client.rpc.RPC;
 import org.sopeco.frontend.shared.helper.ExtensionContainer;
@@ -120,6 +122,8 @@ public class FrontendEntryPoint implements EntryPoint, SimpleNotify {
 	 */
 	public void changeDatabase() {
 		clearRootLayout();
+		Manager.get().reset();
+		EventControl.removeAllHandler();
 		LoginBox box = new LoginBox();
 		box.center();
 	}

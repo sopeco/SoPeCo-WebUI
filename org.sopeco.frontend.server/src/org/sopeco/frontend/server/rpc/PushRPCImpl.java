@@ -26,7 +26,8 @@ public class PushRPCImpl extends SuperRemoteServlet implements PushRPC {
 		try {
 			packageMap.put(sId, new PushPackage(Type.IDLE));
 			waitingMap.put(sId, new Object());
-
+ 
+			
 			synchronized (waitingMap.get(sId)) {
 				waitingMap.get(sId).wait(TIMEOUT);
 			}

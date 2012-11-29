@@ -11,6 +11,7 @@ import org.sopeco.frontend.client.extensions.Extensions;
 import org.sopeco.frontend.client.model.ScenarioManager;
 import org.sopeco.frontend.shared.helper.ExtensionTypes;
 import org.sopeco.frontend.shared.helper.Metering;
+import org.sopeco.gwt.widgets.EditableText;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -32,6 +33,7 @@ public class ExperimentExtensionController implements ValueChangeHandler<String>
 	// private ExtensionTypes extensionType;
 	private Map<String, Map<String, String>> extensionMap;
 	private Map<String, String> currentConfig;
+	private Map<EditableText, String> editTextToKey;
 	private String currentExtensionName;
 
 	public ExperimentExtensionController(ExperimentController parent, int width) {
@@ -122,18 +124,28 @@ public class ExperimentExtensionController implements ValueChangeHandler<String>
 		double metering = Metering.start();
 
 		view.getConfigTable().removeAllRows();
+		editTextToKey = new HashMap<EditableText, String>();
 
 		RegExp regex = RegExp.compile("([A-Z])", "g");
 
 		for (String key : currentConfig.keySet()) {
+			// Puts an whitespace infront of every capital
 			String text = regex.replace(key, " $1");
+			String defaultValue = extensionMap.get(currentExtensionName).get(key);
+			
+			EditableText newTextbox = view.addConfigRow(text, key, currentConfig.get(key));
+			newTextbox.setDefaultValue(defaultValue);
 
-			TextBox newTextbox = view.addConfigRow(text, key, currentConfig.get(key));
-			setTextboxHighligh(newTextbox, !valueIsDefault(key, currentConfig.get(key)));
-			newTextbox.setTitle(R.get("default") + ": " + extensionMap.get(currentExtensionName).get(key));
+			// setTextboxHighligh(newTextbox, !valueIsDefault(key,
+			// currentConfig.get(key)));
+			newTextbox.setTitle(R.get("default") + ": " + defaultValue);
+
+			editTextToKey.put(newTextbox, key);
 
 			newTextbox.addValueChangeHandler(this);
 		}
+
+		view.getConfigTable().getColumnFormatter().setWidth(0, "1px");
 
 		Metering.stop(metering);
 	}
@@ -142,9 +154,11 @@ public class ExperimentExtensionController implements ValueChangeHandler<String>
 	public void onValueChange(ValueChangeEvent<String> event) {
 		double metering = Metering.start();
 
-		String key = ((TextBox) event.getSource()).getName();
+		// String key = ((TextBox) event.getSource()).getName();
+		String key = editTextToKey.get(event.getSource());
 
-		setTextboxHighligh((TextBox) event.getSource(), !valueIsDefault(key, event.getValue()));
+		// setTextboxHighligh((TextBox) event.getSource(), !valueIsDefault(key,
+		// event.getValue()));
 
 		currentConfig.put(key, event.getValue());
 

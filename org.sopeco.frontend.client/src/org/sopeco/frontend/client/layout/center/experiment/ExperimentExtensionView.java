@@ -1,6 +1,7 @@
 package org.sopeco.frontend.client.layout.center.experiment;
 
 import org.sopeco.gwt.widgets.ComboBox;
+import org.sopeco.gwt.widgets.EditableText;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Unit;
@@ -82,19 +83,22 @@ public class ExperimentExtensionView extends FlowPanel {
 	 * @param value
 	 * @return
 	 */
-	public TextBox addConfigRow(String labelText, String key, String value) {
+	public EditableText addConfigRow(String labelText, String key, String value) {
 		HTML htmlLabel = new HTML(labelText);
-		TextBox textboxValue = new TextBox();
+		// TextBox textboxValue = new TextBox();
 
-		textboxValue.setName(key);
-		textboxValue.setText(value);
+		// textboxValue.setName(key);
+		// textboxValue.setText(value);
 		htmlLabel.setTitle(labelText);
+		htmlLabel.addStyleName("label");
+
+		EditableText editText = new EditableText(value);
 
 		int row = configTable.getRowCount();
 
 		configTable.setWidget(row, 0, htmlLabel);
-		configTable.setWidget(row, 1, textboxValue);
+		configTable.setWidget(row, 1, editText);
 
-		return textboxValue;
+		return editText;
 	}
 }

@@ -117,6 +117,9 @@ public class CreateScenarioWizzard extends FlowPanel implements ClickHandler, Bl
 	public void call() {
 		addMEController();
 
+		MainLayoutPanel.get().getNorthPanel().updateScenarioList();
+		ScenarioManager.get().switchScenario(Manager.get().getAccountDetails().getSelectedScenario());
+		
 		if (simpleNotifier != null) {
 			simpleNotifier.call();
 		}
@@ -138,8 +141,6 @@ public class CreateScenarioWizzard extends FlowPanel implements ClickHandler, Bl
 
 		Manager.get().setControllerLastStatus(ControllerStatus.ONLINE);
 		Manager.get().storeAccountDetails();
-
-		MainLayoutPanel.get().getNorthPanel().updateScenarioList();
 	}
 
 	/**

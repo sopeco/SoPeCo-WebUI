@@ -35,9 +35,15 @@ public final class Manager {
 	private long controllerLastCheck = -1;
 	private ControllerStatus controllerLastStatus = ControllerStatus.UNKNOWN;
 	private AccountDetails accountDetails = null;
-	private String[] availableScenarios = null;
 	private String selectedExperiment;
 	private List<DatabaseInstance> availableDatabases;
+
+	public void reset() {
+		selectedExperiment = null;
+		accountDetails = null;
+		controllerLastStatus = ControllerStatus.UNKNOWN;
+		controllerLastCheck = -1;
+	}
 
 	/**
 	 * Sends the current AccountDetails to the backend to store it in the
@@ -75,8 +81,8 @@ public final class Manager {
 		return availableDatabases;
 	}
 
-	public void setAvailableDatabases(List<DatabaseInstance> availableDatabases) {
-		this.availableDatabases = availableDatabases;
+	public void setAvailableDatabases(List<DatabaseInstance> pAvailableDatabases) {
+		this.availableDatabases = pAvailableDatabases;
 	}
 
 	/**
@@ -107,21 +113,6 @@ public final class Manager {
 	 */
 	public void setAccountDetails(AccountDetails pAccountDetails) {
 		this.accountDetails = pAccountDetails;
-	}
-
-	/**
-	 * @return the availableScenarios
-	 */
-	public String[] getAvailableScenarios() {
-		return availableScenarios;
-	}
-
-	/**
-	 * @param pAvailableScenarios
-	 *            the availableScenarios to set
-	 */
-	public void setAvailableScenarios(String[] pAvailableScenarios) {
-		this.availableScenarios = pAvailableScenarios;
 	}
 
 	/**

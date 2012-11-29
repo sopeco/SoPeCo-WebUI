@@ -75,8 +75,13 @@
 /** ExtensionViews */
 .experimentExtensionView table {
 	width: 100%;
+	border-spacing: 1.5em 2px;
 }
 
+.experimentExtensionView table .label {
+	white-space: nowrap;
+}
+/*
 .experimentExtensionView table .gwt-HTML {
 	margin-left: 20px;
 	line-height: 28px;
@@ -101,8 +106,7 @@
 .experimentExtensionView table .gwt-TextBox:focus {
 	color: #333;
 	font-weight: normal;
-}
-
+}*/
 /** parameterPanel */
 #expParameterPanel {
 	position: absolute;

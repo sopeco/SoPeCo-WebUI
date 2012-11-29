@@ -4,10 +4,7 @@ import java.util.logging.Logger;
 
 import org.sopeco.frontend.client.event.EnvironmentDefinitionChangedEvent;
 import org.sopeco.frontend.client.event.EventControl;
-import org.sopeco.frontend.client.event.ScenarioChangedEvent;
-import org.sopeco.frontend.client.event.ScenarioLoadedEvent;
 import org.sopeco.frontend.client.event.SpecificationChangedEvent;
-import org.sopeco.frontend.client.event.handler.ScenarioChangedEventHandler;
 import org.sopeco.frontend.client.helper.INotifyHandler;
 import org.sopeco.frontend.client.helper.INotifyHandler.Result;
 import org.sopeco.frontend.client.helper.SimpleNotify;
@@ -15,9 +12,11 @@ import org.sopeco.frontend.client.layout.MainLayoutPanel;
 import org.sopeco.frontend.client.layout.center.CenterType;
 import org.sopeco.frontend.client.layout.center.specification.SpecificationController;
 import org.sopeco.frontend.client.layout.popups.Message;
+import org.sopeco.frontend.client.model.helper.Duplicator;
 import org.sopeco.frontend.client.rpc.RPC;
 import org.sopeco.frontend.shared.builder.MeasurementSpecificationBuilder;
 import org.sopeco.frontend.shared.builder.ScenarioDefinitionBuilder;
+import org.sopeco.frontend.shared.entities.ScenarioDetails;
 import org.sopeco.frontend.shared.helper.Helper;
 import org.sopeco.frontend.shared.helper.Utilities;
 import org.sopeco.persistence.entities.definition.ConstantValueAssignment;
@@ -74,13 +73,6 @@ public final class ScenarioManager {
 	 */
 	private ScenarioManager() {
 		builder = new ScenarioDefinitionBuilder();
-
-		EventControl.get().addHandler(ScenarioChangedEvent.TYPE, new ScenarioChangedEventHandler() {
-			@Override
-			public void onScenarioChanged(ScenarioChangedEvent scenarioChangedEvent) {
-				switchScenario(scenarioChangedEvent.getScenarioName());
-			}
-		});
 	}
 
 	/**
@@ -135,31 +127,6 @@ public final class ScenarioManager {
 	}
 
 	/**
-	 * Adding a new specification to the scenario and set it to the working
-	 * specification.
-	 * 
-	 * @param name
-	 */
-	public void createNewSpecification(String name) {
-		if (existSpecification(name)) {
-			LOGGER.warning("Specification with the name '" + name + "' already exists.");
-			return;
-		}
-
-		MeasurementSpecificationBuilder newBuilder = getBuilder().addNewMeasurementSpecification();
-		if (newBuilder == null) {
-			// LOGGER.warn("Error at adding new specification '{}'", name);
-			return;
-		}
-
-		newBuilder.setName(name);
-		storeScenario();
-
-		MainLayoutPanel.get().getNavigationController().addSpecifications(name);
-		EventControl.get().fireEvent(new SpecificationChangedEvent(name));
-	}
-
-	/**
 	 * 
 	 * @param scenarioName
 	 */
@@ -197,6 +164,7 @@ public final class ScenarioManager {
 					handler.call(callResult);
 				} else {
 					MainLayoutPanel.get().getNorthPanel().updateScenarioList();
+					switchScenario(realScenarioName);
 				}
 			}
 		});
@@ -231,6 +199,7 @@ public final class ScenarioManager {
 							simpleNotify.call();
 						} else {
 							MainLayoutPanel.get().getNorthPanel().updateScenarioList();
+							switchScenario(cleanedScenarioName);
 						}
 					}
 				});
@@ -254,10 +223,7 @@ public final class ScenarioManager {
 	 * @return
 	 */
 	public boolean existScenario(String name) {
-		if (Manager.get().getAvailableScenarios() == null) {
-			return false;
-		}
-		for (String sName : Manager.get().getAvailableScenarios()) {
+		for (String sName : Manager.get().getAccountDetails().getScenarioNames()) {
 			if (sName.equals(name)) {
 				return true;
 			}
@@ -328,11 +294,17 @@ public final class ScenarioManager {
 
 				builder = ScenarioDefinitionBuilder.load(result);
 
-				String newSpecification = builder.getBuiltScenario().getMeasurementSpecifications().get(0).getName();
-				specification().setWorkingSpecification(newSpecification);
+				String specification = Manager.get().getAccountDetails().getSelectedSpecification();
+				//if (specification == null || !specification().existSpecification(specification)) {
+					specification = builder.getBuiltScenario().getMeasurementSpecifications().get(0).getName();
+				//}
+				//specification().changeSpecification(specification);
 
-				EventControl.get().fireEvent(new ScenarioLoadedEvent());
-				EventControl.get().fireEvent(new SpecificationChangedEvent(newSpecification));
+				// EventControl.get().fireEvent(new ScenarioLoadedEvent());
+				MainLayoutPanel.get().getNavigationController().updateSpecifications();
+				MainLayoutPanel.get().createNewCenterPanels();
+
+				EventControl.get().fireEvent(new SpecificationChangedEvent(specification));
 				EventControl.get().fireEvent(new EnvironmentDefinitionChangedEvent());
 
 				MainLayoutPanel.get().getViewSwitch().switchTo(CenterType.Specification);
@@ -364,7 +336,7 @@ public final class ScenarioManager {
 	 * 
 	 * @param scenarioName
 	 */
-	public void removeScenario(String scenarioName) {
+	public void removeScenario(final String scenarioName) {
 		RPC.getScenarioManager().removeScenario(scenarioName, new AsyncCallback<Boolean>() {
 			@Override
 			public void onFailure(Throwable caught) {
@@ -374,33 +346,21 @@ public final class ScenarioManager {
 
 			@Override
 			public void onSuccess(Boolean result) {
-
+				for (ScenarioDetails sd : Manager.get().getAccountDetails().getScenarioDetails()) {
+					if (sd.getScenarioName().equals(scenarioName)) {
+						Manager.get().getAccountDetails().getScenarioDetails().remove(sd);
+						Manager.get().storeAccountDetails();
+						break;
+					}
+				}
 				MainLayoutPanel.get().getNorthPanel().updateScenarioList();
+				if (Manager.get().getAccountDetails().getScenarioDetails().isEmpty()) {
+					MainLayoutPanel.get().getViewSwitch().switchTo(CenterType.NoScenario);
+				} else {
+					switchScenario(Manager.get().getAccountDetails().getScenarioNames()[0]);
+				}
 			}
 		});
-	}
-
-	/**
-	 * Renames the current workingSpecification to the given name.
-	 */
-	public void renameWorkingSpecification(String newName) {
-		renameWorkingSpecification(newName, null);
-	}
-
-	/**
-	 * Renames the current workingSpecification to the given name.
-	 */
-	public void renameWorkingSpecification(String newName, INotifyHandler<Boolean> handler) {
-		getBuilder().getSpecificationBuilder().setName(newName);
-		MainLayoutPanel.get().getNavigationController().updateSpecifications();
-		EventControl.get().fireEvent(new SpecificationChangedEvent(newName));
-
-		storeScenario();
-
-		if (handler != null) {
-			Result<Boolean> callResult = new Result<Boolean>(true, true);
-			handler.call(callResult);
-		}
 	}
 
 	/**
@@ -496,28 +456,16 @@ public final class ScenarioManager {
 	}
 
 	/**
-	 * Returns whether a specification with the given name exists.
-	 * 
-	 * @param specification
-	 *            specififcation name
-	 * @return specification exists
-	 */
-	private boolean existSpecification(String specification) {
-		for (MeasurementSpecification ms : getBuilder().getBuiltScenario().getMeasurementSpecifications()) {
-			if (specification.equals(ms.getName())) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	/**
 	 * Switch the current scenario to the given scenario(name).
 	 * 
 	 * @param scenarioName
 	 *            name of the new scenario
 	 */
-	private void switchScenario(final String scenarioName) {
+	public void switchScenario(final String scenarioName) {
+		LOGGER.fine("switch scenario to: " + scenarioName);
+		if (scenarioName == null) {
+			return;
+		}
 		Manager.get().getAccountDetails().setSelectedScenario(scenarioName);
 		Manager.get().storeAccountDetails();
 
@@ -532,6 +480,7 @@ public final class ScenarioManager {
 			public void onSuccess(Boolean result) {
 				currentScenarioName = scenarioName;
 				loadCurrentScenarioFromServer();
+
 			}
 		});
 	}

@@ -35,10 +35,12 @@ public class EditableText extends FocusPanel implements ClickHandler,
 	public static final String PATTERN_BOOLEAN = "true|false";
 
 	private static final String STYLE_CLASS = "sopeco-EditableText";
+	private static final String DEFAULT_CLASS = "sopeco-EditableText-Default";
 	private HTML htmlText;
 	private WrappedTextBox tbValue;
 	private String value;
 	private String validPattern = "";
+	private String defaultValue;
 
 	public EditableText(String text) {
 		addStyleName(STYLE_CLASS);
@@ -72,6 +74,17 @@ public class EditableText extends FocusPanel implements ClickHandler,
 	 */
 	public void setValue(String newValue) {
 		setValue(newValue, false);
+	}
+
+	/**
+	 * Sets the defualt String. If this String is entered, the DEFAULT_CSS class
+	 * is added to the element.
+	 * 
+	 * @param pDefaultValue
+	 */
+	public void setDefaultValue(String pDefaultValue) {
+		this.defaultValue = pDefaultValue;
+		checkDefaultValue();
 	}
 
 	/**
@@ -117,6 +130,8 @@ public class EditableText extends FocusPanel implements ClickHandler,
 			}
 		}
 
+		checkDefaultValue();
+
 		if (value.isEmpty()) {
 			htmlText.setHTML("&nbsp;");
 		} else {
@@ -124,6 +139,14 @@ public class EditableText extends FocusPanel implements ClickHandler,
 		}
 		tbValue.removeFromParent();
 		add(htmlText);
+	}
+
+	private void checkDefaultValue() {
+		if (defaultValue != null && value.equals(defaultValue)) {
+			addStyleName(DEFAULT_CLASS);
+		} else {
+			removeStyleName(DEFAULT_CLASS);
+		}
 	}
 
 	@Override

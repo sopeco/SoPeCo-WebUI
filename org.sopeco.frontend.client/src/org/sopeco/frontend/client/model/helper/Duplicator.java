@@ -1,4 +1,4 @@
-package org.sopeco.frontend.client.model;
+package org.sopeco.frontend.client.model.helper;
 
 import java.util.Map;
 

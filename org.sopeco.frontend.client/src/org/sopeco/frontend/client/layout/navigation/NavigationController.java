@@ -5,9 +5,7 @@ import java.util.logging.Logger;
 
 import org.sopeco.frontend.client.R;
 import org.sopeco.frontend.client.event.EventControl;
-import org.sopeco.frontend.client.event.ScenarioLoadedEvent;
 import org.sopeco.frontend.client.event.SpecificationChangedEvent;
-import org.sopeco.frontend.client.event.handler.ScenarioLoadedEventHandler;
 import org.sopeco.frontend.client.event.handler.SpecificationChangedEventHandler;
 import org.sopeco.frontend.client.layout.MainLayoutPanel;
 import org.sopeco.frontend.client.layout.center.CenterType;
@@ -20,6 +18,7 @@ import org.sopeco.frontend.client.model.ScenarioManager;
 import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
 import org.sopeco.persistence.entities.definition.MeasurementSpecification;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.HTML;
@@ -51,12 +50,6 @@ public class NavigationController implements ClickHandler, InputDialogHandler, I
 		}
 
 		// Events
-		EventControl.get().addHandler(ScenarioLoadedEvent.TYPE, new ScenarioLoadedEventHandler() {
-			@Override
-			public void onScenarioLoadedEvent(ScenarioLoadedEvent scenarioLoadedEvent) {
-				updateSpecifications();
-			}
-		});
 
 		EventControl.get().addHandler(SpecificationChangedEvent.TYPE, new SpecificationChangedEventHandler() {
 			@Override
@@ -74,7 +67,7 @@ public class NavigationController implements ClickHandler, InputDialogHandler, I
 		if (source == inputAddExperiment) {
 			ScenarioManager.get().experiment().createExperimentSeries(value);
 		} else if (source == inputAddSpecification) {
-			ScenarioManager.get().createNewSpecification(value);
+			ScenarioManager.get().specification().createNewSpecification(value);
 		}
 	}
 
@@ -85,7 +78,7 @@ public class NavigationController implements ClickHandler, InputDialogHandler, I
 				source.showWarning("The name of an Experimentseries must not be empty.");
 				return false;
 			}
-			for (ExperimentSeriesDefinition esd : ScenarioManager.get().specification().getWorkingSpecification()
+			for (ExperimentSeriesDefinition esd : ScenarioManager.get().specification().getSpecification()
 					.getExperimentSeriesDefinitions()) {
 				if (text.equals(esd.getName())) {
 					source.showWarning("There is already a ExperimentSeries with this name.");
@@ -173,6 +166,7 @@ public class NavigationController implements ClickHandler, InputDialogHandler, I
 	 *            the name of the specification
 	 */
 	public void addSpecifications(String text) {
+		GWT.log(text);
 		view.getChangeSpecificationPanel().addItem(text).addClickHandler(getChangeSpecificationClickHandler());
 	}
 
@@ -199,7 +193,7 @@ public class NavigationController implements ClickHandler, InputDialogHandler, I
 				HTML item = (HTML) event.getSource();
 				String specificationName = item.getText();
 
-				if (ScenarioManager.get().specification().getWorkingSpecificationName().equals(specificationName)) {
+				if (ScenarioManager.get().specification().getSpecificationName().equals(specificationName)) {
 					view.getChangeSpecificationPanel().setVisible(false);
 
 					return;
@@ -284,7 +278,6 @@ public class NavigationController implements ClickHandler, InputDialogHandler, I
 		if (view.getNaviItemsMap().containsKey(newType)) {
 			setActiveNavigationItem(view.getNaviItemsMap().get(newType));
 		}
-
 		currentCenterType = newType;
 	}
 

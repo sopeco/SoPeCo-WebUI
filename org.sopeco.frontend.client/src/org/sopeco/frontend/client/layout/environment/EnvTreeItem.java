@@ -36,7 +36,9 @@ public class EnvTreeItem extends TreeItem implements ValueChangeHandler<Boolean>
 
 	public void setCheckboxesEnable(boolean enable) {
 		firstCheckBox.setEnabled(enable);
-		secondCheckBox.setEnabled(enable);
+		if (hasSecondCheckbox) {
+			secondCheckBox.setEnabled(enable);
+		}
 	}
 
 	public void setFirstCheckboxValue(boolean value) {
@@ -44,7 +46,9 @@ public class EnvTreeItem extends TreeItem implements ValueChangeHandler<Boolean>
 	}
 
 	public void setSecondCheckboxValue(boolean value) {
-		secondCheckBox.setValue(value);
+		if (hasSecondCheckbox) {
+			secondCheckBox.setValue(value);
+		}
 	}
 
 	@Override
@@ -62,13 +66,12 @@ public class EnvTreeItem extends TreeItem implements ValueChangeHandler<Boolean>
 
 	private void addCheckBoxes() {
 		firstCheckBox = new CheckBox();
-		secondCheckBox = new CheckBox();
-
 		firstCheckBox.addValueChangeHandler(this);
-		secondCheckBox.addValueChangeHandler(this);
-
 		add(firstCheckBox);
+
 		if (hasSecondCheckbox) {
+			secondCheckBox = new CheckBox();
+			secondCheckBox.addValueChangeHandler(this);
 			add(secondCheckBox);
 		}
 	}

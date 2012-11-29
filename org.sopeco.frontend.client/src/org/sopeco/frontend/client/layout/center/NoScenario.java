@@ -108,6 +108,8 @@ public class NoScenario extends CenterPanel implements ClickHandler, BlurHandler
 	@Override
 	public void call() {
 		addMEController();
+		MainLayoutPanel.get().getNorthPanel().updateScenarioList();
+		ScenarioManager.get().switchScenario(Manager.get().getAccountDetails().getSelectedScenario());
 	}
 
 	/**
@@ -127,8 +129,6 @@ public class NoScenario extends CenterPanel implements ClickHandler, BlurHandler
 		// Manager.get().setControllerLastCheck(latestCheckRun);
 		Manager.get().setControllerLastStatus(ControllerStatus.ONLINE);
 		Manager.get().storeAccountDetails();
-
-		MainLayoutPanel.get().getNorthPanel().updateScenarioList();
 	}
 
 	/**

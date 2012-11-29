@@ -13,6 +13,7 @@ import org.sopeco.frontend.client.event.handler.ExperimentChangedEventHandler;
 import org.sopeco.frontend.client.extensions.Extensions;
 import org.sopeco.frontend.client.layout.MainLayoutPanel;
 import org.sopeco.frontend.client.layout.center.experiment.ExperimentController;
+import org.sopeco.frontend.client.model.helper.Duplicator;
 import org.sopeco.frontend.shared.builder.SimpleEntityFactory;
 import org.sopeco.frontend.shared.helper.ExtensionTypes;
 import org.sopeco.frontend.shared.helper.Metering;
@@ -77,7 +78,7 @@ public class ExperimentModul {
 	 */
 	public void removeCurrentExperimentSeries() {
 		MeasurementSpecification ms = manager.getBuilder().getMeasurementSpecification(
-				manager.specification().getWorkingSpecificationName());
+				manager.specification().getSpecificationName());
 
 		ms.getExperimentSeriesDefinitions().remove(getCurrentExperiment());
 
@@ -167,11 +168,11 @@ public class ExperimentModul {
 	 * @return list with experiments
 	 */
 	public List<ExperimentSeriesDefinition> getExperimentsOfCurrentSpecififcation() {
-		if (manager.specification().getWorkingSpecificationName() == null) {
+		if (manager.specification().getSpecificationName() == null) {
 			return new ArrayList<ExperimentSeriesDefinition>();
 		}
 
-		return manager.getBuilder().getMeasurementSpecification(manager.specification().getWorkingSpecificationName())
+		return manager.getBuilder().getMeasurementSpecification(manager.specification().getSpecificationName())
 				.getExperimentSeriesDefinitions();
 	}
 
@@ -469,7 +470,7 @@ public class ExperimentModul {
 		ExperimentSeriesDefinition clone = Duplicator.cloneExperiment(source);
 		clone.setName(targetName);
 
-		ScenarioManager.get().specification().getWorkingSpecification().getExperimentSeriesDefinitions().add(clone);
+		ScenarioManager.get().specification().getSpecification().getExperimentSeriesDefinitions().add(clone);
 
 		ScenarioManager.get().storeScenario();
 

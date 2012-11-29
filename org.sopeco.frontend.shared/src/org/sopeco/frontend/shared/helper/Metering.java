@@ -26,9 +26,10 @@ public final class Metering {
 		StackTraceElement stackTop = ex.getStackTrace()[1];
 
 		long duration = System.currentTimeMillis() - map.get(key);
+		map.remove(key);
 
 		String text = "Metering: " + stackTop.getClassName() + " " + stackTop.getMethodName() + "() : " + duration
 				+ "ms";
-		System.err.println("Metering: " + stackTop.getClassName() + " " + stackTop.getMethodName() + "() : " + duration + "ms");
+		System.err.println(text);
 	}
 }

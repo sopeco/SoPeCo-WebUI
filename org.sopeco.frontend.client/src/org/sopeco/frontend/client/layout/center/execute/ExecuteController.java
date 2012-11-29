@@ -38,13 +38,13 @@ public class ExecuteController implements ICenterController, ClickHandler {
 		view = new ExecuteView();
 		addHandler();
 
-		Timer t = new Timer() {
+		/*Timer t = new Timer() {
 			@Override
 			public void run() {
 				pollingCheckStatus(false);
 			}
 		};
-		t.schedule(1000);
+		t.schedule(1000);*/
 	}
 
 	private void addHandler() {
@@ -80,7 +80,7 @@ public class ExecuteController implements ICenterController, ClickHandler {
 
 						running = true;
 
-						pollingCheckStatus(true);
+						pollingCheckStatus();
 					}
 
 					@Override
@@ -92,7 +92,7 @@ public class ExecuteController implements ICenterController, ClickHandler {
 		}
 	}
 
-	private void pollingCheckStatus(final boolean repeate) {
+	private void pollingCheckStatus() {
 		String url = Manager.get().getControllerUrl();
 
 		if (url.isEmpty()) {
@@ -132,7 +132,7 @@ public class ExecuteController implements ICenterController, ClickHandler {
 						@Override
 						public void run() {
 							// if (repeate) {
-							pollingCheckStatus(true);
+							pollingCheckStatus();
 							// }
 						}
 					};

@@ -131,6 +131,5 @@ public class NavigationView extends FlowPanel {
 	public void clearExperiments() {
 		experimentsPanel.clear();
 	}
-	
-	
+
 }

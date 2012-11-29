@@ -9,6 +9,7 @@ import org.sopeco.frontend.client.event.EventControl;
 import org.sopeco.frontend.client.event.ExperimentChangedEvent;
 import org.sopeco.frontend.client.event.handler.ExperimentChangedEventHandler;
 import org.sopeco.frontend.client.layout.MainLayoutPanel;
+import org.sopeco.frontend.client.layout.center.CenterType;
 import org.sopeco.frontend.client.layout.center.ICenterController;
 import org.sopeco.frontend.client.layout.center.experiment.assignment.AssignmentController;
 import org.sopeco.frontend.client.layout.center.experiment.assignment.AssignmentController.Type;
@@ -175,7 +176,7 @@ public class ExperimentController implements ICenterController, ValueChangeHandl
 			source.showWarning("The name of an Experimentseries must not be empty.");
 			return false;
 		}
-		for (ExperimentSeriesDefinition esd : ScenarioManager.get().specification().getWorkingSpecification()
+		for (ExperimentSeriesDefinition esd : ScenarioManager.get().specification().getSpecification()
 				.getExperimentSeriesDefinitions()) {
 			if (text.equals(esd.getName())) {
 				source.showWarning("There is already a ExperimentSeries with this name.");
@@ -197,7 +198,7 @@ public class ExperimentController implements ICenterController, ValueChangeHandl
 						.getExperimentsOfCurrentSpecififcation();
 
 				if (expList.isEmpty()) {
-					MainLayoutPanel.get().setMessage(R.get("noExpSeries"), R.get("plsAddExpSeries"));
+					MainLayoutPanel.get().getViewSwitch().switchTo(CenterType.Specification);
 				} else {
 					MainLayoutPanel.get().getViewSwitch().switchToExperiment(expList.get(0).getName());
 				}

@@ -45,6 +45,9 @@ public class AccountDetails implements Serializable {
 	@Column(name = "csvDecimalDelimiter")
 	private String csvDecimalDelimiter = ".";
 
+	@Column(name = "selectedSpecification")
+	private String selectedSpecification;
+
 	public AccountDetails() {
 		scenarioDetails = new ArrayList<ScenarioDetails>();
 	}
@@ -65,6 +68,14 @@ public class AccountDetails implements Serializable {
 	 */
 	public String getSelectedScenario() {
 		return selectedScenario;
+	}
+
+	public String getSelectedSpecification() {
+		return selectedSpecification;
+	}
+
+	public void setSelectedSpecification(String pSelectedSpecification) {
+		this.selectedSpecification = pSelectedSpecification;
 	}
 
 	/**
@@ -181,5 +192,18 @@ public class AccountDetails implements Serializable {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * Returns an array with all names of the existing scenarios.
+	 * 
+	 * @return
+	 */
+	public String[] getScenarioNames() {
+		String[] names = new String[scenarioDetails.size()];
+		for (int i = 0; i < names.length; i++) {
+			names[i] = scenarioDetails.get(i).getScenarioName();
+		}
+		return names;
 	}
 }
