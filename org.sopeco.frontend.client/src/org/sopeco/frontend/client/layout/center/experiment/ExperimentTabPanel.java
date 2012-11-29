@@ -14,13 +14,13 @@ import com.google.gwt.user.client.ui.TabPanel;
  */
 public class ExperimentTabPanel extends TabPanel implements ClickHandler {
 
-	private static final String EXPERIMENT_TAB_PANEL_ID = "experimentTabPanel";
+	private static final String EXPERIMENT_TAB_PANEL_CLASS = "sopeco-TabPanel";
 
 	private ExperimentSettingsView settingsView;
 	private ExperimentParameterView parameterView;
-	
+
 	public ExperimentTabPanel() {
-		FrontEndResources.loadExperimentTabPanelCSS();
+		FrontEndResources.loadSopecoTabPanelCSS();
 		init();
 	}
 
@@ -28,7 +28,7 @@ public class ExperimentTabPanel extends TabPanel implements ClickHandler {
 	 * Initializes all necessary objects.
 	 */
 	private void init() {
-		getElement().setId(EXPERIMENT_TAB_PANEL_ID);
+		addStyleName(EXPERIMENT_TAB_PANEL_CLASS);
 
 		settingsView = new ExperimentSettingsView();
 		parameterView = new ExperimentParameterView();

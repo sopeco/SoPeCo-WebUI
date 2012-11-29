@@ -1,0 +1,18 @@
+.executeConfigTable {
+	width: 100%;
+	border-spacing: 1em 0.5em;
+}
+
+.scheduleConfigTable {
+	width: 100%;
+	border-top: 1px dotted #CCC;
+}
+
+.scheduleConfigTable table {
+	border-spacing: 1em 0.5em;
+}
+
+.executeSelectionPanel {
+	width: 100%;
+	border-top: 1px solid #CCC;
+}

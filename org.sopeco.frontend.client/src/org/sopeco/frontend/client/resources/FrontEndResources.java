@@ -113,7 +113,7 @@ public final class FrontEndResources {
 	/**
 	 * 
 	 */
-	public static void loadExperimentTabPanelCSS() {
+	public static void loadSopecoTabPanelCSS() {
 		GWT.runAsync(new RunAsyncCallback() {
 			@Override
 			public void onFailure(Throwable reason) {
@@ -123,7 +123,7 @@ public final class FrontEndResources {
 			@Override
 			public void onSuccess() {
 				ResourceBundle rsc = GWT.create(ResourceBundle.class);
-				rsc.experimentTabPanelCss().ensureInjected();
+				rsc.sopecoTabPanelCss().ensureInjected();
 			}
 		});
 	}
@@ -165,6 +165,24 @@ public final class FrontEndResources {
 	}
 
 	/**
+	 * 
+	 */
+	public static void loadExecuteViewCSS() {
+		GWT.runAsync(new RunAsyncCallback() {
+			@Override
+			public void onFailure(Throwable reason) {
+				Window.alert(R.get("errorCssLoading"));
+			}
+
+			@Override
+			public void onSuccess() {
+				ResourceBundle rsc = GWT.create(ResourceBundle.class);
+				rsc.executeViewCss().ensureInjected();
+			}
+		});
+	}
+
+	/**
 	 * ClientBundle to load Resources.
 	 */
 	interface ResourceBundle extends ClientBundle {
@@ -188,9 +206,9 @@ public final class FrontEndResources {
 		@CssResource.NotStrict
 		CssResource scenarioAddCss();
 
-		@Source("experimentTabPanel.css")
+		@Source("sopecoTabPanel.css")
 		@CssResource.NotStrict
-		CssResource experimentTabPanelCss();
+		CssResource sopecoTabPanelCss();
 
 		@Source("controllerView.css")
 		@CssResource.NotStrict
@@ -199,6 +217,10 @@ public final class FrontEndResources {
 		@Source("loginBox.css")
 		@CssResource.NotStrict
 		CssResource loginBoxCss();
+
+		@Source("executeView.css")
+		@CssResource.NotStrict
+		CssResource executeViewCss();
 	}
 
 }

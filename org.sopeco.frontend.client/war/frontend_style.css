@@ -8,9 +8,9 @@
 
 .transparent-50 {
 	opacity: 0.5;
-	filter: alpha(opacity =                
+	filter: alpha(opacity =                  
 		                                                         
-		                  50);
+		                    50);
 }
 
 .spc-seperator {
@@ -484,16 +484,16 @@ p {
 #changeSpecPanel #addSpecification {
 	color: #333;
 	opacity: 0.5;
-	filter: alpha(opacity =                                           
+	filter: alpha(opacity =                                             
 		                                                         
-		                                             50);
+		                                               50);
 }
 
 #changeSpecPanel #addSpecification:hover {
 	opacity: 1;
-	filter: alpha(opacity =                                          
+	filter: alpha(opacity =                                            
 		                                                         
-		                                              100);
+		                                                100);
 }
 
 #changeSpecPanel #addSpecification>img {
@@ -613,8 +613,9 @@ p {
 
 .addExperimentNaviItem {
 	opacity: 0.5;
-	filter: alpha(opacity =                                                         
-		 50);
+	filter: alpha(opacity = 
+		                                                         
+		   50);
 	padding-left: 23px !important;
 	padding-right: 0 !important;
 	font-weight: normal !important;
@@ -622,8 +623,9 @@ p {
 
 .addExperimentNaviItem:hover {
 	opacity: 1;
-	filter: alpha(opacity =                                                         
-		  100);
+	filter: alpha(opacity = 
+		                                                         
+		    100);
 }
 
 .addExperimentNaviItem img {
@@ -645,7 +647,7 @@ p {
 	background: -o-linear-gradient(top, #223344 5%, #838ead 50%, #223344 95%);
 	background: -ms-linear-gradient(top, #223344 5%, #838ead 50%, #223344 95%);
 	background: linear-gradient(to bottom, #223344 5%, #838ead 50%, #223344 95%);
-	filter: progid:DXImageTransform.Microsoft.gradient(                
+	filter: progid:DXImageTransform.Microsoft.gradient(                  
 		                     startColorstr='#223344', endColorstr='#223344',
 		GradientType=0 );
 }
@@ -771,4 +773,21 @@ p {
 	width: 14px;
 	height: 14px;
 	cursor: pointer;
+}
+
+.sapResearch {
+	font-family: arial;
+	font-weight: bold;
+	text-transform: capitalize;
+	font-size: 3em;
+	right: 0.2em !important;
+	left: auto !important;
+}
+
+.sapResearch span:first-child {
+	color: #f0a800;
+}
+
+.sapResearch span:last-child {
+	color: #999;
 }

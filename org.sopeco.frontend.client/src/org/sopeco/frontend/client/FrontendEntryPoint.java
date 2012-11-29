@@ -22,6 +22,7 @@ import org.sopeco.frontend.shared.helper.ExtensionContainer;
 import org.sopeco.persistence.metadata.entities.DatabaseInstance;
 
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 
 /**
@@ -35,6 +36,7 @@ public class FrontendEntryPoint implements EntryPoint, SimpleNotify {
 	private static FrontendEntryPoint frontend;
 
 	private static final Logger LOGGER = Logger.getLogger(FrontendEntryPoint.class.getName());
+	private static HTML sapResearch;
 
 	/**
 	 * Returns the FrontendEntryPoint object of this application.
@@ -43,6 +45,14 @@ public class FrontendEntryPoint implements EntryPoint, SimpleNotify {
 	 */
 	public static FrontendEntryPoint get() {
 		return frontend;
+	}
+
+	public static HTML getSapResearch() {
+		if (sapResearch == null) {
+			sapResearch = new HTML("<span>SAP</span> <span>RESEARCH</span>");
+			sapResearch.addStyleName("sapResearch");
+		}
+		return sapResearch;
 	}
 
 	/**
@@ -160,6 +170,8 @@ public class FrontendEntryPoint implements EntryPoint, SimpleNotify {
 	private void clearRootLayout() {
 		RootLayoutPanel rootLayoutPanel = RootLayoutPanel.get();
 		rootLayoutPanel.clear();
+
+		rootLayoutPanel.add(getSapResearch());
 	}
 
 }
