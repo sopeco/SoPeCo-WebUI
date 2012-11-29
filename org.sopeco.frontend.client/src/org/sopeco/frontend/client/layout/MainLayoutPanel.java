@@ -2,7 +2,6 @@ package org.sopeco.frontend.client.layout;
 
 import java.util.HashMap;
 
-import org.sopeco.frontend.client.FrontendEntryPoint;
 import org.sopeco.frontend.client.layout.center.CenterType;
 import org.sopeco.frontend.client.layout.center.EmptyCenterPanel;
 import org.sopeco.frontend.client.layout.center.ICenterController;
@@ -119,6 +118,32 @@ public final class MainLayoutPanel extends DockLayoutPanel {
 
 		ScenarioManager.get().switchScenario(Manager.get().getAccountDetails().getSelectedScenario());
 		GWT.log("< initialize");
+	}
+
+	/**
+	 * Returns the SpecificationController of the layout, which is stored in the
+	 * centerController-Map.
+	 * 
+	 * @return SpecificationController
+	 */
+	public SpecificationController getSpecificationController() {
+		if (!centerController.containsKey(CenterType.Specification)) {
+			return null;
+		}
+		return (SpecificationController) centerController.get(CenterType.Specification);
+	}
+
+	/**
+	 * Returns the SpecificationController of the layout, which is stored in the
+	 * centerController-Map.
+	 * 
+	 * @return SpecificationController
+	 */
+	public ExperimentController getExperimentController() {
+		if (!centerController.containsKey(CenterType.Experiment)) {
+			return null;
+		}
+		return (ExperimentController) centerController.get(CenterType.Experiment);
 	}
 
 	/**

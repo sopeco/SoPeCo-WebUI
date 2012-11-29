@@ -3,7 +3,6 @@ package org.sopeco.frontend.client.layout.navigation;
 import org.sopeco.frontend.client.helper.UIObjectHelper;
 import org.sopeco.frontend.client.layout.center.CenterType;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;

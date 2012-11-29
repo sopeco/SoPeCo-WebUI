@@ -45,9 +45,6 @@ public class AccountDetails implements Serializable {
 	@Column(name = "csvDecimalDelimiter")
 	private String csvDecimalDelimiter = ".";
 
-	@Column(name = "selectedSpecification")
-	private String selectedSpecification;
-
 	public AccountDetails() {
 		scenarioDetails = new ArrayList<ScenarioDetails>();
 	}
@@ -68,14 +65,6 @@ public class AccountDetails implements Serializable {
 	 */
 	public String getSelectedScenario() {
 		return selectedScenario;
-	}
-
-	public String getSelectedSpecification() {
-		return selectedSpecification;
-	}
-
-	public void setSelectedSpecification(String pSelectedSpecification) {
-		this.selectedSpecification = pSelectedSpecification;
 	}
 
 	/**

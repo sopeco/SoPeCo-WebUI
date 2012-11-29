@@ -3,10 +3,8 @@ package org.sopeco.frontend.client.layout.center.experiment;
 import org.sopeco.frontend.client.R;
 import org.sopeco.frontend.client.resources.FrontEndResources;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.TabPanel;
 
 /**

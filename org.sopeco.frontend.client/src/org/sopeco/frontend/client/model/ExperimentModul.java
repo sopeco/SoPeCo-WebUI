@@ -34,12 +34,6 @@ import org.sopeco.persistence.entities.definition.ParameterValueAssignment;
  */
 public class ExperimentModul {
 
-	/** Termination Types. */
-	public enum TerminationCondition {
-		/** Termination Types. */
-		Repetitions, Timeout
-	}
-
 	private static final String DEFAULT_EXPLORATION = "Full Exploration Strategy";
 
 	private static final Logger LOGGER = Logger.getLogger(ExperimentModul.class.getName());
@@ -78,7 +72,7 @@ public class ExperimentModul {
 	 */
 	public void removeCurrentExperimentSeries() {
 		MeasurementSpecification ms = manager.getBuilder().getMeasurementSpecification(
-				manager.specification().getSpecificationName());
+				Manager.get().getCurrentScenarioDetails().getSelectedSpecification());
 
 		ms.getExperimentSeriesDefinitions().remove(getCurrentExperiment());
 
@@ -150,29 +144,19 @@ public class ExperimentModul {
 	}
 
 	/**
-	 * Sets the termination condition to the given values.
-	 * 
-	 * @param condition
-	 *            type of the condition
-	 * @param value
-	 *            value of the condition
-	 */
-	public void setTerminationCondition(TerminationCondition condition, String value) {
-
-	}
-
-	/**
 	 * Reutnrs a list with all ExperimentSeriesDefinition of the selected
 	 * specification.
 	 * 
 	 * @return list with experiments
 	 */
 	public List<ExperimentSeriesDefinition> getExperimentsOfCurrentSpecififcation() {
-		if (manager.specification().getSpecificationName() == null) {
+		if (!manager.isScenarioAvailable()
+				|| Manager.get().getCurrentScenarioDetails().getSelectedSpecification() == null) {
 			return new ArrayList<ExperimentSeriesDefinition>();
 		}
 
-		return manager.getBuilder().getMeasurementSpecification(manager.specification().getSpecificationName())
+		return manager.getBuilder()
+				.getMeasurementSpecification(Manager.get().getCurrentScenarioDetails().getSelectedSpecification())
 				.getExperimentSeriesDefinitions();
 	}
 

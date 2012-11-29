@@ -6,13 +6,9 @@ package org.sopeco.frontend.client.layout.environment;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.sopeco.frontend.client.event.EnvironmentDefinitionChangedEvent;
 import org.sopeco.frontend.client.event.EventControl;
 import org.sopeco.frontend.client.event.InitialAssignmentChangedEvent;
 import org.sopeco.frontend.client.event.InitialAssignmentChangedEvent.ChangeType;
-import org.sopeco.frontend.client.event.SpecificationChangedEvent;
-import org.sopeco.frontend.client.event.handler.EnvironmentDefinitionChangedEventHandler;
-import org.sopeco.frontend.client.event.handler.SpecificationChangedEventHandler;
 import org.sopeco.frontend.client.model.ScenarioManager;
 import org.sopeco.frontend.shared.helper.Metering;
 import org.sopeco.gwt.widgets.tree.TreeItem;
@@ -31,8 +27,7 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
  * @author Marius Oehler
  * 
  */
-public abstract class EnvironmentTree implements ClickHandler, ValueChangeHandler<Boolean>,
-		EnvironmentDefinitionChangedEventHandler, SpecificationChangedEventHandler {
+public abstract class EnvironmentTree implements ClickHandler, ValueChangeHandler<Boolean> {
 
 	private TreeView view;
 
@@ -59,21 +54,6 @@ public abstract class EnvironmentTree implements ClickHandler, ValueChangeHandle
 		observationItemsList = new ArrayList<TreeItem>();
 		treeNodesList = new ArrayList<TreeItem>();
 
-		generateTree();
-
-		EventControl.get().addHandler(SpecificationChangedEvent.TYPE, this);
-		EventControl.get().addHandler(EnvironmentDefinitionChangedEvent.TYPE, this);
-	}
-
-	@Override
-	public void onSpecificationChangedEvent(SpecificationChangedEvent event) {
-		GWT.log("event - SpecificationChangedEvent");
-		generateTree();
-	}
-
-	@Override
-	public void onEnvironmentChangedEvent(EnvironmentDefinitionChangedEvent event) {
-		GWT.log("event - EnvironmentDefinitionChangedEvent");
 		generateTree();
 	}
 
@@ -161,7 +141,7 @@ public abstract class EnvironmentTree implements ClickHandler, ValueChangeHandle
 	/**
 	 * 
 	 */
-	protected void generateTree() {
+	public void generateTree() {
 		double metering = Metering.start();
 
 		ParameterNamespace root = ScenarioManager.get().getBuilder().getMEDefinition().getRoot();

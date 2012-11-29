@@ -2,11 +2,6 @@ package org.sopeco.frontend.client.model;
 
 import java.util.logging.Logger;
 
-import org.sopeco.frontend.client.event.EnvironmentDefinitionChangedEvent;
-import org.sopeco.frontend.client.event.EventControl;
-import org.sopeco.frontend.client.event.SpecificationChangedEvent;
-import org.sopeco.frontend.client.helper.INotifyHandler;
-import org.sopeco.frontend.client.helper.INotifyHandler.Result;
 import org.sopeco.frontend.client.helper.SimpleNotify;
 import org.sopeco.frontend.client.layout.MainLayoutPanel;
 import org.sopeco.frontend.client.layout.center.CenterType;
@@ -14,7 +9,6 @@ import org.sopeco.frontend.client.layout.center.specification.SpecificationContr
 import org.sopeco.frontend.client.layout.popups.Message;
 import org.sopeco.frontend.client.model.helper.Duplicator;
 import org.sopeco.frontend.client.rpc.RPC;
-import org.sopeco.frontend.shared.builder.MeasurementSpecificationBuilder;
 import org.sopeco.frontend.shared.builder.ScenarioDefinitionBuilder;
 import org.sopeco.frontend.shared.entities.ScenarioDetails;
 import org.sopeco.frontend.shared.helper.Helper;
@@ -22,7 +16,6 @@ import org.sopeco.frontend.shared.helper.Utilities;
 import org.sopeco.persistence.entities.definition.ConstantValueAssignment;
 import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
 import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
-import org.sopeco.persistence.entities.definition.MeasurementSpecification;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.entities.definition.ParameterNamespace;
 import org.sopeco.persistence.entities.definition.ParameterRole;
@@ -63,8 +56,9 @@ public final class ScenarioManager {
 
 	private ScenarioDefinitionBuilder builder;
 	private String currentScenarioName;
-
 	private ExperimentModul experimentModul;
+
+	private boolean scenarioLoaded = false;
 
 	private SpecificationModul specificationModul;
 
@@ -129,50 +123,6 @@ public final class ScenarioManager {
 	/**
 	 * 
 	 * @param scenarioName
-	 */
-	public void createScenario(String scenarioName) {
-		createScenario(scenarioName, null);
-	}
-
-	/**
-	 * 
-	 * @param scenarioName
-	 * @param handler
-	 */
-	public void createScenario(String scenarioName, final INotifyHandler<Boolean> handler) {
-		final String realScenarioName = Utilities.cleanString(scenarioName);
-
-		RPC.getScenarioManager().addScenario(realScenarioName, new AsyncCallback<Boolean>() {
-			@Override
-			public void onFailure(Throwable caught) {
-				LOGGER.severe(caught.getLocalizedMessage());
-				Message.error("Failed adding new scenario.");
-				if (handler != null) {
-					Result<Boolean> callResult = new Result<Boolean>(false, false);
-					handler.call(callResult);
-				}
-			}
-
-			@Override
-			public void onSuccess(Boolean result) {
-				Manager.get().getAccountDetails().addScenarioDetails(realScenarioName);
-				Manager.get().getAccountDetails().setSelectedScenario(realScenarioName);
-				Manager.get().storeAccountDetails();
-
-				if (handler != null) {
-					Result<Boolean> callResult = new Result<Boolean>(true, true);
-					handler.call(callResult);
-				} else {
-					MainLayoutPanel.get().getNorthPanel().updateScenarioList();
-					switchScenario(realScenarioName);
-				}
-			}
-		});
-	}
-
-	/**
-	 * 
-	 * @param scenarioName
 	 * @param specificationName
 	 * @param experiment
 	 * @param simpleNotify
@@ -203,17 +153,6 @@ public final class ScenarioManager {
 						}
 					}
 				});
-	}
-
-	/**
-	 * 
-	 * @param scenarioName
-	 * @param specificationName
-	 * @param experimentName
-	 */
-	public void createSet(String scenarioName, String specificationName, String experimentName) {
-		MeasurementSpecificationBuilder newBuilder = getBuilder().addNewMeasurementSpecification();
-		newBuilder.setName(scenarioName);
 	}
 
 	/**
@@ -273,6 +212,15 @@ public final class ScenarioManager {
 	}
 
 	/**
+	 * Returns true if any scenario has been loaded and is available now.
+	 * 
+	 * @return
+	 */
+	public boolean isScenarioAvailable() {
+		return scenarioLoaded;
+	}
+
+	/**
 	 * Loading the scenario definition of the current selected scenario from the
 	 * server and stored it at the client.
 	 */
@@ -293,19 +241,18 @@ public final class ScenarioManager {
 				}
 
 				builder = ScenarioDefinitionBuilder.load(result);
+				scenarioLoaded = true;
 
-				String specification = Manager.get().getAccountDetails().getSelectedSpecification();
-				//if (specification == null || !specification().existSpecification(specification)) {
+				String specification = Manager.get().getCurrentScenarioDetails().getSelectedSpecification();
+				if (specification == null || !specification().existSpecification(specification)) {
 					specification = builder.getBuiltScenario().getMeasurementSpecifications().get(0).getName();
-				//}
-				//specification().changeSpecification(specification);
-
-				// EventControl.get().fireEvent(new ScenarioLoadedEvent());
-				MainLayoutPanel.get().getNavigationController().updateSpecifications();
+				}
 				MainLayoutPanel.get().createNewCenterPanels();
 
-				EventControl.get().fireEvent(new SpecificationChangedEvent(specification));
-				EventControl.get().fireEvent(new EnvironmentDefinitionChangedEvent());
+				specification().changeSpecification(specification);
+
+				// EventControl.get().fireEvent(new
+				// EnvironmentDefinitionChangedEvent());
 
 				MainLayoutPanel.get().getViewSwitch().switchTo(CenterType.Specification);
 			}
@@ -364,13 +311,17 @@ public final class ScenarioManager {
 	}
 
 	/**
+	 * Sets the given me-definition as the current definition and updates the
+	 * EnvrionmentTrees of the SpecificationView and ExperimentView.
 	 * 
 	 * @param environment
+	 *            new me-definition
 	 */
 	public void setMeasurementDefinition(MeasurementEnvironmentDefinition environment) {
 		builder.getBuiltScenario().setMeasurementEnvironmentDefinition(environment);
 
-		EventControl.get().fireEvent(new EnvironmentDefinitionChangedEvent());
+		MainLayoutPanel.get().getSpecificationController().getEnvironmentTree().generateTree();
+		MainLayoutPanel.get().getExperimentController().getEnvironmentTree().generateTree();
 	}
 
 	/**
@@ -402,6 +353,36 @@ public final class ScenarioManager {
 
 			@Override
 			public void onSuccess(Boolean result) {
+			}
+		});
+	}
+
+	/**
+	 * Switch the current scenario to the given scenario(name).
+	 * 
+	 * @param scenarioName
+	 *            name of the new scenario
+	 */
+	public void switchScenario(final String scenarioName) {
+		LOGGER.fine("switch scenario to: " + scenarioName);
+		if (scenarioName == null) {
+			return;
+		}
+		Manager.get().getAccountDetails().setSelectedScenario(scenarioName);
+		Manager.get().storeAccountDetails();
+
+		RPC.getScenarioManager().switchScenario(scenarioName, new AsyncCallback<Boolean>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				LOGGER.severe(caught.getLocalizedMessage());
+				Message.error(caught.getMessage());
+			}
+
+			@Override
+			public void onSuccess(Boolean result) {
+				currentScenarioName = scenarioName;
+				loadCurrentScenarioFromServer();
+
 			}
 		});
 	}
@@ -453,35 +434,5 @@ public final class ScenarioManager {
 		storeScenario();
 
 		return true;
-	}
-
-	/**
-	 * Switch the current scenario to the given scenario(name).
-	 * 
-	 * @param scenarioName
-	 *            name of the new scenario
-	 */
-	public void switchScenario(final String scenarioName) {
-		LOGGER.fine("switch scenario to: " + scenarioName);
-		if (scenarioName == null) {
-			return;
-		}
-		Manager.get().getAccountDetails().setSelectedScenario(scenarioName);
-		Manager.get().storeAccountDetails();
-
-		RPC.getScenarioManager().switchScenario(scenarioName, new AsyncCallback<Boolean>() {
-			@Override
-			public void onFailure(Throwable caught) {
-				LOGGER.severe(caught.getLocalizedMessage());
-				Message.error(caught.getMessage());
-			}
-
-			@Override
-			public void onSuccess(Boolean result) {
-				currentScenarioName = scenarioName;
-				loadCurrentScenarioFromServer();
-
-			}
-		});
 	}
 }

@@ -1,10 +1,5 @@
 package org.sopeco.frontend.client.mec;
 
-import java.net.MalformedURLException;
-import java.rmi.Naming;
-import java.rmi.NotBoundException;
-import java.rmi.Remote;
-import java.rmi.RemoteException;
 import java.util.List;
 
 import org.sopeco.frontend.client.helper.INotifyHandler;

@@ -11,13 +11,10 @@ import org.sopeco.frontend.client.rpc.RPC;
 import org.sopeco.frontend.shared.definitions.result.SharedExperimentRuns;
 import org.sopeco.frontend.shared.definitions.result.SharedExperimentSeries;
 import org.sopeco.frontend.shared.definitions.result.SharedScenarioInstance;
-import org.sopeco.frontend.shared.helper.Base64;
 import org.sopeco.gwt.widgets.tree.TreeItem;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**

@@ -242,11 +242,17 @@ public class ExperimentController implements ICenterController, ValueChangeHandl
 
 		explorationExtController.setExtension(explorationName);
 		explorationExtController.setConfigMap(explorationConfig);
+
+		expEnvironmentTree.generateTree();
 	}
 
 	@Override
 	public Widget getView() {
 		return tabPanel;
+	}
+
+	public ExperimentEnvironmentTree getEnvironmentTree() {
+		return expEnvironmentTree;
 	}
 
 	@Override

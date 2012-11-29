@@ -2,9 +2,6 @@ package org.sopeco.frontend.client.model;
 
 import java.util.logging.Logger;
 
-import org.sopeco.frontend.client.event.EventControl;
-import org.sopeco.frontend.client.event.SpecificationChangedEvent;
-import org.sopeco.frontend.client.event.handler.SpecificationChangedEventHandler;
 import org.sopeco.frontend.client.helper.INotifyHandler;
 import org.sopeco.frontend.client.helper.INotifyHandler.Result;
 import org.sopeco.frontend.client.layout.MainLayoutPanel;
@@ -21,7 +18,7 @@ import org.sopeco.persistence.entities.definition.MeasurementSpecification;
 public class SpecificationModul {
 
 	private static final Logger LOGGER = Logger.getLogger(ExperimentModul.class.getName());
-	 private String currentSpecification;
+	// private String currentSpecification;
 
 	private ScenarioManager manager;
 
@@ -32,19 +29,27 @@ public class SpecificationModul {
 	 */
 	SpecificationModul(ScenarioManager scenarioManager) {
 		manager = scenarioManager;
-
-		EventControl.get().addHandler(SpecificationChangedEvent.TYPE, getSpecificationChangedEventHandler());
 	}
 
 	/**
-	 * Changing the current working specification.
+	 * Changing the current working specification. Sequence:<br>
+	 * 1. Setting new SpecificationName in the ScenarioDetails<br>
+	 * 2. Create new MeasurementSpecificationBuilder with new specification<br>
+	 * 3. Update Navigation and set the active specification in the navigation<br>
+	 * 4. Update SpecificationView
 	 */
 	public void changeSpecification(String newWorkingSpecification) {
-		Manager.get().getAccountDetails().setSelectedSpecification(newWorkingSpecification);
+		LOGGER.fine("Change specification to: " + newWorkingSpecification);
+
+		Manager.get().getCurrentScenarioDetails().setSelectedSpecification(newWorkingSpecification);
 		Manager.get().storeAccountDetails();
 
 		MeasurementSpecificationBuilder specificationBuilder = new MeasurementSpecificationBuilder(getSpecification());
 		manager.getBuilder().setSpecificationBuilder(specificationBuilder);
+
+		MainLayoutPanel.get().getNavigationController().changeSpecification(newWorkingSpecification);
+
+		MainLayoutPanel.get().getSpecificationController().changeSpecification(newWorkingSpecification);
 	}
 
 	/**
@@ -61,7 +66,6 @@ public class SpecificationModul {
 
 		MeasurementSpecificationBuilder newBuilder = manager.getBuilder().addNewMeasurementSpecification();
 		if (newBuilder == null) {
-			// LOGGER.warn("Error at adding new specification '{}'", name);
 			return;
 		}
 
@@ -69,7 +73,9 @@ public class SpecificationModul {
 		manager.storeScenario();
 
 		MainLayoutPanel.get().getNavigationController().addSpecifications(name);
-		EventControl.get().fireEvent(new SpecificationChangedEvent(name));
+
+
+		changeSpecification(name);
 	}
 
 	/**
@@ -90,7 +96,7 @@ public class SpecificationModul {
 
 	public MeasurementSpecification getSpecification() {
 		return manager.getBuilder().getMeasurementSpecification(
-				Manager.get().getAccountDetails().getSelectedSpecification());
+				Manager.get().getCurrentScenarioDetails().getSelectedSpecification());
 	}
 
 	/**
@@ -100,8 +106,7 @@ public class SpecificationModul {
 	 */
 	@Deprecated
 	public String getSpecificationName() {
-		 return currentSpecification;
-		//return Manager.get().getAccountDetails().getSelectedSpecification();
+		return Manager.get().getCurrentScenarioDetails().getSelectedSpecification();
 	}
 
 	/**
@@ -122,8 +127,6 @@ public class SpecificationModul {
 		String name = manager.getCurrentScenarioDefinition().getMeasurementSpecifications().get(0).getName();
 
 		changeSpecification(name);
-		MainLayoutPanel.get().getNavigationController().updateSpecifications();
-		EventControl.get().fireEvent(new SpecificationChangedEvent(name));
 
 		return true;
 	}
@@ -140,8 +143,9 @@ public class SpecificationModul {
 	 */
 	public void renameWorkingSpecification(String newName, INotifyHandler<Boolean> handler) {
 		manager.getBuilder().getSpecificationBuilder().setName(newName);
-		MainLayoutPanel.get().getNavigationController().updateSpecifications();
-		EventControl.get().fireEvent(new SpecificationChangedEvent(newName));
+		// MainLayoutPanel.get().getNavigationController().updateSpecifications();
+		// EventControl.get().fireEvent(new SpecificationChangedEvent(newName));
+		changeSpecification(newName);
 
 		manager.storeScenario();
 
@@ -157,19 +161,7 @@ public class SpecificationModul {
 	 */
 	@Deprecated
 	public void setSpecification(String newSpecification) {
-		 this.currentSpecification = newSpecification;
-		//Manager.get().getAccountDetails().setSelectedSpecification(newSpecification);
+		Manager.get().getCurrentScenarioDetails().setSelectedSpecification(newSpecification);
 	}
 
-	/**
-	 * Handler which listens to the SpecificationChangedEvent.
-	 */
-	private SpecificationChangedEventHandler getSpecificationChangedEventHandler() {
-		return new SpecificationChangedEventHandler() {
-			@Override
-			public void onSpecificationChangedEvent(SpecificationChangedEvent event) {
-				changeSpecification(event.getSelectedSpecification());
-			}
-		};
-	}
 }

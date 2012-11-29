@@ -4,9 +4,6 @@ import java.util.HashMap;
 import java.util.logging.Logger;
 
 import org.sopeco.frontend.client.R;
-import org.sopeco.frontend.client.event.EventControl;
-import org.sopeco.frontend.client.event.SpecificationChangedEvent;
-import org.sopeco.frontend.client.event.handler.SpecificationChangedEventHandler;
 import org.sopeco.frontend.client.layout.MainLayoutPanel;
 import org.sopeco.frontend.client.layout.center.CenterType;
 import org.sopeco.frontend.client.layout.popups.InputDialog;
@@ -51,15 +48,28 @@ public class NavigationController implements ClickHandler, InputDialogHandler, I
 
 		// Events
 
-		EventControl.get().addHandler(SpecificationChangedEvent.TYPE, new SpecificationChangedEventHandler() {
-			@Override
-			public void onSpecificationChangedEvent(SpecificationChangedEvent event) {
-				setActiveSpecification(event.getSelectedSpecification());
+//		EventControl.get().addHandler(SpecificationChangedEvent.TYPE, new SpecificationChangedEventHandler() {
+//			@Override
+//			public void onSpecificationChangedEvent(SpecificationChangedEvent event) {
+//				setActiveSpecification(event.getSelectedSpecification());
+//
+//				view.getNaviItemsMap().get(CenterType.Specification).setSubText(event.getSelectedSpecification());
+//				loadExperiments();
+//			}
+//		});
+	}
 
-				view.getNaviItemsMap().get(CenterType.Specification).setSubText(event.getSelectedSpecification());
-				loadExperiments();
-			}
-		});
+	/**
+	 * Sets the current specification in the navigation view to the given
+	 * specificationName.
+	 * 
+	 * @param specificationName
+	 */
+	public void changeSpecification(String specificationName) {
+		updateSpecifications();
+		setActiveSpecification(specificationName);
+		view.getNaviItemsMap().get(CenterType.Specification).setSubText(specificationName);
+		loadExperiments();
 	}
 
 	@Override
@@ -199,7 +209,7 @@ public class NavigationController implements ClickHandler, InputDialogHandler, I
 					return;
 				}
 
-				EventControl.get().fireEvent(new SpecificationChangedEvent(specificationName));
+				ScenarioManager.get().specification().changeSpecification(specificationName);
 			}
 		};
 	}

@@ -27,9 +27,9 @@ public class ScenarioDetails implements Serializable {
 
 	private String controllerName = "";
 
-	private String selectedSpecification = "";
+	private String selectedSpecification;
 
-	private String selectedExperiment = "";
+	private String selectedExperiment;
 
 	/**
 	 * @return the selectedExperiment

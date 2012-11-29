@@ -19,8 +19,6 @@ public interface ScenarioManagerRPCAsync {
 	 */
 	void getScenarioNames(AsyncCallback<String[]> callback);
 
-	void addScenario(String name, AsyncCallback<Boolean> callback);
-
 	void addScenario(String scenarioName, String specificationName, ExperimentSeriesDefinition experiment,
 			AsyncCallback<Boolean> callback);
 
