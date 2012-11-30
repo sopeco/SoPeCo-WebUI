@@ -134,6 +134,9 @@ public class FrontendEntryPoint implements EntryPoint, SimpleNotify {
 		clearRootLayout();
 		Manager.get().reset();
 		EventControl.removeAllHandler();
+		
+		
+		
 		LoginBox box = new LoginBox();
 		box.center();
 	}

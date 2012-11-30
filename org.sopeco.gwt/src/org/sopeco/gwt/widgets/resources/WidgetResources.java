@@ -34,11 +34,33 @@ public final class WidgetResources {
 	}
 
 	/**
+	 * 
+	 */
+	public static void loadEditableTextCSS() {
+		GWT.runAsync(new RunAsyncCallback() {
+			@Override
+			public void onFailure(Throwable reason) {
+				Window.alert("Can't load comboBox.css");
+			}
+
+			@Override
+			public void onSuccess() {
+				ResourceBundle rsc = GWT.create(ResourceBundle.class);
+				rsc.editableTextCss().ensureInjected();
+			}
+		});
+	}
+
+	/**
 	 * ClientBundle to load Resources.
 	 */
 	interface ResourceBundle extends ClientBundle {
 		@Source("comboBox.css")
 		@CssResource.NotStrict
 		CssResource comboBoxCss();
+
+		@Source("editableText.css")
+		@CssResource.NotStrict
+		CssResource editableTextCss();
 	}
 }

@@ -22,7 +22,7 @@ public class WrappedTextBox extends SimplePanel {
 		textbox.getElement().getStyle().setPadding(0, Unit.PX);
 		textbox.getElement().getStyle().setBorderWidth(0, Unit.PX);
 		textbox.getElement().getStyle().setProperty("outline", "0");
-		textbox.getElement().getStyle().setProperty("minWidth", "80px");
+		//textbox.getElement().getStyle().setProperty("minWidth", "80px");
 		textbox.setWidth("100%");
 		getElement().getStyle().setBackgroundColor("white");
 		add(textbox);

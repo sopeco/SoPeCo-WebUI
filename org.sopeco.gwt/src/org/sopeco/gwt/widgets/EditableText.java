@@ -1,5 +1,7 @@
 package org.sopeco.gwt.widgets;
 
+import org.sopeco.gwt.widgets.resources.WidgetResources;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.event.dom.client.BlurEvent;
@@ -41,8 +43,11 @@ public class EditableText extends FocusPanel implements ClickHandler,
 	private String value;
 	private String validPattern = "";
 	private String defaultValue;
+	private boolean editable = true;
 
 	public EditableText(String text) {
+		WidgetResources.loadEditableTextCSS();
+
 		addStyleName(STYLE_CLASS);
 		addFocusHandler(this);
 
@@ -74,6 +79,13 @@ public class EditableText extends FocusPanel implements ClickHandler,
 	 */
 	public void setValue(String newValue) {
 		setValue(newValue, false);
+	}
+
+	/**
+	 * Sets whether the EditableText is edtiable.
+	 */
+	public void setEditable(boolean pEditable) {
+		editable = pEditable;
 	}
 
 	/**
@@ -112,6 +124,10 @@ public class EditableText extends FocusPanel implements ClickHandler,
 	}
 
 	private void edit() {
+		if (!editable) {
+			setFocus(false);
+			return;
+		}
 		tbValue.getTextbox().setValue(value);
 		htmlText.removeFromParent();
 		add(tbValue);

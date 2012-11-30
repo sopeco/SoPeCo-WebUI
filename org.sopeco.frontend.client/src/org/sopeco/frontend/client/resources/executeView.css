@@ -16,3 +16,43 @@
 	width: 100%;
 	border-top: 1px solid #CCC;
 }
+
+.executeTabPanel h3 {
+	margin: 0.5em 1em 0;
+}
+
+.textCenter .gwt-HTML,.textCenter .gwt-TextBox {
+	text-align: center;
+}
+
+.repeatPanel {
+	width: 100%;
+	border-top: 1px dotted #CCC;
+}
+
+.repeatTable {
+	border-spacing: 1em 0.5em;
+}
+
+.repeatTable .weekdays .gwt-HTML {
+	margin-right: 1em;
+}
+
+.repeatTable .checkBoxWidget {
+	float: left;
+	margin-right: 1em;
+}
+
+.repeatTable .checkBoxWidget.notChecked {
+	color: #AAA;
+}
+
+.tableRepeat {
+	border-spacing: 0 !important;
+}
+
+.tableRepeat .gwt-HTML {
+	padding-left: 2em;
+	color: gray;
+	white-space: nowrap;
+}

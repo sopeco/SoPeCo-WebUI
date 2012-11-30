@@ -1,6 +1,9 @@
 package org.sopeco.frontend.client.layout.center.execute;
 
 import org.sopeco.frontend.client.R;
+import org.sopeco.frontend.client.layout.center.execute.tabOne.ExecuteTab;
+import org.sopeco.frontend.client.layout.center.execute.tabThree.ControllerQueueTab;
+import org.sopeco.frontend.client.layout.center.execute.tabTwo.ScheduleTab;
 import org.sopeco.frontend.client.resources.FrontEndResources;
 
 import com.google.gwt.user.client.ui.TabPanel;
@@ -13,12 +16,14 @@ import com.google.gwt.user.client.ui.TabPanel;
 public class ExecuteTabPanel extends TabPanel {
 
 	private static final String CSS_CLASS = "sopeco-TabPanel";
+	private static final String EXECUTE_CSS_CLASS = "executeTabPanel";
 
 	// private HTML htmlStatus;
 	// private Button btnStartExperiment;
 
 	private ExecuteTab tabExecute;
 	private ScheduleTab tabSchedule;
+	private ControllerQueueTab queueTab;
 
 	public ExecuteTabPanel() {
 		FrontEndResources.loadSopecoTabPanelCSS();
@@ -30,12 +35,15 @@ public class ExecuteTabPanel extends TabPanel {
 	 */
 	private void init() {
 		addStyleName(CSS_CLASS);
+		addStyleName(EXECUTE_CSS_CLASS);
 
 		tabExecute = new ExecuteTab();
 		tabSchedule = new ScheduleTab();
+		queueTab = new ControllerQueueTab();
 
 		add(tabExecute, R.get("ExecuteExperiment"));
 		add(tabSchedule, R.get("ScheduledExperiments") + " [0]");
+		add(queueTab, R.get("controllerQueue"));
 
 		selectTab(0);
 
