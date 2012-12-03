@@ -8,9 +8,9 @@
 
 .transparent-50 {
 	opacity: 0.5;
-	filter: alpha(opacity =                  
+	filter: alpha(opacity =                   
 		                                                         
-		                    50);
+		                     50);
 }
 
 .spc-seperator {
@@ -156,6 +156,7 @@ p {
 	background-color: #fafafa;
 	overflow: visible !important;
 	box-shadow: #9AB 0px 3px 8px 0px;
+	z-index: 500;
 }
 
 #mainNavigation .tlEntry {
@@ -484,16 +485,16 @@ p {
 #changeSpecPanel #addSpecification {
 	color: #333;
 	opacity: 0.5;
-	filter: alpha(opacity =                                             
+	filter: alpha(opacity =                                              
 		                                                         
-		                                               50);
+		                                                50);
 }
 
 #changeSpecPanel #addSpecification:hover {
 	opacity: 1;
-	filter: alpha(opacity =                                            
+	filter: alpha(opacity =                                             
 		                                                         
-		                                                100);
+		                                                 100);
 }
 
 #changeSpecPanel #addSpecification>img {
@@ -613,9 +614,9 @@ p {
 
 .addExperimentNaviItem {
 	opacity: 0.5;
-	filter: alpha(opacity = 
+	filter: alpha(opacity =  
 		                                                         
-		   50);
+		    50);
 	padding-left: 23px !important;
 	padding-right: 0 !important;
 	font-weight: normal !important;
@@ -623,9 +624,9 @@ p {
 
 .addExperimentNaviItem:hover {
 	opacity: 1;
-	filter: alpha(opacity = 
+	filter: alpha(opacity =  
 		                                                         
-		    100);
+		     100);
 }
 
 .addExperimentNaviItem img {
@@ -647,7 +648,7 @@ p {
 	background: -o-linear-gradient(top, #223344 5%, #838ead 50%, #223344 95%);
 	background: -ms-linear-gradient(top, #223344 5%, #838ead 50%, #223344 95%);
 	background: linear-gradient(to bottom, #223344 5%, #838ead 50%, #223344 95%);
-	filter: progid:DXImageTransform.Microsoft.gradient(                  
+	filter: progid:DXImageTransform.Microsoft.gradient(                   
 		                     startColorstr='#223344', endColorstr='#223344',
 		GradientType=0 );
 }

@@ -139,7 +139,7 @@ public class TreeItem extends FlowPanel implements ClickHandler {
 	 * 
 	 * @return
 	 */
-	protected TreeItem getparentItem() {
+	public TreeItem getParentItem() {
 		return parentItem;
 	}
 

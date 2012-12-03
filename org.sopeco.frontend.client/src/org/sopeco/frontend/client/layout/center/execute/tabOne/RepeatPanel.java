@@ -26,6 +26,8 @@ public class RepeatPanel extends SimplePanel implements ValueChangeHandler {
 	private static final String CSS_CLASS = "repeatPanel";
 	private static final String REPEAT_CLASS = "repeatTable";
 
+	private static final String SCHEDULE_REGEX = "((\\*)|(\\d+)|(\\d+/\\d+)|(\\d+\\-\\d+))(,((\\*)|(\\d+)|(\\d+/\\d+)|(\\d+\\-\\d+)))*";
+
 	private FlexTable table;
 	private HTML htmlWeekdays, htmlTimes;
 	private FlowPanel panelWeekdays;
@@ -53,6 +55,9 @@ public class RepeatPanel extends SimplePanel implements ValueChangeHandler {
 		htmlWeekdays = new HTML(R.get("Weekdays") + ":");
 		editHours = new EditableText("0");
 		editMinutes = new EditableText("0");
+
+		editHours.setValidPattern(SCHEDULE_REGEX);
+		editMinutes.setValidPattern(SCHEDULE_REGEX);
 
 		hPanelTimes = new HorizontalPanel();
 		panelWeekdays = new FlowPanel();

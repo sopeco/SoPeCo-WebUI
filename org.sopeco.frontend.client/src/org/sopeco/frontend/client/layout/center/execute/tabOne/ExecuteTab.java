@@ -29,15 +29,15 @@ public class ExecuteTab extends FlowPanel implements ValueChangeHandler<Boolean>
 	private static final String CONFIG_TABLE_CLASS = "executeConfigTable";
 
 	private FlexTable configTable;
-	private HTML htmlController, htmlStatus, htmlControllerStatus, htmlExecution, htmlRdioOnReady, htmlRdioSchedule;
+	private HTML htmlController, htmlLabel, htmlExecution, htmlRdioOnReady, htmlRdioSchedule;
 	private Button btnExecute;
-	private EditableText editText;
+	private EditableText editController, editLabel;
 	private RadioButton rdioOnReady, rdioSchedule;
 	private HorizontalPanel hPanelExecution;
 
 	private ScheduleConfigTable scheduleConfTable;
 	private RepeatPanel repeatTable;
-	private ExecuteSelectionPanel selectionPanel;
+	private SelectionPanel selectionPanel;
 
 	public ExecuteTab() {
 		init();
@@ -50,13 +50,14 @@ public class ExecuteTab extends FlowPanel implements ValueChangeHandler<Boolean>
 		configTable.addStyleName(CONFIG_TABLE_CLASS);
 
 		htmlController = new HTML(R.get("Controller") + ":");
-		htmlStatus = new HTML(R.get("Status") + ":");
-		htmlControllerStatus = new HTML(R.get("controllerStatus"));
+		htmlLabel = new HTML(R.get("Label") + ":");
 		htmlExecution = new HTML(R.get("Execution") + ":");
 		htmlRdioOnReady = new HTML(R.get("execOnReady"));
 		htmlRdioSchedule = new HTML(R.get("execSchedule"));
 
-		editText = new EditableText(Manager.get().getControllerUrl());
+		editLabel = new EditableText("My Scheduling");
+		editController = new EditableText(Manager.get().getControllerUrl());
+		editController.setEditable(false);
 		btnExecute = new Button(R.get("Execute"));
 
 		rdioOnReady = new RadioButton("execution");
@@ -70,7 +71,7 @@ public class ExecuteTab extends FlowPanel implements ValueChangeHandler<Boolean>
 
 		scheduleConfTable = new ScheduleConfigTable(this);
 		repeatTable = new RepeatPanel(this);
-		selectionPanel = new ExecuteSelectionPanel();
+		selectionPanel = new SelectionPanel();
 
 		// #
 		scheduleConfTable.setVisible(false);
@@ -86,10 +87,10 @@ public class ExecuteTab extends FlowPanel implements ValueChangeHandler<Boolean>
 		rdioSchedule.addValueChangeHandler(this);
 
 		// #
-		configTable.setWidget(0, 0, htmlController);
-		configTable.setWidget(0, 1, editText);
-		configTable.setWidget(1, 0, htmlStatus);
-		configTable.setWidget(1, 1, htmlControllerStatus);
+		configTable.setWidget(0, 0, htmlLabel);
+		configTable.setWidget(0, 1, editLabel);
+		configTable.setWidget(1, 0, htmlController);
+		configTable.setWidget(1, 1, editController);
 		configTable.setWidget(2, 2, btnExecute);
 		configTable.setWidget(2, 0, htmlExecution);
 		configTable.setWidget(2, 1, hPanelExecution);
@@ -128,4 +129,33 @@ public class ExecuteTab extends FlowPanel implements ValueChangeHandler<Boolean>
 			scheduleConfTable.getHtmlFirstRepeat().setVisible(scheduleConfTable.getCbRepeat().getValue());
 		}
 	}
+
+	public void generateTree() {
+		selectionPanel.generateTree();
+	}
+
+	public ScheduleConfigTable getScheduleConfTable() {
+		return scheduleConfTable;
+	}
+
+	public RepeatPanel getRepeatTable() {
+		return repeatTable;
+	}
+
+	public SelectionPanel getSelectionPanel() {
+		return selectionPanel;
+	}
+
+	public Button getBtnExecute() {
+		return btnExecute;
+	}
+
+	public EditableText getEditController() {
+		return editController;
+	}
+
+	public EditableText getEditLabel() {
+		return editLabel;
+	}
+
 }

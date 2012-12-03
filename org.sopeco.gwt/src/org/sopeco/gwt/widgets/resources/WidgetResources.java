@@ -52,6 +52,24 @@ public final class WidgetResources {
 	}
 
 	/**
+	 * 
+	 */
+	public static void loadProgressBarCSS() {
+		GWT.runAsync(new RunAsyncCallback() {
+			@Override
+			public void onFailure(Throwable reason) {
+				Window.alert("Can't load comboBox.css");
+			}
+
+			@Override
+			public void onSuccess() {
+				ResourceBundle rsc = GWT.create(ResourceBundle.class);
+				rsc.progressBarCss().ensureInjected();
+			}
+		});
+	}
+
+	/**
 	 * ClientBundle to load Resources.
 	 */
 	interface ResourceBundle extends ClientBundle {
@@ -62,5 +80,9 @@ public final class WidgetResources {
 		@Source("editableText.css")
 		@CssResource.NotStrict
 		CssResource editableTextCss();
+
+		@Source("progressBar.css")
+		@CssResource.NotStrict
+		CssResource progressBarCss();
 	}
 }

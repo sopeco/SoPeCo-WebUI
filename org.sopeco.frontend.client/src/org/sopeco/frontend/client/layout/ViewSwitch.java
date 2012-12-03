@@ -5,6 +5,8 @@ import java.util.logging.Logger;
 import org.sopeco.frontend.client.event.EventControl;
 import org.sopeco.frontend.client.event.ExperimentChangedEvent;
 import org.sopeco.frontend.client.layout.center.CenterType;
+import org.sopeco.frontend.client.layout.center.execute.ExecuteController;
+import org.sopeco.frontend.client.layout.center.execute.ExecuteTabPanel;
 
 /**
  * 
@@ -26,6 +28,12 @@ public class ViewSwitch {
 
 	private void switchTo(CenterType type, boolean historyEvent) {
 		LOGGER.fine("Switch view to type: " + type.toString());
+
+		// TODO
+		if (type == CenterType.Execute) {
+			ExecuteController c = (ExecuteController) MainLayoutPanel.get().getCenterController(CenterType.Execute);
+			((ExecuteTabPanel) c.getView()).getTabExecute().generateTree();
+		}
 
 		MainLayoutPanel.get().updateCenterPanel(type);
 		MainLayoutPanel.get().getNavigationController().hideChangeSpecpanel();

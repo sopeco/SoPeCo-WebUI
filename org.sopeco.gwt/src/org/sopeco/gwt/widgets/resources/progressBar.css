@@ -1,0 +1,24 @@
+.sopeco-ProgressBar {
+	position: relative;
+	background-color: #EEE;
+	height: 20px;
+	margin-top: 6px;
+	border: 1px solid #CCC;
+	border-radius: 3px;
+	text-align: center;
+}
+
+.sopeco-ProgressBar .sopeco-ProgressBar-Bar {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100%;
+	border-radius: 3px;
+	background-image: url("images/pbar-ani.gif");
+	z-index: 1;
+}
+
+.sopeco-ProgressBar .gwt-HTML {
+	position: relative;
+	z-index: 2;
+}

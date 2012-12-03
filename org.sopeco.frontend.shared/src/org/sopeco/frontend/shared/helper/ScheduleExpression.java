@@ -124,7 +124,7 @@ public final class ScheduleExpression {
 
 		Set<Integer> setDays = splitString(weekdays);
 		Set<Integer> setHours = expandHour(hours);
-		Set<Integer> setMinutes = expandHour(minutes);
+		Set<Integer> setMinutes = expandMinutes(minutes);
 
 		if (setDays.contains(nowDay) && setHours.contains(nowHours) && setMinutes.contains(nowMinutes)) {
 			return true;
@@ -149,6 +149,13 @@ public final class ScheduleExpression {
 	}
 
 	private static class MyDate {
+		private static final String SUNDAY = "Sunday";
+		private static final String SATURDAY = "Saturday";
+		private static final String FRIDAY = "Friday";
+		private static final String THURSDAY = "Thursday";
+		private static final String WEDNESDAY = "Wednesday";
+		private static final String TUESDAY = "Tuesday";
+		private static final String MONDAY = "Monday";
 		private Date date;
 
 		public MyDate(long timestamp) {
@@ -157,19 +164,19 @@ public final class ScheduleExpression {
 
 		public int getDay() {
 			String day = DateTimeFormat.getFormat("EEEE").format(date);
-			if (day.equals("Sunday")) {
+			if (day.equals(SUNDAY)) {
 				return 1;
-			} else if (day.equals("Monday")) {
+			} else if (day.equals(MONDAY)) {
 				return 2;
-			} else if (day.equals("Tuesday")) {
+			} else if (day.equals(TUESDAY)) {
 				return 3;
-			} else if (day.equals("Wednesday")) {
+			} else if (day.equals(WEDNESDAY)) {
 				return 4;
-			} else if (day.equals("Thursday")) {
+			} else if (day.equals(THURSDAY)) {
 				return 5;
-			} else if (day.equals("Friday")) {
+			} else if (day.equals(FRIDAY)) {
 				return 6;
-			} else if (day.equals("Saturday")) {
+			} else if (day.equals(SATURDAY)) {
 				return 7;
 			}
 			return -1;

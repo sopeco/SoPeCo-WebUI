@@ -50,8 +50,9 @@ public class ScheduleConfigTable extends FlowPanel implements FocusHandler, Valu
 		htmlFirstRepeat = new HTML();
 		setFirstRepeatText("-");
 
-		editStartTime = new EditableText("12:15");
-		editStartDate = new EditableText("29.11.2012");
+		Date date = new Date(System.currentTimeMillis() + 1000 * 60 * 60);
+		editStartTime = new EditableText(DateTimeFormat.getFormat("H").format(date) + ":00");
+		editStartDate = new EditableText(DateTimeFormat.getFormat("dd.MM.yyyy").format(date));
 
 		cbRepeat = new CheckBox();
 
@@ -121,4 +122,14 @@ public class ScheduleConfigTable extends FlowPanel implements FocusHandler, Valu
 	public void setFirstRepeatText(String text) {
 		htmlFirstRepeat.setText(R.get("FirstRepeatAfterStart") + ": " + text);
 	}
+
+	public EditableText getEditStartTime() {
+		return editStartTime;
+	}
+
+	public EditableText getEditStartDate() {
+		return editStartDate;
+	}
+	
+	
 }

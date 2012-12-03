@@ -1,9 +1,13 @@
 package org.sopeco.frontend.client.layout.center.execute;
 
+import java.util.Date;
+
 import org.sopeco.frontend.client.layout.center.ICenterController;
 import org.sopeco.frontend.client.resources.FrontEndResources;
 
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -11,7 +15,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Marius Oehler
  * 
  */
-public class ExecuteController implements ICenterController/* , ClickHandler */ {
+public class ExecuteController implements ICenterController, ClickHandler {
 
 	private ExecuteTabPanel view;
 
@@ -24,24 +28,48 @@ public class ExecuteController implements ICenterController/* , ClickHandler */ 
 
 	private void init() {
 		view = new ExecuteTabPanel();
+
+		view.getTabExecute().getBtnExecute().addClickHandler(this);
 	}
-	
+
 	@Override
 	public Widget getView() {
 		return view;
 	}
 
+	private boolean isRepeating() {
+		return view.getTabExecute().getScheduleConfTable().getCbRepeat().getValue();
+	}
+
+	private long getStartTime() {
+		String[] splitTime = view.getTabExecute().getScheduleConfTable().getEditStartTime().getValue().split(":");
+		String[] splitDate = view.getTabExecute().getScheduleConfTable().getEditStartDate().getValue().split("\\.");
+
+		Date date = new Date();
+		date.setHours(Integer.parseInt(splitTime[0]));
+		date.setMinutes(Integer.parseInt(splitTime[1]));
+		date.setSeconds(0);
+		date.setDate(Integer.parseInt(splitDate[0]));
+		date.setMonth(Integer.parseInt(splitDate[1]) - 1);
+		date.setYear(Integer.parseInt(splitDate[2]) - 1900);
+
+		return date.getTime();
+	}
+
 	@Override
 	public void reset() {
-		//TODO
-		// addHandler();
+	}
 
-		/*
-		 * Timer t = new Timer() {
-		 * 
-		 * @Override public void run() { pollingCheckStatus(false); } };
-		 * t.schedule(1000);
-		 */
+	@Override
+	public void onClick(ClickEvent event) {
+		GWT.log("# # #");
+		GWT.log(view.getTabExecute().getEditLabel().getValue());
+		GWT.log(view.getTabExecute().getEditController().getValue());
+		GWT.log(getStartTime() + "");
+		GWT.log(isRepeating() + "");
+		GWT.log(view.getTabExecute().getRepeatTable().getScheduleDays());
+		GWT.log(view.getTabExecute().getRepeatTable().getScheduleHours());
+		GWT.log(view.getTabExecute().getRepeatTable().getScheduleMinutes());
 	}
 
 	// private void addHandler() {
@@ -50,6 +78,7 @@ public class ExecuteController implements ICenterController/* , ClickHandler */ 
 	//
 	// @Override
 	// public void onClick(ClickEvent event) {
+
 	// if (event.getSource() == view.getBtnStartExperiment()) {
 	// String url = Manager.get().getControllerUrl();
 	//
@@ -79,6 +108,7 @@ public class ExecuteController implements ICenterController/* , ClickHandler */ 
 	//
 	// pollingCheckStatus();
 	// }
+
 	//
 	// @Override
 	// public void onFailure(Throwable caught) {

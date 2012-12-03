@@ -125,7 +125,7 @@ public class EditableText extends FocusPanel implements ClickHandler,
 
 	private void edit() {
 		if (!editable) {
-			setFocus(false);
+			//setFocus(false);
 			return;
 		}
 		tbValue.getTextbox().setValue(value);

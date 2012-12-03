@@ -56,3 +56,79 @@
 	color: gray;
 	white-space: nowrap;
 }
+
+.treeItem-Specification {
+	padding: 0.5em 1em;
+}
+
+.treeItem-Specification>.content {
+	font-weight: bold;
+	color: #333;
+}
+
+.treeItem-Experiment {
+	margin-left: 1em;
+	line-height: 26px;
+}
+
+.treeItem-Experiment .gwt-CheckBox,.treeItem-Specification .gwt-CheckBox
+	{
+	vertical-align: middle;
+	margin-right: 6px;
+}
+
+.activeQueueItem {
+	background-color: red;
+	width: 100%;
+	padding: 1em;
+	/*box-shadow: 0 0px 5px 0px gray inset;*/
+	background-color: #FFFCFA;
+	border-spacing: 12px 2px;
+	border: 2px solid #ccc;
+	border-left: 0;
+	border-right: 0;
+}
+
+.activeQueueItem .gwt-HTML {
+	white-space: nowrap;
+}
+
+.activeQueueItem tr:first-child {
+	font-weight: bold;
+	color: #333;
+}
+
+.controllerQueueItem {
+	width: 100%;
+	background-color: #f3f3f3;
+	border-spacing: 12px 2px;
+	padding: .50em 1em;
+	border-bottom: 1px solid #CCC;
+}
+
+.controllerQueueItem  tr:first-child {
+	font-weight: bold;
+	color: #333;
+}
+
+.controllerQueueItem  tr:first-child .gwt-Image {
+	vertical-align: sub;
+}
+
+.scheduleItem {
+	width: 100%;
+	padding: .5em 1em;
+	border-spacing: 12px 2px;
+	border-bottom: 1px solid #CCC;
+	border-top: 1px solid #CCC;
+	background-color: #fAFAFA;
+}
+
+.scheduleItem:hover {
+	background-color: #f0f4f8;
+}
+
+.scheduleItem  tr:first-child {
+	font-weight: bold;
+	color: #333;
+}

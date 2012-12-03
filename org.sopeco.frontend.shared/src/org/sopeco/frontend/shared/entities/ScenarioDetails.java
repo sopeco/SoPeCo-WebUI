@@ -1,6 +1,8 @@
 package org.sopeco.frontend.shared.entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Entity;
 
@@ -30,6 +32,8 @@ public class ScenarioDetails implements Serializable {
 	private String selectedSpecification;
 
 	private String selectedExperiment;
+
+	private List<ScheduledExperiment> scheduledExperimentsList = new ArrayList<ScheduledExperiment>();
 
 	/**
 	 * @return the selectedExperiment
@@ -136,4 +140,7 @@ public class ScenarioDetails implements Serializable {
 		this.selectedSpecification = pSelectedSpecification;
 	}
 
+	public List<ScheduledExperiment> getScheduledExperimentsList() {
+		return scheduledExperimentsList;
+	}
 }
