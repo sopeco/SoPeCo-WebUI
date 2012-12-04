@@ -12,4 +12,10 @@ public interface ICenterController {
 	Widget getView();
 
 	void reset();
+
+	/**
+	 * Is called, when the view is displayed because of the
+	 * {@link ViewSwitch#switchTo(CenterType)}.
+	 */
+	void onSwitchTo();
 }

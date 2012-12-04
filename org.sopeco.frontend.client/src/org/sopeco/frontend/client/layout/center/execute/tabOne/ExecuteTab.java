@@ -58,7 +58,7 @@ public class ExecuteTab extends FlowPanel implements ValueChangeHandler<Boolean>
 		editLabel = new EditableText("My Scheduling");
 		editController = new EditableText(Manager.get().getControllerUrl());
 		editController.setEditable(false);
-		btnExecute = new Button(R.get("Execute"));
+		btnExecute = new Button(R.get("StoreExperiment"));
 
 		rdioOnReady = new RadioButton("execution");
 		rdioSchedule = new RadioButton("execution");
@@ -128,6 +128,10 @@ public class ExecuteTab extends FlowPanel implements ValueChangeHandler<Boolean>
 			repeatTable.setVisible(scheduleConfTable.getCbRepeat().getValue());
 			scheduleConfTable.getHtmlFirstRepeat().setVisible(scheduleConfTable.getCbRepeat().getValue());
 		}
+	}
+
+	public boolean isExecutingImmediately() {
+		return rdioOnReady.getValue();
 	}
 
 	public void generateTree() {

@@ -16,7 +16,7 @@ public interface MEControllerRPCAsync {
 
 	void checkControllerStatus(String url, AsyncCallback<Integer> callback);
 
-	void getMEControllerList(AsyncCallback<List<String>> callback);
+//	void getMEControllerList(AsyncCallback<List<String>> callback);
 
 	void getValidUrlPattern(AsyncCallback<String[]> callback);
 

@@ -11,6 +11,8 @@ import org.sopeco.frontend.client.event.handler.ExperimentChangedEventHandler;
 import org.sopeco.frontend.client.layout.MainLayoutPanel;
 import org.sopeco.frontend.client.layout.center.CenterType;
 import org.sopeco.frontend.client.layout.center.ICenterController;
+import org.sopeco.frontend.client.layout.center.execute.ExecuteController;
+import org.sopeco.frontend.client.layout.center.execute.ExecuteTabPanel;
 import org.sopeco.frontend.client.layout.center.experiment.assignment.AssignmentController;
 import org.sopeco.frontend.client.layout.center.experiment.assignment.AssignmentController.Type;
 import org.sopeco.frontend.client.layout.center.experiment.assignment.PreparationController;
@@ -140,6 +142,10 @@ public class ExperimentController implements ICenterController, ValueChangeHandl
 		}
 	}
 
+	@Override
+	public void onSwitchTo() {
+	}
+	
 	private void duplicateExperiment() {
 		if (inputClone == null) {
 			inputClone = new InputDialog(R.get("cloneExperiment"), R.get("nameForExperimentClone") + ":");

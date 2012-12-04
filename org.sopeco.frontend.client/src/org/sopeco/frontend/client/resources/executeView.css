@@ -100,7 +100,7 @@
 
 .controllerQueueItem {
 	width: 100%;
-	background-color: #f3f3f3;
+	background-color: #F3F3F3;
 	border-spacing: 12px 2px;
 	padding: .50em 1em;
 	border-bottom: 1px solid #CCC;
@@ -121,14 +121,18 @@
 	border-spacing: 12px 2px;
 	border-bottom: 1px solid #CCC;
 	border-top: 1px solid #CCC;
-	background-color: #fAFAFA;
+	background-color: #FAFAFF;
 }
 
 .scheduleItem:hover {
-	background-color: #f0f4f8;
+	background-color: #F0F4F8;
 }
 
-.scheduleItem  tr:first-child {
+.scheduleItem  tr td:nth-child\(2n\+1\) {
+	color: #777;
+}
+
+.scheduleItem  tr:first-child td {
 	font-weight: bold;
 	color: #333;
 }

@@ -147,6 +147,19 @@ public final class MainLayoutPanel extends DockLayoutPanel {
 	}
 
 	/**
+	 * Returns the ExecuteController of the layout, which is stored in the
+	 * centerController-Map.
+	 * 
+	 * @return ExecuteController
+	 */
+	public ExecuteController getExecuteController() {
+		if (!centerController.containsKey(CenterType.Execute)) {
+			return null;
+		}
+		return (ExecuteController) centerController.get(CenterType.Execute);
+	}
+
+	/**
 	 * Returns the Type of the current centerPanel.
 	 * 
 	 * @return

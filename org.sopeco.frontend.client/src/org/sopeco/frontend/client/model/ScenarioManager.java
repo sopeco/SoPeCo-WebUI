@@ -320,8 +320,12 @@ public final class ScenarioManager {
 	public void setMeasurementDefinition(MeasurementEnvironmentDefinition environment) {
 		builder.getBuiltScenario().setMeasurementEnvironmentDefinition(environment);
 
-		MainLayoutPanel.get().getSpecificationController().getEnvironmentTree().generateTree();
-		MainLayoutPanel.get().getExperimentController().getEnvironmentTree().generateTree();
+		if (MainLayoutPanel.get().getSpecificationController().getEnvironmentTree() != null) {
+			MainLayoutPanel.get().getSpecificationController().getEnvironmentTree().generateTree();
+		}
+		if (MainLayoutPanel.get().getExperimentController().getEnvironmentTree() != null) {
+			MainLayoutPanel.get().getExperimentController().getEnvironmentTree().generateTree();
+		}
 	}
 
 	/**

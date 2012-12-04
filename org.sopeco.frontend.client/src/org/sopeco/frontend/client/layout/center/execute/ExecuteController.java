@@ -1,11 +1,15 @@
 package org.sopeco.frontend.client.layout.center.execute;
 
 import java.util.Date;
+import java.util.logging.Logger;
 
+import org.sopeco.frontend.client.R;
 import org.sopeco.frontend.client.layout.center.ICenterController;
+import org.sopeco.frontend.client.model.Manager;
 import org.sopeco.frontend.client.resources.FrontEndResources;
+import org.sopeco.frontend.shared.entities.ScheduledExperiment;
+import org.sopeco.frontend.shared.helper.ScheduleExpression;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Widget;
@@ -16,6 +20,8 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  */
 public class ExecuteController implements ICenterController, ClickHandler {
+
+	private static final Logger LOGGER = Logger.getLogger(ExecuteController.class.getName());
 
 	private ExecuteTabPanel view;
 
@@ -37,23 +43,40 @@ public class ExecuteController implements ICenterController, ClickHandler {
 		return view;
 	}
 
+	@Override
+	public void onSwitchTo() {
+		view.getTabExecute().generateTree();
+		refreshScheduleTab();
+	}
+
+	public void refreshScheduleTab() {
+		view.getTabSchedule().refreshList();
+		int scheduleCount = Manager.get().getCurrentScenarioDetails().getScheduledExperimentsList().size();
+		view.getTabBar().setTabText(1, R.get("ScheduledExperiments") + " [" + scheduleCount + "]");
+	}
+
 	private boolean isRepeating() {
-		return view.getTabExecute().getScheduleConfTable().getCbRepeat().getValue();
+		return view.getTabExecute().getScheduleConfTable().getCbRepeat().getValue()
+				&& !view.getTabExecute().getRepeatTable().getScheduleDays().isEmpty();
 	}
 
 	private long getStartTime() {
-		String[] splitTime = view.getTabExecute().getScheduleConfTable().getEditStartTime().getValue().split(":");
-		String[] splitDate = view.getTabExecute().getScheduleConfTable().getEditStartDate().getValue().split("\\.");
+		if (view.getTabExecute().isExecutingImmediately()) {
+			return System.currentTimeMillis();
+		} else {
+			String[] splitTime = view.getTabExecute().getScheduleConfTable().getEditStartTime().getValue().split(":");
+			String[] splitDate = view.getTabExecute().getScheduleConfTable().getEditStartDate().getValue().split("\\.");
 
-		Date date = new Date();
-		date.setHours(Integer.parseInt(splitTime[0]));
-		date.setMinutes(Integer.parseInt(splitTime[1]));
-		date.setSeconds(0);
-		date.setDate(Integer.parseInt(splitDate[0]));
-		date.setMonth(Integer.parseInt(splitDate[1]) - 1);
-		date.setYear(Integer.parseInt(splitDate[2]) - 1900);
+			Date date = new Date();
+			date.setHours(Integer.parseInt(splitTime[0]));
+			date.setMinutes(Integer.parseInt(splitTime[1]));
+			date.setSeconds(0);
+			date.setDate(Integer.parseInt(splitDate[0]));
+			date.setMonth(Integer.parseInt(splitDate[1]) - 1);
+			date.setYear(Integer.parseInt(splitDate[2]) - 1900);
 
-		return date.getTime();
+			return date.getTime();
+		}
 	}
 
 	@Override
@@ -62,16 +85,44 @@ public class ExecuteController implements ICenterController, ClickHandler {
 
 	@Override
 	public void onClick(ClickEvent event) {
-		GWT.log("# # #");
-		GWT.log(view.getTabExecute().getEditLabel().getValue());
-		GWT.log(view.getTabExecute().getEditController().getValue());
-		GWT.log(getStartTime() + "");
-		GWT.log(isRepeating() + "");
-		GWT.log(view.getTabExecute().getRepeatTable().getScheduleDays());
-		GWT.log(view.getTabExecute().getRepeatTable().getScheduleHours());
-		GWT.log(view.getTabExecute().getRepeatTable().getScheduleMinutes());
+		scheduleExperiment();
 	}
 
+	private void scheduleExperiment() {
+		ScheduledExperiment scheduledExperiment = new ScheduledExperiment();
+		scheduledExperiment.setAddedTime(System.currentTimeMillis());
+		scheduledExperiment.setLabel(view.getTabExecute().getEditLabel().getValue());
+		scheduledExperiment.setStartTime(getStartTime());
+		scheduledExperiment.setControllerUrl(Manager.get().getControllerUrl());
+		scheduledExperiment.setScenarioDefinition(null);
+
+		if (isRepeating()) {
+			scheduledExperiment.setRepeating(true);
+			scheduledExperiment.setRepeatDays(view.getTabExecute().getRepeatTable().getScheduleDays());
+			scheduledExperiment.setRepeatHours(view.getTabExecute().getRepeatTable().getScheduleHours());
+			scheduledExperiment.setRepeatMinutes(view.getTabExecute().getRepeatTable().getScheduleMinutes());
+		} else {
+			scheduledExperiment.setRepeating(false);
+		}
+
+		if (view.getTabExecute().isExecutingImmediately()) {
+			LOGGER.fine("Execute NOW");
+		} else {
+			if (scheduledExperiment.getStartTime() > System.currentTimeMillis()) {
+				scheduledExperiment.setNextExecutionTime(scheduledExperiment.getStartTime());
+			} else {
+				long nextRepetition = ScheduleExpression.nextValidDate(scheduledExperiment.getStartTime(),
+						scheduledExperiment.getRepeatDays(), scheduledExperiment.getRepeatHours(),
+						scheduledExperiment.getRepeatMinutes());
+				scheduledExperiment.setNextExecutionTime(nextRepetition);
+			}
+
+			Manager.get().getCurrentScenarioDetails().getScheduledExperimentsList().add(scheduledExperiment);
+			Manager.get().storeAccountDetails();
+		}
+
+		refreshScheduleTab();
+	}
 	// private void addHandler() {
 	// view.getBtnStartExperiment().addClickHandler(this);
 	// }

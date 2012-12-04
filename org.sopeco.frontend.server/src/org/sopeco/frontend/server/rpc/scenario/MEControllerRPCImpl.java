@@ -40,22 +40,22 @@ public class MEControllerRPCImpl extends SuperRemoteServlet implements MEControl
 
 	private static final String[] CONTROLLER_URL_PATTERN = new String[] { "^rmi://[a-zA-Z0-9\\.]+(:[0-9]{1,5})?/[a-zA-Z][a-zA-Z0-9]*$" };
 
-	@Override
-	public List<String> getMEControllerList() {
-		try {
-			List<MEControllerUrl> controllerList = getUser().getUiPesistenceProvider().loadAllMEControllerUrls();
-
-			List<String> retList = new ArrayList<String>();
-
-			for (MEControllerUrl cUrl : controllerList) {
-				retList.add(cUrl.getUrl());
-			}
-
-			return retList;
-		} catch (DataNotFoundException e) {
-			return new ArrayList<String>();
-		}
-	}
+//	@Override
+//	public List<String> getMEControllerList() {
+//		try {
+//			List<MEControllerUrl> controllerList = getUser().getUiPesistenceProvider().loadAllMEControllerUrls();
+//
+//			List<String> retList = new ArrayList<String>();
+//
+//			for (MEControllerUrl cUrl : controllerList) {
+//				retList.add(cUrl.getUrl());
+//			}
+//
+//			return retList;
+//		} catch (DataNotFoundException e) {
+//			return new ArrayList<String>();
+//		}
+//	}
 
 	@Override
 	public int checkControllerStatus(String url) {

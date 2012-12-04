@@ -39,7 +39,7 @@ public interface MEControllerRPC extends RemoteService {
 	 * 
 	 * @return List of Controller URLs
 	 */
-	List<String> getMEControllerList();
+//	List<String> getMEControllerList();
 
 	/**
 	 * Checks the current status of a controller.

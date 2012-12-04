@@ -47,6 +47,9 @@ public final class ScheduleExpression {
 	}
 
 	public static long nextValidDate(long startTime, String weekdays, String hours, String minutes) {
+		if (startTime < System.currentTimeMillis()) {
+			startTime = System.currentTimeMillis();
+		}
 		while (!runNow(startTime, weekdays, hours, minutes)) {
 			startTime += 60 * 1000;
 		}

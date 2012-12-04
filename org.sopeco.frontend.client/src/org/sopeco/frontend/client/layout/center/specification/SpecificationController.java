@@ -75,6 +75,10 @@ public class SpecificationController implements ICenterController, ClickHandler,
 		envTree.generateTree();
 	}
 
+	@Override
+	public void onSwitchTo() {
+	}
+
 	public SpecificationEnvironmentTree getEnvironmentTree() {
 		return envTree;
 	}
@@ -236,7 +240,7 @@ public class SpecificationController implements ICenterController, ClickHandler,
 		double metering = Metering.start();
 		assignmentController.clearAssignments(true);
 
-		if (specificationName == null || specificationName.isEmpty() ) {
+		if (specificationName == null || specificationName.isEmpty()) {
 			return;
 		}
 

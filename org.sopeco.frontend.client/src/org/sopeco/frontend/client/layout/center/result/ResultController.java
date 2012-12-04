@@ -37,6 +37,10 @@ public class ResultController implements ICenterController, ClickHandler {
 	}
 
 	@Override
+	public void onSwitchTo() {	
+	}
+	
+	@Override
 	public void reset() {
 		view = new ResultView();
 

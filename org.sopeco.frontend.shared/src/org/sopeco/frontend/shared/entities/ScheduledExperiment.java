@@ -1,12 +1,21 @@
 package org.sopeco.frontend.shared.entities;
 
+import java.io.Serializable;
+
+import org.sopeco.persistence.entities.definition.ScenarioDefinition;
+
 /**
  * 
  * @author Marius Oehler
  * 
  */
-public class ScheduledExperiment {
+public class ScheduledExperiment implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	private String label;
 	private long startTime;
 	private long nextExecutionTime;
@@ -15,6 +24,9 @@ public class ScheduledExperiment {
 	private String repeatMinutes;
 	private boolean isRepeating;
 	private long addedTime;
+
+	private String controllerUrl;
+	private ScenarioDefinition scenarioDefinition;
 
 	public String getLabel() {
 		return label;
@@ -78,6 +90,22 @@ public class ScheduledExperiment {
 
 	public void setAddedTime(long pAddedTime) {
 		this.addedTime = pAddedTime;
+	}
+
+	public String getControllerUrl() {
+		return controllerUrl;
+	}
+
+	public void setControllerUrl(String pControllerUrl) {
+		this.controllerUrl = pControllerUrl;
+	}
+
+	public ScenarioDefinition getScenarioDefinition() {
+		return scenarioDefinition;
+	}
+
+	public void setScenarioDefinition(ScenarioDefinition pScenarioDefinition) {
+		this.scenarioDefinition = pScenarioDefinition;
 	}
 
 }

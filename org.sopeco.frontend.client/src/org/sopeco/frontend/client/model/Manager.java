@@ -70,8 +70,9 @@ public final class Manager {
 	 */
 	public ScenarioDetails getCurrentScenarioDetails() {
 		if (accountDetails.getScenarioDetail(accountDetails.getSelectedScenario()) == null) {
-			Manager.get().getAccountDetails().addScenarioDetails(accountDetails.getSelectedScenario());
-			Manager.get().storeAccountDetails();
+//			Manager.get().getAccountDetails().addScenarioDetails(accountDetails.getSelectedScenario());
+//			Manager.get().storeAccountDetails();
+			return null;
 		}
 
 		return accountDetails.getScenarioDetail(accountDetails.getSelectedScenario());
