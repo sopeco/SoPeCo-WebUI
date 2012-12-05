@@ -19,15 +19,15 @@ public final class StartUp {
 	private static final String CONFIGURATION_FILE = "sopeco-gui.conf";
 
 	private static Boolean hasStarted = false;
-	
+
 	public static synchronized void start(String sessionId) {
 		if (!hasStarted) {
 			System.out.println(">> Starting backend..");
 			try {
 				loadConfiguration(sessionId);
 
-				TimeoutChecker.start();
-				
+				Scheduler.startScheduler();
+
 				hasStarted = true;
 			} catch (ConfigurationException e) {
 				LOGGER.warning(e.getMessage());

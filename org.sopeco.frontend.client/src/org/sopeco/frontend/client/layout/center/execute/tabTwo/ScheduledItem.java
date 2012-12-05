@@ -42,7 +42,7 @@ public class ScheduledItem extends FlexTable implements ClickHandler {
 	private void init() {
 		addStyleName(ITEM_CSS);
 
-		DateTimeFormat format = DateTimeFormat.getFormat("HH:mm - dd.MM.yyyy");
+		DateTimeFormat format = DateTimeFormat.getFormat("hh:mm aa - dd.MM.yyyy");
 
 		String repeatString;
 		if (experiment.isRepeating()) {
@@ -142,7 +142,7 @@ public class ScheduledItem extends FlexTable implements ClickHandler {
 	@Override
 	public void onClick(ClickEvent event) {
 		if (parent != null) {
-			parent.removeExperiment(this);
+			//parent.removeExperiment(this);
 		}
 	}
 }

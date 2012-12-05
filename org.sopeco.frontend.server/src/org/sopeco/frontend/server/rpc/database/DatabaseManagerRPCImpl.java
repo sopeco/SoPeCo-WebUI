@@ -7,14 +7,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sopeco.frontend.client.rpc.DatabaseManagerRPC;
 import org.sopeco.frontend.server.db.FlexiblePersistenceProviderFactory;
-import org.sopeco.frontend.server.db.UIPersistenceProvider;
-import org.sopeco.frontend.server.db.UIPersistenceProviderFactory;
+import org.sopeco.frontend.server.db.UiPersistence;
 import org.sopeco.frontend.server.rpc.SuperRemoteServlet;
 import org.sopeco.frontend.shared.entities.AccountDetails;
 import org.sopeco.frontend.shared.helper.Metering;
-import org.sopeco.persistence.IMetaDataPersistenceProvider;
 import org.sopeco.persistence.IPersistenceProvider;
-import org.sopeco.persistence.PersistenceProviderFactory;
 import org.sopeco.persistence.exceptions.DataNotFoundException;
 import org.sopeco.persistence.exceptions.WrongCredentialsException;
 import org.sopeco.persistence.metadata.entities.DatabaseInstance;
@@ -30,19 +27,6 @@ public class DatabaseManagerRPCImpl extends SuperRemoteServlet implements Databa
 	private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseManagerRPCImpl.class);
 	private static final long serialVersionUID = 1L;
 
-	private static IMetaDataPersistenceProvider metaPersistenceProvider;
-
-	private static IMetaDataPersistenceProvider getMetaProvider() {
-		double metering = Metering.start();
-
-		if (metaPersistenceProvider == null) {
-			metaPersistenceProvider = PersistenceProviderFactory.getInstance().getMetaDataPersistenceProvider();
-		}
-
-		Metering.stop(metering);
-		return metaPersistenceProvider;
-	}
-
 	/**
 	 * Returns the databases which are stored in the meta database.
 	 * 
@@ -52,7 +36,7 @@ public class DatabaseManagerRPCImpl extends SuperRemoteServlet implements Databa
 		LOGGER.debug("loading databases");
 
 		try {
-			return getMetaProvider().loadAllDatabaseInstances();
+			return UiPersistence.getMetaProvider().loadAllDatabaseInstances();
 		} catch (DataNotFoundException e) {
 			return new ArrayList<DatabaseInstance>();
 		} catch (Exception e) {
@@ -74,7 +58,7 @@ public class DatabaseManagerRPCImpl extends SuperRemoteServlet implements Databa
 			DatabaseInstance dbInstance = getRealInstance(dbDefinition);
 
 			if (dbInstance != null) {
-				getMetaProvider().remove(dbInstance);
+				UiPersistence.getMetaProvider().remove(dbInstance);
 				return true;
 			}
 
@@ -105,7 +89,7 @@ public class DatabaseManagerRPCImpl extends SuperRemoteServlet implements Databa
 					dbInstance.getHost(), dbInstance.getPort(), dbInstance.getDbName());
 		}
 
-		getMetaProvider().store(dbInstance);
+		UiPersistence.getMetaProvider().store(dbInstance);
 
 		Metering.stop(metering);
 		return true;
@@ -121,7 +105,7 @@ public class DatabaseManagerRPCImpl extends SuperRemoteServlet implements Databa
 	 */
 	private DatabaseInstance getRealInstance(DatabaseInstance instance) {
 		try {
-			List<DatabaseInstance> instances = getMetaProvider().loadAllDatabaseInstances();
+			List<DatabaseInstance> instances = UiPersistence.getMetaProvider().loadAllDatabaseInstances();
 
 			for (DatabaseInstance dbInstance : instances) {
 				if (instanceEqual(instance, dbInstance)) {
@@ -207,23 +191,18 @@ public class DatabaseManagerRPCImpl extends SuperRemoteServlet implements Databa
 			return false;
 		}
 
-		UIPersistenceProvider uiProvider = UIPersistenceProviderFactory.createUIPersistenceProvider(
-				dbInstance.getHost(), dbInstance.getPort(), dbInstance.getDbName(), passwd);
-
 		getUser().setCurrentDatabaseId(dbInstance.getId());
 		getUser().setCurrentPersistenceProvider(dbConnection);
-		getUser().setUiPesistenceProvider(uiProvider);
 
-		AccountDetails details = uiProvider.getAccountDetails(dbInstance.getId());
+		AccountDetails details = UiPersistence.getUiProvider().getAccountDetails(dbInstance.getId());
 		if (details == null) {
 			details = new AccountDetails();
 			details.setId(dbInstance.getId());
 			details.setAccountName(dbInstance.getDbName());
-			uiProvider.storeAccountDetails(details);
+			UiPersistence.getUiProvider().storeAccountDetails(details);
 		}
 
 		Metering.stop(metering);
-
 		return true;
 	}
 
@@ -259,11 +238,11 @@ public class DatabaseManagerRPCImpl extends SuperRemoteServlet implements Databa
 	@Override
 	public AccountDetails getAccountDetails() {
 		String accountId = getUser().getCurrentDatabaseId();
-		return getUser().getUiPesistenceProvider().getAccountDetails(accountId);
+		return UiPersistence.getUiProvider().getAccountDetails(accountId);
 	}
 
 	@Override
 	public void storeAccountDetails(AccountDetails details) {
-		getUser().getUiPesistenceProvider().storeAccountDetails(details);
+		UiPersistence.getUiProvider().storeAccountDetails(details);
 	}
 }

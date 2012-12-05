@@ -29,22 +29,22 @@ public class ScheduleTab extends FlowPanel {
 		double metering = Metering.start();
 		clear();
 
-		Map<Long, ScheduledItem> scheduledItems = new TreeMap<Long, ScheduledItem>();
+		Map<Long, ScheduleItemPanel> scheduledItems = new TreeMap<Long, ScheduleItemPanel>();
 
 		for (ScheduledExperiment e : Manager.get().getCurrentScenarioDetails().getScheduledExperimentsList()) {
-			ScheduledItem item = new ScheduledItem(e);
+			ScheduleItemPanel item = new ScheduleItemPanel(e);
 			// add(item);
-			item.setParent(this);
+			// item.setParent(this);
 			scheduledItems.put(e.getNextExecutionTime(), item);
 		}
 
-		for (ScheduledItem item : scheduledItems.values()) {
+		for (ScheduleItemPanel item : scheduledItems.values()) {
 			add(item);
 		}
 		Metering.stop(metering);
 	}
 
-	public void removeExperiment(ScheduledItem item) {
+	public void removeExperiment(ScheduleItemPanel item) {
 		ScheduledExperiment exp = item.getExperiment();
 		Manager.get().getCurrentScenarioDetails().getScheduledExperimentsList().remove(exp);
 		Manager.get().storeAccountDetails();

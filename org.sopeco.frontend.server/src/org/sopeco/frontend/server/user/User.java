@@ -2,7 +2,6 @@ package org.sopeco.frontend.server.user;
 
 import java.util.logging.Logger;
 
-import org.sopeco.frontend.server.db.UIPersistenceProvider;
 import org.sopeco.frontend.shared.builder.MeasurementSpecificationBuilder;
 import org.sopeco.frontend.shared.builder.ScenarioDefinitionBuilder;
 import org.sopeco.persistence.IPersistenceProvider;
@@ -23,7 +22,6 @@ public class User {
 	private String workingSpecification;
 	private String currentDatabaseId;
 	private IPersistenceProvider currentPersistenceProvider;
-	private UIPersistenceProvider uiPesistenceProvider;
 	private static final Logger LOGGER = Logger.getLogger(User.class.getName());
 	private long lastRequestTime;
 
@@ -41,20 +39,12 @@ public class User {
 		this.currentPersistenceProvider = persistenceProvider;
 	}
 
-	public UIPersistenceProvider getUiPesistenceProvider() {
-		return uiPesistenceProvider;
-	}
-
 	public long getLastRequestTime() {
 		return lastRequestTime;
 	}
 
 	public void setLastRequestTime(long pLastRequestTime) {
 		this.lastRequestTime = pLastRequestTime;
-	}
-
-	public void setUiPesistenceProvider(UIPersistenceProvider pesistenceProvider) {
-		this.uiPesistenceProvider = pesistenceProvider;
 	}
 
 	public String getCurrentDatabaseId() {

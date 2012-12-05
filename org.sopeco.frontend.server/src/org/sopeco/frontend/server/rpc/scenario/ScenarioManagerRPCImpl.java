@@ -8,7 +8,6 @@ import org.sopeco.engine.model.ScenarioDefinitionWriter;
 import org.sopeco.frontend.client.rpc.ScenarioManagerRPC;
 import org.sopeco.frontend.server.rpc.SuperRemoteServlet;
 import org.sopeco.frontend.shared.builder.ScenarioDefinitionBuilder;
-import org.sopeco.frontend.shared.helper.Utilities;
 import org.sopeco.persistence.IPersistenceProvider;
 import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
@@ -161,7 +160,7 @@ public class ScenarioManagerRPCImpl extends SuperRemoteServlet implements Scenar
 		ScenarioDefinition definition = getUser().getCurrentScenarioDefinitionBuilder().getBuiltScenario();
 
 		if (definition != null) {
-			ScenarioDefinitionWriter writer = new ScenarioDefinitionWriter();
+			ScenarioDefinitionWriter writer = new ScenarioDefinitionWriter(getSessionId());
 			return writer.convertToXMLString(definition);
 		}
 		return "";

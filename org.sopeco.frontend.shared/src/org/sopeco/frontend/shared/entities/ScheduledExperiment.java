@@ -15,18 +15,28 @@ public class ScheduledExperiment implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	private String label;
 	private long startTime;
 	private long nextExecutionTime;
+	private long lastExecutionTime;
 	private String repeatDays;
 	private String repeatHours;
 	private String repeatMinutes;
 	private boolean isRepeating;
 	private long addedTime;
+	private boolean active;
 
 	private String controllerUrl;
 	private ScenarioDefinition scenarioDefinition;
+
+	public long getLastExecutionTime() {
+		return lastExecutionTime;
+	}
+
+	public void setLastExecutionTime(long pLastExecutionTime) {
+		this.lastExecutionTime = pLastExecutionTime;
+	}
 
 	public String getLabel() {
 		return label;
@@ -106,6 +116,14 @@ public class ScheduledExperiment implements Serializable {
 
 	public void setScenarioDefinition(ScenarioDefinition pScenarioDefinition) {
 		this.scenarioDefinition = pScenarioDefinition;
+	}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
 	}
 
 }

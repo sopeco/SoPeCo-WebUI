@@ -136,3 +136,38 @@
 	font-weight: bold;
 	color: #333;
 }
+
+/** ************************************************************* **/
+.scheduleItemPanel {
+	background-color: #FAFAFA;
+	padding: .5em 1em;
+	border-bottom: 1px solid #EEE;
+	border-top: 1px solid #BBB;
+}
+
+.scheduleItemPanel:hover {
+	background-color: #FAFAFF;
+}
+
+.scheduleItemPanel .headPanel * {
+	float: left;
+}
+
+.scheduleItemPanel .headPanel>div:first-child {
+	margin-right: 1.5em;
+	font-weight: bold;
+	color: #333;
+}
+
+.scheduleItemPanel .headPanel .gwt-Image {
+	margin-right: .5em;
+	cursor: pointer;
+}
+
+.scheduleItemPanel>table td {
+	padding-right: 2em;
+}
+
+.scheduleItemPanel>table td .gwt-HTML {
+	white-space: nowrap;
+}

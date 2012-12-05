@@ -64,12 +64,12 @@ public class MEControllerRPCImpl extends SuperRemoteServlet implements MEControl
 			return MEControllerRPC.NO_VALID_MEC_URL;
 		}
 
-		if (!getUser().getUiPesistenceProvider().checkMEControllerUrlExists(url)) {
-
-			getUser().getUiPesistenceProvider().storeMEControllerUrl(url);
-
-			// pushNewMECToClients(url);
-		}
+//		if (!getUser().getUiPesistenceProvider().checkMEControllerUrlExists(url)) {
+//
+//			getUser().getUiPesistenceProvider().storeMEControllerUrl(url);
+//
+//			// pushNewMECToClients(url);
+//		}
 
 		try {
 			IMeasurementEnvironmentController meCotnroller = RmiMEConnector.connectToMEController(new URI(url));

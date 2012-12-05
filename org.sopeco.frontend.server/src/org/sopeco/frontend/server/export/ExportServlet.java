@@ -34,7 +34,7 @@ public class ExportServlet extends HttpServlet {
 		session = req.getSession();
 
 		if (req.getParameter(SCNEARIO_EXPORT) != null) {
-			sendScenarioAsXML(resp);
+			sendScenarioAsXML(resp, session.getId());
 		} else {
 			resp.sendError(204);
 		}
@@ -45,7 +45,7 @@ public class ExportServlet extends HttpServlet {
 	 * @param resp
 	 * @throws IOException
 	 */
-	private void sendScenarioAsXML(HttpServletResponse resp) throws IOException {
+	private void sendScenarioAsXML(HttpServletResponse resp, String sessionId) throws IOException {
 		if (!UserManager.existSession(session.getId())) {
 			resp.sendError(204);
 			return;
@@ -55,7 +55,7 @@ public class ExportServlet extends HttpServlet {
 				.getBuiltScenario();
 
 		if (definition != null) {
-			ScenarioDefinitionWriter writer = new ScenarioDefinitionWriter();
+			ScenarioDefinitionWriter writer = new ScenarioDefinitionWriter(sessionId);
 			String definitionXML = writer.convertToXMLString(definition);
 			String fileName = "scenario-" + definition.getScenarioName() + ".xml";
 
