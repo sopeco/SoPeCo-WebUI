@@ -3,7 +3,6 @@ package org.sopeco.frontend.server.rpc.scenario;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -12,17 +11,14 @@ import org.sopeco.engine.measurementenvironment.IMeasurementEnvironmentControlle
 import org.sopeco.engine.measurementenvironment.rmi.RmiMEConnector;
 import org.sopeco.frontend.client.rpc.MEControllerRPC;
 import org.sopeco.frontend.client.rpc.PushRPC.Type;
-import org.sopeco.frontend.server.db.entities.MEControllerUrl;
 import org.sopeco.frontend.server.helper.ServerCheck;
-import org.sopeco.frontend.server.rpc.PushRPCImpl;
 import org.sopeco.frontend.server.rpc.SuperRemoteServlet;
 import org.sopeco.frontend.shared.builder.MeasurementEnvironmentBuilder;
-import org.sopeco.frontend.shared.definitions.PushPackage;
+import org.sopeco.frontend.shared.push.PushPackage;
 import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.entities.definition.ParameterNamespace;
 import org.sopeco.persistence.entities.definition.ParameterRole;
-import org.sopeco.persistence.exceptions.DataNotFoundException;
 
 /**
  * 
@@ -40,22 +36,23 @@ public class MEControllerRPCImpl extends SuperRemoteServlet implements MEControl
 
 	private static final String[] CONTROLLER_URL_PATTERN = new String[] { "^rmi://[a-zA-Z0-9\\.]+(:[0-9]{1,5})?/[a-zA-Z][a-zA-Z0-9]*$" };
 
-//	@Override
-//	public List<String> getMEControllerList() {
-//		try {
-//			List<MEControllerUrl> controllerList = getUser().getUiPesistenceProvider().loadAllMEControllerUrls();
-//
-//			List<String> retList = new ArrayList<String>();
-//
-//			for (MEControllerUrl cUrl : controllerList) {
-//				retList.add(cUrl.getUrl());
-//			}
-//
-//			return retList;
-//		} catch (DataNotFoundException e) {
-//			return new ArrayList<String>();
-//		}
-//	}
+	// @Override
+	// public List<String> getMEControllerList() {
+	// try {
+	// List<MEControllerUrl> controllerList =
+	// getUser().getUiPesistenceProvider().loadAllMEControllerUrls();
+	//
+	// List<String> retList = new ArrayList<String>();
+	//
+	// for (MEControllerUrl cUrl : controllerList) {
+	// retList.add(cUrl.getUrl());
+	// }
+	//
+	// return retList;
+	// } catch (DataNotFoundException e) {
+	// return new ArrayList<String>();
+	// }
+	// }
 
 	@Override
 	public int checkControllerStatus(String url) {
@@ -64,12 +61,14 @@ public class MEControllerRPCImpl extends SuperRemoteServlet implements MEControl
 			return MEControllerRPC.NO_VALID_MEC_URL;
 		}
 
-//		if (!getUser().getUiPesistenceProvider().checkMEControllerUrlExists(url)) {
-//
-//			getUser().getUiPesistenceProvider().storeMEControllerUrl(url);
-//
-//			// pushNewMECToClients(url);
-//		}
+		// if
+		// (!getUser().getUiPesistenceProvider().checkMEControllerUrlExists(url))
+		// {
+		//
+		// getUser().getUiPesistenceProvider().storeMEControllerUrl(url);
+		//
+		// // pushNewMECToClients(url);
+		// }
 
 		try {
 			IMeasurementEnvironmentController meCotnroller = RmiMEConnector.connectToMEController(new URI(url));
@@ -103,11 +102,11 @@ public class MEControllerRPCImpl extends SuperRemoteServlet implements MEControl
 	 */
 	private void pushNewMECToClients(String controllerUrl) {
 		PushPackage push = new PushPackage(Type.NEW_MEC_AVAILABLE);
-		push.setPiggyback(controllerUrl);
+		// push.setPiggyback(controllerUrl);
 
 		String dbId = getUser().getCurrentDatabaseId();
 
-		PushRPCImpl.pushToCODB(dbId, push);
+		// PushRPCImpl.pushToCODB(dbId, push);
 	}
 
 	/**

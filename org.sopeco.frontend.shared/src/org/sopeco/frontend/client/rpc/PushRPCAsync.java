@@ -1,6 +1,6 @@
 package org.sopeco.frontend.client.rpc;
 
-import org.sopeco.frontend.shared.definitions.PushPackage;
+import org.sopeco.frontend.shared.push.PushPackage;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 

@@ -15,12 +15,12 @@ public final class Scheduler {
 	}
 
 	private static final int REPEATE_INTERVAL = 60000;
-	private static SchedulerThread scheduler;
+	private static ScheduleTimer scheduler;
 
 	public static synchronized void startScheduler() {
 		if (scheduler == null) {
 			LOGGER.info("Starting SchedulerThread.");
-			scheduler = new SchedulerThread();
+			scheduler = new ScheduleTimer();
 			scheduler.start();
 		}
 	}
@@ -36,7 +36,7 @@ public final class Scheduler {
 	/**
 	 * This thread is repeated constantly and performs every minute an action.
 	 */
-	private static class SchedulerThread extends Thread {
+	private static class ScheduleTimer extends Thread {
 		private Object monitor = new Object();
 		private boolean running;
 

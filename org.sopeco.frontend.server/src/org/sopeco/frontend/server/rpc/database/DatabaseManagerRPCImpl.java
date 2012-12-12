@@ -6,8 +6,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sopeco.frontend.client.rpc.DatabaseManagerRPC;
-import org.sopeco.frontend.server.db.FlexiblePersistenceProviderFactory;
-import org.sopeco.frontend.server.db.UiPersistence;
+import org.sopeco.frontend.server.persistence.FlexiblePersistenceProviderFactory;
+import org.sopeco.frontend.server.persistence.UiPersistence;
 import org.sopeco.frontend.server.rpc.SuperRemoteServlet;
 import org.sopeco.frontend.shared.entities.AccountDetails;
 import org.sopeco.frontend.shared.helper.Metering;
@@ -51,12 +51,17 @@ public class DatabaseManagerRPCImpl extends SuperRemoteServlet implements Databa
 	 *            database which will be removed
 	 * @return true if the removal was successful
 	 */
+	@SuppressWarnings("unused")
 	public boolean removeDatabase(DatabaseInstance dbDefinition) {
 		LOGGER.debug("deleting database " + dbDefinition.getDbName());
 
 		try {
 			DatabaseInstance dbInstance = getRealInstance(dbDefinition);
 
+			AccountDetails details = UiPersistence.getUiProvider().loadAccountDetails(dbInstance.getId());
+			if (details != null) {
+				UiPersistence.getUiProvider().removeAccountDetails(details);
+			}
 			if (dbInstance != null) {
 				UiPersistence.getMetaProvider().remove(dbInstance);
 				return true;
@@ -194,7 +199,7 @@ public class DatabaseManagerRPCImpl extends SuperRemoteServlet implements Databa
 		getUser().setCurrentDatabaseId(dbInstance.getId());
 		getUser().setCurrentPersistenceProvider(dbConnection);
 
-		AccountDetails details = UiPersistence.getUiProvider().getAccountDetails(dbInstance.getId());
+		AccountDetails details = UiPersistence.getUiProvider().loadAccountDetails(dbInstance.getId());
 		if (details == null) {
 			details = new AccountDetails();
 			details.setId(dbInstance.getId());
@@ -238,7 +243,7 @@ public class DatabaseManagerRPCImpl extends SuperRemoteServlet implements Databa
 	@Override
 	public AccountDetails getAccountDetails() {
 		String accountId = getUser().getCurrentDatabaseId();
-		return UiPersistence.getUiProvider().getAccountDetails(accountId);
+		return UiPersistence.getUiProvider().loadAccountDetails(accountId);
 	}
 
 	@Override

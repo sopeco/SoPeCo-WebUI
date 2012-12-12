@@ -13,8 +13,6 @@ import org.sopeco.frontend.client.rpc.ExtensionRPC;
 import org.sopeco.frontend.shared.helper.ExtensionContainer;
 import org.sopeco.frontend.shared.helper.ExtensionTypes;
 
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
-
 /**
  * 
  * @author Marius Oehler

@@ -1,4 +1,4 @@
-package org.sopeco.frontend.server.db;
+package org.sopeco.frontend.server.persistence;
 
 import javax.servlet.http.HttpSession;
 

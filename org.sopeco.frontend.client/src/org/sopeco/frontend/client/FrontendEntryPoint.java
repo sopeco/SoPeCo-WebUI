@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 
 import org.sopeco.frontend.client.event.EventControl;
 import org.sopeco.frontend.client.extensions.Extensions;
+import org.sopeco.frontend.client.helper.ServerPush;
 import org.sopeco.frontend.client.helper.SimpleNotify;
 import org.sopeco.frontend.client.helper.SystemDetails;
 import org.sopeco.frontend.client.helper.callback.CallbackBatch;
@@ -119,7 +120,9 @@ public class FrontendEntryPoint implements EntryPoint, SimpleNotify {
 
 			@Override
 			protected void onSuccess() {
+				// All stuff was loaded
 				changeDatabase();
+				ServerPush.get().startRequest();
 			}
 		};
 

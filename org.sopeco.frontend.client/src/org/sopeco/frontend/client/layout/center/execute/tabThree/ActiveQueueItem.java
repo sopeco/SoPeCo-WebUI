@@ -141,4 +141,17 @@ public class ActiveQueueItem extends FlexTable {
 		setRemainingTime("-");
 		getProgressBar().setValue(0);
 	}
+	
+	public void setDummyProgress() {
+		setLabel("executing");
+		setAccount("MyAccount");
+		setScenario("MyScenario");
+		setSpecification("MySpecification");
+		setExperiment("MyExperiment");
+		setStart("10:02 AM / 06.12.2012");
+		setProgress("43%");
+		setElapsedTime("00:06:32");
+		setRemainingTime("01:48:22");
+		getProgressBar().setValue(43);
+	}
 }

@@ -24,5 +24,7 @@ public class ControllerQueueTab extends FlowPanel {
 
 		add(new QueueItem());
 		add(new QueueItem());
+		
+		activeItem.setDummyProgress();
 	}
 }

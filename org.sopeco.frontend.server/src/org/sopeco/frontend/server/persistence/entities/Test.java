@@ -1,4 +1,4 @@
-package org.sopeco.frontend.server.db.entities;
+package org.sopeco.frontend.server.persistence.entities;
 
 import java.io.Serializable;
 

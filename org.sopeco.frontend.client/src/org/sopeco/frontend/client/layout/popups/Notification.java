@@ -36,8 +36,7 @@ public class Notification extends PopupPanel {
 	public static void show(String message) {
 		Notification not = new Notification(message);
 		not.setAnimationEnabled(true);
-		not.setStyleName("sopeco-notification-bottom", true);
-		not.setPopupPosition(8, Window.getClientHeight() - 80);
+		not.addStyleName("sopeco-notification-bottom");
 
 		if (currentNotification == null) {
 			currentNotification = not;

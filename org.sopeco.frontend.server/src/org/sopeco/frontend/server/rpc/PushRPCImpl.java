@@ -1,11 +1,11 @@
 package org.sopeco.frontend.server.rpc;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.sopeco.frontend.client.rpc.PushRPC;
-import org.sopeco.frontend.server.user.User;
-import org.sopeco.frontend.server.user.UserManager;
-import org.sopeco.frontend.shared.definitions.PushPackage;
+import org.sopeco.frontend.shared.push.PushPackage;
 
 /**
  * 
@@ -15,25 +15,34 @@ import org.sopeco.frontend.shared.definitions.PushPackage;
 public class PushRPCImpl extends SuperRemoteServlet implements PushRPC {
 
 	private static final long serialVersionUID = 1L;
-	private static final int TIMEOUT = 30000;
+	private static final int TIMEOUT = 5000;
 
-	private static HashMap<String, Object> waitingMap = new HashMap<String, Object>();
-	private static HashMap<String, PushPackage> packageMap = new HashMap<String, PushPackage>();
+	private static HashMap<String, List<PushPackage>> packageListMap = new HashMap<String, List<PushPackage>>();
 
 	public PushPackage push() {
-		String sId = getThreadLocalRequest().getSession().getId();
-
 		try {
-			packageMap.put(sId, new PushPackage(Type.IDLE));
-			waitingMap.put(sId, new Object());
- 
-			
-			synchronized (waitingMap.get(sId)) {
-				waitingMap.get(sId).wait(TIMEOUT);
+			initList(getSessionId());
+
+			PushPackage sendingPackage = new PushPackage(Type.IDLE);
+			synchronized (packageListMap.get(getSessionId())) {
+				if (packageListMap.get(getSessionId()).isEmpty()) {
+					packageListMap.get(getSessionId()).wait(TIMEOUT);
+				}
+				if (!packageListMap.get(getSessionId()).isEmpty()) {
+					sendingPackage = packageListMap.get(getSessionId()).get(0);
+					packageListMap.get(getSessionId()).remove(0);
+				}
 			}
-			return packageMap.get(sId);
+			System.err.println("push: " + sendingPackage.getType());
+			return sendingPackage;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
+		}
+	}
+
+	private void initList(String sessionId) {
+		if (!packageListMap.containsKey(sessionId)) {
+			packageListMap.put(sessionId, new ArrayList<PushPackage>());
 		}
 	}
 
@@ -44,10 +53,20 @@ public class PushRPCImpl extends SuperRemoteServlet implements PushRPC {
 	 *            object, which will be send
 	 */
 	public static void pushToAll(PushPackage pushPackage) {
-		for (String sId : waitingMap.keySet()) {
-			synchronized (waitingMap.get(sId)) {
-				packageMap.put(sId, pushPackage);
-				waitingMap.get(sId).notify();
+		for (List<PushPackage> packageList : packageListMap.values()) {
+			synchronized (packageList) {
+				packageList.add(pushPackage);
+				packageList.notify();
+			}
+		}
+	}
+
+	public static void push(String sessionId, PushPackage pushPackage) {
+		if (packageListMap.containsKey(sessionId)) {
+			List<PushPackage> packageList = packageListMap.get(sessionId);
+			synchronized (packageList) {
+				packageList.add(pushPackage);
+				packageList.notify();
 			}
 		}
 	}
@@ -58,15 +77,16 @@ public class PushRPCImpl extends SuperRemoteServlet implements PushRPC {
 	 * 
 	 * @param pushPackage
 	 */
-	public static void pushToCODB(String databaseId, PushPackage pushPackage) {
-		for (User u : UserManager.getAllUserOnDatabase(databaseId)) {
-
-			synchronized (waitingMap.get(u.getSessionId())) {
-				packageMap.put(u.getSessionId(), pushPackage);
-				waitingMap.get(u.getSessionId()).notify();
-			}
-		}
-	}
+	// public static void pushToCODB(String databaseId, PushPackage pushPackage)
+	// {
+	// for (User u : UserManager.getAllUserOnDatabase(databaseId)) {
+	//
+	// synchronized (waitingMap.get(u.getSessionId())) {
+	// packageListMap.put(u.getSessionId(), pushPackage);
+	// waitingMap.get(u.getSessionId()).notify();
+	// }
+	// }
+	// }
 
 	/**
 	 * Sends a pushPackage to the frontend (to the client with the given session
@@ -77,21 +97,21 @@ public class PushRPCImpl extends SuperRemoteServlet implements PushRPC {
 	 * @param pushPackage
 	 *            object, which will be send
 	 */
-	public static void push(String sessionId, PushPackage pushPackage) {
-		synchronized (waitingMap.get(sessionId)) {
-			packageMap.put(sessionId, pushPackage);
-			waitingMap.get(sessionId).notify();
-		}
-	}
+	// public static void push(String sessionId, PushPackage pushPackage) {
+	// synchronized (waitingMap.get(sessionId)) {
+	// packageListMap.put(sessionId, pushPackage);
+	// waitingMap.get(sessionId).notify();
+	// }
+	// }
 
 	/**
 	 * Sending Pushpackage with the Type MESSAGE to the client.
 	 * 
 	 * @param message
 	 */
-	public static void pushMessage(String sessionId, String message) {
-		PushPackage pushPackage = new PushPackage(Type.MESSAGE);
-		pushPackage.setPiggyback(message);
-		push(sessionId, pushPackage);
-	}
+	// public static void pushMessage(String sessionId, String message) {
+	// PushPackage pushPackage = new PushPackage(Type.MESSAGE);
+	// pushPackage.setPiggyback(message);
+	// push(sessionId, pushPackage);
+	// }
 }

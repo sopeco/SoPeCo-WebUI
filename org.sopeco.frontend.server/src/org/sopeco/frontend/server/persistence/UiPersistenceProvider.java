@@ -1,4 +1,4 @@
-package org.sopeco.frontend.server.db;
+package org.sopeco.frontend.server.persistence;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -28,11 +28,32 @@ public class UiPersistenceProvider {
 	 * @param accountId
 	 * @return AccountDetails with the given Id
 	 */
-	public AccountDetails getAccountDetails(String accountId) {
+	public AccountDetails loadAccountDetails(String accountId) {
 		EntityManager em = emf.createEntityManager();
 		AccountDetails foundDetails = em.find(AccountDetails.class, accountId);
 		em.close();
 		return foundDetails;
+	}
+
+	/**
+	 * Removes the given AccountDetails object from the database.
+	 * 
+	 * @param accountDetails
+	 *            which will be removed
+	 */
+	public void removeAccountDetails(AccountDetails accountDetails) {
+		EntityManager em = emf.createEntityManager();
+		try {
+			em.getTransaction().begin();
+			AccountDetails toBeRemoved = em.merge(accountDetails);
+		    em.remove(toBeRemoved);
+			em.getTransaction().commit();
+		} finally {
+			if (em.getTransaction().isActive()) {
+				em.getTransaction().rollback();
+			}
+			em.close();
+		}
 	}
 
 	/**

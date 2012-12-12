@@ -5,8 +5,11 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import org.sopeco.config.Configuration;
+import org.sopeco.config.IConfiguration;
 import org.sopeco.config.exception.ConfigurationException;
+import org.sopeco.engine.status.StatusBroker;
 import org.sopeco.frontend.client.rpc.ExecuteRPC;
+import org.sopeco.frontend.server.helper.ExperimentStatusChecker;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 import org.sopeco.runner.SoPeCoRunner;
 
@@ -32,11 +35,15 @@ public class ExecuteRPCImpl extends SuperRemoteServlet implements ExecuteRPC {
 
 		try {
 			ScenarioDefinition src = getUser().getCurrentScenarioDefinitionBuilder().getBuiltScenario();
-		
-			//src.getExperimentSeriesDefinition("x1").getTerminationConditions().iterator().next().getParametersDefaultValues().put("repetitions", "3");
-			
+
+			// src.getExperimentSeriesDefinition("x1").getTerminationConditions().iterator().next().getParametersDefaultValues().put("repetitions",
+			// "3");
+
 			Configuration.getSessionSingleton(getSessionId()).setMeasurementControllerURI(url);
 			Configuration.getSessionSingleton(getSessionId()).setScenarioDescription(src);
+
+			Configuration.getSessionSingleton(getSessionId()).setProperty(IConfiguration.SENDING_STATUS_MESSAGES,
+					"true");
 
 			SoPeCoRunner runner = new SoPeCoRunner(getSessionId());
 
@@ -44,7 +51,24 @@ public class ExecuteRPCImpl extends SuperRemoteServlet implements ExecuteRPC {
 			timeMap.put(url, System.currentTimeMillis());
 
 			threadMap.get(url).start();
+
+			long s = System.currentTimeMillis();
+			String token;
+			while ((token = StatusBroker.get().getToken(getSessionId() + url)) == null) {
+				try {
+					Thread.sleep(10);
+				} catch (Exception e) {
+				}
+			}
+
+			ExperimentStatusChecker.get().addUser(token, getSessionId());
+
+			System.out.println("\t>waiting - " + (System.currentTimeMillis() - s));
+			System.out.println(token);
+
 		} catch (ConfigurationException e) {
+			throw new RuntimeException(e);
+		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
