@@ -81,6 +81,7 @@ public class Confirmation extends DialogBox {
 		btnConfirm.addClickHandler(getDefaultCloseHandler());
 
 		btnCancel.addClickHandler(onCancel);
+		btnCancel.addClickHandler(getDefaultCloseHandler());
 	}
 
 	/*

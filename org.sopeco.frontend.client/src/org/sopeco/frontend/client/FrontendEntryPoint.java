@@ -78,10 +78,8 @@ public class FrontendEntryPoint implements EntryPoint, SimpleNotify {
 	@Override
 	public void onModuleLoad() {
 		frontend = this;
-
 		configLogger();
-
-		R.loadLangFile(this);
+		R.loadLangFile(FrontendEntryPoint.this);
 	}
 
 	/**
@@ -137,9 +135,7 @@ public class FrontendEntryPoint implements EntryPoint, SimpleNotify {
 		clearRootLayout();
 		Manager.get().reset();
 		EventControl.removeAllHandler();
-		
-		
-		
+
 		LoginBox box = new LoginBox();
 		box.center();
 	}

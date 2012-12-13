@@ -15,4 +15,7 @@ public interface ResultRPCAsync {
 	void getResults(AsyncCallback<Void> callback);
 
 	void getInstances(String scenarioName, AsyncCallback<List<SharedScenarioInstance>> callback);
+
+	void getResultAsR(String scenario, String exoerimentSeries, String url, long timestamp,
+			AsyncCallback<String> callback);
 }

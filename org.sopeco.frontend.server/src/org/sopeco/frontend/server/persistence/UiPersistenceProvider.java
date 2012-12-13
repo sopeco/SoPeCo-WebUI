@@ -1,7 +1,11 @@
 package org.sopeco.frontend.server.persistence;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.Query;
 
 import org.sopeco.frontend.shared.entities.AccountDetails;
 
@@ -36,6 +40,26 @@ public class UiPersistenceProvider {
 	}
 
 	/**
+	 * Returns all AccountDetails object from the database.
+	 * 
+	 * @return AccountDetails with the given Id
+	 */
+	@SuppressWarnings("unchecked")
+	public List<AccountDetails> loadAllAccountDetails() {
+		List<AccountDetails> accountDetails = null;
+		EntityManager em = emf.createEntityManager();
+		try {
+			Query query = em.createNamedQuery("getAllAccounts");
+			accountDetails = query.getResultList();
+			return accountDetails;
+		} catch (Exception e) {
+			return new ArrayList<AccountDetails>();
+		} finally {
+			em.close();
+		}
+	}
+
+	/**
 	 * Removes the given AccountDetails object from the database.
 	 * 
 	 * @param accountDetails
@@ -46,7 +70,7 @@ public class UiPersistenceProvider {
 		try {
 			em.getTransaction().begin();
 			AccountDetails toBeRemoved = em.merge(accountDetails);
-		    em.remove(toBeRemoved);
+			em.remove(toBeRemoved);
 			em.getTransaction().commit();
 		} finally {
 			if (em.getTransaction().isActive()) {

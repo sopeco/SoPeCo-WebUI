@@ -14,7 +14,7 @@ public final class Scheduler {
 	private Scheduler() {
 	}
 
-	private static final int REPEATE_INTERVAL = 60000;
+	private static final int REPEATE_INTERVAL = 5000;
 	private static ScheduleTimer scheduler;
 
 	public static synchronized void startScheduler() {

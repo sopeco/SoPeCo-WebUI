@@ -62,6 +62,7 @@ public class ExecuteTab extends FlowPanel implements ValueChangeHandler<Boolean>
 
 		rdioOnReady = new RadioButton("execution");
 		rdioSchedule = new RadioButton("execution");
+		rdioSchedule.setEnabled(false);
 
 		hPanelExecution = new HorizontalPanel();
 		hPanelExecution.add(rdioOnReady);

@@ -106,7 +106,7 @@ public class ResultController implements ICenterController, ClickHandler {
 				for (SharedExperimentRuns run : series.getExperimentRuns()) {
 					TreeLeaf runItem = new TreeLeaf(run);
 
-					runItem.addClickHandler(this);
+//					runItem.addClickHandler(this);
 
 					seriesItem.addItem(runItem);
 				}

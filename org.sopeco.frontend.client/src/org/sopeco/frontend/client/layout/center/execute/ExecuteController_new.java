@@ -107,6 +107,7 @@ public class ExecuteController_new implements ICenterController, ClickHandler {
 
 		if (view.getTabExecute().isExecutingImmediately()) {
 			LOGGER.fine("Execute NOW");
+			view.selectTab(2);
 		} else {
 			if (scheduledExperiment.getStartTime() > System.currentTimeMillis()) {
 				scheduledExperiment.setNextExecutionTime(scheduledExperiment.getStartTime());
@@ -119,6 +120,7 @@ public class ExecuteController_new implements ICenterController, ClickHandler {
 
 			Manager.get().getCurrentScenarioDetails().getScheduledExperimentsList().add(scheduledExperiment);
 			Manager.get().storeAccountDetails();
+			view.selectTab(1);
 		}
 
 		refreshScheduleTab();

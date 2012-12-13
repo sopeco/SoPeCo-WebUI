@@ -1,20 +1,31 @@
 package org.sopeco.frontend.server.rpc;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.sopeco.frontend.client.rpc.ResultRPC;
+import org.sopeco.frontend.server.user.User;
+import org.sopeco.frontend.server.user.UserManager;
 import org.sopeco.frontend.shared.definitions.result.SharedExperimentRuns;
 import org.sopeco.frontend.shared.definitions.result.SharedExperimentSeries;
 import org.sopeco.frontend.shared.definitions.result.SharedScenarioInstance;
 import org.sopeco.persistence.dataset.DataSetAggregated;
+import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.dataset.SimpleDataSet;
+import org.sopeco.persistence.dataset.SimpleDataSetColumn;
+import org.sopeco.persistence.dataset.SimpleDataSetRow;
 import org.sopeco.persistence.entities.ExperimentSeries;
 import org.sopeco.persistence.entities.ExperimentSeriesRun;
 import org.sopeco.persistence.entities.ScenarioInstance;
 import org.sopeco.persistence.exceptions.DataNotFoundException;
 import org.sopeco.persistence.util.DataSetCsvHandler;
 
+/**
+ * 
+ * @author Marius Oehler
+ * 
+ */
 public class ResultRPCImpl extends SuperRemoteServlet implements ResultRPC {
 
 	/**	 */
@@ -87,5 +98,108 @@ public class ResultRPCImpl extends SuperRemoteServlet implements ResultRPC {
 		}
 
 		return retInstance;
+	}
+
+	@Override
+	public String getResultAsR(String scenario, String exoerimentSeries, String url, long timestamp) {
+		try {
+			ScenarioInstance instance = getScenarioInstance(getSessionId(), scenario, url);
+			ExperimentSeries series = getSeries(instance, exoerimentSeries);
+			ExperimentSeriesRun run = getRun(series, timestamp);
+
+			DataSetAggregated dataset = run.getSuccessfulResultDataSet();
+			SimpleDataSet simpleDataset = dataset.convertToSimpleDataSet();
+
+			StringBuffer rValue = new StringBuffer();
+
+			int i = 0;
+			// for (SimpleDataSetRow row : simpleDataset.getRowList()) {
+			for (Iterator<SimpleDataSetRow> rowIter = simpleDataset.getRowList().iterator(); rowIter.hasNext(); i++) {
+				rValue.append("r");
+				rValue.append(i);
+				rValue.append(" <- c(");
+
+				for (Iterator<ParameterValue> colIter = rowIter.next().getRowValues().iterator(); colIter.hasNext();) {
+					Object val = colIter.next().getValue();
+					if (val instanceof String) {
+						rValue.append("\"");
+						rValue.append(val.toString());
+						rValue.append("\"");
+					} else {
+						rValue.append(val.toString());
+					}
+					if (colIter.hasNext()) {
+						rValue.append(", ");
+					}
+				}
+
+				rValue.append(")\n");
+			}
+
+			rValue.append("colnames(myframe) <- c(");
+
+			for (Iterator<SimpleDataSetColumn> iter = simpleDataset.getColumns().iterator(); iter.hasNext();) {
+				rValue.append("\"");
+				rValue.append(iter.next().getParameter().getName());
+				rValue.append("\"");
+				if (iter.hasNext()) {
+					rValue.append(", ");
+				}
+			}
+
+			rValue.append(")\nmyframe <- data.frame(");
+			for (int n = 0; n < i; n++) {
+				rValue.append("r");
+				rValue.append(n);
+				if (n + 1 < i) {
+					rValue.append(", ");
+				}
+			}
+			rValue.append(")");
+
+			return rValue.toString();
+		} catch (DataNotFoundException e) {
+			return "No Data Found";
+		}
+	}
+
+	/**
+	 *
+	 */
+	private ExperimentSeriesRun getRun(ExperimentSeries series, Long timestamp) throws DataNotFoundException {
+		for (ExperimentSeriesRun run : series.getExperimentSeriesRuns()) {
+			System.out.println(run.getTimestamp() + " " + timestamp);
+			if (timestamp.equals(run.getTimestamp())) {
+				return run;
+			}
+		}
+
+		throw new DataNotFoundException("No ExperimentSeriesRun with timestamp '" + timestamp + "' found..");
+	}
+
+	/**
+	 * 
+	 */
+	private ExperimentSeries getSeries(ScenarioInstance instance, String name) throws DataNotFoundException {
+		for (ExperimentSeries series : instance.getExperimentSeriesList()) {
+			if (series.getName().equals(name)) {
+				return series;
+			}
+		}
+
+		throw new DataNotFoundException("No ExperimentSeries '" + name + "' found..");
+	}
+
+	/**
+	 * 
+	 */
+	private ScenarioInstance getScenarioInstance(String sId, String scenarioName, String url)
+			throws DataNotFoundException {
+		User user = UserManager.getUser(sId);
+		if (user == null) {
+			throw new DataNotFoundException("No user at session '" + sId + "' found..");
+		}
+		ScenarioInstance instance = user.getCurrentPersistenceProvider().loadScenarioInstance(scenarioName, url);
+		return instance;
 	}
 }

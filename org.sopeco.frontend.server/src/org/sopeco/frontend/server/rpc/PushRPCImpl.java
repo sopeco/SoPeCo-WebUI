@@ -33,7 +33,6 @@ public class PushRPCImpl extends SuperRemoteServlet implements PushRPC {
 					packageListMap.get(getSessionId()).remove(0);
 				}
 			}
-			System.err.println("push: " + sendingPackage.getType());
 			return sendingPackage;
 		} catch (Exception e) {
 			throw new RuntimeException(e);

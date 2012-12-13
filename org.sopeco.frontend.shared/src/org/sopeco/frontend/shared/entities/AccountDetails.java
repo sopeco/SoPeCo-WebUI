@@ -8,6 +8,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Lob;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 
 /**
  * 
@@ -15,6 +17,7 @@ import javax.persistence.Lob;
  * 
  */
 @Entity
+@NamedQueries({ @NamedQuery(name = "getAllAccounts", query = "SELECT u FROM AccountDetails u") })
 public class AccountDetails implements Serializable {
 
 	/**

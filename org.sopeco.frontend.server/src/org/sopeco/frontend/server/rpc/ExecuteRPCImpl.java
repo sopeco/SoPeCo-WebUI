@@ -7,9 +7,7 @@ import java.util.logging.Logger;
 import org.sopeco.config.Configuration;
 import org.sopeco.config.IConfiguration;
 import org.sopeco.config.exception.ConfigurationException;
-import org.sopeco.engine.status.StatusBroker;
 import org.sopeco.frontend.client.rpc.ExecuteRPC;
-import org.sopeco.frontend.server.helper.ExperimentStatusChecker;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 import org.sopeco.runner.SoPeCoRunner;
 
@@ -38,33 +36,37 @@ public class ExecuteRPCImpl extends SuperRemoteServlet implements ExecuteRPC {
 
 			// src.getExperimentSeriesDefinition("x1").getTerminationConditions().iterator().next().getParametersDefaultValues().put("repetitions",
 			// "3");
+			String sessionId = getSessionId()/* + url + Math.random() */;
 
-			Configuration.getSessionSingleton(getSessionId()).setMeasurementControllerURI(url);
-			Configuration.getSessionSingleton(getSessionId()).setScenarioDescription(src);
+			//IConfiguration c1 = Configuration.getSessionSingleton(sessionId);
+			//IConfiguration c2 = Configuration.getSessionSingleton(getSessionId());
 
-			Configuration.getSessionSingleton(getSessionId()).setProperty(IConfiguration.SENDING_STATUS_MESSAGES,
-					"true");
+			Configuration.getSessionSingleton(sessionId).setMeasurementControllerURI(url);
+			Configuration.getSessionSingleton(sessionId).setScenarioDescription(src);
 
-			SoPeCoRunner runner = new SoPeCoRunner(getSessionId());
+			//Configuration.getSessionSingleton(sessionId).setProperty(IConfiguration.SENDING_STATUS_MESSAGES, "true");
+
+			SoPeCoRunner runner = new SoPeCoRunner(sessionId);
 
 			threadMap.put(url, new Thread(runner));
 			timeMap.put(url, System.currentTimeMillis());
 
 			threadMap.get(url).start();
 
-			long s = System.currentTimeMillis();
-			String token;
-			while ((token = StatusBroker.get().getToken(getSessionId() + url)) == null) {
-				try {
-					Thread.sleep(10);
-				} catch (Exception e) {
-				}
-			}
+			// STATUS ###############################
+//			long s = System.currentTimeMillis();
+//			String token;
+//			while ((token = StatusBroker.get().getToken(sessionId + url)) == null) {
+//				try {
+//					Thread.sleep(10);
+//				} catch (Exception e) {
+//				}
+//			}
 
-			ExperimentStatusChecker.get().addUser(token, getSessionId());
+//			ExperimentStatusChecker.get().addUser(token, sessionId);
 
-			System.out.println("\t>waiting - " + (System.currentTimeMillis() - s));
-			System.out.println(token);
+//			System.out.println("\t>waiting - " + (System.currentTimeMillis() - s));
+//			System.out.println(token);
 
 		} catch (ConfigurationException e) {
 			throw new RuntimeException(e);

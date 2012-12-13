@@ -14,5 +14,5 @@ public interface ResultRPC extends RemoteService {
 
 	List<SharedScenarioInstance> getInstances(String scenarioName);
 	
-	
+	String getResultAsR(String scenario, String exoerimentSeries, String url, long timestamp);
 }

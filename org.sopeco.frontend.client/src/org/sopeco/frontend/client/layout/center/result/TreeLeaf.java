@@ -1,6 +1,12 @@
 package org.sopeco.frontend.client.layout.center.result;
 
+import java.util.logging.Logger;
+
 import org.sopeco.frontend.client.R;
+import org.sopeco.frontend.client.layout.dialog.ExportCsvDialog;
+import org.sopeco.frontend.client.layout.dialog.ExportToRDialog;
+import org.sopeco.frontend.client.layout.popups.Message;
+import org.sopeco.frontend.client.rpc.RPC;
 import org.sopeco.frontend.shared.definitions.result.SharedExperimentRuns;
 import org.sopeco.gwt.widgets.tree.TreeItem;
 
@@ -8,8 +14,7 @@ import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Image;
 
 /**
@@ -17,11 +22,14 @@ import com.google.gwt.user.client.ui.Image;
  * @author Marius Oehler
  * 
  */
-public class TreeLeaf extends TreeItem implements HasClickHandlers, ClickHandler {
+public class TreeLeaf extends TreeItem implements /* HasClickHandlers, */ClickHandler, AsyncCallback<String> {
+
+	private static final Logger LOGGER = Logger.getLogger(TreeLeaf.class.getName());
 
 	private static final String ITEM_CSS_CLASS = "resultTreeItem";
 	private static final String DOWNLOAD_IMAGE = "images/download.png";
-	private Image downloadImage;
+	private static final String R_IMAGE = "images/r_logo.png";
+	private Image downloadImage, rImage;
 
 	private SharedExperimentRuns experimentRun;
 
@@ -49,7 +57,14 @@ public class TreeLeaf extends TreeItem implements HasClickHandlers, ClickHandler
 		downloadImage.getElement().getStyle().setCursor(Cursor.POINTER);
 		downloadImage.addClickHandler(this);
 
+		rImage = new Image(R_IMAGE);
+		rImage.setTitle(R.get("Get R-Command"));
+		rImage.getElement().getStyle().setMarginLeft(1, Unit.EM);
+		rImage.getElement().getStyle().setCursor(Cursor.POINTER);
+		rImage.addClickHandler(this);
+
 		getContentWrapper().add(downloadImage);
+		getContentWrapper().add(rImage);
 	}
 
 	/**
@@ -59,14 +74,45 @@ public class TreeLeaf extends TreeItem implements HasClickHandlers, ClickHandler
 		return experimentRun;
 	}
 
-	@Override
-	public HandlerRegistration addClickHandler(ClickHandler handler) {
-		return addHandler(handler, ClickEvent.getType());
-	}
+	// @Override
+	// public HandlerRegistration addClickHandler(ClickHandler handler) {
+	// return addHandler(handler, ClickEvent.getType());
+	// }
 
 	@Override
 	public void onClick(ClickEvent event) {
-		fireEvent(new ClickEvent() {
-		});
+		if (event.getSource() == downloadImage) {
+
+			StringBuffer param = new StringBuffer();
+
+			param.append(experimentRun.getTimestamp());
+			param.append("|");
+			param.append(experimentRun.getParentSeries().getExperimentName());
+			param.append("|");
+			param.append(experimentRun.getParentSeries().getParentInstance().getControllerUrl());
+			param.append("|");
+			param.append(experimentRun.getParentSeries().getParentInstance().getScenarioName());
+
+			// downloadUrl += "?param=" + Base64.encodeString(param.toString());
+
+			// Window.open(downloadUrl, "_blank", "");
+			ExportCsvDialog.show(param.toString());
+		} else {
+			RPC.getResultRPC().getResultAsR(experimentRun.getParentSeries().getParentInstance().getScenarioName(),
+					experimentRun.getParentSeries().getExperimentName(),
+					experimentRun.getParentSeries().getParentInstance().getControllerUrl(),
+					experimentRun.getTimestamp(), this);
+		}
+	}
+
+	@Override
+	public void onFailure(Throwable caught) {
+		LOGGER.severe(caught.getMessage());
+		Message.error(caught.getMessage());
+	}
+
+	@Override
+	public void onSuccess(String result) {
+		ExportToRDialog.show(result);
 	}
 }
