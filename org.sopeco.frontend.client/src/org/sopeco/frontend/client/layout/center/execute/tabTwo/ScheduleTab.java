@@ -5,7 +5,7 @@ import java.util.TreeMap;
 
 import org.sopeco.frontend.client.layout.MainLayoutPanel;
 import org.sopeco.frontend.client.model.Manager;
-import org.sopeco.frontend.shared.entities.ScheduledExperiment;
+import org.sopeco.frontend.shared.entities.RawScheduledExperiment;
 import org.sopeco.frontend.shared.helper.Metering;
 
 import com.google.gwt.dom.client.Style.Overflow;
@@ -31,12 +31,12 @@ public class ScheduleTab extends FlowPanel {
 
 		Map<Long, ScheduleItemPanel> scheduledItems = new TreeMap<Long, ScheduleItemPanel>();
 
-		for (ScheduledExperiment e : Manager.get().getCurrentScenarioDetails().getScheduledExperimentsList()) {
-			ScheduleItemPanel item = new ScheduleItemPanel(e);
-			// add(item);
-			// item.setParent(this);
-			scheduledItems.put(e.getNextExecutionTime(), item);
-		}
+//		for (RawScheduledExperiment e : Manager.get().getCurrentScenarioDetails().getScheduledExperimentsList()) {
+//			ScheduleItemPanel item = new ScheduleItemPanel(e);
+//			// add(item);
+//			// item.setParent(this);
+//			//scheduledItems.put(e.getNextExecutionTime(), item);
+//		}
 
 		for (ScheduleItemPanel item : scheduledItems.values()) {
 			add(item);
@@ -45,9 +45,9 @@ public class ScheduleTab extends FlowPanel {
 	}
 
 	public void removeExperiment(ScheduleItemPanel item) {
-		ScheduledExperiment exp = item.getExperiment();
-		Manager.get().getCurrentScenarioDetails().getScheduledExperimentsList().remove(exp);
-		Manager.get().storeAccountDetails();
+		RawScheduledExperiment exp = item.getExperiment();
+//		Manager.get().getCurrentScenarioDetails().getScheduledExperimentsList().remove(exp);
+//		Manager.get().storeAccountDetails();
 
 		MainLayoutPanel.get().getExecuteController().refreshScheduleTab();
 	}

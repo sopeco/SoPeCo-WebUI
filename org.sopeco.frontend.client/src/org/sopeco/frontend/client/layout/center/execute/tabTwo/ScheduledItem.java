@@ -3,8 +3,8 @@ package org.sopeco.frontend.client.layout.center.execute.tabTwo;
 import java.util.Date;
 
 import org.sopeco.frontend.client.R;
-import org.sopeco.frontend.shared.entities.ScheduledExperiment;
-import org.sopeco.frontend.shared.helper.ScheduleExpression;
+import org.sopeco.frontend.server.helper.ScheduleExpression;
+import org.sopeco.frontend.shared.entities.RawScheduledExperiment;
 
 import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.dom.client.Style.VerticalAlign;
@@ -29,12 +29,12 @@ public class ScheduledItem extends FlexTable implements ClickHandler {
 	private static final String IMG_REPEAT = "images/repeat.png";
 
 	private HTML htmlLabel, htmlSpecification, htmlExperiment, htmlStart, htmlRepeat, htmlAdded, htmlNextExecution;
-	private ScheduledExperiment experiment;
+	private RawScheduledExperiment experiment;
 	private Image imgRepeat, imgRemove;
 
 	private ScheduleTab parent;
 
-	public ScheduledItem(ScheduledExperiment pExperiment) {
+	public ScheduledItem(RawScheduledExperiment pExperiment) {
 		experiment = pExperiment;
 		init();
 	}
@@ -65,8 +65,8 @@ public class ScheduledItem extends FlexTable implements ClickHandler {
 		htmlSpecification = new HTML("mySpecification");
 		htmlExperiment = new HTML("myExperimentSeries");
 		htmlRepeat = new HTML(repeatString);
-		htmlAdded = new HTML(format.format(new Date(experiment.getAddedTime())));
-		htmlNextExecution = new HTML(format.format(new Date(experiment.getNextExecutionTime())));
+		htmlAdded = new HTML(format.format(new Date(experiment.getLabel())));
+		htmlNextExecution = new HTML(format.format(new Date(experiment.getLabel())));
 
 		imgRemove = new Image(IMG_REMOVE);
 		imgRemove.getElement().getStyle().setCursor(Cursor.POINTER);
@@ -131,7 +131,7 @@ public class ScheduledItem extends FlexTable implements ClickHandler {
 		return imgRemove;
 	}
 
-	public ScheduledExperiment getExperiment() {
+	public RawScheduledExperiment getExperiment() {
 		return experiment;
 	}
 

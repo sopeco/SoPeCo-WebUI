@@ -35,6 +35,7 @@ public final class UiPersistenceProviderFactory {
 	 */
 	public static UiPersistenceProvider createUiPersistenceProvider() {
 		try {
+			Map<String, Object> x = getConfigOverrides();
 			EntityManagerFactory factory = Persistence.createEntityManagerFactory("sopeco-frontend",
 					getConfigOverrides());
 			return new UiPersistenceProvider(factory);
@@ -62,6 +63,9 @@ public final class UiPersistenceProviderFactory {
 	 */
 	private static String getServerUrl() {
 		IConfiguration config = Configuration.getSessionSingleton(Configuration.getGlobalSessionId());
+		if (config.getPropertyAsStr(UiConfiguration.META_DATA_HOST) == null) {
+			throw new NullPointerException("No MetaDataHost defined.");
+		}
 		String host = config.getPropertyAsStr(UiConfiguration.META_DATA_HOST);
 		String port = config.getPropertyAsStr(UiConfiguration.META_DATA_PORT);
 		String name = config.getPropertyAsStr(UiConfiguration.SOPECO_UI_DATABASE_NAME);

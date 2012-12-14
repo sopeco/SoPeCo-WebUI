@@ -13,12 +13,12 @@ import com.google.gwt.user.client.ui.HTML;
  * @author Marius Oehler
  * 
  */
-public class ExecuteView extends CenterPanel {
+public class ExecuteViewOld extends CenterPanel {
 
 	private HTML htmlStatus;
 	private Button btnStartExperiment;
 
-	public ExecuteView() {
+	public ExecuteViewOld() {
 		init();
 	}
 

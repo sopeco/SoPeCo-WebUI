@@ -7,7 +7,13 @@ import java.util.logging.Logger;
 import org.sopeco.config.Configuration;
 import org.sopeco.config.IConfiguration;
 import org.sopeco.config.exception.ConfigurationException;
+import org.sopeco.engine.status.StatusBroker;
 import org.sopeco.frontend.client.rpc.ExecuteRPC;
+import org.sopeco.frontend.server.execute.ProgressChecker;
+import org.sopeco.frontend.server.helper.ScheduleExpression;
+import org.sopeco.frontend.server.persistence.UiPersistence;
+import org.sopeco.frontend.server.persistence.entities.ScheduledExperiment;
+import org.sopeco.frontend.shared.entities.RawScheduledExperiment;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 import org.sopeco.runner.SoPeCoRunner;
 
@@ -38,13 +44,14 @@ public class ExecuteRPCImpl extends SuperRemoteServlet implements ExecuteRPC {
 			// "3");
 			String sessionId = getSessionId()/* + url + Math.random() */;
 
-			//IConfiguration c1 = Configuration.getSessionSingleton(sessionId);
-			//IConfiguration c2 = Configuration.getSessionSingleton(getSessionId());
+			// IConfiguration c1 = Configuration.getSessionSingleton(sessionId);
+			// IConfiguration c2 =
+			// Configuration.getSessionSingleton(getSessionId());
 
 			Configuration.getSessionSingleton(sessionId).setMeasurementControllerURI(url);
 			Configuration.getSessionSingleton(sessionId).setScenarioDescription(src);
 
-			//Configuration.getSessionSingleton(sessionId).setProperty(IConfiguration.SENDING_STATUS_MESSAGES, "true");
+			Configuration.getSessionSingleton(sessionId).setProperty(IConfiguration.SENDING_STATUS_MESSAGES, "true");
 
 			SoPeCoRunner runner = new SoPeCoRunner(sessionId);
 
@@ -54,19 +61,20 @@ public class ExecuteRPCImpl extends SuperRemoteServlet implements ExecuteRPC {
 			threadMap.get(url).start();
 
 			// STATUS ###############################
-//			long s = System.currentTimeMillis();
-//			String token;
-//			while ((token = StatusBroker.get().getToken(sessionId + url)) == null) {
-//				try {
-//					Thread.sleep(10);
-//				} catch (Exception e) {
-//				}
-//			}
+			// long s = System.currentTimeMillis();
+			String token;
+			while ((token = StatusBroker.get().getToken(sessionId + url)) == null) {
+				try {
+					Thread.sleep(10);
+				} catch (Exception e) {
+				}
+			}
 
-//			ExperimentStatusChecker.get().addUser(token, sessionId);
+			ProgressChecker.get().check();
 
-//			System.out.println("\t>waiting - " + (System.currentTimeMillis() - s));
-//			System.out.println(token);
+			// System.out.println("\t>waiting - " + (System.currentTimeMillis()
+			// - s));
+			// System.out.println(token);
 
 		} catch (ConfigurationException e) {
 			throw new RuntimeException(e);
@@ -112,5 +120,24 @@ public class ExecuteRPCImpl extends SuperRemoteServlet implements ExecuteRPC {
 
 		LOGGER.info("interrupt");
 		threadMap.get(url).interrupt();
+	}
+
+	@Override
+	public void scheduleExperiment(RawScheduledExperiment rawScheduledExperiment) {
+		ScheduledExperiment scheduledExperiment = new ScheduledExperiment(rawScheduledExperiment);
+		scheduledExperiment.setActive(true);
+		scheduledExperiment.setLastExecutionTime(-1);
+		scheduledExperiment.setAddedTime(System.currentTimeMillis());
+		scheduledExperiment.setConfiguration(Configuration.getSessionSingleton(getSessionId()));
+
+		long nextExecution = scheduledExperiment.getStartTime();
+		if (scheduledExperiment.isRepeating()) {
+			nextExecution = ScheduleExpression.nextValidDate(scheduledExperiment.getStartTime(),
+					scheduledExperiment.getRepeatDays(), scheduledExperiment.getRepeatHours(),
+					scheduledExperiment.getRepeatMinutes());
+		}
+		scheduledExperiment.setNextExecutionTime(nextExecution);
+
+		UiPersistence.getUiProvider().storeScheduledExperiment(scheduledExperiment);
 	}
 }

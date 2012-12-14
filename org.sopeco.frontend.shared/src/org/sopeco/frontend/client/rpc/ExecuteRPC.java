@@ -1,8 +1,15 @@
 package org.sopeco.frontend.client.rpc;
 
+import org.sopeco.frontend.shared.entities.RawScheduledExperiment;
+
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
+/**
+ * 
+ * @author Marius Oehler
+ * 
+ */
 @RemoteServiceRelativePath("executeRPC")
 public interface ExecuteRPC extends RemoteService {
 
@@ -30,4 +37,6 @@ public interface ExecuteRPC extends RemoteService {
 	 * @param url
 	 */
 	void stop(String url);
+
+	void scheduleExperiment(RawScheduledExperiment rawScheduledExperiment);
 }

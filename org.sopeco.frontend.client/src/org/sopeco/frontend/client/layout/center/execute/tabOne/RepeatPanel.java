@@ -117,7 +117,6 @@ public class RepeatPanel extends SimplePanel implements ValueChangeHandler {
 
 	@Override
 	public void onValueChange(ValueChangeEvent event) {
-		parent.updateNextRepeat();
 	}
 }
 

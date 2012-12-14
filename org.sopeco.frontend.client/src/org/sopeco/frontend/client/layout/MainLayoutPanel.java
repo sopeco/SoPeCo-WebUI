@@ -7,8 +7,8 @@ import org.sopeco.frontend.client.layout.center.CenterType;
 import org.sopeco.frontend.client.layout.center.EmptyCenterPanel;
 import org.sopeco.frontend.client.layout.center.ICenterController;
 import org.sopeco.frontend.client.layout.center.NoScenario;
+import org.sopeco.frontend.client.layout.center.execute.ExecuteControllerOld;
 import org.sopeco.frontend.client.layout.center.execute.ExecuteController;
-import org.sopeco.frontend.client.layout.center.execute.ExecuteController_new;
 import org.sopeco.frontend.client.layout.center.experiment.ExperimentController;
 import org.sopeco.frontend.client.layout.center.result.ResultController;
 import org.sopeco.frontend.client.layout.center.specification.SpecificationController;
@@ -113,8 +113,8 @@ public final class MainLayoutPanel extends DockLayoutPanel {
 
 		centerController.put(CenterType.Specification, new SpecificationController());
 
-		//centerController.put(CenterType.Execute, new ExecuteController_new());
-		 centerController.put(CenterType.Execute, new ExecuteController());
+		centerController.put(CenterType.Execute, new ExecuteController());
+		// centerController.put(CenterType.Execute, new ExecuteController());
 
 		centerController.put(CenterType.Result, new ResultController());
 		centerController.put(CenterType.Experiment, new ExperimentController());
@@ -157,11 +157,11 @@ public final class MainLayoutPanel extends DockLayoutPanel {
 	 * 
 	 * @return ExecuteController
 	 */
-	public ExecuteController getExecuteController() {
+	public ExecuteControllerOld getExecuteController() {
 		if (!centerController.containsKey(CenterType.Execute)) {
 			return null;
 		}
-		return (ExecuteController) centerController.get(CenterType.Execute);
+		return (ExecuteControllerOld) centerController.get(CenterType.Execute);
 	}
 
 	/**

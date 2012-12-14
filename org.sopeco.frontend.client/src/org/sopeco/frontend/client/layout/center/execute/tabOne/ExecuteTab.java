@@ -1,10 +1,7 @@
 package org.sopeco.frontend.client.layout.center.execute.tabOne;
 
-import java.util.Date;
-
 import org.sopeco.frontend.client.R;
 import org.sopeco.frontend.client.model.Manager;
-import org.sopeco.frontend.shared.helper.ScheduleExpression;
 import org.sopeco.gwt.widgets.EditableText;
 import org.sopeco.gwt.widgets.Headline;
 
@@ -62,7 +59,7 @@ public class ExecuteTab extends FlowPanel implements ValueChangeHandler<Boolean>
 
 		rdioOnReady = new RadioButton("execution");
 		rdioSchedule = new RadioButton("execution");
-		rdioSchedule.setEnabled(false);
+		// rdioSchedule.setEnabled(false);
 
 		hPanelExecution = new HorizontalPanel();
 		hPanelExecution.add(rdioOnReady);
@@ -70,7 +67,7 @@ public class ExecuteTab extends FlowPanel implements ValueChangeHandler<Boolean>
 		hPanelExecution.add(rdioSchedule);
 		hPanelExecution.add(htmlRdioSchedule);
 
-		scheduleConfTable = new ScheduleConfigTable(this);
+		scheduleConfTable = new ScheduleConfigTable();
 		repeatTable = new RepeatPanel(this);
 		selectionPanel = new SelectionPanel();
 
@@ -109,17 +106,6 @@ public class ExecuteTab extends FlowPanel implements ValueChangeHandler<Boolean>
 		add(selectionPanel);
 	}
 
-	public void updateNextRepeat() {
-		if (repeatTable.getScheduleDays().isEmpty()) {
-			scheduleConfTable.setFirstRepeatText("-");
-			return;
-		}
-		long nextRepeat = ScheduleExpression.nextValidDate(repeatTable.getScheduleDays(),
-				repeatTable.getScheduleHours(), repeatTable.getScheduleMinutes());
-
-		scheduleConfTable.setFirstRepeatText(new Date(nextRepeat).toString());
-	}
-
 	@Override
 	public void onValueChange(ValueChangeEvent<Boolean> event) {
 		if (event.getSource() == rdioOnReady || event.getSource() == rdioSchedule) {
@@ -127,7 +113,6 @@ public class ExecuteTab extends FlowPanel implements ValueChangeHandler<Boolean>
 			repeatTable.setVisible(rdioSchedule.getValue() && scheduleConfTable.getCbRepeat().getValue());
 		} else if (event.getSource() == scheduleConfTable.getCbRepeat()) {
 			repeatTable.setVisible(scheduleConfTable.getCbRepeat().getValue());
-			scheduleConfTable.getHtmlFirstRepeat().setVisible(scheduleConfTable.getCbRepeat().getValue());
 		}
 	}
 

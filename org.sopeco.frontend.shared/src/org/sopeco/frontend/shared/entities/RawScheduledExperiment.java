@@ -2,6 +2,14 @@ package org.sopeco.frontend.shared.entities;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Lob;
+import javax.persistence.SequenceGenerator;
+
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 
 /**
@@ -9,45 +17,61 @@ import org.sopeco.persistence.entities.definition.ScenarioDefinition;
  * @author Marius Oehler
  * 
  */
-public class ScheduledExperiment implements Serializable {
+@Entity
+@SequenceGenerator(sequenceName = "SCHEDULE_SEQ", name = "SCHEDULE_SEQ_GEN")
+public class RawScheduledExperiment implements Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private boolean active;
-	private long addedTime;
+	@Column(name = "account")
+	private String account;
+
+	@Column(name = "controllerUrl")
 	private String controllerUrl;
+
+	@Id
+	@GeneratedValue
+	private long id;
+
+	@Column(name = "isRepeating")
 	private boolean isRepeating;
+
+	@Column(name = "label")
 	private String label;
-	private long lastExecutionTime;
-	private long nextExecutionTime;
+
+	@Column(name = "repeatDays")
 	private String repeatDays;
+
+	@Column(name = "repeatHours")
 	private String repeatHours;
+
+	@Column(name = "repeatMinutes")
 	private String repeatMinutes;
 
+	@Lob
+	@Column(name = "scenarioDefinition")
 	private ScenarioDefinition scenarioDefinition;
-	private long startTime;
 
-	public long getAddedTime() {
-		return addedTime;
-	}
+	@Column(name = "startTime")
+	private long startTime;
 
 	public String getControllerUrl() {
 		return controllerUrl;
 	}
 
+	public String getAccount() {
+		return account;
+	}
+
+	public void setAccount(String account) {
+		this.account = account;
+	}
+
 	public String getLabel() {
 		return label;
-	}
-
-	public long getLastExecutionTime() {
-		return lastExecutionTime;
-	}
-
-	public long getNextExecutionTime() {
-		return nextExecutionTime;
 	}
 
 	public String getRepeatDays() {
@@ -70,20 +94,8 @@ public class ScheduledExperiment implements Serializable {
 		return startTime;
 	}
 
-	public boolean isActive() {
-		return active;
-	}
-
 	public boolean isRepeating() {
 		return isRepeating;
-	}
-
-	public void setActive(boolean pActive) {
-		active = pActive;
-	}
-
-	public void setAddedTime(long pAddedTime) {
-		addedTime = pAddedTime;
 	}
 
 	public void setControllerUrl(String pControllerUrl) {
@@ -92,14 +104,6 @@ public class ScheduledExperiment implements Serializable {
 
 	public void setLabel(String pLabel) {
 		label = pLabel;
-	}
-
-	public void setLastExecutionTime(long pLastExecutionTime) {
-		lastExecutionTime = pLastExecutionTime;
-	}
-
-	public void setNextExecutionTime(long pNextExecutionTime) {
-		nextExecutionTime = pNextExecutionTime;
 	}
 
 	public void setRepeatDays(String pRepeatDays) {

@@ -25,9 +25,7 @@ public final class StartUp {
 			System.out.println(">> Starting backend..");
 			try {
 				loadConfiguration(sessionId);
-
 				Scheduler.startScheduler();
-
 				hasStarted = true;
 			} catch (ConfigurationException e) {
 				LOGGER.warning(e.getMessage());
@@ -36,7 +34,7 @@ public final class StartUp {
 	}
 
 	private static void loadConfiguration(String sessionId) throws ConfigurationException {
-		Configuration.getSessionUnrelatedSingleton().loadConfiguration(StartUp.class.getClassLoader(),
-				CONFIGURATION_FILE);
+		Configuration.getSessionSingleton(Configuration.getGlobalSessionId()).loadConfiguration(
+				StartUp.class.getClassLoader(), CONFIGURATION_FILE);
 	}
 }

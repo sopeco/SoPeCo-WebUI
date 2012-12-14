@@ -3,7 +3,7 @@ package org.sopeco.frontend.client.layout.center.execute.tabTwo;
 import java.util.Date;
 
 import org.sopeco.frontend.client.R;
-import org.sopeco.frontend.shared.entities.ScheduledExperiment;
+import org.sopeco.frontend.shared.entities.RawScheduledExperiment;
 import org.sopeco.gwt.widgets.ClearDiv;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
@@ -20,7 +20,7 @@ import com.google.gwt.user.client.ui.Image;
  */
 public class ScheduleItemPanel extends FlowPanel {
 
-	private ScheduledExperiment experiment;
+	private RawScheduledExperiment experiment;
 	private HTML htmlLabel;
 	private Image imgPause;
 	private Image imgRemove;
@@ -39,7 +39,7 @@ public class ScheduleItemPanel extends FlowPanel {
 	private HTML htmlStartTime;
 	private Anchor anchorPerformNow;
 
-	public ScheduleItemPanel(ScheduledExperiment pExperiment) {
+	public ScheduleItemPanel(RawScheduledExperiment pExperiment) {
 		experiment = pExperiment;
 		init();
 	}
@@ -66,9 +66,9 @@ public class ScheduleItemPanel extends FlowPanel {
 
 		htmlStartTime = new HTML(dtf.format(new Date(experiment.getStartTime())));
 		htmlRepeat = new HTML("");
-		htmlAdded = new HTML(dtf.format(new Date(experiment.getAddedTime())));
+		htmlAdded = new HTML(dtf.format(new Date(experiment.getLabel())));
 		htmlLastExec = new HTML("");
-		htmlNextExec = new HTML(dtf.format(new Date(experiment.getNextExecutionTime())));
+		htmlNextExec = new HTML(dtf.format(new Date(experiment.getLabel())));
 
 		addObjects();
 		style();
@@ -112,7 +112,7 @@ public class ScheduleItemPanel extends FlowPanel {
 		add(contentTable);
 	}
 
-	public ScheduledExperiment getExperiment() {
+	public RawScheduledExperiment getExperiment() {
 		return experiment;
 	}
 

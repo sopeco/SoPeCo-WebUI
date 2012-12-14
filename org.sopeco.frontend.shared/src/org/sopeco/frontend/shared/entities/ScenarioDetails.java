@@ -33,7 +33,7 @@ public class ScenarioDetails implements Serializable {
 
 	private String selectedExperiment;
 
-	private List<ScheduledExperiment> scheduledExperimentsList;
+	//private List<RawScheduledExperiment> scheduledExperimentsList;
 	
 	/**
 	 * @return the selectedExperiment
@@ -140,10 +140,10 @@ public class ScenarioDetails implements Serializable {
 		this.selectedSpecification = pSelectedSpecification;
 	}
 
-	public List<ScheduledExperiment> getScheduledExperimentsList() {
-		if (scheduledExperimentsList == null) {
-			scheduledExperimentsList = new ArrayList<ScheduledExperiment>();
-		}
-		return scheduledExperimentsList;
-	}
+//	public List<RawScheduledExperiment> getScheduledExperimentsList() {
+//		if (scheduledExperimentsList == null) {
+//			scheduledExperimentsList = new ArrayList<RawScheduledExperiment>();
+//		}
+//		return scheduledExperimentsList;
+//	}
 }

@@ -2,6 +2,8 @@ package org.sopeco.frontend.server;
 
 import java.util.logging.Logger;
 
+import org.sopeco.frontend.server.execute.ExecuteScheduler;
+
 /**
  * 
  * @author Marius Oehler
@@ -37,6 +39,8 @@ public final class Scheduler {
 	 * This thread is repeated constantly and performs every minute an action.
 	 */
 	private static class ScheduleTimer extends Thread {
+
+		private SchedulerAction thread;
 		private Object monitor = new Object();
 		private boolean running;
 
@@ -47,7 +51,10 @@ public final class Scheduler {
 			try {
 				while (running) {
 					synchronized (monitor) {
-						new SchedulerAction().start();
+						if (thread == null) {
+							thread = new SchedulerAction(this);
+							thread.start();
+						}
 						monitor.wait(REPEATE_INTERVAL);
 					}
 				}
@@ -63,12 +70,21 @@ public final class Scheduler {
 	 * executed.
 	 */
 	private static class SchedulerAction extends Thread {
+
+		private ScheduleTimer timer;
+
+		public SchedulerAction(ScheduleTimer pTimer) {
+			timer = pTimer;
+		}
+
 		@Override
 		public void run() {
 			LOGGER.fine("SchedulerAction starts..");
 
 			TimeoutChecker.checkTimeout();
+			ExecuteScheduler.get().check();
 
+			timer.thread = null;
 			LOGGER.fine("SchedulerAction is finished");
 		}
 	}

@@ -28,17 +28,15 @@ public class ScheduleConfigTable extends FlowPanel implements FocusHandler, Valu
 
 	private static final String TIME_PATTERN = "((\\d)|((0|1)\\d)|(2[0-3])):((\\d)|([0-5]\\d))";
 
-	private HTML htmlStartTime, htmlRepeat, htmlFirstRepeat;
+	private HTML htmlStartTime, htmlRepeat;
 	private EditableText editStartTime, editStartDate;
 	private CheckBox cbRepeat;
 	private FlexTable table;
 	private DatePicker datePicker = new DatePicker();
 	private PopupPanel popDatePicker;
 	private HorizontalPanel panelRepeat;
-	private ExecuteTab parent;
 
-	public ScheduleConfigTable(ExecuteTab pParent) {
-		parent = pParent;
+	public ScheduleConfigTable() {
 		init();
 	}
 
@@ -47,8 +45,6 @@ public class ScheduleConfigTable extends FlowPanel implements FocusHandler, Valu
 
 		htmlStartTime = new HTML("Start Time/Date:");
 		htmlRepeat = new HTML(R.get("Repeat") + ":");
-		htmlFirstRepeat = new HTML();
-		setFirstRepeatText("-");
 
 		Date date = new Date(System.currentTimeMillis() + 1000 * 60 * 60);
 		editStartTime = new EditableText(DateTimeFormat.getFormat("H").format(date) + ":00");
@@ -63,11 +59,8 @@ public class ScheduleConfigTable extends FlowPanel implements FocusHandler, Valu
 
 		table = new FlexTable();
 
-		htmlFirstRepeat.setVisible(false);
-
 		panelRepeat.addStyleName("tableRepeat");
 		panelRepeat.add(cbRepeat);
-		panelRepeat.add(htmlFirstRepeat);
 
 		datePicker.addValueChangeHandler(this);
 		popDatePicker.add(datePicker);
@@ -113,14 +106,6 @@ public class ScheduleConfigTable extends FlowPanel implements FocusHandler, Valu
 
 	public CheckBox getCbRepeat() {
 		return cbRepeat;
-	}
-
-	public HTML getHtmlFirstRepeat() {
-		return htmlFirstRepeat;
-	}
-
-	public void setFirstRepeatText(String text) {
-		htmlFirstRepeat.setText(R.get("FirstRepeatAfterStart") + ": " + text);
 	}
 
 	public EditableText getEditStartTime() {

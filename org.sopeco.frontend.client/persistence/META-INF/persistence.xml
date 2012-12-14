@@ -7,6 +7,7 @@
 		<class>org.sopeco.frontend.server.persistence.entities.Test</class>
 		<class>org.sopeco.frontend.server.persistence.entities.MEControllerUrl</class>
 		<class>org.sopeco.frontend.shared.entities.AccountDetails</class>
+		<class>org.sopeco.frontend.server.persistence.entities.ScheduledExperiment</class>
 		
 		<properties>
 			

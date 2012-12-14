@@ -6,8 +6,11 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
+import org.sopeco.frontend.server.persistence.entities.ScheduledExperiment;
 import org.sopeco.frontend.shared.entities.AccountDetails;
+import org.sopeco.persistence.exceptions.DataNotFoundException;
 
 /**
  * 
@@ -45,7 +48,7 @@ public class UiPersistenceProvider {
 	 * @return AccountDetails with the given Id
 	 */
 	@SuppressWarnings("unchecked")
-	public List<AccountDetails> loadAllAccountDetails() {
+	public List<AccountDetails> loadAllAccountDetails() throws DataNotFoundException {
 		List<AccountDetails> accountDetails = null;
 		EntityManager em = emf.createEntityManager();
 		try {
@@ -90,6 +93,56 @@ public class UiPersistenceProvider {
 		try {
 			em.getTransaction().begin();
 			em.merge(accountDetails);
+			em.getTransaction().commit();
+		} finally {
+			if (em.getTransaction().isActive()) {
+				em.getTransaction().rollback();
+			}
+			em.close();
+		}
+	}
+
+	public void storeScheduledExperiment(ScheduledExperiment scheduledExperiment) {
+		EntityManager em = emf.createEntityManager();
+		try {
+			em.getTransaction().begin();
+			em.merge(scheduledExperiment);
+			em.getTransaction().commit();
+		} finally {
+			if (em.getTransaction().isActive()) {
+				em.getTransaction().rollback();
+			}
+			em.close();
+		}
+	}
+
+	public List<ScheduledExperiment> loadAllScheduledExperiments() {
+		List<ScheduledExperiment> accountDetails = null;
+		EntityManager em = emf.createEntityManager();
+		try {
+			TypedQuery<ScheduledExperiment> query = em.createNamedQuery("getAllExperiments", ScheduledExperiment.class);
+			accountDetails = query.getResultList();
+			return accountDetails;
+		} catch (Exception e) {
+			return new ArrayList<ScheduledExperiment>();
+		} finally {
+			em.close();
+		}
+	}
+
+	public ScheduledExperiment loadScheduledExperiment(long id) {
+		EntityManager em = emf.createEntityManager();
+		ScheduledExperiment experiment = em.find(ScheduledExperiment.class, id);
+		em.close();
+		return experiment;
+	}
+
+	public void removeScheduledExperiment(ScheduledExperiment experiment) {
+		EntityManager em = emf.createEntityManager();
+		try {
+			em.getTransaction().begin();
+			ScheduledExperiment toBeRemoved = em.merge(experiment);
+			em.remove(toBeRemoved);
 			em.getTransaction().commit();
 		} finally {
 			if (em.getTransaction().isActive()) {

@@ -13,7 +13,7 @@ import com.google.gwt.user.client.ui.TabPanel;
  * @author Marius Oehler
  * 
  */
-public class ExecuteTabPanel_new extends TabPanel {
+public class ExecuteTabPanelOld extends TabPanel {
 
 	private static final String CSS_CLASS = "sopeco-TabPanel";
 	private static final String EXECUTE_CSS_CLASS = "executeTabPanel";
@@ -25,7 +25,7 @@ public class ExecuteTabPanel_new extends TabPanel {
 	private ScheduleTab tabSchedule;
 	private ControllerQueueTab queueTab;
 
-	public ExecuteTabPanel_new() {
+	public ExecuteTabPanelOld() {
 		FrontEndResources.loadSopecoTabPanelCSS();
 		init();
 	}
