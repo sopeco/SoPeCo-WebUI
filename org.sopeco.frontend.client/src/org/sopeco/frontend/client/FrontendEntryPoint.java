@@ -120,7 +120,7 @@ public class FrontendEntryPoint implements EntryPoint, SimpleNotify {
 			protected void onSuccess() {
 				// All stuff was loaded
 				changeDatabase();
-				//ServerPush.get().startRequest();
+				ServerPush.get().startRequest();
 			}
 		};
 

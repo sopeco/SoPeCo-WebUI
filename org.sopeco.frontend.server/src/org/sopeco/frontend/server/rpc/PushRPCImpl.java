@@ -15,7 +15,7 @@ import org.sopeco.frontend.shared.push.PushPackage;
 public class PushRPCImpl extends SuperRemoteServlet implements PushRPC {
 
 	private static final long serialVersionUID = 1L;
-	private static final int TIMEOUT = 5000;
+	private static final int TIMEOUT = 30000;
 
 	private static HashMap<String, List<PushPackage>> packageListMap = new HashMap<String, List<PushPackage>>();
 

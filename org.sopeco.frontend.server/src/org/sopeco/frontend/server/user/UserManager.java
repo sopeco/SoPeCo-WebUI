@@ -71,7 +71,7 @@ public final class UserManager {
 		List<User> userList = new ArrayList<User>();
 
 		for (User u : userMap.values()) {
-			if (u.getCurrentDatabaseId().equals(databaseId)) {
+			if (u.getCurrentAccountId().equals(databaseId)) {
 				userList.add(u);
 			}
 		}

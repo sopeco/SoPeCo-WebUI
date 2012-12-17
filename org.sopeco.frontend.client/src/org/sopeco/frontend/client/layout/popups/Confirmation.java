@@ -78,10 +78,8 @@ public class Confirmation extends DialogBox {
 		lblText.setHTML(message);
 
 		btnConfirm.addClickHandler(onConfirm);
-		btnConfirm.addClickHandler(getDefaultCloseHandler());
 
 		btnCancel.addClickHandler(onCancel);
-		btnCancel.addClickHandler(getDefaultCloseHandler());
 	}
 
 	/*

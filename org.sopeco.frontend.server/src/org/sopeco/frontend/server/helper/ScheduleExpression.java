@@ -177,7 +177,7 @@ public final class ScheduleExpression {
 		public int getHours() {
 			Calendar c = Calendar.getInstance();
 			c.setTime(date);
-			return c.get(Calendar.HOUR);
+			return c.get(Calendar.HOUR_OF_DAY);
 		}
 
 		public int getMiliSeconds() {

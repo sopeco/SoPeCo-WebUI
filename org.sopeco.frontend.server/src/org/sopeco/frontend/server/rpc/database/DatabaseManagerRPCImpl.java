@@ -196,7 +196,7 @@ public class DatabaseManagerRPCImpl extends SuperRemoteServlet implements Databa
 			return false;
 		}
 
-		getUser().setCurrentDatabaseId(dbInstance.getId());
+		getUser().setCurrentAccount(dbInstance);
 		getUser().setCurrentPersistenceProvider(dbConnection);
 
 		AccountDetails details = UiPersistence.getUiProvider().loadAccountDetails(dbInstance.getId());
@@ -242,7 +242,7 @@ public class DatabaseManagerRPCImpl extends SuperRemoteServlet implements Databa
 
 	@Override
 	public AccountDetails getAccountDetails() {
-		String accountId = getUser().getCurrentDatabaseId();
+		String accountId = getUser().getCurrentAccountId();
 		return UiPersistence.getUiProvider().loadAccountDetails(accountId);
 	}
 

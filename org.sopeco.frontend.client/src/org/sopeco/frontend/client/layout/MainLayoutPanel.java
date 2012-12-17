@@ -2,12 +2,10 @@ package org.sopeco.frontend.client.layout;
 
 import java.util.HashMap;
 
-import org.sopeco.frontend.client.FrontendEntryPoint;
 import org.sopeco.frontend.client.layout.center.CenterType;
 import org.sopeco.frontend.client.layout.center.EmptyCenterPanel;
 import org.sopeco.frontend.client.layout.center.ICenterController;
 import org.sopeco.frontend.client.layout.center.NoScenario;
-import org.sopeco.frontend.client.layout.center.execute.ExecuteControllerOld;
 import org.sopeco.frontend.client.layout.center.execute.ExecuteController;
 import org.sopeco.frontend.client.layout.center.experiment.ExperimentController;
 import org.sopeco.frontend.client.layout.center.result.ResultController;
@@ -157,11 +155,11 @@ public final class MainLayoutPanel extends DockLayoutPanel {
 	 * 
 	 * @return ExecuteController
 	 */
-	public ExecuteControllerOld getExecuteController() {
+	public ExecuteController getExecuteController() {
 		if (!centerController.containsKey(CenterType.Execute)) {
 			return null;
 		}
-		return (ExecuteControllerOld) centerController.get(CenterType.Execute);
+		return (ExecuteController) centerController.get(CenterType.Execute);
 	}
 
 	/**

@@ -11,7 +11,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
 import org.sopeco.config.IConfiguration;
-import org.sopeco.frontend.shared.entities.RawScheduledExperiment;
+import org.sopeco.frontend.shared.entities.FrontendScheduledExperiment;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 
 /**
@@ -20,7 +20,9 @@ import org.sopeco.persistence.entities.definition.ScenarioDefinition;
  * 
  */
 @Entity
-@NamedQueries({ @NamedQuery(name = "getAllExperiments", query = "SELECT u FROM ScheduledExperiment u") })
+@NamedQueries({
+		@NamedQuery(name = "getAllExperiments", query = "SELECT u FROM ScheduledExperiment u"),
+		@NamedQuery(name = "getExperimentsByAccount", query = "SELECT s FROM ScheduledExperiment s WHERE s.account = :account") })
 public class ScheduledExperiment implements Serializable {
 
 	/**
@@ -78,7 +80,7 @@ public class ScheduledExperiment implements Serializable {
 	public ScheduledExperiment() {
 	}
 
-	public ScheduledExperiment(RawScheduledExperiment raw) {
+	public ScheduledExperiment(FrontendScheduledExperiment raw) {
 		account = raw.getAccount();
 		controllerUrl = raw.getControllerUrl();
 		label = raw.getLabel();
@@ -88,6 +90,25 @@ public class ScheduledExperiment implements Serializable {
 		repeatMinutes = raw.getRepeatMinutes();
 		scenarioDefinition = raw.getScenarioDefinition();
 		startTime = raw.getStartTime();
+		addedTime = System.currentTimeMillis();
+	}
+
+	public FrontendScheduledExperiment getFrontendScheduledExperiment() {
+		FrontendScheduledExperiment fse = new FrontendScheduledExperiment();
+		fse.setAccount(account);
+		fse.setControllerUrl(controllerUrl);
+		fse.setId(id);
+		fse.setLabel(label);
+		fse.setLastExecutionTime(lastExecutionTime);
+		fse.setNextExecutionTime(nextExecutionTime);
+		fse.setRepeatDays(repeatDays);
+		fse.setRepeatHours(repeatHours);
+		fse.setRepeating(isRepeating);
+		fse.setRepeatMinutes(repeatMinutes);
+		fse.setStartTime(startTime);
+		fse.setAddTime(addedTime);
+		// Scenario
+		return fse;
 	}
 
 	public IConfiguration getConfiguration() {

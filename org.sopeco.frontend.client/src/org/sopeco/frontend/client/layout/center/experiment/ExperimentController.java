@@ -11,8 +11,6 @@ import org.sopeco.frontend.client.event.handler.ExperimentChangedEventHandler;
 import org.sopeco.frontend.client.layout.MainLayoutPanel;
 import org.sopeco.frontend.client.layout.center.CenterType;
 import org.sopeco.frontend.client.layout.center.ICenterController;
-import org.sopeco.frontend.client.layout.center.execute.ExecuteControllerOld;
-import org.sopeco.frontend.client.layout.center.execute.ExecuteTabPanelOld;
 import org.sopeco.frontend.client.layout.center.experiment.assignment.AssignmentController;
 import org.sopeco.frontend.client.layout.center.experiment.assignment.AssignmentController.Type;
 import org.sopeco.frontend.client.layout.center.experiment.assignment.PreparationController;

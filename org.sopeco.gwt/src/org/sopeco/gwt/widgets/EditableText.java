@@ -16,7 +16,10 @@ import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.regexp.shared.MatchResult;
+import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.TextBox;
@@ -125,7 +128,7 @@ public class EditableText extends FocusPanel implements ClickHandler,
 
 	private void edit() {
 		if (!editable) {
-			//setFocus(false);
+			// setFocus(false);
 			return;
 		}
 		tbValue.getTextbox().setValue(value);
@@ -197,7 +200,9 @@ public class EditableText extends FocusPanel implements ClickHandler,
 		if (validPattern.isEmpty()) {
 			return true;
 		}
-		return text.matches(validPattern);
+		RegExp regExp = RegExp.compile(validPattern);
+		MatchResult matcher = regExp.exec(text);
+		return (matcher != null);
 	}
 
 	@Override

@@ -1,12 +1,15 @@
 package org.sopeco.frontend.server.execute;
 
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.sopeco.frontend.client.rpc.PushRPC.Type;
 import org.sopeco.frontend.server.helper.ScheduleExpression;
 import org.sopeco.frontend.server.persistence.UiPersistence;
 import org.sopeco.frontend.server.persistence.entities.ScheduledExperiment;
+import org.sopeco.frontend.server.rpc.PushRPCImpl;
+import org.sopeco.frontend.server.user.UserManager;
+import org.sopeco.frontend.shared.push.PushPackage;
 
 /**
  * 
@@ -35,10 +38,11 @@ public final class ExecuteScheduler {
 		try {
 			List<ScheduledExperiment> experimentList = UiPersistence.getUiProvider().loadAllScheduledExperiments();
 			for (ScheduledExperiment experiment : experimentList) {
-				if (experiment.getNextExecutionTime() < System.currentTimeMillis()) {
+				if (experiment.getNextExecutionTime() < System.currentTimeMillis() && experiment.isActive()) {
 					queueExperiment(experiment);
-				} else {
-					System.out.println("? " + experiment.getLabel() + new Date(experiment.getNextExecutionTime()));
+				} else if (experiment.getNextExecutionTime() < System.currentTimeMillis() && experiment.isRepeating()) {
+					updateNextExecutionTime(experiment);
+					sendUserNewList(experiment.getAccount());
 				}
 			}
 		} catch (Exception e) {
@@ -59,12 +63,28 @@ public final class ExecuteScheduler {
 		ControllerQueueManager.get(experiment.getControllerUrl()).addExperiment(queuedExperiment);
 
 		if (experiment.isRepeating()) {
-			long nextRepetition = ScheduleExpression.nextValidDate(experiment.getRepeatDays(),
-					experiment.getRepeatHours(), experiment.getRepeatMinutes());
-			experiment.setNextExecutionTime(nextRepetition);
-			UiPersistence.getUiProvider().storeScheduledExperiment(experiment);
+			experiment.setLastExecutionTime(System.currentTimeMillis());
+			updateNextExecutionTime(experiment);
 		} else {
 			UiPersistence.getUiProvider().removeScheduledExperiment(experiment);
+		}
+
+		sendUserNewList(experiment.getAccount());
+	}
+
+	private void updateNextExecutionTime(ScheduledExperiment experiment) {
+		long nextRepetition = ScheduleExpression.nextValidDate(experiment.getRepeatDays(), experiment.getRepeatHours(),
+				experiment.getRepeatMinutes());
+		experiment.setNextExecutionTime(nextRepetition);
+		UiPersistence.getUiProvider().storeScheduledExperiment(experiment);
+	}
+
+	public void sendUserNewList(String accountName) {
+		PushPackage push = new PushPackage(Type.SCHEDULED_EXPERIMENTS);
+		for (String userSessionID : UserManager.getAllUsers().keySet()) {
+			if (UserManager.getUser(userSessionID).getCurrentAccount().getDbName().equals(accountName)) {
+				PushRPCImpl.push(userSessionID, push);
+			}
 		}
 	}
 }

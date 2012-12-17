@@ -136,7 +136,15 @@ public class ResultRPCImpl extends SuperRemoteServlet implements ResultRPC {
 				rValue.append(")\n");
 			}
 
-			rValue.append("colnames(myframe) <- c(");
+			rValue.append("myframe <- data.frame(");
+			for (int n = 0; n < i; n++) {
+				rValue.append("r");
+				rValue.append(n);
+				if (n + 1 < i) {
+					rValue.append(", ");
+				}
+			}			
+			rValue.append(")\ncolnames(myframe) <- c(");
 
 			for (Iterator<SimpleDataSetColumn> iter = simpleDataset.getColumns().iterator(); iter.hasNext();) {
 				rValue.append("\"");
@@ -145,16 +153,7 @@ public class ResultRPCImpl extends SuperRemoteServlet implements ResultRPC {
 				if (iter.hasNext()) {
 					rValue.append(", ");
 				}
-			}
-
-			rValue.append(")\nmyframe <- data.frame(");
-			for (int n = 0; n < i; n++) {
-				rValue.append("r");
-				rValue.append(n);
-				if (n + 1 < i) {
-					rValue.append(", ");
-				}
-			}
+			}			
 			rValue.append(")");
 
 			return rValue.toString();

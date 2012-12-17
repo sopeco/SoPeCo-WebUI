@@ -7,6 +7,7 @@ import org.sopeco.frontend.shared.builder.ScenarioDefinitionBuilder;
 import org.sopeco.persistence.IPersistenceProvider;
 import org.sopeco.persistence.entities.definition.MeasurementSpecification;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
+import org.sopeco.persistence.metadata.entities.DatabaseInstance;
 
 /**
  * 
@@ -20,7 +21,7 @@ public class User {
 	private ScenarioDefinitionBuilder currentScenarioDefinitionBuilder;
 
 	private String workingSpecification;
-	private String currentDatabaseId;
+	private DatabaseInstance currentAccount;
 	private IPersistenceProvider currentPersistenceProvider;
 	private static final Logger LOGGER = Logger.getLogger(User.class.getName());
 	private long lastRequestTime;
@@ -47,12 +48,16 @@ public class User {
 		this.lastRequestTime = pLastRequestTime;
 	}
 
-	public String getCurrentDatabaseId() {
-		return currentDatabaseId;
+	public String getCurrentAccountId() {
+		return currentAccount.getId();
 	}
 
-	public void setCurrentDatabaseId(String databaseId) {
-		this.currentDatabaseId = databaseId;
+	public void setCurrentAccount(DatabaseInstance currentAccount) {
+		this.currentAccount = currentAccount;
+	}
+
+	public DatabaseInstance getCurrentAccount() {
+		return currentAccount;
 	}
 
 	public String getSessionId() {

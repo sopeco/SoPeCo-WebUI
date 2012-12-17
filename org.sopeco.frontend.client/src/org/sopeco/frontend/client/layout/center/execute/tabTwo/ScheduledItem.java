@@ -3,8 +3,7 @@ package org.sopeco.frontend.client.layout.center.execute.tabTwo;
 import java.util.Date;
 
 import org.sopeco.frontend.client.R;
-import org.sopeco.frontend.server.helper.ScheduleExpression;
-import org.sopeco.frontend.shared.entities.RawScheduledExperiment;
+import org.sopeco.frontend.shared.entities.FrontendScheduledExperiment;
 
 import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.dom.client.Style.VerticalAlign;
@@ -29,12 +28,12 @@ public class ScheduledItem extends FlexTable implements ClickHandler {
 	private static final String IMG_REPEAT = "images/repeat.png";
 
 	private HTML htmlLabel, htmlSpecification, htmlExperiment, htmlStart, htmlRepeat, htmlAdded, htmlNextExecution;
-	private RawScheduledExperiment experiment;
+	private FrontendScheduledExperiment experiment;
 	private Image imgRepeat, imgRemove;
 
 	private ScheduleTab parent;
 
-	public ScheduledItem(RawScheduledExperiment pExperiment) {
+	public ScheduledItem(FrontendScheduledExperiment pExperiment) {
 		experiment = pExperiment;
 		init();
 	}
@@ -65,8 +64,8 @@ public class ScheduledItem extends FlexTable implements ClickHandler {
 		htmlSpecification = new HTML("mySpecification");
 		htmlExperiment = new HTML("myExperimentSeries");
 		htmlRepeat = new HTML(repeatString);
-		htmlAdded = new HTML(format.format(new Date(experiment.getLabel())));
-		htmlNextExecution = new HTML(format.format(new Date(experiment.getLabel())));
+		htmlAdded = new HTML(format.format(new Date(experiment.getAddTime())));
+		htmlNextExecution = new HTML(format.format(new Date(experiment.getNextExecutionTime())));
 
 		imgRemove = new Image(IMG_REMOVE);
 		imgRemove.getElement().getStyle().setCursor(Cursor.POINTER);
@@ -131,7 +130,7 @@ public class ScheduledItem extends FlexTable implements ClickHandler {
 		return imgRemove;
 	}
 
-	public RawScheduledExperiment getExperiment() {
+	public FrontendScheduledExperiment getExperiment() {
 		return experiment;
 	}
 
@@ -142,7 +141,7 @@ public class ScheduledItem extends FlexTable implements ClickHandler {
 	@Override
 	public void onClick(ClickEvent event) {
 		if (parent != null) {
-			//parent.removeExperiment(this);
+			// parent.removeExperiment(this);
 		}
 	}
 }

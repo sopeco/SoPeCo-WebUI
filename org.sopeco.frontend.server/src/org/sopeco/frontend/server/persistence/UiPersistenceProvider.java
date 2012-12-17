@@ -130,6 +130,21 @@ public class UiPersistenceProvider {
 		}
 	}
 
+	public List<ScheduledExperiment> loadScheduledExperimentsByAccount(String accountName) {
+		List<ScheduledExperiment> accountDetails = null;
+		EntityManager em = emf.createEntityManager();
+		try {
+			TypedQuery<ScheduledExperiment> query = em.createNamedQuery("getExperimentsByAccount",
+					ScheduledExperiment.class);
+			accountDetails = query.setParameter("account", accountName).getResultList();
+			return accountDetails;
+		} catch (Exception e) {
+			return new ArrayList<ScheduledExperiment>();
+		} finally {
+			em.close();
+		}
+	}
+
 	public ScheduledExperiment loadScheduledExperiment(long id) {
 		EntityManager em = emf.createEntityManager();
 		ScheduledExperiment experiment = em.find(ScheduledExperiment.class, id);

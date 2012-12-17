@@ -2,6 +2,9 @@ package org.sopeco.frontend.server.execute;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.logging.Logger;
 
 import org.sopeco.config.Configuration;
@@ -18,18 +21,26 @@ import org.sopeco.runner.SoPeCoRunner;
 public class ControllerQueue {
 
 	private static final Logger LOGGER = Logger.getLogger(ControllerQueue.class.getName());
+	private static ExecutorService threadPool;
 
 	private QueuedExperiment currentlyRunning;
 	private List<QueuedExperiment> experimentQueue;
-	private Thread sopecoRunnerThread;
 	private String currentRandomId, currentToken;
+	private Future<?> currentStatus;
+
+	private static ExecutorService getThreadPool() {
+		if (threadPool == null) {
+			threadPool = Executors.newCachedThreadPool();
+		}
+		return threadPool;
+	}
 
 	public ControllerQueue() {
 		experimentQueue = new ArrayList<QueuedExperiment>();
 	}
 
 	public boolean isExecuting() {
-		if (sopecoRunnerThread != null && sopecoRunnerThread.isAlive()) {
+		if (currentStatus != null && !currentStatus.isDone() && !currentStatus.isCancelled()) {
 			return true;
 		}
 		return false;
@@ -50,7 +61,6 @@ public class ControllerQueue {
 
 	public synchronized void finished() {
 		if (currentlyRunning != null) {
-			sopecoRunnerThread = null;
 			LOGGER.info("Experiment finished on: " + currentlyRunning.getControllerUrl());
 			currentlyRunning = null;
 			executeNext();
@@ -83,8 +93,7 @@ public class ControllerQueue {
 					"true");
 
 			SoPeCoRunner runner = new SoPeCoRunner(currentRandomId);
-			sopecoRunnerThread = new Thread(runner);
-			sopecoRunnerThread.start();
+			currentStatus = getThreadPool().submit(runner);
 
 			// ###############################
 			LOGGER.info("Waiting for Token..");

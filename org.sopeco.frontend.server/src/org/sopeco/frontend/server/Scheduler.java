@@ -1,5 +1,8 @@
 package org.sopeco.frontend.server;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import org.sopeco.frontend.server.execute.ExecuteScheduler;
@@ -16,65 +19,33 @@ public final class Scheduler {
 	private Scheduler() {
 	}
 
-	private static final int REPEATE_INTERVAL = 5000;
-	private static ScheduleTimer scheduler;
+	private static final int REPEATE_INTERVAL = 5;
+	private static SchedulerAction schedulerAction;
+	private static ScheduledExecutorService scheduler;
 
 	public static synchronized void startScheduler() {
-		if (scheduler == null) {
+		if (schedulerAction == null) {
 			LOGGER.info("Starting SchedulerThread.");
-			scheduler = new ScheduleTimer();
-			scheduler.start();
+			scheduler = Executors.newScheduledThreadPool(1);
+			schedulerAction = new SchedulerAction();
+			scheduler.scheduleAtFixedRate(schedulerAction, REPEATE_INTERVAL, REPEATE_INTERVAL, TimeUnit.SECONDS);
 		}
 	}
 
 	public static synchronized void stopScheduler() {
-		if (scheduler != null) {
+		if (schedulerAction != null) {
 			LOGGER.info("Stopping SchedulerThread.");
-			scheduler.running = false;
-			scheduler.monitor.notify();
+			scheduler.shutdown();
+			schedulerAction = null;
 		}
 	}
 
 	/**
-	 * This thread is repeated constantly and performs every minute an action.
+	 *
 	 */
-	private static class ScheduleTimer extends Thread {
+	private static class SchedulerAction implements Runnable {
 
-		private SchedulerAction thread;
-		private Object monitor = new Object();
-		private boolean running;
-
-		@Override
-		public void run() {
-			LOGGER.info("SchedulerThread started.");
-			running = true;
-			try {
-				while (running) {
-					synchronized (monitor) {
-						if (thread == null) {
-							thread = new SchedulerAction(this);
-							thread.start();
-						}
-						monitor.wait(REPEATE_INTERVAL);
-					}
-				}
-			} catch (InterruptedException e) {
-				new RuntimeException(e);
-			}
-			LOGGER.info("SchedulerThread stopped.");
-		}
-	}
-
-	/**
-	 * After each time interval, a thread (this class) will be created and
-	 * executed.
-	 */
-	private static class SchedulerAction extends Thread {
-
-		private ScheduleTimer timer;
-
-		public SchedulerAction(ScheduleTimer pTimer) {
-			timer = pTimer;
+		public SchedulerAction() {
 		}
 
 		@Override
@@ -84,7 +55,6 @@ public final class Scheduler {
 			TimeoutChecker.checkTimeout();
 			ExecuteScheduler.get().check();
 
-			timer.thread = null;
 			LOGGER.fine("SchedulerAction is finished");
 		}
 	}

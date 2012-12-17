@@ -1,6 +1,8 @@
 package org.sopeco.frontend.client.rpc;
 
-import org.sopeco.frontend.shared.entities.RawScheduledExperiment;
+import java.util.List;
+
+import org.sopeco.frontend.shared.entities.FrontendScheduledExperiment;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -10,11 +12,11 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  */
 public interface ExecuteRPCAsync {
-	void execute(String url, AsyncCallback<Void> callback);
+	void scheduleExperiment(FrontendScheduledExperiment rawScheduledExperiment, AsyncCallback<Void> callback);
 
-	void isRunning(String url, AsyncCallback<Long> callback);
+	void getScheduledExperiments(AsyncCallback<List<FrontendScheduledExperiment>> callback);
 
-	void stop(String url, AsyncCallback<Void> callback);
-
-	void scheduleExperiment(RawScheduledExperiment rawScheduledExperiment, AsyncCallback<Void> callback);
+	void removeScheduledExperiment(long id, AsyncCallback<Boolean> callback);
+	
+	void setScheduledExperimentEnabled(long id, boolean enabled, AsyncCallback<Boolean> callback);
 }

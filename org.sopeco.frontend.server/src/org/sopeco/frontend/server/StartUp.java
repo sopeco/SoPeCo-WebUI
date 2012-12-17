@@ -1,6 +1,7 @@
 package org.sopeco.frontend.server;
 
-import java.util.logging.Logger;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
 
 import org.sopeco.config.Configuration;
 import org.sopeco.config.exception.ConfigurationException;
@@ -10,31 +11,31 @@ import org.sopeco.config.exception.ConfigurationException;
  * @author Marius Oehler
  * 
  */
-public final class StartUp {
+public final class StartUp implements ServletContextListener {
 
-	private StartUp() {
+	private final String configurationFile = "sopeco-gui.conf";
+
+	public StartUp() {
 	}
 
-	private static final Logger LOGGER = Logger.getLogger(StartUp.class.getName());
-	private static final String CONFIGURATION_FILE = "sopeco-gui.conf";
+	@Override
+	public void contextDestroyed(ServletContextEvent arg0) {
+		System.out.println("Destroy");
+	}
 
-	private static Boolean hasStarted = false;
-
-	public static synchronized void start(String sessionId) {
-		if (!hasStarted) {
-			System.out.println(">> Starting backend..");
-			try {
-				loadConfiguration(sessionId);
-				Scheduler.startScheduler();
-				hasStarted = true;
-			} catch (ConfigurationException e) {
-				LOGGER.warning(e.getMessage());
-			}
+	@Override
+	public void contextInitialized(ServletContextEvent context) {
+		System.out.println(">> Starting webapp..");
+		try {
+			loadConfiguration();
+			Scheduler.startScheduler();
+		} catch (ConfigurationException e) {
+			throw new RuntimeException(e);
 		}
 	}
 
-	private static void loadConfiguration(String sessionId) throws ConfigurationException {
+	private void loadConfiguration() throws ConfigurationException {
 		Configuration.getSessionSingleton(Configuration.getGlobalSessionId()).loadConfiguration(
-				StartUp.class.getClassLoader(), CONFIGURATION_FILE);
+				StartUp.class.getClassLoader(), configurationFile);
 	}
 }

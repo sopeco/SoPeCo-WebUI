@@ -9,6 +9,7 @@ import javax.persistence.Persistence;
 import org.sopeco.config.Configuration;
 import org.sopeco.config.IConfiguration;
 import org.sopeco.frontend.server.UiConfiguration;
+import org.sopeco.persistence.config.PersistenceConfiguration;
 
 /**
  * 
@@ -35,7 +36,6 @@ public final class UiPersistenceProviderFactory {
 	 */
 	public static UiPersistenceProvider createUiPersistenceProvider() {
 		try {
-			Map<String, Object> x = getConfigOverrides();
 			EntityManagerFactory factory = Persistence.createEntityManagerFactory("sopeco-frontend",
 					getConfigOverrides());
 			return new UiPersistenceProvider(factory);
@@ -62,6 +62,7 @@ public final class UiPersistenceProviderFactory {
 	 * @return connection-url
 	 */
 	private static String getServerUrl() {
+		PersistenceConfiguration.getSessionSingleton(Configuration.getGlobalSessionId());
 		IConfiguration config = Configuration.getSessionSingleton(Configuration.getGlobalSessionId());
 		if (config.getPropertyAsStr(UiConfiguration.META_DATA_HOST) == null) {
 			throw new NullPointerException("No MetaDataHost defined.");

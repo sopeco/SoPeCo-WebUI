@@ -17,7 +17,8 @@ public interface PushRPC extends RemoteService {
 		ERROR, IDLE, MESSAGE, NEW_MEC_AVAILABLE, NEW_ENV_DEFINITION,
 		
 		GET_MEC_TOKEN,
-		CONTROLLER_STATUS
+		CONTROLLER_STATUS,
+		SCHEDULED_EXPERIMENTS
 	}
 
 	PushPackage push();

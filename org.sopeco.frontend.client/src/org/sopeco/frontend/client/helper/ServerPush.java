@@ -1,5 +1,6 @@
 package org.sopeco.frontend.client.helper;
 
+import org.sopeco.frontend.client.layout.MainLayoutPanel;
 import org.sopeco.frontend.client.layout.popups.Message;
 import org.sopeco.frontend.client.layout.popups.Notification;
 import org.sopeco.frontend.client.rpc.PushRPC;
@@ -60,32 +61,10 @@ public final class ServerPush implements AsyncCallback<PushPackage> {
 	private void execute(PushPackage pushPackage) {
 		if (pushPackage.getType() == Type.CONTROLLER_STATUS) {
 			execStatusPackage((StatusPackage) pushPackage);
+		} else if (pushPackage.getType() == Type.SCHEDULED_EXPERIMENTS) {
+			MainLayoutPanel.get().getExecuteController().refreshScheduleTab();
+			Notification.show("Experiment started..");
 		}
-		// switch (pushPackage.getType()) {
-		// case IDLE:
-		// // Notification.show("Idle");
-		// break;
-		// case ERROR:
-		// Notification.show("Error");
-		// break;
-		// case MESSAGE:
-		// String message = (String) pushPackage.getPiggyback();
-		// Notification.show(message);
-		// break;
-		// case NEW_MEC_AVAILABLE:
-		// // EnvironmentView envPanel = (EnvironmentView) MainLayoutPanel.get()
-		// // .getCenterController(CenterType.Environment).getView();
-		// // envPanel.addMEControllerUrl(pushPackage.getPiggyback());
-		// break;
-		// case NEW_ENV_DEFINITION:
-		// EnvironmentView envPanel2 = (EnvironmentView) MainLayoutPanel.get()
-		// .getCenterController(CenterType.Environment).getView();
-		//
-		// envPanel2.getEnvironmentDefinitonTreePanel().generateTree(true);
-		// break;
-		// default:
-		// Message.warning("unknown parameter");
-		// }
 	}
 
 	private void execStatusPackage(StatusPackage statusPackage) {

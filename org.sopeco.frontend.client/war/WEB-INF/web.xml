@@ -11,6 +11,9 @@
 		<welcome-file>sopeco_frontend.html</welcome-file>
 	</welcome-file-list>
 
+	<listener>
+		<listener-class>org.sopeco.frontend.server.StartUp</listener-class>
+	</listener>
 
 	<servlet>
 		<servlet-name>databaseManagerRPC</servlet-name>
@@ -113,7 +116,7 @@
 		<servlet-name>exportServlet</servlet-name>
 		<url-pattern>/sopeco_frontend/export</url-pattern>
 	</servlet-mapping>
-	
+
 	<servlet>
 		<servlet-name>datasetExportServlet</servlet-name>
 		<servlet-class>org.sopeco.frontend.server.export.DataSetExportServlet

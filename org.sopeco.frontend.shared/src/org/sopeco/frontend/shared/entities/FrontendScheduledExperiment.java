@@ -2,14 +2,6 @@ package org.sopeco.frontend.shared.entities;
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Lob;
-import javax.persistence.SequenceGenerator;
-
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 
 /**
@@ -17,57 +9,81 @@ import org.sopeco.persistence.entities.definition.ScenarioDefinition;
  * @author Marius Oehler
  * 
  */
-@Entity
-@SequenceGenerator(sequenceName = "SCHEDULE_SEQ", name = "SCHEDULE_SEQ_GEN")
-public class RawScheduledExperiment implements Serializable {
+public class FrontendScheduledExperiment implements Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	@Column(name = "account")
 	private String account;
 
-	@Column(name = "controllerUrl")
 	private String controllerUrl;
 
-	@Id
-	@GeneratedValue
 	private long id;
 
-	@Column(name = "isRepeating")
 	private boolean isRepeating;
 
-	@Column(name = "label")
 	private String label;
 
-	@Column(name = "repeatDays")
 	private String repeatDays;
 
-	@Column(name = "repeatHours")
 	private String repeatHours;
 
-	@Column(name = "repeatMinutes")
 	private String repeatMinutes;
 
-	@Lob
-	@Column(name = "scenarioDefinition")
 	private ScenarioDefinition scenarioDefinition;
 
-	@Column(name = "startTime")
 	private long startTime;
+
+	private long addTime;
+
+	private long nextExecutionTime;
+
+	private long lastExecutionTime;
+
+	public long getAddTime() {
+		return addTime;
+	}
+
+	public void setAddTime(long pAddTime) {
+		this.addTime = pAddTime;
+	}
 
 	public String getControllerUrl() {
 		return controllerUrl;
+	}
+
+	public long getNextExecutionTime() {
+		return nextExecutionTime;
+	}
+
+	public void setNextExecutionTime(long pNextExecutionTime) {
+		this.nextExecutionTime = pNextExecutionTime;
+	}
+
+	public long getLastExecutionTime() {
+		return lastExecutionTime;
+	}
+
+	public void setLastExecutionTime(long pLastExecutionTime) {
+		this.lastExecutionTime = pLastExecutionTime;
 	}
 
 	public String getAccount() {
 		return account;
 	}
 
-	public void setAccount(String account) {
-		this.account = account;
+	public void setAccount(String pAccount) {
+		this.account = pAccount;
+	}
+
+	public void setId(long pId) {
+		this.id = pId;
+	}
+
+	public long getId() {
+		return id;
 	}
 
 	public String getLabel() {

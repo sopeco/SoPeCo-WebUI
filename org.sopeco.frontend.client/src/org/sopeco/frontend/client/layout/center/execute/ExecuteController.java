@@ -1,19 +1,26 @@
 package org.sopeco.frontend.client.layout.center.execute;
 
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.sopeco.frontend.client.R;
 import org.sopeco.frontend.client.layout.center.ICenterController;
+import org.sopeco.frontend.client.layout.center.execute.tabOne.ExecuteTab;
+import org.sopeco.frontend.client.layout.center.execute.tabOne.TabControllerOne;
+import org.sopeco.frontend.client.layout.center.execute.tabThree.TabControllerThree;
+import org.sopeco.frontend.client.layout.center.execute.tabTwo.TabControllerTwo;
 import org.sopeco.frontend.client.layout.popups.Message;
 import org.sopeco.frontend.client.model.Manager;
 import org.sopeco.frontend.client.model.ScenarioManager;
 import org.sopeco.frontend.client.resources.FrontEndResources;
 import org.sopeco.frontend.client.rpc.RPC;
-import org.sopeco.frontend.shared.entities.RawScheduledExperiment;
+import org.sopeco.frontend.shared.entities.FrontendScheduledExperiment;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -22,11 +29,15 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Marius Oehler
  * 
  */
-public class ExecuteController implements ICenterController, ClickHandler {
+public class ExecuteController implements ICenterController, ClickHandler, SelectionHandler<Integer> {
 
 	private static final Logger LOGGER = Logger.getLogger(ExecuteController.class.getName());
 
-	private ExecuteTabPanelOld view;
+	private TabControllerOne tabControllerOne;
+	private TabControllerTwo tabControllerTwo;
+	private TabControllerThree tabControllerThree;
+
+	private ExecuteTabPanel view;
 
 	public ExecuteController() {
 		FrontEndResources.loadExecuteViewCSS();
@@ -34,8 +45,26 @@ public class ExecuteController implements ICenterController, ClickHandler {
 	}
 
 	private void init() {
-		view = new ExecuteTabPanelOld();
-		view.getTabExecute().getBtnExecute().addClickHandler(this);
+		tabControllerOne = new TabControllerOne(this);
+		tabControllerTwo = new TabControllerTwo(this);
+		tabControllerThree = new TabControllerThree(this);
+
+		view = new ExecuteTabPanel();
+		view.add(tabControllerOne.getView(), R.get("ExecuteExperiment"));
+		view.add(tabControllerTwo.getView(), R.get("ScheduledExperiments"));
+		view.add(tabControllerThree.getView(), R.get("controllerQueue"));
+		view.selectTab(0);
+
+//		view.getTabExecute().getBtnExecute().addClickHandler(this);
+
+		view.getTabBar().addSelectionHandler(this);
+	}
+
+	@Override
+	public void onSelection(SelectionEvent<Integer> event) {
+		if (event.getSelectedItem() == 2) {
+			tabControllerTwo.onSelection();
+		}
 	}
 
 	@Override
@@ -45,7 +74,7 @@ public class ExecuteController implements ICenterController, ClickHandler {
 
 	@Override
 	public void onSwitchTo() {
-		view.getTabExecute().generateTree();
+		((ExecuteTab) tabControllerOne.getView()).generateTree();
 		refreshScheduleTab();
 	}
 
@@ -55,80 +84,22 @@ public class ExecuteController implements ICenterController, ClickHandler {
 
 	@Override
 	public void onClick(ClickEvent event) {
-		scheduleExperiment();
+
 	}
 
 	public void refreshScheduleTab() {
-		view.getTabSchedule().refreshList();
-//		int scheduleCount = Manager.get().getCurrentScenarioDetails().getScheduledExperimentsList().size();
-//		view.getTabBar().setTabText(1, R.get("ScheduledExperiments") + " [" + scheduleCount + "]");
-	}
-
-	private boolean isRepeating() {
-		return view.getTabExecute().getScheduleConfTable().getCbRepeat().getValue()
-				&& !view.getTabExecute().getRepeatTable().getScheduleDays().isEmpty();
-	}
-
-	/**
-	 * Returns the time, when the experiment will be executed. If it's executed
-	 * immediately, this method returns the current time.
-	 * 
-	 * @return stating timestamp
-	 */
-	private long getStartTime() {
-		if (view.getTabExecute().isExecutingImmediately()) {
-			return System.currentTimeMillis();
-		} else {
-			String[] splitTime = view.getTabExecute().getScheduleConfTable().getEditStartTime().getValue().split(":");
-			String[] splitDate = view.getTabExecute().getScheduleConfTable().getEditStartDate().getValue().split("\\.");
-
-			Date date = new Date();
-			date.setHours(Integer.parseInt(splitTime[0]));
-			date.setMinutes(Integer.parseInt(splitTime[1]));
-			date.setSeconds(0);
-			date.setDate(Integer.parseInt(splitDate[0]));
-			date.setMonth(Integer.parseInt(splitDate[1]) - 1);
-			date.setYear(Integer.parseInt(splitDate[2]) - 1900);
-
-			return date.getTime();
-		}
-	}
-
-	private void scheduleExperiment() {
-		RawScheduledExperiment scheduledExperiment = new RawScheduledExperiment();
-		scheduledExperiment.setAccount(Manager.get().getAccountDetails().getAccountName());
-		scheduledExperiment.setLabel(view.getTabExecute().getEditLabel().getValue());
-		scheduledExperiment.setStartTime(getStartTime());
-		scheduledExperiment.setControllerUrl(Manager.get().getControllerUrl());
-		scheduledExperiment.setScenarioDefinition(ScenarioManager.get().getCurrentScenarioDefinition());
-
-		if (isRepeating()) {
-			scheduledExperiment.setRepeating(true);
-			scheduledExperiment.setRepeatDays(view.getTabExecute().getRepeatTable().getScheduleDays());
-			scheduledExperiment.setRepeatHours(view.getTabExecute().getRepeatTable().getScheduleHours());
-			scheduledExperiment.setRepeatMinutes(view.getTabExecute().getRepeatTable().getScheduleMinutes());
-		} else {
-			scheduledExperiment.setRepeating(false);
-		}
-
-		RPC.getExecuteRPC().scheduleExperiment(scheduledExperiment, new AsyncCallback<Void>() {
-			@Override
-			public void onSuccess(Void result) {
-			}
-
+		RPC.getExecuteRPC().getScheduledExperiments(new AsyncCallback<List<FrontendScheduledExperiment>>() {
 			@Override
 			public void onFailure(Throwable caught) {
+				LOGGER.severe(caught.getLocalizedMessage());
 				Message.error(caught.getMessage());
 			}
+
+			@Override
+			public void onSuccess(List<FrontendScheduledExperiment> result) {
+				tabControllerTwo.updateList(result);
+			}
 		});
-
-		if (view.getTabExecute().isExecutingImmediately()) {
-			LOGGER.fine("Execute NOW");
-			// view.selectTab(2);
-		} else {
-			// view.selectTab(1);
-		}
-
-		refreshScheduleTab();
 	}
+
 }
