@@ -1,6 +1,8 @@
 package org.sopeco.frontend.server.persistence.entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,6 +13,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
 import org.sopeco.config.IConfiguration;
+import org.sopeco.frontend.server.execute.QueuedExperiment;
 import org.sopeco.frontend.shared.entities.FrontendScheduledExperiment;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 
@@ -77,6 +80,9 @@ public class ScheduledExperiment implements Serializable {
 	@Column(name = "repeatMinutes")
 	private String repeatMinutes;
 
+	@Column(name = "durations")
+	private List<Long> durations;
+
 	public ScheduledExperiment() {
 	}
 
@@ -91,9 +97,10 @@ public class ScheduledExperiment implements Serializable {
 		scenarioDefinition = raw.getScenarioDefinition();
 		startTime = raw.getStartTime();
 		addedTime = System.currentTimeMillis();
+		durations = new ArrayList<Long>();
 	}
 
-	public FrontendScheduledExperiment getFrontendScheduledExperiment() {
+	public FrontendScheduledExperiment createFrontendScheduledExperiment() {
 		FrontendScheduledExperiment fse = new FrontendScheduledExperiment();
 		fse.setAccount(account);
 		fse.setControllerUrl(controllerUrl);
@@ -107,8 +114,29 @@ public class ScheduledExperiment implements Serializable {
 		fse.setRepeatMinutes(repeatMinutes);
 		fse.setStartTime(startTime);
 		fse.setAddTime(addedTime);
-		// Scenario
+		fse.setEnabled(active);
+		fse.setDurations(durations);
+		fse.setScenarioDefinition(scenarioDefinition);
 		return fse;
+	}
+
+	public QueuedExperiment createQueuedExperiment() {
+		QueuedExperiment queuedExperiment = new QueuedExperiment();
+		queuedExperiment.setTimeQueued(System.currentTimeMillis());
+		queuedExperiment.setScenarioDefinition(scenarioDefinition);
+		queuedExperiment.setControllerUrl(controllerUrl);
+		queuedExperiment.setConfiguration(configuration);
+		queuedExperiment.setId(id);
+		queuedExperiment.setAccount(account);
+		return queuedExperiment;
+	}
+
+	public List<Long> getDurations() {
+		return durations;
+	}
+
+	public void setDurations(List<Long> pDurations) {
+		this.durations = pDurations;
 	}
 
 	public IConfiguration getConfiguration() {

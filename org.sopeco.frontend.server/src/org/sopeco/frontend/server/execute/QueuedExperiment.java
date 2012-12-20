@@ -10,14 +10,41 @@ import org.sopeco.persistence.entities.definition.ScenarioDefinition;
  */
 public class QueuedExperiment {
 
+	private String account;
 	private ScenarioDefinition scenarioDefinition;
 	private long timeStarted;
+	private long timeEnded;
 	private long timeQueued;
 	private IConfiguration configuration;
 	private String controllerUrl;
+	private long id;
+
+	public String getAccount() {
+		return account;
+	}
+
+	public void setAccount(String pAccount) {
+		this.account = pAccount;
+	}
+
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long pId) {
+		this.id = pId;
+	}
 
 	public String getControllerUrl() {
 		return controllerUrl;
+	}
+
+	public long getTimeEnded() {
+		return timeEnded;
+	}
+
+	public void setTimeEnded(long pTimeEnded) {
+		this.timeEnded = pTimeEnded;
 	}
 
 	public void setControllerUrl(String pControllerUrl) {

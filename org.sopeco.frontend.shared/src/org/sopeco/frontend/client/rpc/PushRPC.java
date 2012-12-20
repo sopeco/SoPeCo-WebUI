@@ -18,7 +18,8 @@ public interface PushRPC extends RemoteService {
 		
 		GET_MEC_TOKEN,
 		CONTROLLER_STATUS,
-		SCHEDULED_EXPERIMENTS
+		SCHEDULED_EXPERIMENT_CHANGED,
+		PUSH_SCHEDULED_EXPERIMENT
 	}
 
 	PushPackage push();

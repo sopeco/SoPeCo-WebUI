@@ -139,7 +139,7 @@
 
 /** ************************************************************* **/
 .scheduleItemPanel {
-	background-color: #FAFAFA;
+	background-color: #FAFCFF;
 	padding: .5em 1em;
 	border-bottom: 1px solid #EEE;
 	border-top: 1px solid #BBB;
@@ -147,6 +147,10 @@
 
 .scheduleItemPanel:hover {
 	background-color: #FAFAFF;
+}
+
+.scheduleItemPanel.disabled {
+	background-color: #ffe;
 }
 
 .scheduleItemPanel .headPanel * {

@@ -1,7 +1,5 @@
 package org.sopeco.frontend.client.layout.center.execute;
 
-import java.util.Date;
-import java.util.List;
 import java.util.logging.Logger;
 
 import org.sopeco.frontend.client.R;
@@ -10,18 +8,12 @@ import org.sopeco.frontend.client.layout.center.execute.tabOne.ExecuteTab;
 import org.sopeco.frontend.client.layout.center.execute.tabOne.TabControllerOne;
 import org.sopeco.frontend.client.layout.center.execute.tabThree.TabControllerThree;
 import org.sopeco.frontend.client.layout.center.execute.tabTwo.TabControllerTwo;
-import org.sopeco.frontend.client.layout.popups.Message;
-import org.sopeco.frontend.client.model.Manager;
-import org.sopeco.frontend.client.model.ScenarioManager;
 import org.sopeco.frontend.client.resources.FrontEndResources;
-import org.sopeco.frontend.client.rpc.RPC;
-import org.sopeco.frontend.shared.entities.FrontendScheduledExperiment;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -34,16 +26,77 @@ public class ExecuteController implements ICenterController, ClickHandler, Selec
 	private static final Logger LOGGER = Logger.getLogger(ExecuteController.class.getName());
 
 	private TabControllerOne tabControllerOne;
-	private TabControllerTwo tabControllerTwo;
 	private TabControllerThree tabControllerThree;
+	private TabControllerTwo tabControllerTwo;
 
 	private ExecuteTabPanel view;
 
+	/**
+	 * Constructor. Loads the CSS resources and invokes the {@link #init()}
+	 * method.
+	 */
 	public ExecuteController() {
 		FrontEndResources.loadExecuteViewCSS();
 		init();
 	}
 
+	/**
+	 * Returns the TabController of the first tab.
+	 * 
+	 * @return TabControllerOne
+	 */
+	public TabControllerOne getTabControllerOne() {
+		return tabControllerOne;
+	}
+
+	/**
+	 * Returns the TabController of the third tab.
+	 * 
+	 * @return TabControllerThree
+	 */
+	public TabControllerThree getTabControllerThree() {
+		return tabControllerThree;
+	}
+
+	/**
+	 * Returns the TabController of the second tab.
+	 * 
+	 * @return TabControllerTwo
+	 */
+	public TabControllerTwo getTabControllerTwo() {
+		return tabControllerTwo;
+	}
+
+	@Override
+	public Widget getView() {
+		return view;
+	}
+
+	@Override
+	public void onClick(ClickEvent event) {
+
+	}
+
+	@Override
+	public void onSelection(SelectionEvent<Integer> event) {
+		selectedTab(event.getSelectedItem());
+	}
+
+	@Override
+	public void onSwitchTo() {
+		((ExecuteTab) tabControllerOne.getView()).generateTree();
+		getTabControllerTwo().loadScheduledExperiments();
+
+		selectedTab(view.getTabBar().getSelectedTab());
+	}
+
+	@Override
+	public void reset() {
+	}
+
+	/**
+	 * Initializes the controller of each tab.
+	 */
 	private void init() {
 		tabControllerOne = new TabControllerOne(this);
 		tabControllerTwo = new TabControllerTwo(this);
@@ -55,51 +108,29 @@ public class ExecuteController implements ICenterController, ClickHandler, Selec
 		view.add(tabControllerThree.getView(), R.get("controllerQueue"));
 		view.selectTab(0);
 
-//		view.getTabExecute().getBtnExecute().addClickHandler(this);
-
 		view.getTabBar().addSelectionHandler(this);
 	}
 
-	@Override
-	public void onSelection(SelectionEvent<Integer> event) {
-		if (event.getSelectedItem() == 2) {
+	/**
+	 * Invokes the {@link TabController#onSelection()} method of the
+	 * TabController, which belongs to the selected Tab.
+	 * 
+	 * @param x
+	 *            index of the selected tab
+	 */
+	private void selectedTab(int x) {
+		switch (x) {
+		case 0:
 			tabControllerTwo.onSelection();
+			break;
+		case 1:
+			tabControllerTwo.onSelection();
+			break;
+		case 2:
+			tabControllerTwo.onSelection();
+			break;
+		default:
 		}
-	}
-
-	@Override
-	public Widget getView() {
-		return view;
-	}
-
-	@Override
-	public void onSwitchTo() {
-		((ExecuteTab) tabControllerOne.getView()).generateTree();
-		refreshScheduleTab();
-	}
-
-	@Override
-	public void reset() {
-	}
-
-	@Override
-	public void onClick(ClickEvent event) {
-
-	}
-
-	public void refreshScheduleTab() {
-		RPC.getExecuteRPC().getScheduledExperiments(new AsyncCallback<List<FrontendScheduledExperiment>>() {
-			@Override
-			public void onFailure(Throwable caught) {
-				LOGGER.severe(caught.getLocalizedMessage());
-				Message.error(caught.getMessage());
-			}
-
-			@Override
-			public void onSuccess(List<FrontendScheduledExperiment> result) {
-				tabControllerTwo.updateList(result);
-			}
-		});
 	}
 
 }

@@ -3,13 +3,9 @@ package org.sopeco.frontend.server.execute;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.sopeco.frontend.client.rpc.PushRPC.Type;
 import org.sopeco.frontend.server.helper.ScheduleExpression;
 import org.sopeco.frontend.server.persistence.UiPersistence;
 import org.sopeco.frontend.server.persistence.entities.ScheduledExperiment;
-import org.sopeco.frontend.server.rpc.PushRPCImpl;
-import org.sopeco.frontend.server.user.UserManager;
-import org.sopeco.frontend.shared.push.PushPackage;
 
 /**
  * 
@@ -24,6 +20,12 @@ public final class ExecuteScheduler {
 	private ExecuteScheduler() {
 	}
 
+	/**
+	 * Returns the ExecuteScheduler Singleton object. If the object doesn't
+	 * exists, it will be created.
+	 * 
+	 * @return ExecuteScheduler
+	 */
 	public static ExecuteScheduler get() {
 		if (executeScheduler == null) {
 			executeScheduler = new ExecuteScheduler();
@@ -32,59 +34,62 @@ public final class ExecuteScheduler {
 	}
 
 	/**
-	 * 
+	 * Checks all stored experiments if one of them should be executed now.
 	 */
-	public void check() {
+	public void checkExperiments() {
+		LOGGER.info("Checking for scheduled experiments");
 		try {
 			List<ScheduledExperiment> experimentList = UiPersistence.getUiProvider().loadAllScheduledExperiments();
+
 			for (ScheduledExperiment experiment : experimentList) {
 				if (experiment.getNextExecutionTime() < System.currentTimeMillis() && experiment.isActive()) {
+					// Experiment will be executed
 					queueExperiment(experiment);
 				} else if (experiment.getNextExecutionTime() < System.currentTimeMillis() && experiment.isRepeating()) {
+					// Calculates the next execution time.
 					updateNextExecutionTime(experiment);
-					sendUserNewList(experiment.getAccount());
 				}
 			}
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			LOGGER.severe(e.getLocalizedMessage());
 		}
 	}
 
+	/**
+	 * Inserts an experiment in the proper controller queue. Previously a
+	 * QueuedExperiment is created, which contains all relevant information for
+	 * the controllerQueue to execute it.
+	 * 
+	 * @param experiment
+	 *            to insert into a queue
+	 */
 	private void queueExperiment(ScheduledExperiment experiment) {
-		LOGGER.info("Put experiment in CotnrollerQueue: " + experiment.getLabel() + " (account: "
-				+ experiment.getAccount() + ")");
+		LOGGER.info("Insert experiment '" + experiment.getLabel() + "' (id: " + experiment.getId() + " - account: "
+				+ experiment.getAccount() + ") in queue");
 
-		QueuedExperiment queuedExperiment = new QueuedExperiment();
-		queuedExperiment.setTimeQueued(System.currentTimeMillis());
-		queuedExperiment.setScenarioDefinition(experiment.getScenarioDefinition());
-		queuedExperiment.setControllerUrl(experiment.getControllerUrl());
-		queuedExperiment.setConfiguration(experiment.getConfiguration());
-
-		ControllerQueueManager.get(experiment.getControllerUrl()).addExperiment(queuedExperiment);
+		ControllerQueueManager.get(experiment.getControllerUrl()).addExperiment(experiment.createQueuedExperiment());
 
 		if (experiment.isRepeating()) {
+			LOGGER.info("Update execution times");
 			experiment.setLastExecutionTime(System.currentTimeMillis());
 			updateNextExecutionTime(experiment);
 		} else {
+			LOGGER.info("Remove ScheduleExperiment");
 			UiPersistence.getUiProvider().removeScheduledExperiment(experiment);
 		}
 
-		sendUserNewList(experiment.getAccount());
+		// notifyFrontend(experiment.getAccount());
 	}
 
+	/**
+	 * Calculates the next date when the experiment is to be executed.
+	 * 
+	 * @param experiment
+	 */
 	private void updateNextExecutionTime(ScheduledExperiment experiment) {
 		long nextRepetition = ScheduleExpression.nextValidDate(experiment.getRepeatDays(), experiment.getRepeatHours(),
 				experiment.getRepeatMinutes());
 		experiment.setNextExecutionTime(nextRepetition);
 		UiPersistence.getUiProvider().storeScheduledExperiment(experiment);
-	}
-
-	public void sendUserNewList(String accountName) {
-		PushPackage push = new PushPackage(Type.SCHEDULED_EXPERIMENTS);
-		for (String userSessionID : UserManager.getAllUsers().keySet()) {
-			if (UserManager.getUser(userSessionID).getCurrentAccount().getDbName().equals(accountName)) {
-				PushRPCImpl.push(userSessionID, push);
-			}
-		}
 	}
 }

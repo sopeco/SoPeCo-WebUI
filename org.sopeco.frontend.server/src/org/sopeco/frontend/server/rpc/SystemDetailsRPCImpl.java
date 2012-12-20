@@ -2,6 +2,8 @@ package org.sopeco.frontend.server.rpc;
 
 import java.util.HashMap;
 
+import org.sopeco.config.Configuration;
+import org.sopeco.config.IConfiguration;
 import org.sopeco.frontend.client.rpc.SystemDetailsRPC;
 import org.sopeco.persistence.config.PersistenceConfiguration;
 
@@ -18,11 +20,10 @@ public class SystemDetailsRPCImpl extends SuperRemoteServlet implements SystemDe
 	public HashMap<String, String> getMetaDatabaseDetails() {
 		HashMap<String, String> map = new HashMap<String, String>();
 
-		PersistenceConfiguration pConf = PersistenceConfiguration.getSessionSingleton(getThreadLocalRequest()
-				.getSession().getId());
+		PersistenceConfiguration conf = PersistenceConfiguration.getSessionSingleton(Configuration.getGlobalSessionId());
 
-		map.put("host", pConf.getMetaDataHost());
-		map.put("port", pConf.getMetaDataPort());
+		map.put("host", conf.getMetaDataHost());
+		map.put("port", conf.getMetaDataPort());
 
 		return map;
 	}

@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 
 import org.sopeco.config.Configuration;
 import org.sopeco.frontend.client.rpc.ExecuteRPC;
+import org.sopeco.frontend.server.execute.ControllerQueueManager;
 import org.sopeco.frontend.server.helper.ScheduleExpression;
 import org.sopeco.frontend.server.persistence.UiPersistence;
 import org.sopeco.frontend.server.persistence.entities.ScheduledExperiment;
@@ -48,9 +49,12 @@ public class ExecuteRPCImpl extends SuperRemoteServlet implements ExecuteRPC {
 		List<ScheduledExperiment> resultList = UiPersistence.getUiProvider().loadScheduledExperimentsByAccount(
 				accountName);
 
+		//List<Long> runningExperiments = ControllerQueueManager.getRunningExperimentIds();
+
 		List<FrontendScheduledExperiment> fseList = new ArrayList<FrontendScheduledExperiment>();
 		for (ScheduledExperiment experiment : resultList) {
-			fseList.add(experiment.getFrontendScheduledExperiment());
+			// System.out.println(runningExperiments.contains(experiment.getId()));
+			fseList.add(experiment.createFrontendScheduledExperiment());
 		}
 		return fseList;
 	}

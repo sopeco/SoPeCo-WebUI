@@ -53,7 +53,7 @@ public final class Scheduler {
 			LOGGER.fine("SchedulerAction starts..");
 
 			TimeoutChecker.checkTimeout();
-			ExecuteScheduler.get().check();
+			ExecuteScheduler.get().checkExperiments();
 
 			LOGGER.fine("SchedulerAction is finished");
 		}

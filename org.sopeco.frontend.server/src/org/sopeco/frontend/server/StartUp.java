@@ -4,6 +4,7 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 import org.sopeco.config.Configuration;
+import org.sopeco.config.IConfiguration;
 import org.sopeco.config.exception.ConfigurationException;
 
 /**
@@ -37,5 +38,7 @@ public final class StartUp implements ServletContextListener {
 	private void loadConfiguration() throws ConfigurationException {
 		Configuration.getSessionSingleton(Configuration.getGlobalSessionId()).loadConfiguration(
 				StartUp.class.getClassLoader(), configurationFile);
+		
+		IConfiguration cc =  Configuration.getSessionSingleton(Configuration.getGlobalSessionId());
 	}
 }

@@ -15,7 +15,12 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-public class Confirmation extends DialogBox {
+/**
+ * 
+ * @author Marius Oehler
+ * 
+ */
+public final class Confirmation extends DialogBox implements ClickHandler {
 
 	private Button btnConfirm, btnCancel;
 	private HTML lblText;
@@ -28,7 +33,7 @@ public class Confirmation extends DialogBox {
 	 * default handler)
 	 */
 	public static void confirm(String message, ClickHandler onConfirm) {
-		confirm(message, onConfirm, getDefaultCloseHandler());
+		confirm(message, onConfirm, null);
 	}
 
 	/*
@@ -45,26 +50,19 @@ public class Confirmation extends DialogBox {
 		}
 	}
 
-	/*
-	 * get the default close handler
-	 */
-	private static ClickHandler getDefaultCloseHandler() {
-		return new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				GWT.log("hide confirmation dialog");
+	@Override
+	public void onClick(ClickEvent event) {
+		GWT.log("hide confirmation dialog");
 
-				currentConfirmDialog.hide();
+		currentConfirmDialog.hide();
 
-				if (queue.isEmpty()) {
-					currentConfirmDialog = null;
-				} else {
-					currentConfirmDialog = queue.get(0);
-					queue.remove(0);
-					currentConfirmDialog.center();
-				}
-			}
-		};
+		if (queue.isEmpty()) {
+			currentConfirmDialog = null;
+		} else {
+			currentConfirmDialog = queue.get(0);
+			queue.remove(0);
+			currentConfirmDialog.center();
+		}
 	}
 
 	/*
@@ -78,8 +76,12 @@ public class Confirmation extends DialogBox {
 		lblText.setHTML(message);
 
 		btnConfirm.addClickHandler(onConfirm);
-
-		btnCancel.addClickHandler(onCancel);
+		btnConfirm.addClickHandler(this);
+		if (onCancel == null) {
+			btnCancel.addClickHandler(this);
+		} else {
+			btnCancel.addClickHandler(onCancel);
+		}
 	}
 
 	/*

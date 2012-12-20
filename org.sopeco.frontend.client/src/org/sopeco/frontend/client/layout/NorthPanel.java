@@ -115,6 +115,7 @@ public class NorthPanel extends FlowPanel implements ClickHandler, ChangeHandler
 		if (enabled) {
 			listboxScenarios.setEnabled(true);
 			imageScenarioAdd.removeStyleName(DISABLED_CSS_CLASS);
+			imageScenarioClone.removeStyleName(DISABLED_CSS_CLASS);
 			imageScenarioRemove.removeStyleName(DISABLED_CSS_CLASS);
 			imageExport.removeStyleName(DISABLED_CSS_CLASS);
 			imageSatellite.removeStyleName(DISABLED_CSS_CLASS);
@@ -122,6 +123,7 @@ public class NorthPanel extends FlowPanel implements ClickHandler, ChangeHandler
 			listboxScenarios.addItem(R.get("no_scenarios"));
 			listboxScenarios.setEnabled(false);
 			imageScenarioAdd.addStyleName(DISABLED_CSS_CLASS);
+			imageScenarioClone.addStyleName(DISABLED_CSS_CLASS);
 			imageScenarioRemove.addStyleName(DISABLED_CSS_CLASS);
 			imageExport.addStyleName(DISABLED_CSS_CLASS);
 			imageSatellite.addStyleName(DISABLED_CSS_CLASS);

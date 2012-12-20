@@ -3,7 +3,6 @@ package org.sopeco.frontend.client.layout.center.execute.tabOne;
 import java.util.Date;
 import java.util.logging.Logger;
 
-import org.hyperic.sigar.test.GetPass;
 import org.sopeco.frontend.client.layout.center.execute.ExecuteController;
 import org.sopeco.frontend.client.layout.center.execute.TabController;
 import org.sopeco.frontend.client.layout.popups.Message;
@@ -28,11 +27,19 @@ public class TabControllerOne extends TabController implements ClickHandler {
 
 	private ExecuteTab view;
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param parentController
+	 */
 	public TabControllerOne(ExecuteController parentController) {
 		super(parentController);
 		initialize();
 	}
 
+	/**
+	 * Initializes the view.
+	 */
 	private void initialize() {
 		view = new ExecuteTab();
 		view.getBtnExecute().addClickHandler(this);
@@ -45,6 +52,7 @@ public class TabControllerOne extends TabController implements ClickHandler {
 
 	@Override
 	public void onSelection() {
+		view.getEditController().setValue(Manager.get().getControllerUrl());
 	}
 
 	@Override
@@ -117,6 +125,6 @@ public class TabControllerOne extends TabController implements ClickHandler {
 			// view.selectTab(1);
 		}
 
-		getParentController().refreshScheduleTab();
+		getParentController().getTabControllerTwo().loadScheduledExperiments();
 	}
 }

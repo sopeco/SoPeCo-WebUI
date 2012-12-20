@@ -1,6 +1,7 @@
 package org.sopeco.frontend.shared.entities;
 
 import java.io.Serializable;
+import java.util.List;
 
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 
@@ -41,6 +42,36 @@ public class FrontendScheduledExperiment implements Serializable {
 	private long nextExecutionTime;
 
 	private long lastExecutionTime;
+
+	private boolean enabled;
+
+	private List<Long> durations;
+
+	private boolean isRunning;
+
+	public boolean isRunning() {
+		return isRunning;
+	}
+
+	public void setRunning(boolean pIsRunning) {
+		this.isRunning = pIsRunning;
+	}
+
+	public List<Long> getDurations() {
+		return durations;
+	}
+
+	public void setDurations(List<Long> pDurations) {
+		this.durations = pDurations;
+	}
+
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean pEnabled) {
+		this.enabled = pEnabled;
+	}
 
 	public long getAddTime() {
 		return addTime;
