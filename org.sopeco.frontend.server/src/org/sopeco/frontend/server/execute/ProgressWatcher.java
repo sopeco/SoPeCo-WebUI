@@ -56,6 +56,8 @@ public class ProgressWatcher extends Thread {
 				while (token != null && StatusBroker.get().getManager(token).hasNext()) {
 					StatusMessage currentStatus = StatusBroker.get().getManager(queue.getCurrentToken()).next();
 					System.out.println("Status: " + currentStatus.getEventType());
+
+					queue.notifyStatusChange(currentStatus.getEventType());
 				}
 				if (!queue.isExecuting()) {
 					queue.finished();

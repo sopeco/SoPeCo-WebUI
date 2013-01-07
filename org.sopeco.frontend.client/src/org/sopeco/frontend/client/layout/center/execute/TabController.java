@@ -17,6 +17,9 @@ public abstract class TabController {
 
 	public abstract FlowPanel getView();
 
+	/**
+	 * This method is executed when the tab is selected.
+	 */
 	public abstract void onSelection();
 
 	protected ExecuteController getParentController() {

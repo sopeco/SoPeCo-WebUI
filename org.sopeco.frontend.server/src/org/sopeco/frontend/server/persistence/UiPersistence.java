@@ -34,8 +34,8 @@ public final class UiPersistence {
 	}
 
 	/**
-	 * Returns the provider of the database, in which all settings, like
-	 * AccountDetails, ..., are stored.
+	 * Returns the provider of the database, which contains all settings, like
+	 * AccountDetails, ...
 	 * 
 	 * @return UiPersistenceProvider
 	 */

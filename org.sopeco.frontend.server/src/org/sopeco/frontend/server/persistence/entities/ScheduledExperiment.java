@@ -14,6 +14,7 @@ import javax.persistence.NamedQuery;
 
 import org.sopeco.config.IConfiguration;
 import org.sopeco.frontend.server.execute.QueuedExperiment;
+import org.sopeco.frontend.shared.entities.CurrentControllerExperiment;
 import org.sopeco.frontend.shared.entities.FrontendScheduledExperiment;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 
@@ -119,15 +120,10 @@ public class ScheduledExperiment implements Serializable {
 		fse.setScenarioDefinition(scenarioDefinition);
 		return fse;
 	}
-
+	
 	public QueuedExperiment createQueuedExperiment() {
-		QueuedExperiment queuedExperiment = new QueuedExperiment();
+		QueuedExperiment queuedExperiment = new QueuedExperiment(this);
 		queuedExperiment.setTimeQueued(System.currentTimeMillis());
-		queuedExperiment.setScenarioDefinition(scenarioDefinition);
-		queuedExperiment.setControllerUrl(controllerUrl);
-		queuedExperiment.setConfiguration(configuration);
-		queuedExperiment.setId(id);
-		queuedExperiment.setAccount(account);
 		return queuedExperiment;
 	}
 

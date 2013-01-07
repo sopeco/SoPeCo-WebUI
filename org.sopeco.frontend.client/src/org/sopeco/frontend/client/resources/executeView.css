@@ -98,6 +98,22 @@
 	color: #333;
 }
 
+.statusPanel {
+	width: 100%;
+	background-color: #FFFCFA;
+	border: 2px solid #ccc;
+	border-left: 0;
+	border-right: 0;
+}
+
+.statusPanel>div {
+	margin: 1em;
+}
+
+.statusPanel .gwt-HTML {
+	white-space: nowrap;
+}
+
 .controllerQueueItem {
 	width: 100%;
 	background-color: #F3F3F3;

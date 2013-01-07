@@ -8,23 +8,36 @@ import com.google.gwt.user.client.ui.FlowPanel;
  * @author Marius Oehler
  * 
  */
-public class ControllerQueueTab extends FlowPanel {
+public class TabView extends FlowPanel {
 
-	private ActiveQueueItem activeItem;
+	private StatusPanel statusPanel;
 
-	public ControllerQueueTab() {
+	/**
+	 * Constructor.
+	 */
+	public TabView() {
 		init();
 	}
 
+	/**
+	 * Initialize all objects.
+	 */
 	private void init() {
 		getElement().getStyle().setOverflowY(Overflow.AUTO);
-		
-		activeItem = new ActiveQueueItem();
-		add(activeItem);
+
+		statusPanel = new StatusPanel();
+
+		add(statusPanel);
 
 		add(new QueueItem());
 		add(new QueueItem());
-		
-		activeItem.setDummyProgress();
 	}
+
+	/**
+	 * @return the statusPanel
+	 */
+	public StatusPanel getStatusPanel() {
+		return statusPanel;
+	}
+
 }

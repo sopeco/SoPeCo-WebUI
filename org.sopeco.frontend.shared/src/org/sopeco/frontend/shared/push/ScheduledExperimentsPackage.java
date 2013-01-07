@@ -10,7 +10,7 @@ import org.sopeco.frontend.shared.entities.FrontendScheduledExperiment;
  * @author Marius Oehler
  * 
  */
-public class AttachementPackage extends PushPackage {
+public class ScheduledExperimentsPackage extends PushPackage {
 
 	/**
 	 * 
@@ -19,14 +19,14 @@ public class AttachementPackage extends PushPackage {
 
 	private ArrayList<FrontendScheduledExperiment> attachement;
 
-	public AttachementPackage() {
+	public ScheduledExperimentsPackage() {
 	}
 
-	public AttachementPackage(Type type) {
+	public ScheduledExperimentsPackage(Type type) {
 		super(type);
 	}
 
-	public AttachementPackage(Type type, ArrayList<FrontendScheduledExperiment> pAttachement) {
+	public ScheduledExperimentsPackage(Type type, ArrayList<FrontendScheduledExperiment> pAttachement) {
 		super(type);
 		attachement = pAttachement;
 	}

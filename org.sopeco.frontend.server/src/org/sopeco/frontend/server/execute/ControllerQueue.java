@@ -10,14 +10,18 @@ import java.util.logging.Logger;
 import org.sopeco.config.Configuration;
 import org.sopeco.config.IConfiguration;
 import org.sopeco.config.exception.ConfigurationException;
+import org.sopeco.engine.status.EventType;
 import org.sopeco.engine.status.StatusBroker;
 import org.sopeco.frontend.client.rpc.PushRPC.Type;
 import org.sopeco.frontend.server.persistence.UiPersistence;
 import org.sopeco.frontend.server.persistence.entities.ScheduledExperiment;
 import org.sopeco.frontend.server.rpc.PushRPCImpl;
 import org.sopeco.frontend.server.user.UserManager;
+import org.sopeco.frontend.shared.entities.CurrentControllerExperiment;
+import org.sopeco.frontend.shared.entities.CurrentControllerExperiment.EStatus;
 import org.sopeco.frontend.shared.entities.FrontendScheduledExperiment;
-import org.sopeco.frontend.shared.push.AttachementPackage;
+import org.sopeco.frontend.shared.push.CurrentControllerExperimentPackage;
+import org.sopeco.frontend.shared.push.ScheduledExperimentsPackage;
 import org.sopeco.persistence.metadata.entities.DatabaseInstance;
 import org.sopeco.runner.SoPeCoRunner;
 
@@ -95,7 +99,7 @@ public class ControllerQueue {
 	 * @param experiment
 	 */
 	public void addExperiment(QueuedExperiment experiment) {
-		LOGGER.info("Adding experiment id:" + experiment.getId() + " to queue.");
+		LOGGER.info("Adding experiment id:" + experiment.getScheduledExperiment().getId() + " to queue.");
 		experiment.setTimeQueued(System.currentTimeMillis());
 		experimentQueue.add(experiment);
 		checkQueue();
@@ -129,15 +133,16 @@ public class ControllerQueue {
 	 * @param experiment
 	 */
 	private void execute() {
-		LOGGER.info("Start experiment id:" + runningExperiment.getId() + " on: " + runningExperiment.getControllerUrl());
+		LOGGER.info("Start experiment id:" + runningExperiment.getScheduledExperiment().getId() + " on: "
+				+ runningExperiment.getScheduledExperiment().getControllerUrl());
 
 		try {
 			String randomId = System.currentTimeMillis() + "" + Math.random();
 
 			IConfiguration config = Configuration.getSessionSingleton(randomId);
-			config.overwrite((Configuration) runningExperiment.getConfiguration());
-			config.setMeasurementControllerURI(runningExperiment.getControllerUrl());
-			config.setScenarioDescription(runningExperiment.getScenarioDefinition());
+			config.overwrite((Configuration) runningExperiment.getScheduledExperiment().getConfiguration());
+			config.setMeasurementControllerURI(runningExperiment.getScheduledExperiment().getControllerUrl());
+			config.setScenarioDescription(runningExperiment.getScheduledExperiment().getScenarioDefinition());
 			config.setProperty(IConfiguration.SENDING_STATUS_MESSAGES, "true");
 
 			SoPeCoRunner runner = new SoPeCoRunner(randomId);
@@ -150,6 +155,7 @@ public class ControllerQueue {
 			ProgressWatcher.get().continueLoop();
 
 			notifyAccount();
+			notifyStatusChange(EStatus.START_MEASUREMENT.toString());
 		} catch (ConfigurationException e) {
 			throw new RuntimeException(e);
 		}
@@ -172,7 +178,7 @@ public class ControllerQueue {
 				Thread.sleep(10);
 			} catch (Exception e) {
 			}
-			token = StatusBroker.get().getToken(id + runningExperiment.getControllerUrl());
+			token = StatusBroker.get().getToken(id + runningExperiment.getScheduledExperiment().getControllerUrl());
 		}
 		return token;
 	}
@@ -192,9 +198,9 @@ public class ControllerQueue {
 	 * Ends the execution of the current experiment and stores information about
 	 * it.
 	 */
-	public synchronized void finished() {
-		LOGGER.info("Experiment id:" + runningExperiment.getId() + " finished on: "
-				+ runningExperiment.getControllerUrl());
+	synchronized void finished() {
+		LOGGER.info("Experiment id:" + runningExperiment.getScheduledExperiment().getId() + " finished on: "
+				+ runningExperiment.getScheduledExperiment().getControllerUrl());
 
 		runningExperiment.setTimeEnded(System.currentTimeMillis());
 		saveDurationInExperiment();
@@ -211,7 +217,8 @@ public class ControllerQueue {
 	 * ScheduledExperiment.
 	 */
 	private void saveDurationInExperiment() {
-		ScheduledExperiment exp = UiPersistence.getUiProvider().loadScheduledExperiment(runningExperiment.getId());
+		ScheduledExperiment exp = UiPersistence.getUiProvider().loadScheduledExperiment(
+				runningExperiment.getScheduledExperiment().getId());
 		if (exp != null) {
 			if (exp.getDurations() == null) {
 				exp.setDurations(new ArrayList<Long>());
@@ -231,23 +238,70 @@ public class ControllerQueue {
 		return runningExperiment;
 	}
 
-	
+	//
+	// #################################### \/ \/ \/ checken
+	//
+
+	public CurrentControllerExperiment getCurrentControllerExperiment(String type) {
+		CurrentControllerExperiment cce = new CurrentControllerExperiment();
+		cce.setAccount(runningExperiment.getScheduledExperiment().getAccount());
+		cce.setScenario(runningExperiment.getScheduledExperiment().getScenarioDefinition().getScenarioName());
+		cce.setTimeStart(runningExperiment.getTimeStarted());
+
+//		 cce.setTimeRemaining(-1);
+		cce.setStatus(EStatus.valueOf(type));
+		cce.setProgress(-1);
+
+		if (runningExperiment.getScheduledExperiment().getDurations().size() > 2) {
+			long sum = 0;
+			for (long l : runningExperiment.getScheduledExperiment().getDurations()) {
+				sum += l;
+			}
+			long estiamtedDuration = sum / runningExperiment.getScheduledExperiment().getDurations().size();
+			cce.setTimeRemaining(estiamtedDuration);
+		}
+
+		return cce;
+	}
+
+	public void notifyStatusChange(EventType type) {
+		notifyStatusChange(type.toString());
+	}
+
+	public void notifyStatusChange(String type) {
+		CurrentControllerExperimentPackage ccePackage = new CurrentControllerExperimentPackage();
+		ccePackage.setType(Type.PUSH_CURRENT_CONTROLLER_EXPERIMENT);
+		ccePackage.setCurrentControllerExperiment(getCurrentControllerExperiment(type));
+
+		for (String sId : UserManager.getAllUsers().keySet()) {
+			try {
+				String cUrl = UserManager.getUser(sId).getAccountDetails().getControllerUrl();
+				if (cUrl != null && cUrl.equals(runningExperiment.getScheduledExperiment().getControllerUrl())) {
+					PushRPCImpl.push(sId, ccePackage);
+				}
+			} catch (NullPointerException x) {
+				// TODO
+				System.out.println("TODO");
+			}
+		}
+	}
+
 	private void notifyAccount() {
 		List<ScheduledExperiment> resultList = UiPersistence.getUiProvider().loadScheduledExperimentsByAccount(
-				runningExperiment.getAccount());
+				runningExperiment.getScheduledExperiment().getAccount());
 
 		ArrayList<FrontendScheduledExperiment> fseList = new ArrayList<FrontendScheduledExperiment>();
 		for (ScheduledExperiment experiment : resultList) {
 			fseList.add(experiment.createFrontendScheduledExperiment());
 		}
 
-		AttachementPackage fsePackage = new AttachementPackage();
+		ScheduledExperimentsPackage fsePackage = new ScheduledExperimentsPackage();
 		fsePackage.setType(Type.PUSH_SCHEDULED_EXPERIMENT);
 		fsePackage.setAttachement(fseList);
 
 		for (String sId : UserManager.getAllUsers().keySet()) {
 			DatabaseInstance db = UserManager.getUser(sId).getCurrentAccount();
-			if (db != null && db.getDbName().equals(runningExperiment.getAccount())) {
+			if (db != null && db.getDbName().equals(runningExperiment.getScheduledExperiment().getAccount())) {
 				PushRPCImpl.push(sId, fsePackage);
 			}
 		}

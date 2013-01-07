@@ -2,8 +2,10 @@ package org.sopeco.frontend.server.user;
 
 import java.util.logging.Logger;
 
+import org.sopeco.frontend.server.persistence.UiPersistence;
 import org.sopeco.frontend.shared.builder.MeasurementSpecificationBuilder;
 import org.sopeco.frontend.shared.builder.ScenarioDefinitionBuilder;
+import org.sopeco.frontend.shared.entities.AccountDetails;
 import org.sopeco.persistence.IPersistenceProvider;
 import org.sopeco.persistence.entities.definition.MeasurementSpecification;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
@@ -70,6 +72,10 @@ public class User {
 
 	public void setCurrentScenarioDefinitionBuilder(ScenarioDefinitionBuilder scenarioDefinitionBuilder) {
 		this.currentScenarioDefinitionBuilder = scenarioDefinitionBuilder;
+	}
+
+	public AccountDetails getAccountDetails() {
+		return UiPersistence.getUiProvider().loadAccountDetails(currentAccount.getId());
 	}
 
 	// *******************************************************************************************************

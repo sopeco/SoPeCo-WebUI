@@ -6,7 +6,8 @@ import org.sopeco.frontend.client.layout.popups.Notification;
 import org.sopeco.frontend.client.rpc.PushRPC;
 import org.sopeco.frontend.client.rpc.PushRPC.Type;
 import org.sopeco.frontend.client.rpc.PushRPCAsync;
-import org.sopeco.frontend.shared.push.AttachementPackage;
+import org.sopeco.frontend.shared.push.CurrentControllerExperimentPackage;
+import org.sopeco.frontend.shared.push.ScheduledExperimentsPackage;
 import org.sopeco.frontend.shared.push.PushPackage;
 import org.sopeco.frontend.shared.push.StatusPackage;
 import org.sopeco.frontend.shared.push.StatusPackage.EventType;
@@ -63,13 +64,18 @@ public final class ServerPush implements AsyncCallback<PushPackage> {
 	private void execute(PushPackage pushPackage) {
 		if (pushPackage.getType() == Type.CONTROLLER_STATUS) {
 			execStatusPackage((StatusPackage) pushPackage);
-//		} else if (pushPackage.getType() == Type.SCHEDULED_EXPERIMENT_CHANGED) {
-//			MainLayoutPanel.get().getExecuteController().getTabControllerTwo().loadScheduledExperiments();
-//			Notification.show("Experiment started..");
+			// } else if (pushPackage.getType() ==
+			// Type.SCHEDULED_EXPERIMENT_CHANGED) {
+			// MainLayoutPanel.get().getExecuteController().getTabControllerTwo().loadScheduledExperiments();
+			// Notification.show("Experiment started..");
 		} else if (pushPackage.getType() == Type.PUSH_SCHEDULED_EXPERIMENT) {
-			AttachementPackage inPackage = (AttachementPackage) pushPackage;
+			ScheduledExperimentsPackage inPackage = (ScheduledExperimentsPackage) pushPackage;
 			MainLayoutPanel.get().getExecuteController().getTabControllerTwo()
 					.setScheduledExperiments(inPackage.getAttachement());
+		} else if (pushPackage.getType() == Type.PUSH_CURRENT_CONTROLLER_EXPERIMENT) {
+			CurrentControllerExperimentPackage ccePackage = (CurrentControllerExperimentPackage) pushPackage;
+			MainLayoutPanel.get().getExecuteController().getTabControllerThree()
+					.setCurrentControllerExperiment(ccePackage.getCurrentControllerExperiment());
 		}
 	}
 

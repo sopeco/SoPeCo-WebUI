@@ -53,6 +53,22 @@ public class AccountDetails implements Serializable {
 	}
 
 	/**
+	 * Returns the controller URL of the active controller.
+	 * 
+	 * @return
+	 */
+	public String getControllerUrl() {
+		if (selectedScenario == null || selectedScenario.isEmpty()) {
+			return null;
+		}
+
+		return getScenarioDetail(selectedScenario).getControllerProtocol()
+				+ getScenarioDetail(selectedScenario).getControllerHost() + ":"
+				+ getScenarioDetail(selectedScenario).getControllerPort() + "/"
+				+ getScenarioDetail(selectedScenario).getControllerName();
+	}
+
+	/**
 	 * Creates a new ScenarioDetails object and adds that to the scenarioDetails
 	 * List.
 	 */

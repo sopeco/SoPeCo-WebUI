@@ -2,6 +2,7 @@ package org.sopeco.gwt.widgets;
 
 import org.sopeco.gwt.widgets.resources.WidgetResources;
 
+import com.google.gwt.animation.client.Animation;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 
@@ -17,9 +18,15 @@ public class ProgressBar extends FlowPanel {
 	private FlowPanel bar;
 	private HTML label;
 
+	private Animation animationTimer;
+
 	private double maxValue = 100;
 	private double minValue = 0;
 	private double value = 50;
+	private double barValue = 50;
+	private double tempBarValue = 50;
+	private int animationDuration = 500;
+	private boolean isAnimating = false;
 
 	public ProgressBar() {
 		this(0, 100, 50);
@@ -45,7 +52,37 @@ public class ProgressBar extends FlowPanel {
 		add(label);
 		add(bar);
 
-		setValue(value);
+		setValue(value, false);
+		updateBarWidth();
+
+		animationTimer = new Animation() {
+			@Override
+			protected void onUpdate(double progress) {
+				double barOffset = (value - barValue) * progress;
+				tempBarValue = barValue + barOffset;
+				updateBarWidth();
+			}
+
+			@Override
+			protected void onStart() {
+				super.onStart();
+				isAnimating = true;
+			}
+
+			@Override
+			protected void onComplete() {
+				super.onComplete();
+				isAnimating = false;
+				tempBarValue = value;
+				barValue = value;
+				updateBarWidth();
+			}
+		};
+
+	}
+
+	private void runBarAnimation() {
+		animationTimer.run(animationDuration);
 	}
 
 	public double getMaxValue() {
@@ -69,12 +106,32 @@ public class ProgressBar extends FlowPanel {
 	}
 
 	public void setValue(double pValue) {
+		setValue(pValue, true);
+	}
+
+	public void setValue(double pValue, boolean animation) {
 		this.value = pValue;
 
-		double barWidth = 100 / (maxValue - minValue) * (value - minValue);
-		bar.setWidth(barWidth + "%");
+		if (isAnimating) {
+			animationTimer.cancel();
+			barValue = tempBarValue;
+		}
 
-		label.setText(((int) barWidth) + " %");
+		double progressPercent = 100 / (maxValue - minValue)
+				* (value - minValue);
+		label.setText(((int) progressPercent) + " %");
+
+		if (animation) {
+			runBarAnimation();
+		} else {
+			tempBarValue = value;
+			barValue = value;
+			updateBarWidth();
+		}
+	}
+
+	private void updateBarWidth() {
+		bar.setWidth(tempBarValue + "%");
 	}
 
 	public void setLableVisible(boolean visible) {
