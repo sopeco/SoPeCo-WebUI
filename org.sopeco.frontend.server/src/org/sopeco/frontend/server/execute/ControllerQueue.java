@@ -281,7 +281,6 @@ public class ControllerQueue {
 				}
 			} catch (NullPointerException x) {
 				// TODO
-				System.out.println("TODO");
 			}
 		}
 	}
