@@ -37,7 +37,7 @@ public final class ExecuteScheduler {
 	 * Checks all stored experiments if one of them should be executed now.
 	 */
 	public void checkExperiments() {
-		LOGGER.info("Checking for scheduled experiments");
+		LOGGER.fine("Checking for scheduled experiments");
 		try {
 			List<ScheduledExperiment> experimentList = UiPersistence.getUiProvider().loadAllScheduledExperiments();
 

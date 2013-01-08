@@ -3,6 +3,8 @@ package org.sopeco.frontend.server.rpc.database;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.ServletException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sopeco.frontend.client.rpc.DatabaseManagerRPC;
@@ -26,7 +28,7 @@ public class DatabaseManagerRPCImpl extends SuperRemoteServlet implements Databa
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseManagerRPCImpl.class);
 	private static final long serialVersionUID = 1L;
-
+	
 	/**
 	 * Returns the databases which are stored in the meta database.
 	 * 

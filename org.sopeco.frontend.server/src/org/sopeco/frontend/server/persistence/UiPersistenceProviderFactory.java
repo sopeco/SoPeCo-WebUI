@@ -2,6 +2,7 @@ package org.sopeco.frontend.server.persistence;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -18,6 +19,8 @@ import org.sopeco.persistence.config.PersistenceConfiguration;
  */
 public final class UiPersistenceProviderFactory {
 
+	private static final Logger LOGGER = Logger.getLogger(UiPersistenceProviderFactory.class.getName());
+	
 	private static final String DB_URL = "javax.persistence.jdbc.url";
 	private static final String SERVER_URL_PREFIX = "jdbc:derby://";
 	private static final String SERVER_URL_SUFFIX = ";create=true";
@@ -40,6 +43,7 @@ public final class UiPersistenceProviderFactory {
 					getConfigOverrides());
 			return new UiPersistenceProvider(factory);
 		} catch (Exception e) {
+			LOGGER.severe(e.getLocalizedMessage());
 			throw new IllegalArgumentException("Could not create peristence provider!", e);
 		}
 	}

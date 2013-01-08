@@ -23,7 +23,7 @@ public final class Scheduler {
 	private static SchedulerAction schedulerAction;
 	private static ScheduledExecutorService scheduler;
 
-	public static synchronized void startScheduler() {
+	public static synchronized void startScheduler() {		
 		if (schedulerAction == null) {
 			LOGGER.info("Starting SchedulerThread.");
 			scheduler = Executors.newScheduledThreadPool(1);

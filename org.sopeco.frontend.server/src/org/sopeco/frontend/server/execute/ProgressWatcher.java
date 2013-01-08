@@ -1,5 +1,7 @@
 package org.sopeco.frontend.server.execute;
 
+import java.util.logging.Logger;
+
 import org.sopeco.engine.status.StatusBroker;
 import org.sopeco.engine.status.StatusMessage;
 
@@ -9,6 +11,8 @@ import org.sopeco.engine.status.StatusMessage;
  * 
  */
 public class ProgressWatcher extends Thread {
+
+	private static final Logger LOGGER = Logger.getLogger(ProgressWatcher.class.getName());
 
 	/** Singleton object of the ProgressWatcher */
 	private static ProgressWatcher checker;
@@ -48,7 +52,7 @@ public class ProgressWatcher extends Thread {
 	public void run() {
 		running = true;
 		while (running) {
-			System.err.println("Running Queues: " + ControllerQueueManager.getAllRunningQueues().size() + "/"
+			LOGGER.fine("Running Queues: " + ControllerQueueManager.getAllRunningQueues().size() + "/"
 					+ ControllerQueueManager.getAllQueues().size());
 
 			for (ControllerQueue queue : ControllerQueueManager.getAllRunningQueues()) {

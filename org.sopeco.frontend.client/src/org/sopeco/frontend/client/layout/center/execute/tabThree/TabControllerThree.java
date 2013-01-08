@@ -111,9 +111,9 @@ public class TabControllerThree extends TabController {
 			remaining = "n/a";
 		}
 
-		if (controllerExperiment.getProgress() == -1) {
-			float progress = 100 / (controllerExperiment.getTimeRemaining() / 1000)
-					* ((controllerExperiment.getTimeRemaining() / 1000) - durationRemaining);
+		if (controllerExperiment.getProgress() == -1 && controllerExperiment.getTimeRemaining() != 0) {
+			float progress = 100 / (controllerExperiment.getTimeRemaining() / 1000F)
+					* ((controllerExperiment.getTimeRemaining() / 1000F) - durationRemaining);
 			progress = Math.min(progress, 99);
 			tabView.getStatusPanel().getProgressBar().setValue(progress);
 		}
