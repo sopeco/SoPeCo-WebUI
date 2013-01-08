@@ -30,6 +30,9 @@ public class SelectionTreeItem extends TreeItem implements HasValueChangeHandler
 
 		checkBox = new CheckBox();
 		checkBox.addValueChangeHandler(this);
+		checkBox.setValue(true);
+		
+		checkBox.setEnabled(false);
 
 		getContentWrapper().add(checkBox);
 		getContentWrapper().getElement().appendChild(textElement);

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.sopeco.frontend.client.rpc.PushRPC;
+import org.sopeco.frontend.server.user.UserManager;
 import org.sopeco.frontend.shared.push.PushPackage;
 
 /**
@@ -66,6 +67,20 @@ public class PushRPCImpl extends SuperRemoteServlet implements PushRPC {
 			synchronized (packageList) {
 				packageList.add(pushPackage);
 				packageList.notify();
+			}
+		}
+	}
+
+	public static void pushAllOnController(String controllerUrl, PushPackage pushPackage) {
+		for (String sId : UserManager.getAllUsers().keySet()) {
+			try {
+				String cUrl = UserManager.getUser(sId).getAccountDetails().getControllerUrl();
+				if (cUrl != null && cUrl.equals(controllerUrl)) {
+					PushRPCImpl.push(sId, pushPackage);
+				}
+			} catch (NullPointerException x) {
+				// TODO
+				System.out.println("TODO");
 			}
 		}
 	}

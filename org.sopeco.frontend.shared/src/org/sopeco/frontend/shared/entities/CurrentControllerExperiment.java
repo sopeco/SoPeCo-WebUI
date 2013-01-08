@@ -16,6 +16,7 @@ public class CurrentControllerExperiment implements Serializable {
 	private long timeStart;
 	private long timeRemaining;
 
+	private String label;
 	private String account;
 	private String scenario;
 	private float progress;
@@ -141,6 +142,20 @@ public class CurrentControllerExperiment implements Serializable {
 	 */
 	public void setProgress(float progress) {
 		this.progress = progress;
+	}
+
+	/**
+	 * @return the label
+	 */
+	public String getLabel() {
+		return label;
+	}
+
+	/**
+	 * @param label the label to set
+	 */
+	public void setLabel(String label) {
+		this.label = label;
 	}
 
 }

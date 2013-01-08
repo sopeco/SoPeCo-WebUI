@@ -1,8 +1,8 @@
 package org.sopeco.frontend.client.layout.center.execute.tabTwo;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 import java.util.logging.Logger;
 
 import org.sopeco.frontend.client.R;
@@ -97,8 +97,10 @@ public class TabControllerTwo extends TabController {
 		double metering = Metering.start();
 
 		// Sort and Filter ScheduledExperiment
-		Map<Long, ScheduleItem> scheduledItems = new TreeMap<Long, ScheduleItem>();
+		List<ScheduleItem> scheduledItemsList = new ArrayList<ScheduleItem>();
+
 		String currentScenario = Manager.get().getCurrentScenarioDetails().getScenarioName();
+
 		for (FrontendScheduledExperiment exp : scheduledExperimentList) {
 			if (!exp.getScenarioDefinition().getScenarioName().equals(currentScenario)) {
 				continue;
@@ -108,24 +110,26 @@ public class TabControllerTwo extends TabController {
 			}
 			ScheduleItem item = new ScheduleItem(exp);
 			item.setTabControllerTwo(this);
-			scheduledItems.put(exp.getNextExecutionTime(), item);
+			scheduledItemsList.add(item);
 		}
+
+		Collections.sort(scheduledItemsList);
 
 		// Refresh the view. Add all active experiments and then the disabled.
 		view.clear();
-		for (ScheduleItem item : scheduledItems.values()) {
+		for (ScheduleItem item : scheduledItemsList) {
 			if (item.getExperiment().isEnabled()) {
 				view.add(item);
 			}
 		}
-		for (ScheduleItem item : scheduledItems.values()) {
+		for (ScheduleItem item : scheduledItemsList) {
 			if (!item.getExperiment().isEnabled()) {
 				view.add(item);
 			}
 		}
 
 		// Update TabTitle
-		updateExperimentCount(scheduledItems.size());
+		updateExperimentCount(scheduledItemsList.size());
 
 		Metering.stop(metering);
 	}

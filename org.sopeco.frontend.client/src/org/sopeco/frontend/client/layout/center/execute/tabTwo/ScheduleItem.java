@@ -9,7 +9,6 @@ import org.sopeco.gwt.widgets.ClearDiv;
 import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
 import org.sopeco.persistence.entities.definition.MeasurementSpecification;
 
-import com.google.gwt.dom.client.Style.VerticalAlign;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
@@ -18,7 +17,6 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
-import com.google.gwt.user.client.ui.HasVerticalAlignment.VerticalAlignmentConstant;
 import com.google.gwt.user.client.ui.Image;
 
 /**
@@ -26,7 +24,7 @@ import com.google.gwt.user.client.ui.Image;
  * @author Marius Oehler
  * 
  */
-public class ScheduleItem extends FlowPanel implements ClickHandler {
+public class ScheduleItem extends FlowPanel implements ClickHandler, Comparable<ScheduleItem> {
 
 	private static final String IMAGE_PAUSE = "images/control_pause.png";
 	private static final String IMAGE_RUNNING = "images/control_play.png";
@@ -245,4 +243,8 @@ public class ScheduleItem extends FlowPanel implements ClickHandler {
 		return experiment;
 	}
 
+	@Override
+	public int compareTo(ScheduleItem other) {
+		return (int) (experiment.getNextExecutionTime() - other.getExperiment().getNextExecutionTime());
+	}
 }

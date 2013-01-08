@@ -167,4 +167,11 @@ public class StatusPanel extends FlowPanel {
 		return progressBar;
 	}
 
+	/**
+	 * @param valueExperiments the valueExperiments to set
+	 */
+	public void setExperiments(String value) {
+		valueExperiments.setHTML(value);
+	}
+
 }

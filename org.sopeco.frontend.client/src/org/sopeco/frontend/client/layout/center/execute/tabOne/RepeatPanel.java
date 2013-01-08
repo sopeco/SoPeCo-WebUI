@@ -133,13 +133,14 @@ class CheckBoxWidget extends HorizontalPanel implements ValueChangeHandler<Boole
 
 	public CheckBoxWidget(String text, String pValue) {
 		addStyleName("checkBoxWidget");
-		addStyleName(NOT_CHECKED);
+		//addStyleName(NOT_CHECKED);
 
 		value = pValue;
 
 		checkBox = new CheckBox();
 		htmlText = new HTML(text);
 
+		checkBox.setValue(true);
 		checkBox.addValueChangeHandler(this);
 
 		add(checkBox);

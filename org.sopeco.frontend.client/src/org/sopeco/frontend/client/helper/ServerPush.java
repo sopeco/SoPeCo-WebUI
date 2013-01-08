@@ -7,8 +7,9 @@ import org.sopeco.frontend.client.rpc.PushRPC;
 import org.sopeco.frontend.client.rpc.PushRPC.Type;
 import org.sopeco.frontend.client.rpc.PushRPCAsync;
 import org.sopeco.frontend.shared.push.CurrentControllerExperimentPackage;
-import org.sopeco.frontend.shared.push.ScheduledExperimentsPackage;
+import org.sopeco.frontend.shared.push.CurrentControllerQueuePackage;
 import org.sopeco.frontend.shared.push.PushPackage;
+import org.sopeco.frontend.shared.push.ScheduledExperimentsPackage;
 import org.sopeco.frontend.shared.push.StatusPackage;
 import org.sopeco.frontend.shared.push.StatusPackage.EventType;
 
@@ -76,6 +77,11 @@ public final class ServerPush implements AsyncCallback<PushPackage> {
 			CurrentControllerExperimentPackage ccePackage = (CurrentControllerExperimentPackage) pushPackage;
 			MainLayoutPanel.get().getExecuteController().getTabControllerThree()
 					.setCurrentControllerExperiment(ccePackage.getCurrentControllerExperiment());
+		} else if (pushPackage.getType() == Type.PUSH_CURRENT_CONTROLLER_QUEUE) {
+			CurrentControllerQueuePackage ccqPackage = (CurrentControllerQueuePackage) pushPackage;
+			MainLayoutPanel.get().getExecuteController().getTabControllerThree()
+					.setControllerQueue(ccqPackage.getExperiments());
+			GWT.log(">" + ccqPackage.getExperiments().size());
 		}
 	}
 

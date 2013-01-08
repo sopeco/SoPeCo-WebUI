@@ -21,6 +21,7 @@ import org.sopeco.frontend.shared.entities.CurrentControllerExperiment;
 import org.sopeco.frontend.shared.entities.CurrentControllerExperiment.EStatus;
 import org.sopeco.frontend.shared.entities.FrontendScheduledExperiment;
 import org.sopeco.frontend.shared.push.CurrentControllerExperimentPackage;
+import org.sopeco.frontend.shared.push.CurrentControllerQueuePackage;
 import org.sopeco.frontend.shared.push.ScheduledExperimentsPackage;
 import org.sopeco.persistence.metadata.entities.DatabaseInstance;
 import org.sopeco.runner.SoPeCoRunner;
@@ -40,7 +41,9 @@ public class ControllerQueue {
 
 	/** The experiment which is performed at the moment. */
 	private QueuedExperiment runningExperiment;
-
+	
+	private List<EventType> eventTypeHistory;
+	
 	private String currentToken;
 	private Future<?> executeStatus;
 
@@ -61,6 +64,7 @@ public class ControllerQueue {
 	 */
 	public ControllerQueue() {
 		experimentQueue = new ArrayList<QueuedExperiment>();
+		eventTypeHistory = new ArrayList<EventType>();
 	}
 
 	/**
@@ -114,6 +118,7 @@ public class ControllerQueue {
 			LOGGER.info("Looking for waiting experiment..");
 			if (isExecuting()) {
 				LOGGER.info("Controller is running.");
+				pushCurrentQueue();
 				return;
 			} else if (experimentIsLoaded()) {
 				LOGGER.info("Experiment is already loaded.");
@@ -122,6 +127,7 @@ public class ControllerQueue {
 			} else {
 				runningExperiment = experimentQueue.get(0);
 				experimentQueue.remove(0);
+				pushCurrentQueue();
 				execute();
 			}
 		}
@@ -247,8 +253,9 @@ public class ControllerQueue {
 		cce.setAccount(runningExperiment.getScheduledExperiment().getAccount());
 		cce.setScenario(runningExperiment.getScheduledExperiment().getScenarioDefinition().getScenarioName());
 		cce.setTimeStart(runningExperiment.getTimeStarted());
+		cce.setLabel(runningExperiment.getScheduledExperiment().getLabel());
 
-//		 cce.setTimeRemaining(-1);
+		// cce.setTimeRemaining(-1);
 		cce.setStatus(EStatus.valueOf(type));
 		cce.setProgress(-1);
 
@@ -273,16 +280,7 @@ public class ControllerQueue {
 		ccePackage.setType(Type.PUSH_CURRENT_CONTROLLER_EXPERIMENT);
 		ccePackage.setCurrentControllerExperiment(getCurrentControllerExperiment(type));
 
-		for (String sId : UserManager.getAllUsers().keySet()) {
-			try {
-				String cUrl = UserManager.getUser(sId).getAccountDetails().getControllerUrl();
-				if (cUrl != null && cUrl.equals(runningExperiment.getScheduledExperiment().getControllerUrl())) {
-					PushRPCImpl.push(sId, ccePackage);
-				}
-			} catch (NullPointerException x) {
-				// TODO
-			}
-		}
+		PushRPCImpl.pushAllOnController(runningExperiment.getScheduledExperiment().getControllerUrl(), ccePackage);
 	}
 
 	private void notifyAccount() {
@@ -303,6 +301,20 @@ public class ControllerQueue {
 			if (db != null && db.getDbName().equals(runningExperiment.getScheduledExperiment().getAccount())) {
 				PushRPCImpl.push(sId, fsePackage);
 			}
+		}
+	}
+
+	public void pushCurrentQueue() {
+		List<FrontendScheduledExperiment> list = new ArrayList<FrontendScheduledExperiment>();
+		for (QueuedExperiment q : experimentQueue) {
+			list.add(q.getScheduledExperiment().createFrontendScheduledExperiment());
+		}
+		CurrentControllerQueuePackage ccqPackage = new CurrentControllerQueuePackage();
+		ccqPackage.setType(Type.PUSH_CURRENT_CONTROLLER_QUEUE);
+		ccqPackage.setExperiments(list);
+
+		if (runningExperiment != null) {
+			PushRPCImpl.pushAllOnController(runningExperiment.getScheduledExperiment().getControllerUrl(), ccqPackage);
 		}
 	}
 }

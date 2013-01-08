@@ -1,9 +1,12 @@
 package org.sopeco.frontend.client.layout.center.execute.tabThree;
 
 import org.sopeco.frontend.client.R;
+import org.sopeco.frontend.shared.entities.FrontendScheduledExperiment;
 
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Image;
 
 /**
@@ -11,52 +14,80 @@ import com.google.gwt.user.client.ui.Image;
  * @author Marius Oehler
  * 
  */
-public class QueueItem extends FlexTable {
+public class QueueItem extends FlowPanel {
 
 	private static final String CONTROLLER_QUEUE_ITEM_CSS = "controllerQueueItem";
 
 	private Image imgRepeat;
-	private HTML htmlLabel, htmlAccount, htmlScenario, htmlSpecification, htmlExperiment;
-	
-	public QueueItem() {
+
+	private HTML htmlLabel, labelAccount, labelScenario, labelExperiments;
+	private HTML valueAccount, valueScenario, valueExperiments;
+
+	private FlexTable detailsTable;
+
+	private FrontendScheduledExperiment experiment;
+
+	/**
+	 * Constructor.
+	 */
+	public QueueItem(FrontendScheduledExperiment pExperiment) {
+		experiment = pExperiment;
 		init();
 	}
 
+	/**
+	 * Initialize all objects.
+	 */
 	private void init() {
 		addStyleName(CONTROLLER_QUEUE_ITEM_CSS);
 
-		htmlLabel = new HTML("MyExperiment");
-		htmlAccount = new HTML("Account");
-		htmlScenario = new HTML("MyScenario");
-		htmlSpecification = new HTML("mySpecification");
-		htmlExperiment = new HTML("myExperimentSeries");
+		htmlLabel = new HTML("<b>" + experiment.getLabel() + "</b>");
+		labelAccount = new HTML(R.get("Account") + ":");
+		labelScenario = new HTML(R.get("Scenario") + ":");
+		labelExperiments = new HTML(R.get("Experiments") + ":");
 
-		imgRepeat = new Image("images/repeat.png");
-		imgRepeat.setWidth("21px");
-		imgRepeat.setHeight("14px");
-		imgRepeat.setTitle(R.get("ExperimentIsRepeat"));
+		valueAccount = new HTML(experiment.getAccount());
+		valueScenario = new HTML(experiment.getScenarioDefinition().getScenarioName());
+		valueExperiments = new HTML("n/a");
 
-		setWidget(0, 0, htmlLabel);
-		setWidget(0, 1, imgRepeat);
+		// imgRepeat = new Image("images/repeat.png");
+		// imgRepeat.setWidth("21px");
+		// imgRepeat.setHeight("14px");
+		// imgRepeat.setTitle(R.get("ExperimentIsRepeat"));
 
-		setWidget(1, 0, new HTML(R.get("Account") + ":"));
-		setWidget(2, 0, new HTML(R.get("Scenario") + ":"));
+		initTable();
 
-		setWidget(1, 1, htmlAccount);
-		setWidget(2, 1, htmlScenario);
+		add(htmlLabel);
+		add(detailsTable);
+	}
 
-		setWidget(1, 2, new HTML(R.get("Specification") + ":"));
-		setWidget(2, 2, new HTML(R.get("ExperimentSeries") + ":"));
+	/**
+	 * 
+	 */
+	private void initTable() {
+		detailsTable = new FlexTable();
 
-		setWidget(1, 3, htmlSpecification);
-		setWidget(2, 3, htmlExperiment);
+		detailsTable.setWidget(0, 0, labelAccount);
+		detailsTable.setWidget(1, 0, labelScenario);
+
+		detailsTable.setWidget(0, 1, valueAccount);
+		detailsTable.setWidget(1, 1, valueScenario);
+
+		detailsTable.setWidget(0, 2, labelExperiments);
+		detailsTable.setWidget(0, 3, valueExperiments);
+
+		detailsTable.getFlexCellFormatter().setRowSpan(0, 2, 2);
+		detailsTable.getFlexCellFormatter().setRowSpan(0, 3, 2);
 
 		String width = "1px";
-		getColumnFormatter().setWidth(0, width);
-		getColumnFormatter().setWidth(2, width);
+		detailsTable.getColumnFormatter().setWidth(0, width);
+		detailsTable.getColumnFormatter().setWidth(2, width);
 
 		width = "50%";
-		getColumnFormatter().setWidth(1, width);
-		getColumnFormatter().setWidth(3, width);
+		detailsTable.getColumnFormatter().setWidth(1, width);
+		detailsTable.getColumnFormatter().setWidth(3, width);
+
+		detailsTable.getCellFormatter().setVerticalAlignment(0, 2, HasVerticalAlignment.ALIGN_TOP);
+		detailsTable.getCellFormatter().setVerticalAlignment(0, 3, HasVerticalAlignment.ALIGN_TOP);
 	}
 }

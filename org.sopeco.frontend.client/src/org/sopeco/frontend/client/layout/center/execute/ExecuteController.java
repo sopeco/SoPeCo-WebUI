@@ -8,6 +8,7 @@ import org.sopeco.frontend.client.layout.center.execute.tabOne.ExecuteTab;
 import org.sopeco.frontend.client.layout.center.execute.tabOne.TabControllerOne;
 import org.sopeco.frontend.client.layout.center.execute.tabThree.TabControllerThree;
 import org.sopeco.frontend.client.layout.center.execute.tabTwo.TabControllerTwo;
+import org.sopeco.frontend.client.model.Manager;
 import org.sopeco.frontend.client.resources.FrontEndResources;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -87,6 +88,8 @@ public class ExecuteController implements ICenterController, ClickHandler, Selec
 		((ExecuteTab) tabControllerOne.getView()).generateTree();
 		getTabControllerTwo().loadScheduledExperiments();
 
+		((ExecuteTab) tabControllerOne.getView()).getEditController().setValue(Manager.get().getControllerUrl());
+		
 		selectedTab(view.getTabBar().getSelectedTab());
 	}
 

@@ -1,11 +1,13 @@
 package org.sopeco.frontend.client.layout.center.execute.tabThree;
 
 import java.util.Date;
+import java.util.List;
 
 import org.sopeco.frontend.client.layout.center.execute.ExecuteController;
 import org.sopeco.frontend.client.layout.center.execute.TabController;
 import org.sopeco.frontend.shared.entities.CurrentControllerExperiment;
 import org.sopeco.frontend.shared.entities.CurrentControllerExperiment.EStatus;
+import org.sopeco.frontend.shared.entities.FrontendScheduledExperiment;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.NumberFormat;
@@ -62,13 +64,22 @@ public class TabControllerThree extends TabController {
 		tabView.getStatusPanel().getProgressBar().setValue(0);
 	}
 
+	public void setControllerQueue(List<FrontendScheduledExperiment> experiments) {
+		tabView.removeAllQueueItems();
+		for (FrontendScheduledExperiment fse : experiments) {
+			tabView.addQueueItem(new QueueItem(fse));
+		}
+	}
+
 	public void setCurrentControllerExperiment(CurrentControllerExperiment experiment) {
 		controllerExperiment = experiment;
 
-		tabView.getStatusPanel().setStatusLabel(experiment.getStatusString());
+		tabView.getStatusPanel().setStatusLabel(experiment.getLabel() + " - " + experiment.getStatusString());
 		tabView.getStatusPanel().setAccount(experiment.getAccount());
 		tabView.getStatusPanel().setScenario(experiment.getScenario());
-
+		//TODO
+		tabView.getStatusPanel().setExperiments("n/a");
+		
 		// tabView.getStatusPanel().setTimeRemaining("n/a");
 		// tabView.getStatusPanel().getProgressBar().setValue(0);
 
@@ -80,6 +91,7 @@ public class TabControllerThree extends TabController {
 		if (experiment.getStatus() == EStatus.MEASUREMENT_FINISHED) {
 			elapsedTimeTimer.cancel();
 			tabView.getStatusPanel().getProgressBar().setValue(100);
+			tabView.getStatusPanel().setTimeRemaining("-");
 		} else if (experiment.getStatus() == EStatus.START_MEASUREMENT) {
 			elapsedTimeTimer.scheduleRepeating(1000);
 			tabView.getStatusPanel().getProgressBar().setValue(0, false);
@@ -111,9 +123,9 @@ public class TabControllerThree extends TabController {
 			remaining = "n/a";
 		}
 
-		if (controllerExperiment.getProgress() == -1 && controllerExperiment.getTimeRemaining() != 0) {
-			float progress = 100 / (controllerExperiment.getTimeRemaining() / 1000F)
-					* ((controllerExperiment.getTimeRemaining() / 1000F) - durationRemaining);
+		if (controllerExperiment.getProgress() == -1 && controllerExperiment.getTimeRemaining() > 0) {
+			float progress = 100 / (controllerExperiment.getTimeRemaining() / 1000)
+					* ((controllerExperiment.getTimeRemaining() / 1000) - durationRemaining);
 			progress = Math.min(progress, 99);
 			tabView.getStatusPanel().getProgressBar().setValue(progress);
 		}
