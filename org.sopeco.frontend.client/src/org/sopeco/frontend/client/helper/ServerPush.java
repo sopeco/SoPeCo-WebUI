@@ -1,17 +1,18 @@
 package org.sopeco.frontend.client.helper;
 
+import java.util.List;
+import java.util.logging.Logger;
+
 import org.sopeco.frontend.client.layout.MainLayoutPanel;
 import org.sopeco.frontend.client.layout.popups.Message;
-import org.sopeco.frontend.client.layout.popups.Notification;
 import org.sopeco.frontend.client.rpc.PushRPC;
 import org.sopeco.frontend.client.rpc.PushRPC.Type;
 import org.sopeco.frontend.client.rpc.PushRPCAsync;
-import org.sopeco.frontend.shared.push.CurrentControllerExperimentPackage;
-import org.sopeco.frontend.shared.push.CurrentControllerQueuePackage;
+import org.sopeco.frontend.shared.entities.RunningControllerStatus;
+import org.sopeco.frontend.shared.entities.FrontendScheduledExperiment;
+import org.sopeco.frontend.shared.push.PushListPackage;
+import org.sopeco.frontend.shared.push.PushObjectPackage;
 import org.sopeco.frontend.shared.push.PushPackage;
-import org.sopeco.frontend.shared.push.ScheduledExperimentsPackage;
-import org.sopeco.frontend.shared.push.StatusPackage;
-import org.sopeco.frontend.shared.push.StatusPackage.EventType;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -23,6 +24,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  */
 public final class ServerPush implements AsyncCallback<PushPackage> {
 
+	private static final Logger LOGGER = Logger.getLogger(ServerPush.class.getName());
+	
 	private static ServerPush push;
 	private static PushRPCAsync pushRPC = GWT.create(PushRPC.class);
 	private boolean waiting = false;
@@ -40,7 +43,7 @@ public final class ServerPush implements AsyncCallback<PushPackage> {
 	@Override
 	public void onFailure(Throwable caught) {
 		waiting = false;
-		Message.error("serverpush failed");
+		LOGGER.severe("ServerPush failed..");
 		startRequest();
 	}
 
@@ -63,32 +66,20 @@ public final class ServerPush implements AsyncCallback<PushPackage> {
 	}
 
 	private void execute(PushPackage pushPackage) {
-		if (pushPackage.getType() == Type.CONTROLLER_STATUS) {
-			execStatusPackage((StatusPackage) pushPackage);
-			// } else if (pushPackage.getType() ==
-			// Type.SCHEDULED_EXPERIMENT_CHANGED) {
-			// MainLayoutPanel.get().getExecuteController().getTabControllerTwo().loadScheduledExperiments();
-			// Notification.show("Experiment started..");
-		} else if (pushPackage.getType() == Type.PUSH_SCHEDULED_EXPERIMENT) {
-			ScheduledExperimentsPackage inPackage = (ScheduledExperimentsPackage) pushPackage;
-			MainLayoutPanel.get().getExecuteController().getTabControllerTwo()
-					.setScheduledExperiments(inPackage.getAttachement());
+		if (pushPackage.getType() == Type.PUSH_SCHEDULED_EXPERIMENT) {
+			PushListPackage inPackage = (PushListPackage) pushPackage;
+			List<FrontendScheduledExperiment> list = inPackage.getAttachment(FrontendScheduledExperiment.class);
+			MainLayoutPanel.get().getExecuteController().getTabControllerTwo().setScheduledExperiments(list);
 		} else if (pushPackage.getType() == Type.PUSH_CURRENT_CONTROLLER_EXPERIMENT) {
-			CurrentControllerExperimentPackage ccePackage = (CurrentControllerExperimentPackage) pushPackage;
+			PushObjectPackage inPackage = (PushObjectPackage) pushPackage;
+			RunningControllerStatus ccExperiment = inPackage.getAttachment(RunningControllerStatus.class);
 			MainLayoutPanel.get().getExecuteController().getTabControllerThree()
-					.setCurrentControllerExperiment(ccePackage.getCurrentControllerExperiment());
+					.setCurrentControllerExperiment(ccExperiment);
 		} else if (pushPackage.getType() == Type.PUSH_CURRENT_CONTROLLER_QUEUE) {
-			CurrentControllerQueuePackage ccqPackage = (CurrentControllerQueuePackage) pushPackage;
-			MainLayoutPanel.get().getExecuteController().getTabControllerThree()
-					.setControllerQueue(ccqPackage.getExperiments());
-			GWT.log(">" + ccqPackage.getExperiments().size());
+			PushListPackage inPackage = (PushListPackage) pushPackage;
+			List<FrontendScheduledExperiment> list = inPackage.getAttachment(FrontendScheduledExperiment.class);
+			MainLayoutPanel.get().getExecuteController().getTabControllerThree().setControllerQueue(list);
 		}
 	}
 
-	private void execStatusPackage(StatusPackage statusPackage) {
-		GWT.log(statusPackage.getEventType() + "");
-		if (statusPackage.getEventType() == EventType.MEASUREMENT_FINISHED) {
-			Notification.show("Measurement Finished");
-		}
-	}
 }

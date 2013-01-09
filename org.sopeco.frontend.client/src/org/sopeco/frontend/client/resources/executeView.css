@@ -114,6 +114,22 @@
 	white-space: nowrap;
 }
 
+.statusPanel .logPanel {
+	border: 1px solid #CCC;
+	background-color: white;
+	overflow-y: scroll;
+	height: 6em;
+	margin-bottom: 0.3em;
+}
+
+.statusPanel .logPanel .gwt-HTML:nth-child\(2n\+1\) {
+	background-color: #FCF9F2;
+}
+
+.statusPanel .logPanel .gwt-HTML {
+	padding: 1px 4px;
+}
+
 .controllerQueueItem {
 	width: 100%;
 	background-color: #F3F3F3;
@@ -121,8 +137,6 @@
 	padding: .50em 1em;
 	border-bottom: 1px solid #CCC;
 }
-
-
 
 .scheduleItem {
 	width: 100%;

@@ -6,7 +6,10 @@ import java.util.List;
 
 import org.sopeco.frontend.client.rpc.PushRPC;
 import org.sopeco.frontend.server.user.UserManager;
+import org.sopeco.frontend.shared.entities.FrontendScheduledExperiment;
 import org.sopeco.frontend.shared.push.PushPackage;
+import org.sopeco.frontend.shared.push.PushSerializable;
+import org.sopeco.frontend.shared.push.PushListPackage;
 
 /**
  * 
@@ -16,7 +19,7 @@ import org.sopeco.frontend.shared.push.PushPackage;
 public class PushRPCImpl extends SuperRemoteServlet implements PushRPC {
 
 	private static final long serialVersionUID = 1L;
-	private static final int TIMEOUT = 30000;
+	private static final int TIMEOUT = 5000;
 
 	private static HashMap<String, List<PushPackage>> packageListMap = new HashMap<String, List<PushPackage>>();
 
@@ -71,7 +74,7 @@ public class PushRPCImpl extends SuperRemoteServlet implements PushRPC {
 		}
 	}
 
-	public static void pushAllOnController(String controllerUrl, PushPackage pushPackage) {
+	public static void pushToAllOnController(String controllerUrl, PushPackage pushPackage) {
 		for (String sId : UserManager.getAllUsers().keySet()) {
 			try {
 				String cUrl = UserManager.getUser(sId).getAccountDetails().getControllerUrl();

@@ -1,13 +1,16 @@
 package org.sopeco.frontend.shared.entities;
 
-import java.io.Serializable;
+import java.util.List;
+
+import org.sopeco.frontend.shared.helper.EventLogLite;
+import org.sopeco.frontend.shared.push.PushSerializable;
 
 /**
  * 
  * @author Marius Oehler
  * 
  */
-public class CurrentControllerExperiment implements Serializable {
+public class RunningControllerStatus implements PushSerializable {
 
 	/**
 	 * 
@@ -20,38 +23,34 @@ public class CurrentControllerExperiment implements Serializable {
 	private String account;
 	private String scenario;
 	private float progress;
+	
+	private List<EventLogLite> eventLogList;
 
-	private EStatus status;
+	private boolean hasFinished;
 
-	public enum EStatus {
-		START_MEASUREMENT, ACQUIRE_MEC, ACQUIRE_MEC_FAILED, ERROR, EXECUTE_EXPERIMENTRUN, FINALIZE_EXPERIMENTSERIES, INIT_MEC, MEASUREMENT_FINISHED, PREPARE_EXPERIMENTSERIES, RELEASE_MEC
+	/**
+	 * @return the eventLogList
+	 */
+	public List<EventLogLite> getEventLogList() {
+		return eventLogList;
 	}
 
-	public String getStatusString() {
-		switch (status) {
-		case START_MEASUREMENT:
-			return "Starting Measurement";
-		case ACQUIRE_MEC:
-			return "Acquiring MeasurementEnvironmentController";
-		case ACQUIRE_MEC_FAILED:
-			return "Acquiring MeasurementEnvironmentController";
-		case EXECUTE_EXPERIMENTRUN:
-			return "Executing ExperimentRun";
-		case FINALIZE_EXPERIMENTSERIES:
-			return "Finalizing ExperimentSeries";
-		case INIT_MEC:
-			return "Initializing MeasurementEnvironmentController";
-		case MEASUREMENT_FINISHED:
-			return "Measurement finished";
-		case PREPARE_EXPERIMENTSERIES:
-			return "Prepare ExperimentRun";
-		case RELEASE_MEC:
-			return "Release MeasurementEnvironmentController";
-		case ERROR:
-			return "Error";
-		default:
-			return "-";
-		}
+	/**
+	 * @param eventLogList
+	 *            the eventLogList to set
+	 */
+	public void setEventLogList(List<EventLogLite> eventLogList) {
+		this.eventLogList = eventLogList;
+	}
+
+	
+	
+	public boolean isFinished() {
+		return hasFinished;
+	}
+
+	public void setHasFinished(boolean hasFinished) {
+		this.hasFinished = hasFinished;
 	}
 
 	/**
@@ -84,20 +83,6 @@ public class CurrentControllerExperiment implements Serializable {
 		this.timeRemaining = timeRemaining;
 	}
 
-	/**
-	 * @return the status
-	 */
-	public EStatus getStatus() {
-		return status;
-	}
-
-	/**
-	 * @param status
-	 *            the status to set
-	 */
-	public void setStatus(EStatus status) {
-		this.status = status;
-	}
 
 	/**
 	 * @return the account
@@ -152,7 +137,8 @@ public class CurrentControllerExperiment implements Serializable {
 	}
 
 	/**
-	 * @param label the label to set
+	 * @param label
+	 *            the label to set
 	 */
 	public void setLabel(String label) {
 		this.label = label;

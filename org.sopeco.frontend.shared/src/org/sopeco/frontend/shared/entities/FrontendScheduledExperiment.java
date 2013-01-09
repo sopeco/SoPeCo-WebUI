@@ -1,8 +1,8 @@
 package org.sopeco.frontend.shared.entities;
 
-import java.io.Serializable;
 import java.util.List;
 
+import org.sopeco.frontend.shared.push.PushSerializable;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 
 /**
@@ -10,7 +10,7 @@ import org.sopeco.persistence.entities.definition.ScenarioDefinition;
  * @author Marius Oehler
  * 
  */
-public class FrontendScheduledExperiment implements Serializable {
+public class FrontendScheduledExperiment implements PushSerializable {
 
 	/**
 	 * 

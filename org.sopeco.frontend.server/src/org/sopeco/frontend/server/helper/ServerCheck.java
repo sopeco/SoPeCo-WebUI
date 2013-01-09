@@ -10,6 +10,7 @@ import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.rmi.registry.Registry;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -27,7 +28,7 @@ public final class ServerCheck {
 
 	private static final int SOCKET_TIMEOUT = 1000;
 
-	private static final int PORT_RMI = 1099;
+	private static final int PORT_RMI = Registry.REGISTRY_PORT;
 	private static final int PORT_HTTP = 80;
 	private static final int PORT_HTTPS = 443;
 

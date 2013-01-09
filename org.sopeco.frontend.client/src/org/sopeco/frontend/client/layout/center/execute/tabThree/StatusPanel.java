@@ -7,6 +7,7 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import com.google.gwt.user.client.ui.ScrollPanel;
 
 /**
  * 
@@ -17,11 +18,14 @@ public class StatusPanel extends FlowPanel {
 
 	private static final String CSS_CLASS = "statusPanel";
 	private static final String TABLE_CSS_CLASS = "detailsTable";
+	private static final String LOG_CSS_CLASS = "logPanel";
 
 	private FlowPanel innerPanel;
 	private FlexTable detailsTable;
 
 	private HTML htmlLabel;
+	private FlowPanel logPanel;
+	private ScrollPanel scrollPanel;
 
 	private HTML labelAccount, labelScenario, labelExperiments, labelStart, labelTimeElapsed, labelTimeRemaining;
 	private HTML valueAccount, valueScenario, valueExperiments, valueStart, valueTimeElapsed, valueTimeRemaining;
@@ -40,13 +44,18 @@ public class StatusPanel extends FlowPanel {
 	private void initialize() {
 		addStyleName(CSS_CLASS);
 
+		logPanel = new FlowPanel();
+		scrollPanel = new ScrollPanel();
+		scrollPanel.add(logPanel);
+		scrollPanel.addStyleName(LOG_CSS_CLASS);
+
 		htmlLabel = new HTML("<b>Executing: MyLabel</b>");
 		progressBar = new ProgressBar();
 
 		initTable();
 
 		innerPanel = new FlowPanel();
-		innerPanel.add(htmlLabel);
+		innerPanel.add(scrollPanel);
 		innerPanel.add(detailsTable);
 		innerPanel.add(progressBar);
 
@@ -104,6 +113,15 @@ public class StatusPanel extends FlowPanel {
 
 		detailsTable.getFlexCellFormatter().setRowSpan(0, 2, 2);
 		detailsTable.getCellFormatter().setVerticalAlignment(0, 2, HasVerticalAlignment.ALIGN_TOP);
+	}
+
+	public void clearLog() {
+		logPanel.clear();
+	}
+
+	public void addLogText(HTML value) {
+		logPanel.add(value);
+		scrollPanel.scrollToBottom();
 	}
 
 	/**
@@ -168,7 +186,8 @@ public class StatusPanel extends FlowPanel {
 	}
 
 	/**
-	 * @param valueExperiments the valueExperiments to set
+	 * @param valueExperiments
+	 *            the valueExperiments to set
 	 */
 	public void setExperiments(String value) {
 		valueExperiments.setHTML(value);

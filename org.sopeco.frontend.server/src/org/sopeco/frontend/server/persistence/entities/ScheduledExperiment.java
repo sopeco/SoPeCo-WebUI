@@ -14,7 +14,7 @@ import javax.persistence.NamedQuery;
 
 import org.sopeco.config.IConfiguration;
 import org.sopeco.frontend.server.execute.QueuedExperiment;
-import org.sopeco.frontend.shared.entities.CurrentControllerExperiment;
+import org.sopeco.frontend.shared.entities.RunningControllerStatus;
 import org.sopeco.frontend.shared.entities.FrontendScheduledExperiment;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 

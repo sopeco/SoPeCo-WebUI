@@ -5,14 +5,15 @@ import java.util.List;
 
 import org.sopeco.frontend.client.layout.center.execute.ExecuteController;
 import org.sopeco.frontend.client.layout.center.execute.TabController;
-import org.sopeco.frontend.shared.entities.CurrentControllerExperiment;
-import org.sopeco.frontend.shared.entities.CurrentControllerExperiment.EStatus;
 import org.sopeco.frontend.shared.entities.FrontendScheduledExperiment;
+import org.sopeco.frontend.shared.entities.RunningControllerStatus;
+import org.sopeco.frontend.shared.helper.EventLogLite;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
 
 /**
  * 
@@ -22,7 +23,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 public class TabControllerThree extends TabController {
 
 	private TabView tabView;
-	private CurrentControllerExperiment controllerExperiment;
+	private RunningControllerStatus controllerExperiment;
 	private Timer elapsedTimeTimer;
 
 	public TabControllerThree(ExecuteController parentController) {
@@ -71,15 +72,32 @@ public class TabControllerThree extends TabController {
 		}
 	}
 
-	public void setCurrentControllerExperiment(CurrentControllerExperiment experiment) {
+	public void setCurrentControllerExperiment(RunningControllerStatus experiment) {
 		controllerExperiment = experiment;
 
-		tabView.getStatusPanel().setStatusLabel(experiment.getLabel() + " - " + experiment.getStatusString());
+		// tabView.getStatusPanel().setStatusLabel(experiment.getLabel() + " - "
+		// + experiment.getStatusString());
 		tabView.getStatusPanel().setAccount(experiment.getAccount());
 		tabView.getStatusPanel().setScenario(experiment.getScenario());
-		//TODO
+		// TODO
 		tabView.getStatusPanel().setExperiments("n/a");
-		
+
+		DateTimeFormat dft = DateTimeFormat.getFormat("HH:mm:ss");
+
+		tabView.getStatusPanel().clearLog();
+		tabView.getStatusPanel().addLogText(new HTML("<b>Executing '" + experiment.getLabel() + "'</b>"));
+
+		for (EventLogLite log : experiment.getEventLogList()) {
+			HTML html = new HTML(dft.format(new Date(log.getTime())) + ": " + log.getMessage());
+			tabView.getStatusPanel().addLogText(html);
+		}
+
+		if (experiment.getEventLogList().size() == 1) {
+			// Start
+			elapsedTimeTimer.scheduleRepeating(1000);
+			tabView.getStatusPanel().getProgressBar().setValue(0, false);
+		}
+
 		// tabView.getStatusPanel().setTimeRemaining("n/a");
 		// tabView.getStatusPanel().getProgressBar().setValue(0);
 
@@ -88,16 +106,18 @@ public class TabControllerThree extends TabController {
 		tabView.getStatusPanel().setTimeStart(dtf.format(new Date(experiment.getTimeStart())));
 		updateTimes();
 
-		if (experiment.getStatus() == EStatus.MEASUREMENT_FINISHED) {
+		if (experiment.isFinished()) {
 			elapsedTimeTimer.cancel();
 			tabView.getStatusPanel().getProgressBar().setValue(100);
 			tabView.getStatusPanel().setTimeRemaining("-");
-		} else if (experiment.getStatus() == EStatus.START_MEASUREMENT) {
-			elapsedTimeTimer.scheduleRepeating(1000);
-			tabView.getStatusPanel().getProgressBar().setValue(0, false);
 		}
+		// else if (experiment.getStatus() == EStatus.START_MEASUREMENT) {
+		// elapsedTimeTimer.scheduleRepeating(1000);
+		// tabView.getStatusPanel().getProgressBar().setValue(0, false);
+		// }
 	}
 
+	// TODO
 	private void updateTimes() {
 		String elapsed = "";
 		String remaining = "";
@@ -123,7 +143,9 @@ public class TabControllerThree extends TabController {
 			remaining = "n/a";
 		}
 
-		if (controllerExperiment.getProgress() == -1 && controllerExperiment.getTimeRemaining() > 0) {
+		if (controllerExperiment.getProgress() != -1) {
+			tabView.getStatusPanel().getProgressBar().setValue(controllerExperiment.getProgress());
+		} else if (controllerExperiment.getProgress() == -1 && controllerExperiment.getTimeRemaining() > 0) {
 			float progress = 100 / (controllerExperiment.getTimeRemaining() / 1000)
 					* ((controllerExperiment.getTimeRemaining() / 1000) - durationRemaining);
 			progress = Math.min(progress, 99);

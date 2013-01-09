@@ -11,18 +11,18 @@ import org.sopeco.config.Configuration;
 import org.sopeco.config.IConfiguration;
 import org.sopeco.config.exception.ConfigurationException;
 import org.sopeco.engine.status.EventType;
+import org.sopeco.engine.status.ProgressInfo;
 import org.sopeco.engine.status.StatusBroker;
+import org.sopeco.engine.status.StatusMessage;
 import org.sopeco.frontend.client.rpc.PushRPC.Type;
 import org.sopeco.frontend.server.persistence.UiPersistence;
 import org.sopeco.frontend.server.persistence.entities.ScheduledExperiment;
 import org.sopeco.frontend.server.rpc.PushRPCImpl;
 import org.sopeco.frontend.server.user.UserManager;
-import org.sopeco.frontend.shared.entities.CurrentControllerExperiment;
-import org.sopeco.frontend.shared.entities.CurrentControllerExperiment.EStatus;
-import org.sopeco.frontend.shared.entities.FrontendScheduledExperiment;
-import org.sopeco.frontend.shared.push.CurrentControllerExperimentPackage;
-import org.sopeco.frontend.shared.push.CurrentControllerQueuePackage;
-import org.sopeco.frontend.shared.push.ScheduledExperimentsPackage;
+import org.sopeco.frontend.shared.entities.RunningControllerStatus;
+import org.sopeco.frontend.shared.push.PushListPackage;
+import org.sopeco.frontend.shared.push.PushObjectPackage;
+import org.sopeco.frontend.shared.push.PushSerializable;
 import org.sopeco.persistence.metadata.entities.DatabaseInstance;
 import org.sopeco.runner.SoPeCoRunner;
 
@@ -41,9 +41,7 @@ public class ControllerQueue {
 
 	/** The experiment which is performed at the moment. */
 	private QueuedExperiment runningExperiment;
-	
-	private List<EventType> eventTypeHistory;
-	
+
 	private String currentToken;
 	private Future<?> executeStatus;
 
@@ -64,7 +62,6 @@ public class ControllerQueue {
 	 */
 	public ControllerQueue() {
 		experimentQueue = new ArrayList<QueuedExperiment>();
-		eventTypeHistory = new ArrayList<EventType>();
 	}
 
 	/**
@@ -118,7 +115,7 @@ public class ControllerQueue {
 			LOGGER.info("Looking for waiting experiment..");
 			if (isExecuting()) {
 				LOGGER.info("Controller is running.");
-				pushCurrentQueue();
+				pushCurrentControllerQueue();
 				return;
 			} else if (experimentIsLoaded()) {
 				LOGGER.info("Experiment is already loaded.");
@@ -127,7 +124,7 @@ public class ControllerQueue {
 			} else {
 				runningExperiment = experimentQueue.get(0);
 				experimentQueue.remove(0);
-				pushCurrentQueue();
+				pushCurrentControllerQueue();
 				execute();
 			}
 		}
@@ -161,7 +158,7 @@ public class ControllerQueue {
 			ProgressWatcher.get().continueLoop();
 
 			notifyAccount();
-			notifyStatusChange(EStatus.START_MEASUREMENT.toString());
+			// notifyStatusChange(EStatus.START_MEASUREMENT.toString());
 		} catch (ConfigurationException e) {
 			throw new RuntimeException(e);
 		}
@@ -244,20 +241,83 @@ public class ControllerQueue {
 		return runningExperiment;
 	}
 
+	/**
+	 * Pushes the next status of the running experiment.
+	 * 
+	 * @param statusMessage
+	 */
+	public void nextStatusMessage(StatusMessage statusMessage) {
+		runningExperiment.getEventLogList().add(statusMessage);
+		if (statusMessage.getStatusInfo() != null && statusMessage.getStatusInfo() instanceof ProgressInfo) {
+			runningExperiment.setLastProgressInfo((ProgressInfo) statusMessage.getStatusInfo());
+		}
+
+		pushRunningExperimentStatus();
+	}
+
+	/**
+	 * Pushes the status information of the current running experiment to all
+	 * users, which use this MEController.
+	 */
+	private void pushRunningExperimentStatus() {
+		PushObjectPackage objectPackage = new PushObjectPackage();
+		objectPackage.setType(Type.PUSH_CURRENT_CONTROLLER_EXPERIMENT);
+		objectPackage.setAttachment(createControllerStatusPackage());
+
+		PushRPCImpl.pushToAllOnController(runningExperiment.getScheduledExperiment().getControllerUrl(), objectPackage);
+	}
+
+	/**
+	 * Pushes a list with the QueuedExperiments, which are waiting in the
+	 * controller queue.
+	 */
+	private void pushCurrentControllerQueue() {
+		if (runningExperiment == null) {
+			return;
+		}
+
+		ArrayList<PushSerializable> list = new ArrayList<PushSerializable>();
+		for (QueuedExperiment experiment : experimentQueue) {
+			list.add(experiment.getScheduledExperiment().createFrontendScheduledExperiment());
+		}
+
+		PushListPackage listPackage = new PushListPackage();
+		listPackage.setType(Type.PUSH_CURRENT_CONTROLLER_QUEUE);
+		listPackage.setAttachment(list);
+
+		PushRPCImpl.pushToAllOnController(runningExperiment.getScheduledExperiment().getControllerUrl(), listPackage);
+	}
+
 	//
-	// #################################### \/ \/ \/ checken
+	// #################################### \/ \/ \/ checken \/ \/ \/ \/ \/ \/
 	//
 
-	public CurrentControllerExperiment getCurrentControllerExperiment(String type) {
-		CurrentControllerExperiment cce = new CurrentControllerExperiment();
+	/**
+	 * Creates the CurrentControllerExperiment object, that contains all
+	 * necessary information about the current controller state.
+	 * */
+	public RunningControllerStatus createControllerStatusPackage() {
+		RunningControllerStatus cce = new RunningControllerStatus();
+
 		cce.setAccount(runningExperiment.getScheduledExperiment().getAccount());
 		cce.setScenario(runningExperiment.getScheduledExperiment().getScenarioDefinition().getScenarioName());
 		cce.setTimeStart(runningExperiment.getTimeStarted());
 		cce.setLabel(runningExperiment.getScheduledExperiment().getLabel());
+		cce.setEventLogList(runningExperiment.getEventLogLiteList());
 
-		// cce.setTimeRemaining(-1);
-		cce.setStatus(EStatus.valueOf(type));
-		cce.setProgress(-1);
+		if (runningExperiment.getEventLogList().get(runningExperiment.getEventLogList().size() - 1).getEventType() == EventType.MEASUREMENT_FINISHED) {
+			cce.setHasFinished(true);
+		} else {
+			cce.setHasFinished(false);
+		}
+
+		if (runningExperiment.getLastProgressInfo() != null) {
+			ProgressInfo info = runningExperiment.getLastProgressInfo();
+			float progress = 100F / info.getNumberOfRepetition() * info.getRepetition();
+			cce.setProgress(progress);
+		} else {
+			cce.setProgress(-1);
+		}
 
 		if (runningExperiment.getScheduledExperiment().getDurations().size() > 2) {
 			long sum = 0;
@@ -271,50 +331,28 @@ public class ControllerQueue {
 		return cce;
 	}
 
-	public void notifyStatusChange(EventType type) {
-		notifyStatusChange(type.toString());
-	}
-
-	public void notifyStatusChange(String type) {
-		CurrentControllerExperimentPackage ccePackage = new CurrentControllerExperimentPackage();
-		ccePackage.setType(Type.PUSH_CURRENT_CONTROLLER_EXPERIMENT);
-		ccePackage.setCurrentControllerExperiment(getCurrentControllerExperiment(type));
-
-		PushRPCImpl.pushAllOnController(runningExperiment.getScheduledExperiment().getControllerUrl(), ccePackage);
-	}
-
+	/**
+	 * Sends all schedule exps.
+	 */
 	private void notifyAccount() {
 		List<ScheduledExperiment> resultList = UiPersistence.getUiProvider().loadScheduledExperimentsByAccount(
 				runningExperiment.getScheduledExperiment().getAccount());
 
-		ArrayList<FrontendScheduledExperiment> fseList = new ArrayList<FrontendScheduledExperiment>();
+		ArrayList<PushSerializable> fseList = new ArrayList<PushSerializable>();
 		for (ScheduledExperiment experiment : resultList) {
 			fseList.add(experiment.createFrontendScheduledExperiment());
 		}
 
-		ScheduledExperimentsPackage fsePackage = new ScheduledExperimentsPackage();
-		fsePackage.setType(Type.PUSH_SCHEDULED_EXPERIMENT);
-		fsePackage.setAttachement(fseList);
+		PushListPackage listPackage = new PushListPackage();
+		listPackage.setType(Type.PUSH_SCHEDULED_EXPERIMENT);
+		listPackage.setAttachment(fseList);
 
 		for (String sId : UserManager.getAllUsers().keySet()) {
 			DatabaseInstance db = UserManager.getUser(sId).getCurrentAccount();
 			if (db != null && db.getDbName().equals(runningExperiment.getScheduledExperiment().getAccount())) {
-				PushRPCImpl.push(sId, fsePackage);
+				PushRPCImpl.push(sId, listPackage);
 			}
 		}
 	}
 
-	public void pushCurrentQueue() {
-		List<FrontendScheduledExperiment> list = new ArrayList<FrontendScheduledExperiment>();
-		for (QueuedExperiment q : experimentQueue) {
-			list.add(q.getScheduledExperiment().createFrontendScheduledExperiment());
-		}
-		CurrentControllerQueuePackage ccqPackage = new CurrentControllerQueuePackage();
-		ccqPackage.setType(Type.PUSH_CURRENT_CONTROLLER_QUEUE);
-		ccqPackage.setExperiments(list);
-
-		if (runningExperiment != null) {
-			PushRPCImpl.pushAllOnController(runningExperiment.getScheduledExperiment().getControllerUrl(), ccqPackage);
-		}
-	}
 }
