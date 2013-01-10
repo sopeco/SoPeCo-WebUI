@@ -14,10 +14,6 @@ import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.http.client.Request;
-import com.google.gwt.http.client.RequestCallback;
-import com.google.gwt.http.client.Response;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -43,6 +39,7 @@ public class TreeLeaf extends TreeItem implements /* HasClickHandlers, */ClickHa
 	private PopupPanel chartLinkPopup;
 
 	private SharedExperimentRuns experimentRun;
+	private String cachedChartLink = null;
 
 	private TreeLeaf(String pText) {
 		super(pText);
@@ -82,6 +79,8 @@ public class TreeLeaf extends TreeItem implements /* HasClickHandlers, */ClickHa
 		
 		loadingIndicator = new Image(LOADING_INDICATOR);
 		chartLinkPopup = new PopupPanel(true);
+		chartLinkPopup.getElement().getStyle().setPadding(3, Unit.EM);
+		chartLinkPopup.setTitle(R.get("Chart Link"));
 
 		getContentWrapper().add(downloadImage);
 		getContentWrapper().add(rImage);
@@ -119,46 +118,39 @@ public class TreeLeaf extends TreeItem implements /* HasClickHandlers, */ClickHa
 			// Window.open(downloadUrl, "_blank", "");
 			ExportCsvDialog.show(param.toString());
 		} else if(event.getSource() == chartImage){
-			HorizontalPanel hp = new HorizontalPanel();
-			hp.add(new Label("Generating chart "));
-			hp.add(loadingIndicator);
-			chartLinkPopup.add(hp);
-			chartLinkPopup.show();
-			chartLinkPopup.center();
-			RPC.getResultRPC().getChartUrl(experimentRun.getParentSeries().getParentInstance().getScenarioName(),
-					experimentRun.getParentSeries().getExperimentName(),
-					experimentRun.getParentSeries().getParentInstance().getControllerUrl(),
-					experimentRun.getTimestamp(), new AsyncCallback<String>() {
+			if (cachedChartLink == null){
+				HorizontalPanel hp = new HorizontalPanel();
+				hp.add(new Label("Generating chart "));
+				hp.add(loadingIndicator);
+				chartLinkPopup.clear();
+				chartLinkPopup.add(hp);
+				chartLinkPopup.show();
+				chartLinkPopup.center();
+				RPC.getResultRPC().getChartUrl(experimentRun.getParentSeries().getParentInstance().getScenarioName(),
+						experimentRun.getParentSeries().getExperimentName(),
+						experimentRun.getParentSeries().getParentInstance().getControllerUrl(),
+						experimentRun.getTimestamp(), new AsyncCallback<String>() {
 
-						@Override
-						public void onFailure(Throwable caught) {
-							chartLinkPopup.clear();
-							chartLinkPopup.add(new Label("Could not generate Chart."));
-						}
+							@Override
+							public void onFailure(Throwable caught) {
+								chartLinkPopup.clear();
+								chartLinkPopup.add(new Label("Could not generate Chart."));
+							}
 
-						@Override
-						public void onSuccess(String result) {
-							chartLinkPopup.clear();
-							chartLinkPopup.add(new Anchor("Show chart",result,"_blank"));
-						}
-					});
-//			final ChartCreator cc = new ChartCreator();
-//			RPC.getResultRPC().getResultAsR(experimentRun.getParentSeries().getParentInstance().getScenarioName(),
-//					experimentRun.getParentSeries().getExperimentName(),
-//					experimentRun.getParentSeries().getParentInstance().getControllerUrl(),
-//					experimentRun.getTimestamp(), new AsyncCallback<String>() {
-//
-//						@Override
-//						public void onFailure(Throwable caught) {
-//							// TODO Auto-generated method stub
-//							
-//						}
-//
-//						@Override
-//						public void onSuccess(String result) {
-//							cc.getSimpleChartLink("exp01", result);
-//						}
-//					});
+							@Override
+							public void onSuccess(String result) {
+								cachedChartLink = result;
+								chartLinkPopup.clear();
+								chartLinkPopup.add(new Anchor("Show chart",cachedChartLink,"_blank"));
+							}
+						});
+			}
+			else {
+				chartLinkPopup.clear();
+				chartLinkPopup.add(new Anchor("Show chart",cachedChartLink,"_blank"));
+				chartLinkPopup.show();
+				chartLinkPopup.center();
+			}
 		} else {
 			RPC.getResultRPC().getResultAsR(experimentRun.getParentSeries().getParentInstance().getScenarioName(),
 					experimentRun.getParentSeries().getExperimentName(),

@@ -1,5 +1,9 @@
 package org.sopeco.frontend.server.papconnector;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 
 
 public class ChartCreator {
@@ -12,7 +16,19 @@ public class ChartCreator {
 		String uid = papConnector.verifyUser("testuser");
 		String pid = papConnector.addProject(uid, experimentName);
 		if (pid.equals("no")){
-			//TODO delete project and recreate it
+			String pList = papConnector.getProjectList(uid);
+			JsonArray jArray = new JsonParser().parse(pList).getAsJsonObject().get("adProject").getAsJsonArray();
+			for (int i = 0; i < jArray.size(); i++){
+				JsonObject jObject = jArray.get(i).getAsJsonObject();
+				String projName = jObject.get("projectName").getAsString();
+				//projName = projName.substring(1,projName.length()-1);
+				System.out.println(jObject + ": " + projName + "<->" + experimentName + ": " + projName.equals(experimentName));
+				if(projName.equals(experimentName)){
+					papConnector.deleteProject(jObject.get("PID").getAsString());
+					pid = papConnector.addProject(uid, experimentName);
+				}
+			}
+			System.out.println(pList);
 		}
 		String qid = papConnector.addQuery(pid, "testquery", SQL_DUMMY, "empty");
 		String procid = papConnector.addProcess(pid, "testprocess", 1, rScript);
