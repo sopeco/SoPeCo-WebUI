@@ -14,8 +14,12 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public interface ResultRPCAsync {
 	void getResults(AsyncCallback<Void> callback);
 
-	void getInstances(String scenarioName, AsyncCallback<List<SharedScenarioInstance>> callback);
+	void getInstances(String scenarioName,
+			AsyncCallback<List<SharedScenarioInstance>> callback);
 
-	void getResultAsR(String scenario, String exoerimentSeries, String url, long timestamp,
-			AsyncCallback<String> callback);
+	void getResultAsR(String scenario, String exoerimentSeries, String url,
+			long timestamp, AsyncCallback<String> callback);
+
+	void getChartUrl(String scenario, String experimentSeries, String url,
+			long timestamp, AsyncCallback<String> callback);
 }

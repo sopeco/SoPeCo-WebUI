@@ -14,8 +14,16 @@ import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.http.client.Request;
+import com.google.gwt.http.client.RequestCallback;
+import com.google.gwt.http.client.Response;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.PopupPanel;
 
 /**
  * 
@@ -29,7 +37,10 @@ public class TreeLeaf extends TreeItem implements /* HasClickHandlers, */ClickHa
 	private static final String ITEM_CSS_CLASS = "resultTreeItem";
 	private static final String DOWNLOAD_IMAGE = "images/download.png";
 	private static final String R_IMAGE = "images/r_logo.png";
-	private Image downloadImage, rImage;
+	private static final String CHART_IMAGE = "images/line_chart.png";
+	private static final String LOADING_INDICATOR = "images/loading_indicator.gif";
+	private Image downloadImage, rImage, chartImage, loadingIndicator;
+	private PopupPanel chartLinkPopup;
 
 	private SharedExperimentRuns experimentRun;
 
@@ -62,9 +73,19 @@ public class TreeLeaf extends TreeItem implements /* HasClickHandlers, */ClickHa
 		rImage.getElement().getStyle().setMarginLeft(1, Unit.EM);
 		rImage.getElement().getStyle().setCursor(Cursor.POINTER);
 		rImage.addClickHandler(this);
+		
+		chartImage = new Image(CHART_IMAGE);
+		chartImage.setTitle(R.get("Show chart"));
+		chartImage.getElement().getStyle().setMarginLeft(1, Unit.EM);
+		chartImage.getElement().getStyle().setCursor(Cursor.POINTER);
+		chartImage.addClickHandler(this);
+		
+		loadingIndicator = new Image(LOADING_INDICATOR);
+		chartLinkPopup = new PopupPanel(true);
 
 		getContentWrapper().add(downloadImage);
 		getContentWrapper().add(rImage);
+		getContentWrapper().add(chartImage);
 	}
 
 	/**
@@ -97,6 +118,47 @@ public class TreeLeaf extends TreeItem implements /* HasClickHandlers, */ClickHa
 
 			// Window.open(downloadUrl, "_blank", "");
 			ExportCsvDialog.show(param.toString());
+		} else if(event.getSource() == chartImage){
+			HorizontalPanel hp = new HorizontalPanel();
+			hp.add(new Label("Generating chart "));
+			hp.add(loadingIndicator);
+			chartLinkPopup.add(hp);
+			chartLinkPopup.show();
+			chartLinkPopup.center();
+			RPC.getResultRPC().getChartUrl(experimentRun.getParentSeries().getParentInstance().getScenarioName(),
+					experimentRun.getParentSeries().getExperimentName(),
+					experimentRun.getParentSeries().getParentInstance().getControllerUrl(),
+					experimentRun.getTimestamp(), new AsyncCallback<String>() {
+
+						@Override
+						public void onFailure(Throwable caught) {
+							chartLinkPopup.clear();
+							chartLinkPopup.add(new Label("Could not generate Chart."));
+						}
+
+						@Override
+						public void onSuccess(String result) {
+							chartLinkPopup.clear();
+							chartLinkPopup.add(new Anchor("Show chart",result,"_blank"));
+						}
+					});
+//			final ChartCreator cc = new ChartCreator();
+//			RPC.getResultRPC().getResultAsR(experimentRun.getParentSeries().getParentInstance().getScenarioName(),
+//					experimentRun.getParentSeries().getExperimentName(),
+//					experimentRun.getParentSeries().getParentInstance().getControllerUrl(),
+//					experimentRun.getTimestamp(), new AsyncCallback<String>() {
+//
+//						@Override
+//						public void onFailure(Throwable caught) {
+//							// TODO Auto-generated method stub
+//							
+//						}
+//
+//						@Override
+//						public void onSuccess(String result) {
+//							cc.getSimpleChartLink("exp01", result);
+//						}
+//					});
 		} else {
 			RPC.getResultRPC().getResultAsR(experimentRun.getParentSeries().getParentInstance().getScenarioName(),
 					experimentRun.getParentSeries().getExperimentName(),
