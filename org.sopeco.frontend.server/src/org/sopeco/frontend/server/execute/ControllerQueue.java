@@ -11,6 +11,7 @@ import org.sopeco.config.Configuration;
 import org.sopeco.config.IConfiguration;
 import org.sopeco.config.exception.ConfigurationException;
 import org.sopeco.engine.status.EventType;
+import org.sopeco.engine.status.IStatusListener;
 import org.sopeco.engine.status.ProgressInfo;
 import org.sopeco.engine.status.StatusBroker;
 import org.sopeco.engine.status.StatusMessage;
@@ -31,7 +32,7 @@ import org.sopeco.runner.SoPeCoRunner;
  * @author Marius Oehler
  * 
  */
-public class ControllerQueue {
+public class ControllerQueue implements IStatusListener {
 
 	private static final Logger LOGGER = Logger.getLogger(ControllerQueue.class.getName());
 	private static ExecutorService threadPool;
@@ -44,6 +45,8 @@ public class ControllerQueue {
 
 	private String currentToken;
 	private Future<?> executeStatus;
+
+	private String controllerURL;
 
 	/**
 	 * Creates an ThreadPool, which is responsible for the SoPeCo Runners.
@@ -60,8 +63,10 @@ public class ControllerQueue {
 	/**
 	 * Constructor.
 	 */
-	public ControllerQueue() {
+	public ControllerQueue(String pControllerURL) {
 		experimentQueue = new ArrayList<QueuedExperiment>();
+		controllerURL = pControllerURL;
+		StatusBroker.getManager(pControllerURL).addStatusListener(this);
 	}
 
 	/**
@@ -140,13 +145,15 @@ public class ControllerQueue {
 				+ runningExperiment.getScheduledExperiment().getControllerUrl());
 
 		try {
-			String randomId = System.currentTimeMillis() + "" + Math.random();
+
+			String randomId = "RANDOMID" + (long) (Long.MAX_VALUE * Math.random());
 
 			IConfiguration config = Configuration.getSessionSingleton(randomId);
 			config.overwrite((Configuration) runningExperiment.getScheduledExperiment().getConfiguration());
 			config.setMeasurementControllerURI(runningExperiment.getScheduledExperiment().getControllerUrl());
 			config.setScenarioDescription(runningExperiment.getScheduledExperiment().getScenarioDefinition());
 			config.setProperty(IConfiguration.SENDING_STATUS_MESSAGES, "true");
+			config.setProperty(IConfiguration.CONF_MEC_CONNECTION_TYPE, "REST");
 
 			SoPeCoRunner runner = new SoPeCoRunner(randomId);
 			executeStatus = getThreadPool().submit(runner);
@@ -181,7 +188,9 @@ public class ControllerQueue {
 				Thread.sleep(10);
 			} catch (Exception e) {
 			}
-			token = StatusBroker.get().getToken(id + runningExperiment.getScheduledExperiment().getControllerUrl());
+			// token = StatusBroker.get().getToken(id +
+			// runningExperiment.getScheduledExperiment().getControllerUrl());
+			token = "dummy";
 		}
 		return token;
 	}
@@ -291,6 +300,12 @@ public class ControllerQueue {
 	//
 	// #################################### \/ \/ \/ checken \/ \/ \/ \/ \/ \/
 	//
+
+	@Override
+	public void onNewStatus(StatusMessage statusMessage) {
+		LOGGER.info("New Status on '" + this.controllerURL + "': " + statusMessage.getEventType());
+		nextStatusMessage(statusMessage);
+	}
 
 	/**
 	 * Creates the CurrentControllerExperiment object, that contains all

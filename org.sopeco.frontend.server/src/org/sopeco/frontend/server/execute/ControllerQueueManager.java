@@ -20,7 +20,7 @@ public final class ControllerQueueManager {
 
 	public static ControllerQueue get(String url) {
 		if (!queueMap.containsKey(url)) {
-			queueMap.put(url, new ControllerQueue());
+			queueMap.put(url, new ControllerQueue(url));
 		}
 		return queueMap.get(url);
 	}

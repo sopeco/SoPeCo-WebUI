@@ -50,24 +50,24 @@ public class ProgressWatcher extends Thread {
 
 	@Override
 	public void run() {
-		running = true;
-		while (running) {
-			LOGGER.fine("Running Queues: " + ControllerQueueManager.getAllRunningQueues().size() + "/"
-					+ ControllerQueueManager.getAllQueues().size());
-
-			for (ControllerQueue queue : ControllerQueueManager.getAllRunningQueues()) {
-				String token = queue.getCurrentToken();
-				while (token != null && StatusBroker.get().getManager(token).hasNext()) {
-					StatusMessage currentStatus = StatusBroker.get().getManager(queue.getCurrentToken()).next();
-					queue.nextStatusMessage(currentStatus);
-				}
-				if (!queue.isExecuting()) {
-					queue.finished();
-				}
-			}
-
-			waiting();
-		}
+//		running = true;
+//		while (running) {
+//			LOGGER.fine("Running Queues: " + ControllerQueueManager.getAllRunningQueues().size() + "/"
+//					+ ControllerQueueManager.getAllQueues().size());
+//
+//			for (ControllerQueue queue : ControllerQueueManager.getAllRunningQueues()) {
+//				String token = queue.getCurrentToken();
+////				while (token != null && StatusBroker.get().getManager(token).hasNext()) {
+////					StatusMessage currentStatus = StatusBroker.get().getManager(queue.getCurrentToken()).next();
+////					queue.nextStatusMessage(currentStatus);
+////				}
+//				if (!queue.isExecuting()) {
+//					queue.finished();
+//				}
+//			}
+//
+//			waiting();
+//		}
 	}
 
 	/**

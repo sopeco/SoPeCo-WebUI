@@ -76,7 +76,7 @@ public class QueuedExperiment {
 		for (StatusMessage log : eventLogList) {
 
 			EventLogLite logLite = new EventLogLite();
-			logLite.setTime(log.getTime());
+			logLite.setTime(log.getTimestamp());
 			if (log.getEventType() == EventType.EXECUTE_EXPERIMENTRUN && log.getStatusInfo() != null) {
 				ProgressInfo info = (ProgressInfo) log.getStatusInfo();
 				logLite.setMessage(getStatusString(log.getEventType()) + " " + info.getRepetition() + " of "
@@ -110,8 +110,8 @@ public class QueuedExperiment {
 			return "Prepare ExperimentRun";
 		case RELEASE_MEC:
 			return "Release MeasurementEnvironmentController";
-		case ERROR:
-			return "Error";
+		case EXECUTION_FAILED:
+			return "Execution failed";
 		default:
 			throw new IllegalStateException();
 		}

@@ -8,7 +8,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sopeco.engine.measurementenvironment.IMeasurementEnvironmentController;
-import org.sopeco.engine.measurementenvironment.rmi.RmiMEConnector;
+import org.sopeco.engine.measurementenvironment.connector.MEConnectorFactory;
 import org.sopeco.frontend.client.rpc.MEControllerRPC;
 import org.sopeco.frontend.client.rpc.PushRPC.Type;
 import org.sopeco.frontend.server.helper.ServerCheck;
@@ -71,7 +71,8 @@ public class MEControllerRPCImpl extends SuperRemoteServlet implements MEControl
 		// }
 
 		try {
-			IMeasurementEnvironmentController meCotnroller = RmiMEConnector.connectToMEController(new URI(url));
+			IMeasurementEnvironmentController meCotnroller = MEConnectorFactory.createRMIConnector()
+					.connectToMEController(new URI(url));
 
 			MeasurementEnvironmentDefinition med = meCotnroller.getMEDefinition();
 
@@ -133,7 +134,7 @@ public class MEControllerRPCImpl extends SuperRemoteServlet implements MEControl
 	@Override
 	public MeasurementEnvironmentDefinition getMEDefinitionFromMEC(String controllerUrl) {
 		try {
-			IMeasurementEnvironmentController meCotnroller = RmiMEConnector
+			IMeasurementEnvironmentController meCotnroller = MEConnectorFactory.createRMIConnector()
 					.connectToMEController(new URI(controllerUrl));
 
 			MeasurementEnvironmentDefinition med = meCotnroller.getMEDefinition();
