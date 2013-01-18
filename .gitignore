@@ -8,3 +8,5 @@
 /*/war/WEB-INF/lib
 
 /*/war/WEB-INF/deploy
+
+*.class

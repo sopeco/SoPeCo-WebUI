@@ -56,6 +56,7 @@ public class NavigationView extends FlowPanel {
 
 		addNaviItem(CenterType.Execute, R.get("execute"));
 		addNaviItem(CenterType.Result, R.get("result"));
+		addNaviItem(CenterType.Visualization, R.get("visualization"));
 
 		changeSpecificationPanel = naviItems.get(CenterType.Specification).addChangeSpecificationIcon();
 

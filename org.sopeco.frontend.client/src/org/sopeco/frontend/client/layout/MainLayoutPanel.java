@@ -10,6 +10,7 @@ import org.sopeco.frontend.client.layout.center.execute.ExecuteController;
 import org.sopeco.frontend.client.layout.center.experiment.ExperimentController;
 import org.sopeco.frontend.client.layout.center.result.ResultController;
 import org.sopeco.frontend.client.layout.center.specification.SpecificationController;
+import org.sopeco.frontend.client.layout.center.visualization.VisualizationController;
 import org.sopeco.frontend.client.layout.navigation.NavigationController;
 import org.sopeco.frontend.client.layout.navigation.NavigationView;
 import org.sopeco.frontend.client.model.Manager;
@@ -116,6 +117,7 @@ public final class MainLayoutPanel extends DockLayoutPanel {
 
 		centerController.put(CenterType.Result, new ResultController());
 		centerController.put(CenterType.Experiment, new ExperimentController());
+		centerController.put(CenterType.Visualization, new VisualizationController());
 
 		updateCenterPanel(currentCenterPanel);
 
