@@ -21,6 +21,7 @@ public final class RPC {
 	private static ExtensionRPCAsync extensionRPC = null;
 	private static ExecuteRPCAsync executeRPC = null;
 	private static ResultRPCAsync resultRPC = null;
+	private static VisualizationRPCAsync visualizationRPC = null;
 
 	/**
 	 * Returns a instance of the ScenarioManagerRPCAsync.
@@ -124,5 +125,18 @@ public final class RPC {
 		}
 
 		return executeRPC;
+	}
+	
+	/**
+	 * Returns a instance of the VisualizationRPC.
+	 * 
+	 * @return
+	 */
+	public static VisualizationRPCAsync getVisualizationRPC() {
+		if (visualizationRPC == null) {
+			visualizationRPC = GWT.create(VisualizationRPC.class);
+		}
+
+		return visualizationRPC;
 	}
 }

@@ -79,7 +79,7 @@ public final class R {
 	 */
 	private static void buildMap(String propertyString) {
 		for (String row : propertyString.split(LINESEPERATOR)) {
-			if (row.isEmpty()) {
+			if (row.isEmpty() || row.startsWith("#")) {
 				continue;
 			}
 

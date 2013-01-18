@@ -104,6 +104,16 @@
 		<servlet-name>resultRPCImpl</servlet-name>
 		<url-pattern>/sopeco_frontend/resultRPC</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>visualizationRPC</servlet-name>
+		<servlet-class>org.sopeco.frontend.server.rpc.VisualizationRPCImpl
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>visualizationRPC</servlet-name>
+		<url-pattern>/sopeco_frontend/visualizationRPC</url-pattern>
+	</servlet-mapping>
 
 
 	<!-- HttpServlet for FileExport -->

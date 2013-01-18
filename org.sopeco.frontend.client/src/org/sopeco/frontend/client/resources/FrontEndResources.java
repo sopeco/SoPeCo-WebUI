@@ -181,6 +181,42 @@ public final class FrontEndResources {
 			}
 		});
 	}
+	
+	/**
+	 * 
+	 */
+	public static void loadVisualizationViewCSS() {
+		GWT.runAsync(new RunAsyncCallback() {
+			@Override
+			public void onFailure(Throwable reason) {
+				Window.alert(R.get("errorCssLoading"));
+			}
+
+			@Override
+			public void onSuccess() {
+				ResourceBundle rsc = GWT.create(ResourceBundle.class);
+				rsc.visualizationViewCss().ensureInjected();
+			}
+		});
+	}
+	
+	/**
+	 * 
+	 */
+	public static void loadVisualizationWizardCSS() {
+		GWT.runAsync(new RunAsyncCallback() {
+			@Override
+			public void onFailure(Throwable reason) {
+				Window.alert(R.get("errorCssLoading"));
+			}
+
+			@Override
+			public void onSuccess() {
+				ResourceBundle rsc = GWT.create(ResourceBundle.class);
+				rsc.visualizationWizardCss().ensureInjected();
+			}
+		});
+	}
 
 	/**
 	 * ClientBundle to load Resources.
@@ -221,6 +257,14 @@ public final class FrontEndResources {
 		@Source("executeView.css")
 		@CssResource.NotStrict
 		CssResource executeViewCss();
+		
+		@Source("visualizationView.css")
+		@CssResource.NotStrict
+		CssResource visualizationViewCss();
+		
+		@Source("visualizationWizard.css")
+		@CssResource.NotStrict
+		CssResource visualizationWizardCss();
 	}
 
 }

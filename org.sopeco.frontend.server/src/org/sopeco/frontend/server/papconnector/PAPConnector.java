@@ -2,6 +2,7 @@ package org.sopeco.frontend.server.papconnector;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Arrays;
 
 import org.sopeco.frontend.server.papconnector.HTTPConnector;
 
@@ -94,6 +95,7 @@ public class PAPConnector {
 	public String getResult(String pid) {
 		String[] s = httpConnector.executeGet(PAP_URL + GET_RESULT, "pid="
 				+ pid);
+		System.out.println("Result: " + Arrays.toString(s));
 		return s[0];
 	}
 

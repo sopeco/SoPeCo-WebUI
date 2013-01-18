@@ -19,7 +19,4 @@ public interface ResultRPCAsync {
 
 	void getResultAsR(String scenario, String exoerimentSeries, String url,
 			long timestamp, AsyncCallback<String> callback);
-
-	void getChartUrl(String scenario, String experimentSeries, String url,
-			long timestamp, AsyncCallback<String> callback);
 }

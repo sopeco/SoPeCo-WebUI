@@ -3,6 +3,7 @@ package org.sopeco.frontend.client.layout.center.result;
 import java.util.logging.Logger;
 
 import org.sopeco.frontend.client.R;
+import org.sopeco.frontend.client.layout.center.visualization.wizard.VisualizationWizard;
 import org.sopeco.frontend.client.layout.dialog.ExportCsvDialog;
 import org.sopeco.frontend.client.layout.dialog.ExportToRDialog;
 import org.sopeco.frontend.client.layout.popups.Message;
@@ -15,10 +16,7 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
 
 /**
@@ -34,12 +32,11 @@ public class TreeLeaf extends TreeItem implements /* HasClickHandlers, */ClickHa
 	private static final String DOWNLOAD_IMAGE = "images/download.png";
 	private static final String R_IMAGE = "images/r_logo.png";
 	private static final String CHART_IMAGE = "images/line_chart.png";
-	private static final String LOADING_INDICATOR = "images/loading_indicator.gif";
-	private Image downloadImage, rImage, chartImage, loadingIndicator;
-	private PopupPanel chartLinkPopup;
+	
+	private Image downloadImage, rImage, chartImage;
+	private PopupPanel chartPopup;
 
 	private SharedExperimentRuns experimentRun;
-	private String cachedChartLink = null;
 
 	private TreeLeaf(String pText) {
 		super(pText);
@@ -49,6 +46,8 @@ public class TreeLeaf extends TreeItem implements /* HasClickHandlers, */ClickHa
 		this(run.getLabel());
 
 		experimentRun = run;
+		
+		chartPopup = new VisualizationWizard(experimentRun);
 	}
 
 	@Override
@@ -76,11 +75,6 @@ public class TreeLeaf extends TreeItem implements /* HasClickHandlers, */ClickHa
 		chartImage.getElement().getStyle().setMarginLeft(1, Unit.EM);
 		chartImage.getElement().getStyle().setCursor(Cursor.POINTER);
 		chartImage.addClickHandler(this);
-		
-		loadingIndicator = new Image(LOADING_INDICATOR);
-		chartLinkPopup = new PopupPanel(true);
-		chartLinkPopup.getElement().getStyle().setPadding(3, Unit.EM);
-		chartLinkPopup.setTitle(R.get("Chart Link"));
 
 		getContentWrapper().add(downloadImage);
 		getContentWrapper().add(rImage);
@@ -118,39 +112,7 @@ public class TreeLeaf extends TreeItem implements /* HasClickHandlers, */ClickHa
 			// Window.open(downloadUrl, "_blank", "");
 			ExportCsvDialog.show(param.toString());
 		} else if(event.getSource() == chartImage){
-			if (cachedChartLink == null){
-				HorizontalPanel hp = new HorizontalPanel();
-				hp.add(new Label("Generating chart "));
-				hp.add(loadingIndicator);
-				chartLinkPopup.clear();
-				chartLinkPopup.add(hp);
-				chartLinkPopup.show();
-				chartLinkPopup.center();
-				RPC.getResultRPC().getChartUrl(experimentRun.getParentSeries().getParentInstance().getScenarioName(),
-						experimentRun.getParentSeries().getExperimentName(),
-						experimentRun.getParentSeries().getParentInstance().getControllerUrl(),
-						experimentRun.getTimestamp(), new AsyncCallback<String>() {
-
-							@Override
-							public void onFailure(Throwable caught) {
-								chartLinkPopup.clear();
-								chartLinkPopup.add(new Label("Could not generate Chart."));
-							}
-
-							@Override
-							public void onSuccess(String result) {
-								cachedChartLink = result;
-								chartLinkPopup.clear();
-								chartLinkPopup.add(new Anchor("Show chart",cachedChartLink,"_blank"));
-							}
-						});
-			}
-			else {
-				chartLinkPopup.clear();
-				chartLinkPopup.add(new Anchor("Show chart",cachedChartLink,"_blank"));
-				chartLinkPopup.show();
-				chartLinkPopup.center();
-			}
+			chartPopup.center();
 		} else {
 			RPC.getResultRPC().getResultAsR(experimentRun.getParentSeries().getParentInstance().getScenarioName(),
 					experimentRun.getParentSeries().getExperimentName(),

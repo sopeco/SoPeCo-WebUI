@@ -5,7 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.sopeco.frontend.client.rpc.ResultRPC;
-import org.sopeco.frontend.server.papconnector.ChartCreator;
+import org.sopeco.frontend.server.papconnector.PAPChartCreator;
 import org.sopeco.frontend.server.user.User;
 import org.sopeco.frontend.server.user.UserManager;
 import org.sopeco.frontend.shared.definitions.result.SharedExperimentRuns;
@@ -201,46 +201,5 @@ public class ResultRPCImpl extends SuperRemoteServlet implements ResultRPC {
 		}
 		ScenarioInstance instance = user.getCurrentPersistenceProvider().loadScenarioInstance(scenarioName, url);
 		return instance;
-	}
-
-	@Override
-	public String getChartUrl(String scenario, String experimentSeries,
-			String url, long timestamp) {
-		ScenarioInstance instance;
-		try {
-			instance = getScenarioInstance(getSessionId(), scenario, url);
-			ExperimentSeries series = getSeries(instance, experimentSeries);
-			ExperimentSeriesRun run = getRun(series, timestamp);
-
-			DataSetAggregated dataset = run.getSuccessfulResultDataSet();
-			SimpleDataSet simpleDataset = dataset.convertToSimpleDataSet();
-
-			int i = 0;
-			List<ParameterValue[]> paramList = new ArrayList<ParameterValue[]>();
-			for (Iterator<SimpleDataSetRow> rowIter = simpleDataset.getRowList().iterator(); rowIter.hasNext(); i++) {
-				paramList.add(rowIter.next().getRowValues().toArray(new ParameterValue[0]));
-			}
-			
-			StringBuffer rValue = new StringBuffer();
-			
-			for (int j = 0; j < paramList.get(0).length; j++){
-				rValue.append("c");
-				rValue.append(j);
-				rValue.append(" <- c(");
-				for (int k = 0; k < paramList.size(); k++){
-					rValue.append(paramList.get(k)[j].getValue().toString());
-					if (k < paramList.size() -1){
-						rValue.append(", ");
-					}
-					rValue.append(")\n");
-				}
-			}
-			
-			String urlString = ChartCreator.getSimpleChartLink(run.getLabel(), rValue.toString());
-			return urlString;
-		} catch (DataNotFoundException e) {
-			return "No Data Found";
-		}
-		
 	}
 }

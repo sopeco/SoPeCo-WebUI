@@ -1,0 +1,15 @@
+.chartIconBox{
+	border-width: 2px;
+	border-radius: 15px;
+	border-style: outset;
+	border-color: grey;
+	float: left;
+}
+
+.chartIconBox:hover {
+	border-color: red;
+}
+
+.chartIconBox:active {
+	border-style: inset;
+}
