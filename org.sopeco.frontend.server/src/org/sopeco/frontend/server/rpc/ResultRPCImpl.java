@@ -31,7 +31,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.sopeco.frontend.client.rpc.ResultRPC;
-import org.sopeco.frontend.server.papconnector.PAPChartCreator;
 import org.sopeco.frontend.server.user.User;
 import org.sopeco.frontend.server.user.UserManager;
 import org.sopeco.frontend.shared.definitions.result.SharedExperimentRuns;

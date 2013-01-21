@@ -24,29 +24,26 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sopeco.frontend.server.papconnector;
+package org.sopeco.frontend.pap;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map.Entry;
 import java.util.Set;
 
+import org.sopeco.engine.registry.ISoPeCoExtension;
+import org.sopeco.frontend.server.chartconnector.IChartConnection;
 import org.sopeco.frontend.shared.entities.Visualization;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 
-public class PAPChartCreator implements ChartCreator {
+public class PAPChartConnection implements IChartConnection {
 	private static final String BASE_URL = "http://deqkal279.qkal.sap.corp:8080/pap/j/result/";
 	private static PAPConnector papConnector = new PAPConnector();
 	private static final String SQL_DUMMY = "SELECT * FROM perf_pap.pvexperiment";
@@ -113,9 +110,11 @@ public class PAPChartCreator implements ChartCreator {
 		Thread thread = new Thread(run);
 		thread.start();
 	}
+	
+	private ISoPeCoExtension<?> provider;
 
-	public PAPChartCreator() {
-		
+	public PAPChartConnection(ISoPeCoExtension<?> provider) {
+		this.provider = provider;
 	}
 
 	/**
@@ -146,11 +145,14 @@ public class PAPChartCreator implements ChartCreator {
 	
 	private static Visualization createVisualization(String link, String name){
 		Visualization visualization = new Visualization();
-		SafeHtmlBuilder builder = new SafeHtmlBuilder();
-		builder.appendHtmlConstant("<iframe class='gwt-Frame chartView' src='");
-		builder.appendEscaped(link);
-		builder.appendHtmlConstant("'></iframe>");
-		visualization.setChart(builder.toSafeHtml());
+		String safeLink = "";
+		try {
+			safeLink = URLEncoder.encode(link,"UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		visualization.setChart("<iframe class='gwt-Frame chartView' src='" + safeLink+"'></iframe>");
 		visualization.setLink(link);
 		visualization.setName(name);
 		return visualization;
@@ -242,5 +244,10 @@ public class PAPChartCreator implements ChartCreator {
 			id = "badid";
 		}
 		return id;
+	}
+
+	@Override
+	public ISoPeCoExtension<?> getProvider() {
+		return provider;
 	}
 }

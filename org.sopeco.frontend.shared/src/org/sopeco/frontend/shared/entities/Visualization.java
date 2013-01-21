@@ -29,6 +29,7 @@ package org.sopeco.frontend.shared.entities;
 import java.io.Serializable;
 
 import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 
 public class Visualization implements Serializable {
 	
@@ -36,7 +37,7 @@ public class Visualization implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 2591904277445541753L;
-	private SafeHtml chart;
+	private String chart;
 	private String name;
 	private String link;
 
@@ -44,11 +45,11 @@ public class Visualization implements Serializable {
 		
 	}
 
-	public SafeHtml getChart() {
+	public String getChart() {
 		return chart;
 	}
 
-	public void setChart(SafeHtml chart) {
+	public void setChart(String chart) {
 		this.chart = chart;
 	}
 

@@ -29,15 +29,15 @@ package org.sopeco.frontend.server.rpc;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.sopeco.engine.registry.ExtensionRegistry;
 import org.sopeco.frontend.client.rpc.VisualizationRPC;
-import org.sopeco.frontend.server.papconnector.ChartCreator;
-import org.sopeco.frontend.server.papconnector.ChartCreator.ChartTypes;
-import org.sopeco.frontend.server.papconnector.PAPChartCreator;
+import org.sopeco.frontend.server.chartconnector.IChartConnection;
+import org.sopeco.frontend.server.chartconnector.IChartConnectionExtension;
+import org.sopeco.frontend.server.chartconnector.IChartConnection.ChartTypes;
 import org.sopeco.frontend.server.user.User;
 import org.sopeco.frontend.server.user.UserManager;
 import org.sopeco.frontend.shared.definitions.result.SharedExperimentRuns;
 import org.sopeco.frontend.shared.entities.ChartOptions;
-import org.sopeco.frontend.shared.entities.ChartOptions.ChartType;
 import org.sopeco.frontend.shared.entities.ChartParameter;
 import org.sopeco.frontend.shared.entities.Visualization;
 import org.sopeco.persistence.dataset.DataSetAggregated;
@@ -52,7 +52,7 @@ import org.sopeco.persistence.exceptions.DataNotFoundException;
 
 public class VisualizationRPCImpl extends SuperRemoteServlet implements
 		VisualizationRPC {
-	private ChartCreator chartCreator = new PAPChartCreator();
+	private IChartConnection chartCreator = ExtensionRegistry.getSingleton().getExtensionArtifact(IChartConnectionExtension.class, "PAP Connection");
 
 	@Override
 	public Visualization getChart(SharedExperimentRuns experiementRun, ChartParameter[] chartParameter, ChartOptions options) {

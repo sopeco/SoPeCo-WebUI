@@ -1,0 +1,23 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.sopeco.frontend</groupId>
+    <artifactId>org.sopeco.frontend.parent</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+  <artifactId>org.sopeco.frontend.pap</artifactId>
+  <name>PAP Connection</name>
+  <description>Creates a connection to PAP for creating chart</description>
+  <dependencies>
+  <dependency>
+  	<groupId>org.sopeco.frontend</groupId>
+  	<artifactId>org.sopeco.frontend.shared</artifactId>
+  	<version>0.0.1-SNAPSHOT</version>
+  </dependency>
+  <dependency>
+  	<groupId>org.sopeco.frontend</groupId>
+  	<artifactId>org.sopeco.frontend.server</artifactId>
+  	<version>0.0.1-SNAPSHOT</version>
+  </dependency>
+  </dependencies>
+</project>

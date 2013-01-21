@@ -16,6 +16,7 @@
 		<module>../org.sopeco.frontend.server</module>
 		<module>../org.sopeco.gwt</module>
 		<module>../org.sopeco.frontend.client</module>
+		<module>../org.sopeco.frontend.pap</module>
 	</modules>
 
 

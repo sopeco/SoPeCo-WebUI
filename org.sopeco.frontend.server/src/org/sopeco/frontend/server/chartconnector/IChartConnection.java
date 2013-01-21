@@ -24,11 +24,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sopeco.frontend.server.papconnector;
+package org.sopeco.frontend.server.chartconnector;
 
+import org.sopeco.engine.registry.ISoPeCoExtensionArtifact;
 import org.sopeco.frontend.shared.entities.Visualization;
 
-public interface ChartCreator {
+public interface IChartConnection extends ISoPeCoExtensionArtifact {
 	
 	public Visualization getChartHTML(String experimentName, Double[][] data, String[] columnNames, ChartTypes type);
 
