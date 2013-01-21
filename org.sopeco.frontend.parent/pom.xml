@@ -249,6 +249,27 @@
 					<configLocation>checkstyle-sopeco.config.xml</configLocation>
 				</configuration>
 			</plugin>
+			
+			<plugin>
+				<groupId>com.mycila.maven-license-plugin</groupId>
+				<artifactId>maven-license-plugin</artifactId>
+
+				<configuration>
+					<header>${basedir}/license-header.txt</header>
+					<mapping>
+						<conf>SCRIPT_STYLE</conf>
+						<xml>XML_STYLE</xml>
+					</mapping>
+					<properties>
+						<year>2013</year>
+						<organization>SAP</organization>
+						<copyrightHolder>SAP</copyrightHolder>
+					</properties>
+					
+					<useDefaultExcludes>true</useDefaultExcludes>
+                
+				</configuration>
+			</plugin>
 
 		</plugins>
 	</build>
