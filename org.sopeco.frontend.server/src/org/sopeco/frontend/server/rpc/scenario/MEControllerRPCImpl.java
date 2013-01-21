@@ -14,6 +14,7 @@ import org.sopeco.frontend.client.rpc.PushRPC.Type;
 import org.sopeco.frontend.server.helper.ServerCheck;
 import org.sopeco.frontend.server.rpc.SuperRemoteServlet;
 import org.sopeco.frontend.shared.builder.MeasurementEnvironmentBuilder;
+import org.sopeco.frontend.shared.helper.MEControllerProtocol;
 import org.sopeco.frontend.shared.push.PushPackage;
 import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
@@ -71,8 +72,7 @@ public class MEControllerRPCImpl extends SuperRemoteServlet implements MEControl
 		// }
 
 		try {
-			IMeasurementEnvironmentController meCotnroller = MEConnectorFactory.createRMIConnector()
-					.connectToMEController(new URI(url));
+			IMeasurementEnvironmentController meCotnroller = MEConnectorFactory.connectTo(new URI(url));
 
 			MeasurementEnvironmentDefinition med = meCotnroller.getMEDefinition();
 
@@ -134,8 +134,7 @@ public class MEControllerRPCImpl extends SuperRemoteServlet implements MEControl
 	@Override
 	public MeasurementEnvironmentDefinition getMEDefinitionFromMEC(String controllerUrl) {
 		try {
-			IMeasurementEnvironmentController meCotnroller = MEConnectorFactory.createRMIConnector()
-					.connectToMEController(new URI(controllerUrl));
+			IMeasurementEnvironmentController meCotnroller = MEConnectorFactory.connectTo(new URI(controllerUrl));
 
 			MeasurementEnvironmentDefinition med = meCotnroller.getMEDefinition();
 
@@ -354,7 +353,7 @@ public class MEControllerRPCImpl extends SuperRemoteServlet implements MEControl
 	}
 
 	@Override
-	public List<String> getRMIController(String host, int port) {
-		return ServerCheck.getRMIController(host, port);
+	public List<String> getController(MEControllerProtocol protocol, String host, int port) {
+		return ServerCheck.getController(protocol, host, port);
 	}
 }

@@ -1,4 +1,4 @@
-package org.sopeco.frontend.client.model;
+package org.sopeco.frontend.client.manager;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -37,6 +37,7 @@ public final class Manager {
 	private AccountDetails accountDetails = null;
 	private String selectedExperiment;
 	private List<DatabaseInstance> availableDatabases;
+	private int selectedDatabaseIndex = -1;
 
 	public void reset() {
 		selectedExperiment = null;
@@ -70,12 +71,23 @@ public final class Manager {
 	 */
 	public ScenarioDetails getCurrentScenarioDetails() {
 		if (accountDetails.getScenarioDetail(accountDetails.getSelectedScenario()) == null) {
-//			Manager.get().getAccountDetails().addScenarioDetails(accountDetails.getSelectedScenario());
-//			Manager.get().storeAccountDetails();
+			// Manager.get().getAccountDetails().addScenarioDetails(accountDetails.getSelectedScenario());
+			// Manager.get().storeAccountDetails();
 			return null;
 		}
 
 		return accountDetails.getScenarioDetail(accountDetails.getSelectedScenario());
+	}
+
+	public DatabaseInstance getSelectedDatabaseInstance() {
+		if (selectedDatabaseIndex < 0) {
+			return null;
+		}
+		return availableDatabases.get(selectedDatabaseIndex);
+	}
+
+	public void setSelectedDatabaseIndex(int selectedDatabaseIndex) {
+		this.selectedDatabaseIndex = selectedDatabaseIndex;
 	}
 
 	public List<DatabaseInstance> getAvailableDatabases() {

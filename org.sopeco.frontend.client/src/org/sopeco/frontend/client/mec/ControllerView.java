@@ -85,7 +85,6 @@ public class ControllerView extends FlowPanel {
 		cbProtocol.setEditable(false);
 		cbProtocol.addItem("rmi://");
 		cbProtocol.addItem("http://");
-		cbProtocol.addItem("https://");
 
 		tbHostname.setText("localhost");
 		tbHostname.addStyleName(TB_HOST_CSS);

@@ -1,11 +1,11 @@
 package org.sopeco.frontend.client.layout;
 
 import org.sopeco.frontend.client.helper.INotifyHandler;
+import org.sopeco.frontend.client.manager.Manager;
 import org.sopeco.frontend.client.mec.ControllerInteraction;
-import org.sopeco.frontend.client.mec.ControllerInteraction.Protocol;
 import org.sopeco.frontend.client.mec.ControllerView;
 import org.sopeco.frontend.client.mec.ControllerView.ViewStatus;
-import org.sopeco.frontend.client.model.Manager;
+import org.sopeco.frontend.shared.helper.MEControllerProtocol;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -24,8 +24,6 @@ import com.google.gwt.user.client.ui.Widget;
 @SuppressWarnings("rawtypes")
 public class MECController extends FlowPanel implements ValueChangeHandler<String>, ClickHandler, INotifyHandler,
 		HasValueChangeHandlers<Boolean> {
-
-	private static final int[] DEFAULT_PORTS = new int[] { 1099, 80, 443 };
 
 	private boolean mecIsOnline = false;
 	private ControllerView view;
@@ -49,7 +47,7 @@ public class MECController extends FlowPanel implements ValueChangeHandler<Strin
 	@Override
 	public void onValueChange(ValueChangeEvent<String> event) {
 		if (event.getSource() == view.getCbProtocol()) {
-			view.getTbPort().setText("" + DEFAULT_PORTS[view.getCbProtocol().getSelectedIndex()]);
+			view.getTbPort().setText("" + ControllerInteraction.DEFAULT_PORTS[view.getCbProtocol().getSelectedIndex()]);
 		} else if (event.getSource() == view.getTbHostname()) {
 			checkEnteredHost();
 		} else if (event.getSource() == view.getTbPort()) {
@@ -61,7 +59,9 @@ public class MECController extends FlowPanel implements ValueChangeHandler<Strin
 	private void checkEnteredHost() {
 		String host = view.getTbHostname().getText();
 		int port = Integer.parseInt(view.getTbPort().getText());
+
 		ControllerInteraction.isPortReachable(host, port, this);
+
 		view.setViewStatus(ViewStatus.CHECKING);
 		mecIsOnline = false;
 		ValueChangeEvent.fire(this, mecIsOnline);
@@ -71,8 +71,19 @@ public class MECController extends FlowPanel implements ValueChangeHandler<Strin
 	private void retrieveController() {
 		String host = view.getTbHostname().getText();
 		int port = Integer.parseInt(view.getTbPort().getText());
+		MEControllerProtocol protocol;
+		switch (view.getCbProtocol().getSelectedIndex()) {
+		case 0:
+			protocol = MEControllerProtocol.RMI;
+			break;
+		case 1:
+			protocol = MEControllerProtocol.REST_HTTP;
+			break;
+		default:
+			throw new IllegalStateException();
+		}
 
-		ControllerInteraction.retrieveController(Protocol.RMI, host, port, this);
+		ControllerInteraction.retrieveController(protocol, host, port, this);
 	}
 
 	@Override
@@ -136,8 +147,6 @@ public class MECController extends FlowPanel implements ValueChangeHandler<Strin
 			view.getCbProtocol().setSelectedIndex(0);
 		} else if (protocol.equals("http://")) {
 			view.getCbProtocol().setSelectedIndex(1);
-		} else if (protocol.equals("https://")) {
-			view.getCbProtocol().setSelectedIndex(2);
 		}
 
 		view.getTbHostname().setText(Manager.get().getCurrentScenarioDetails().getControllerHost());

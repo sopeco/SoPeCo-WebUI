@@ -1,7 +1,7 @@
 package org.sopeco.frontend.client.layout.dialog;
 
 import org.sopeco.frontend.client.R;
-import org.sopeco.frontend.client.model.Manager;
+import org.sopeco.frontend.client.manager.Manager;
 import org.sopeco.frontend.client.widget.SmallTableLabel;
 import org.sopeco.frontend.shared.helper.Base64;
 import org.sopeco.gwt.widgets.ExtendedTextBox;

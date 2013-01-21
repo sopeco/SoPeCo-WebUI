@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 
 import org.sopeco.frontend.client.R;
 import org.sopeco.frontend.client.extensions.Extensions;
-import org.sopeco.frontend.client.model.ScenarioManager;
+import org.sopeco.frontend.client.manager.ScenarioManager;
 import org.sopeco.frontend.shared.helper.ExtensionTypes;
 import org.sopeco.frontend.shared.helper.Metering;
 import org.sopeco.gwt.widgets.EditableText;

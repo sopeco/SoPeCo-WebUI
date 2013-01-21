@@ -1,4 +1,4 @@
-package org.sopeco.frontend.client.model;
+package org.sopeco.frontend.client.manager;
 
 import java.util.logging.Logger;
 
@@ -7,7 +7,7 @@ import org.sopeco.frontend.client.layout.MainLayoutPanel;
 import org.sopeco.frontend.client.layout.center.CenterType;
 import org.sopeco.frontend.client.layout.center.specification.SpecificationController;
 import org.sopeco.frontend.client.layout.popups.Message;
-import org.sopeco.frontend.client.model.helper.Duplicator;
+import org.sopeco.frontend.client.manager.helper.Duplicator;
 import org.sopeco.frontend.client.rpc.RPC;
 import org.sopeco.frontend.shared.builder.ScenarioDefinitionBuilder;
 import org.sopeco.frontend.shared.entities.ScenarioDetails;

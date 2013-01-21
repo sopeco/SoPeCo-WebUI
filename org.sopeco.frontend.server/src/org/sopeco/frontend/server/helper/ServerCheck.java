@@ -10,12 +10,14 @@ import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.rmi.registry.Registry;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
 import org.sopeco.engine.measurementenvironment.IMeasurementEnvironmentController;
+import org.sopeco.engine.measurementenvironment.connector.RestMEConnector;
+import org.sopeco.frontend.shared.helper.MEControllerProtocol;
 
 /**
  * 
@@ -27,10 +29,6 @@ public final class ServerCheck {
 	private static final Logger LOGGER = Logger.getLogger(ServerCheck.class.getName());
 
 	private static final int SOCKET_TIMEOUT = 1000;
-
-	private static final int PORT_RMI = Registry.REGISTRY_PORT;
-	private static final int PORT_HTTP = 80;
-	private static final int PORT_HTTPS = 443;
 
 	private ServerCheck() {
 	}
@@ -54,47 +52,32 @@ public final class ServerCheck {
 			socket.close();
 			return true;
 		} catch (UnknownHostException e) {
-			LOGGER.info("unknown host '" + host + ":" + port + "'");
+			LOGGER.info("Unknown host '" + host + ":" + port + "'");
 		} catch (IOException e) {
 			LOGGER.info("IOException at connection to '" + host + ":" + port + "'");
 		}
 		return false;
 	}
 
-	/**
-	 * Checked using the {@link #isPortReachable(String, int)} method whether
-	 * the port 1099 is open.
-	 * 
-	 * @param host
-	 *            target host
-	 * @return
-	 */
-	public static boolean serverHasRMI(String host) {
-		return isPortReachable(host, PORT_RMI);
+	public static List<String> getController(MEControllerProtocol protocol, String host, int port) {
+		switch (protocol) {
+		case REST_HTTP:
+			return getRestMEController(host, port);
+		case RMI:
+			return getRmiMEController(host, port);
+		default:
+			throw new IllegalStateException(protocol + " is not valid.");
+		}
 	}
 
-	/**
-	 * Checked using the {@link #isPortReachable(String, int)} method whether
-	 * the port 1099 is open.
-	 * 
-	 * @param host
-	 *            target host
-	 * @return
-	 */
-	public static boolean serverHasHTTP(String host) {
-		return isPortReachable(host, PORT_HTTP);
-	}
-
-	/**
-	 * Checked using the {@link #isPortReachable(String, int)} method whether
-	 * the port 1099 is open.
-	 * 
-	 * @param host
-	 *            target host
-	 * @return
-	 */
-	public static boolean serverHasHTTPS(String host) {
-		return isPortReachable(host, PORT_HTTPS);
+	private static List<String> getRestMEController(String host, int port) {
+		try {
+			return Arrays.asList(RestMEConnector.getAvailableMEController("http://" + host + ":" + port + "/"));
+		} catch (Exception x) {
+			//TODO Exception handling
+			x.printStackTrace();
+			return new ArrayList<String>();
+		}
 	}
 
 	/**
@@ -107,7 +90,7 @@ public final class ServerCheck {
 	 *            target port
 	 * @return
 	 */
-	public static List<String> getRMIController(String host, int port) {
+	private static List<String> getRmiMEController(String host, int port) {
 		try {
 			String prefix = "rmi://";
 			if (host.length() <= prefix.length() || !host.substring(0, prefix.length()).equals(prefix)) {

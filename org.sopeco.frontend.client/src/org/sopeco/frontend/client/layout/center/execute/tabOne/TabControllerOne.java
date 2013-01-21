@@ -1,13 +1,17 @@
 package org.sopeco.frontend.client.layout.center.execute.tabOne;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import org.sopeco.frontend.client.layout.center.execute.ExecuteController;
 import org.sopeco.frontend.client.layout.center.execute.TabController;
 import org.sopeco.frontend.client.layout.popups.Message;
-import org.sopeco.frontend.client.model.Manager;
-import org.sopeco.frontend.client.model.ScenarioManager;
+import org.sopeco.frontend.client.manager.Manager;
+import org.sopeco.frontend.client.manager.ScenarioManager;
 import org.sopeco.frontend.client.rpc.RPC;
 import org.sopeco.frontend.shared.entities.FrontendScheduledExperiment;
 
@@ -90,13 +94,32 @@ public class TabControllerOne extends TabController implements ClickHandler {
 		}
 	}
 
+	private Map<String, List<String>> createFilterMap() {
+		Map<String, List<String>> filterMap = new HashMap<String, List<String>>();
+
+		for (String spec : view.getSelectionPanel().getTreeItems().keySet()) {
+			for (String esd : view.getSelectionPanel().getTreeItems().get(spec).keySet()) {
+				if (!view.getSelectionPanel().getTreeItems().get(spec).get(esd).getCheckBox().getValue()) {
+					if (!filterMap.containsKey(spec)) {
+						filterMap.put(spec, new ArrayList<String>());
+					}
+					filterMap.get(spec).add(esd);
+				}
+			}
+		}
+
+		return filterMap;
+	}
+
 	private void scheduleExperiment() {
 		FrontendScheduledExperiment scheduledExperiment = new FrontendScheduledExperiment();
-		scheduledExperiment.setAccount(Manager.get().getAccountDetails().getAccountName());
+		// scheduledExperiment.setAccount(Manager.get().getAccountDetails().getAccountName());
+		scheduledExperiment.setAccount(Manager.get().getSelectedDatabaseInstance().getId());
 		scheduledExperiment.setLabel(view.getEditLabel().getValue());
 		scheduledExperiment.setStartTime(getStartTime());
 		scheduledExperiment.setControllerUrl(Manager.get().getControllerUrl());
 		scheduledExperiment.setScenarioDefinition(ScenarioManager.get().getCurrentScenarioDefinition());
+		scheduledExperiment.setFilterMap(createFilterMap());
 
 		if (isRepeating()) {
 			scheduledExperiment.setRepeating(true);
@@ -121,8 +144,6 @@ public class TabControllerOne extends TabController implements ClickHandler {
 		if (view.isExecutingImmediately()) {
 			LOGGER.fine("Execute NOW");
 			// view.selectTab(2);
-		} else {
-			// view.selectTab(1);
 		}
 
 		getParentController().getTabControllerTwo().loadScheduledExperiments();

@@ -6,7 +6,7 @@ import org.sopeco.frontend.client.event.ExperimentChangedEvent;
 import org.sopeco.frontend.client.event.handler.ExperimentChangedEventHandler;
 import org.sopeco.frontend.client.layout.environment.EnvTreeItem;
 import org.sopeco.frontend.client.layout.environment.EnvironmentTree;
-import org.sopeco.frontend.client.model.ScenarioManager;
+import org.sopeco.frontend.client.manager.ScenarioManager;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 
 /**

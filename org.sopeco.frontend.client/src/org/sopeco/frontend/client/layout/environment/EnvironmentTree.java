@@ -9,7 +9,7 @@ import java.util.List;
 import org.sopeco.frontend.client.event.EventControl;
 import org.sopeco.frontend.client.event.InitialAssignmentChangedEvent;
 import org.sopeco.frontend.client.event.InitialAssignmentChangedEvent.ChangeType;
-import org.sopeco.frontend.client.model.ScenarioManager;
+import org.sopeco.frontend.client.manager.ScenarioManager;
 import org.sopeco.frontend.shared.helper.Metering;
 import org.sopeco.gwt.widgets.tree.TreeItem;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;

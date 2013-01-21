@@ -3,11 +3,12 @@ package org.sopeco.frontend.server.execute;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.sopeco.engine.status.ErrorInfo;
 import org.sopeco.engine.status.EventType;
 import org.sopeco.engine.status.ProgressInfo;
 import org.sopeco.engine.status.StatusMessage;
 import org.sopeco.frontend.server.persistence.entities.ScheduledExperiment;
-import org.sopeco.frontend.shared.helper.EventLogLite;
+import org.sopeco.frontend.shared.helper.MECLogEntry;
 
 /**
  * 
@@ -21,13 +22,13 @@ public class QueuedExperiment {
 	private long timeQueued;
 
 	private ScheduledExperiment scheduledExperiment;
-	private List<StatusMessage> eventLogList;
+	private List<StatusMessage> statusMessageList;
 
 	private ProgressInfo lastProgressInfo;
 
 	public QueuedExperiment(ScheduledExperiment pScheduledExperiment) {
 		scheduledExperiment = pScheduledExperiment;
-		eventLogList = new ArrayList<StatusMessage>();
+		statusMessageList = new ArrayList<StatusMessage>();
 	}
 
 	public ProgressInfo getLastProgressInfo() {
@@ -38,8 +39,8 @@ public class QueuedExperiment {
 		this.lastProgressInfo = pLastProgressInfo;
 	}
 
-	public List<StatusMessage> getEventLogList() {
-		return eventLogList;
+	public List<StatusMessage> getStatusMessageList() {
+		return statusMessageList;
 	}
 
 	public ScheduledExperiment getScheduledExperiment() {
@@ -70,21 +71,34 @@ public class QueuedExperiment {
 		this.timeStarted = pTimeStarted;
 	}
 
-	//TODO
-	public List<EventLogLite> getEventLogLiteList() {
-		List<EventLogLite> list = new ArrayList<EventLogLite>();
-		for (StatusMessage log : eventLogList) {
+	// TODO
+	public List<MECLogEntry> getEventLogLiteList() {
+		List<MECLogEntry> list = new ArrayList<MECLogEntry>();
+		for (StatusMessage log : statusMessageList) {
 
-			EventLogLite logLite = new EventLogLite();
+			MECLogEntry logLite = new MECLogEntry();
 			logLite.setTime(log.getTimestamp());
-			if (log.getEventType() == EventType.EXECUTE_EXPERIMENTRUN && log.getStatusInfo() != null) {
-				ProgressInfo info = (ProgressInfo) log.getStatusInfo();
-				logLite.setMessage(getStatusString(log.getEventType()) + " " + info.getRepetition() + " of "
-						+ info.getNumberOfRepetition());
-			} else {
-				logLite.setMessage(log.getEventType().toString());
+			// if (log.getEventType() == EventType.EXECUTE_EXPERIMENTRUN &&
+			// log.getStatusInfo() != null) {
+			// ProgressInfo info = (ProgressInfo) log.getStatusInfo();
+			// logLite.setMessage(getStatusString(log.getEventType()) + " " +
+			// info.getRepetition() + " of "
+			// + info.getNumberOfRepetition());
+			// } else {
+			// logLite.setMessage(log.getEventType().toString());
+			// }
+			String message = getStatusString(log.getEventType());
+			if (log.getDescription() != null && !log.getDescription().isEmpty()) {
+				message += " - " + log.getDescription();
 			}
-			logLite.setError(false);
+			logLite.setMessage(message);
+
+			if (log.getStatusInfo() != null && log.getStatusInfo() instanceof ErrorInfo) {
+				logLite.setError(true);
+				logLite.setErrorMessage(((ErrorInfo) log.getStatusInfo()).getThrowable().getMessage());
+			} else {
+				logLite.setError(false);
+			}
 
 			list.add(logLite);
 		}
@@ -92,7 +106,7 @@ public class QueuedExperiment {
 	}
 
 	// TODO
-	public String getStatusString(EventType type) {
+	public static String getStatusString(EventType type) {
 		switch (type) {
 		case ACQUIRE_MEC:
 			return "Acquiring MeasurementEnvironmentController";
@@ -112,8 +126,14 @@ public class QueuedExperiment {
 			return "Release MeasurementEnvironmentController";
 		case EXECUTION_FAILED:
 			return "Execution failed";
+		case EXPERIMENT_EXECUTION:
+			return "Experiment execution";
+		case CONNECT_TO_MEC:
+			return "Connect to MeasurementEnvironmentController";
+		case ERROR:
+			return "Error";
 		default:
-			throw new IllegalStateException();
+			throw new IllegalStateException("No eventType " + type + " expected.");
 		}
 	}
 }

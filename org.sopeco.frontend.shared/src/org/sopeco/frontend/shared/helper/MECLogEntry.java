@@ -1,5 +1,7 @@
 package org.sopeco.frontend.shared.helper;
 
+import javax.persistence.Entity;
+
 import org.sopeco.frontend.shared.push.PushSerializable;
 
 /**
@@ -7,16 +9,25 @@ import org.sopeco.frontend.shared.push.PushSerializable;
  * @author Marius Oehler
  * 
  */
-public class EventLogLite implements PushSerializable {
+public class MECLogEntry implements PushSerializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	private long time;
 	private String message;
 	private boolean error;
+	private String errorMessage;
+
+	public String getErrorMessage() {
+		return errorMessage;
+	}
+
+	public void setErrorMessage(String pErrorMessage) {
+		this.errorMessage = pErrorMessage;
+	}
 
 	/**
 	 * @return the time

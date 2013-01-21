@@ -8,10 +8,10 @@ import org.sopeco.frontend.client.helper.SimpleNotify;
 import org.sopeco.frontend.client.layout.MECController;
 import org.sopeco.frontend.client.layout.MainLayoutPanel;
 import org.sopeco.frontend.client.layout.ScenarioAddController;
+import org.sopeco.frontend.client.manager.Manager;
+import org.sopeco.frontend.client.manager.ScenarioManager;
+import org.sopeco.frontend.client.manager.Manager.ControllerStatus;
 import org.sopeco.frontend.client.mec.ControllerView;
-import org.sopeco.frontend.client.model.Manager;
-import org.sopeco.frontend.client.model.Manager.ControllerStatus;
-import org.sopeco.frontend.client.model.ScenarioManager;
 import org.sopeco.gwt.widgets.SlidePanel;
 
 import com.google.gwt.dom.client.Style.Float;

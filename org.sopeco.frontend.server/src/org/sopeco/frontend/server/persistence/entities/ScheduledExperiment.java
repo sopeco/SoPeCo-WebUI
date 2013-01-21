@@ -3,6 +3,7 @@ package org.sopeco.frontend.server.persistence.entities;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,7 +15,6 @@ import javax.persistence.NamedQuery;
 
 import org.sopeco.config.IConfiguration;
 import org.sopeco.frontend.server.execute.QueuedExperiment;
-import org.sopeco.frontend.shared.entities.RunningControllerStatus;
 import org.sopeco.frontend.shared.entities.FrontendScheduledExperiment;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 
@@ -84,6 +84,10 @@ public class ScheduledExperiment implements Serializable {
 	@Column(name = "durations")
 	private List<Long> durations;
 
+	@Lob
+	@Column(name = "filterMap")
+	private Map<String, List<String>> filterMap;
+
 	public ScheduledExperiment() {
 	}
 
@@ -99,6 +103,7 @@ public class ScheduledExperiment implements Serializable {
 		startTime = raw.getStartTime();
 		addedTime = System.currentTimeMillis();
 		durations = new ArrayList<Long>();
+		filterMap = raw.getFilterMap();
 	}
 
 	public FrontendScheduledExperiment createFrontendScheduledExperiment() {
@@ -118,13 +123,22 @@ public class ScheduledExperiment implements Serializable {
 		fse.setEnabled(active);
 		fse.setDurations(durations);
 		fse.setScenarioDefinition(scenarioDefinition);
+		fse.setFilterMap(filterMap);
 		return fse;
 	}
-	
+
 	public QueuedExperiment createQueuedExperiment() {
 		QueuedExperiment queuedExperiment = new QueuedExperiment(this);
 		queuedExperiment.setTimeQueued(System.currentTimeMillis());
 		return queuedExperiment;
+	}
+
+	public Map<String, List<String>> getFilterMap() {
+		return filterMap;
+	}
+
+	public void setFilterMap(Map<String, List<String>> filterMap) {
+		this.filterMap = filterMap;
 	}
 
 	public List<Long> getDurations() {
@@ -191,12 +205,16 @@ public class ScheduledExperiment implements Serializable {
 		this.startTime = startTime;
 	}
 
-	public String getAccount() {
+	public String getAccountId() {
 		return account;
 	}
 
-	public void setAccount(String account) {
+	public void setAccountId(String account) {
 		this.account = account;
+	}
+
+	public String getAccountName() {
+		return account.substring(account.lastIndexOf("/") + 1);
 	}
 
 	public String getControllerUrl() {

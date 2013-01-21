@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry excluding="com/google/gwt/emul/java/lang/" kind="src" output="war/WEB-INF/classes" path="src">
+	<classpathentry excluding="com/google/gwt/emul/java/lang/|com/google/gwt/animation/client/" kind="src" output="war/WEB-INF/classes" path="src">
 		<attributes>
 			<attribute name="optional" value="true"/>
 			<attribute name="maven.pomderived" value="true"/>

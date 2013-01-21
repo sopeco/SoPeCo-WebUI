@@ -2,14 +2,13 @@ package org.sopeco.frontend.server.rpc;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 import org.sopeco.config.Configuration;
 import org.sopeco.frontend.client.rpc.ExecuteRPC;
-import org.sopeco.frontend.server.execute.ControllerQueueManager;
 import org.sopeco.frontend.server.helper.ScheduleExpression;
 import org.sopeco.frontend.server.persistence.UiPersistence;
 import org.sopeco.frontend.server.persistence.entities.ScheduledExperiment;
+import org.sopeco.frontend.shared.entities.ExecutedExperimentDetails;
 import org.sopeco.frontend.shared.entities.FrontendScheduledExperiment;
 
 /**
@@ -22,7 +21,8 @@ public class ExecuteRPCImpl extends SuperRemoteServlet implements ExecuteRPC {
 	/** */
 	private static final long serialVersionUID = 1L;
 
-	private static final Logger LOGGER = Logger.getLogger(ExecuteRPCImpl.class.getName());
+	// private static final Logger LOGGER =
+	// Logger.getLogger(ExecuteRPCImpl.class.getName());
 
 	@Override
 	public void scheduleExperiment(FrontendScheduledExperiment rawScheduledExperiment) {
@@ -45,11 +45,12 @@ public class ExecuteRPCImpl extends SuperRemoteServlet implements ExecuteRPC {
 
 	@Override
 	public List<FrontendScheduledExperiment> getScheduledExperiments() {
-		String accountName = getUser().getCurrentAccount().getDbName();
+		String accountName = getUser().getCurrentAccount().getId();
 		List<ScheduledExperiment> resultList = UiPersistence.getUiProvider().loadScheduledExperimentsByAccount(
 				accountName);
 
-		//List<Long> runningExperiments = ControllerQueueManager.getRunningExperimentIds();
+		// List<Long> runningExperiments =
+		// ControllerQueueManager.getRunningExperimentIds();
 
 		List<FrontendScheduledExperiment> fseList = new ArrayList<FrontendScheduledExperiment>();
 		for (ScheduledExperiment experiment : resultList) {
@@ -62,7 +63,7 @@ public class ExecuteRPCImpl extends SuperRemoteServlet implements ExecuteRPC {
 	@Override
 	public boolean removeScheduledExperiment(long id) {
 		ScheduledExperiment exp = UiPersistence.getUiProvider().loadScheduledExperiment(id);
-		if (exp != null && exp.getAccount().equals(getUser().getCurrentAccount().getDbName())) {
+		if (exp != null && exp.getAccountId().equals(getUser().getCurrentAccount().getId())) {
 			UiPersistence.getUiProvider().removeScheduledExperiment(exp);
 			return true;
 		}
@@ -72,11 +73,19 @@ public class ExecuteRPCImpl extends SuperRemoteServlet implements ExecuteRPC {
 	@Override
 	public boolean setScheduledExperimentEnabled(long id, boolean enabled) {
 		ScheduledExperiment exp = UiPersistence.getUiProvider().loadScheduledExperiment(id);
-		if (exp != null && exp.getAccount().equals(getUser().getCurrentAccount().getDbName())) {
+		if (exp != null && exp.getAccountId().equals(getUser().getCurrentAccount().getId())) {
 			exp.setActive(enabled);
 			UiPersistence.getUiProvider().storeScheduledExperiment(exp);
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public List<ExecutedExperimentDetails> getExecutedExperimentDetails() {
+		String accountId = getUser().getCurrentAccount().getId();
+		String scenarioName = getUser().getAccountDetails().getSelectedScenario();
+
+		return UiPersistence.getUiProvider().loadExecutedExperimentDetails(accountId, scenarioName);
 	}
 }

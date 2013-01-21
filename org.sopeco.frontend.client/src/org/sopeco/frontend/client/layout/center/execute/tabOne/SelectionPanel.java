@@ -1,6 +1,9 @@
 package org.sopeco.frontend.client.layout.center.execute.tabOne;
 
-import org.sopeco.frontend.client.model.ScenarioManager;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.sopeco.frontend.client.manager.ScenarioManager;
 import org.sopeco.frontend.shared.helper.Metering;
 import org.sopeco.gwt.widgets.Headline;
 import org.sopeco.gwt.widgets.tree.Tree;
@@ -22,10 +25,12 @@ public class SelectionPanel extends FlowPanel implements ValueChangeHandler<Bool
 	private static final String TREE_ITEM_EXPERIMENT_CSS = "treeItem-Experiment";
 	private static final String TREE_ITEM_SPECIFICATION_CSS = "treeItem-Specification";
 	private static final String CSS_CLASS = "executeSelectionPanel";
-	
+
 	private Tree tree;
 	private TreeItem root;
 	private Headline headline;
+
+	private Map<String, Map<String, SelectionTreeItem>> treeItems;
 
 	public SelectionPanel() {
 		init();
@@ -36,6 +41,8 @@ public class SelectionPanel extends FlowPanel implements ValueChangeHandler<Bool
 
 		tree = new Tree();
 
+		treeItems = new HashMap<String, Map<String, SelectionTreeItem>>();
+
 		headline = new Headline("Executed ExperimentSeries");
 		add(headline);
 		add(tree);
@@ -43,6 +50,8 @@ public class SelectionPanel extends FlowPanel implements ValueChangeHandler<Bool
 
 	public void generateTree() {
 		double metering = Metering.start();
+
+		treeItems = new HashMap<String, Map<String, SelectionTreeItem>>();
 
 		root = new TreeItem("", true);
 		for (MeasurementSpecification ms : ScenarioManager.get().getCurrentScenarioDefinition()
@@ -52,16 +61,24 @@ public class SelectionPanel extends FlowPanel implements ValueChangeHandler<Bool
 			item.addStyleName(TREE_ITEM_SPECIFICATION_CSS);
 			item.addValueChangeHandler(this);
 
+			treeItems.put(ms.getName(), new HashMap<String, SelectionTreeItem>());
+
 			for (ExperimentSeriesDefinition esd : ms.getExperimentSeriesDefinitions()) {
 				SelectionTreeItem xItem = new SelectionTreeItem(esd.getName());
 				item.addItem(xItem);
 				xItem.addStyleName(TREE_ITEM_EXPERIMENT_CSS);
 				xItem.addValueChangeHandler(this);
+
+				treeItems.get(ms.getName()).put(esd.getName(), xItem);
 			}
 		}
 		tree.setRoot(root);
 
 		Metering.stop(metering);
+	}
+
+	public Map<String, Map<String, SelectionTreeItem>> getTreeItems() {
+		return treeItems;
 	}
 
 	@Override

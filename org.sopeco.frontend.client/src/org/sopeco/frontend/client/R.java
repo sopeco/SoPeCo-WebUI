@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import org.sopeco.frontend.client.helper.SimpleNotify;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
@@ -23,6 +24,12 @@ public final class R {
 
 	private static final String PAIRSEPERATOR = "=";
 
+	private static LanguageConstants languageConstants = GWT.create(LanguageConstants.class);
+	
+	public static LanguageConstants lang() {
+		return languageConstants;
+	}
+	
 	/**
 	 * Returns the string of the language file(map) which is related to the
 	 * given key.

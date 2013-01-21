@@ -3,10 +3,10 @@ package org.sopeco.frontend.client.layout;
 import org.sopeco.frontend.client.event.EventControl;
 import org.sopeco.frontend.client.event.MEControllerEvent;
 import org.sopeco.frontend.client.event.MEControllerEvent.EventType;
+import org.sopeco.frontend.client.manager.Manager;
+import org.sopeco.frontend.client.manager.ScenarioManager;
+import org.sopeco.frontend.client.manager.Manager.ControllerStatus;
 import org.sopeco.frontend.client.mec.ControllerView;
-import org.sopeco.frontend.client.model.Manager;
-import org.sopeco.frontend.client.model.Manager.ControllerStatus;
-import org.sopeco.frontend.client.model.ScenarioManager;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -53,7 +53,7 @@ public final class MEControllerBox extends DialogBox implements ValueChangeHandl
 	}
 
 	private void save() {
-		if (!Manager.get().getControllerUrl().equals(mecController.getUrl())) {
+//		if (!Manager.get().getControllerUrl().equals(mecController.getUrl())) {
 			Manager.get().getCurrentScenarioDetails().setControllerHost(controllerView.getTbHostname().getText());
 			Manager.get().getCurrentScenarioDetails().setControllerProtocol(controllerView.getCbProtocol().getText());
 			Manager.get().getCurrentScenarioDetails()
@@ -64,7 +64,7 @@ public final class MEControllerBox extends DialogBox implements ValueChangeHandl
 			EventControl.get().fireEvent(new MEControllerEvent(EventType.CONTROLLER_CHANGED));
 
 			ScenarioManager.get().loadDefinitionFromCurrentController();
-		}
+//		}
 		// Manager.get().setControllerLastCheck(latestCheckRun);
 		Manager.get().setControllerLastStatus(ControllerStatus.ONLINE);
 

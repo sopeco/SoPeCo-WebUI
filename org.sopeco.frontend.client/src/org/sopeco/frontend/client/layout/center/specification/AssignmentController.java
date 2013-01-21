@@ -3,7 +3,7 @@ package org.sopeco.frontend.client.layout.center.specification;
 import java.util.TreeMap;
 
 import org.sopeco.frontend.client.layout.popups.Message;
-import org.sopeco.frontend.client.model.ScenarioManager;
+import org.sopeco.frontend.client.manager.ScenarioManager;
 import org.sopeco.frontend.client.widget.grid.EditGridHandler;
 import org.sopeco.frontend.client.widget.grid.EditGridItem;
 import org.sopeco.frontend.shared.helper.Metering;

@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 import org.sopeco.config.Configuration;
 import org.sopeco.config.IConfiguration;
 import org.sopeco.config.exception.ConfigurationException;
+import org.sopeco.engine.status.ErrorInfo;
 import org.sopeco.engine.status.EventType;
 import org.sopeco.engine.status.IStatusListener;
 import org.sopeco.engine.status.ProgressInfo;
@@ -20,6 +21,7 @@ import org.sopeco.frontend.server.persistence.UiPersistence;
 import org.sopeco.frontend.server.persistence.entities.ScheduledExperiment;
 import org.sopeco.frontend.server.rpc.PushRPCImpl;
 import org.sopeco.frontend.server.user.UserManager;
+import org.sopeco.frontend.shared.entities.ExecutedExperimentDetails;
 import org.sopeco.frontend.shared.entities.RunningControllerStatus;
 import org.sopeco.frontend.shared.push.PushListPackage;
 import org.sopeco.frontend.shared.push.PushObjectPackage;
@@ -43,7 +45,6 @@ public class ControllerQueue implements IStatusListener {
 	/** The experiment which is performed at the moment. */
 	private QueuedExperiment runningExperiment;
 
-	private String currentToken;
 	private Future<?> executeStatus;
 
 	private String controllerURL;
@@ -66,6 +67,7 @@ public class ControllerQueue implements IStatusListener {
 	public ControllerQueue(String pControllerURL) {
 		experimentQueue = new ArrayList<QueuedExperiment>();
 		controllerURL = pControllerURL;
+
 		StatusBroker.getManager(pControllerURL).addStatusListener(this);
 	}
 
@@ -152,76 +154,19 @@ public class ControllerQueue implements IStatusListener {
 			config.overwrite((Configuration) runningExperiment.getScheduledExperiment().getConfiguration());
 			config.setMeasurementControllerURI(runningExperiment.getScheduledExperiment().getControllerUrl());
 			config.setScenarioDescription(runningExperiment.getScheduledExperiment().getScenarioDefinition());
-			config.setProperty(IConfiguration.SENDING_STATUS_MESSAGES, "true");
-			config.setProperty(IConfiguration.CONF_MEC_CONNECTION_TYPE, "REST");
+			config.setProperty(IConfiguration.EXECUTION_EXPERIMENT_FILTER, runningExperiment.getScheduledExperiment()
+					.getFilterMap());
 
 			SoPeCoRunner runner = new SoPeCoRunner(randomId);
 			executeStatus = getThreadPool().submit(runner);
 
 			runningExperiment.setTimeStarted(System.currentTimeMillis());
 
-			currentToken = waitForToken(randomId);
-
-			ProgressWatcher.get().continueLoop();
-
 			notifyAccount();
 			// notifyStatusChange(EStatus.START_MEASUREMENT.toString());
 		} catch (ConfigurationException e) {
 			throw new RuntimeException(e);
 		}
-	}
-
-	/**
-	 * Waiting for the token string with which the status of the current SoPeCo
-	 * Runner can be requested.
-	 * 
-	 * @param id
-	 *            which is used for the configuration of the runner
-	 * @return token string or null if a timeout is exceeded
-	 */
-	private String waitForToken(String id) {
-		LOGGER.info("Waiting for Token..");
-		int loopLimit = 100;
-		String token = null;
-		while (token == null && loopLimit-- > 0) {
-			try {
-				Thread.sleep(10);
-			} catch (Exception e) {
-			}
-			// token = StatusBroker.get().getToken(id +
-			// runningExperiment.getScheduledExperiment().getControllerUrl());
-			token = "dummy";
-		}
-		return token;
-	}
-
-	/**
-	 * Returns the current token with which the status can be requested of the
-	 * {@link StatusBroker#getManager(String)} or null if no status is
-	 * available.
-	 * 
-	 * @return token string
-	 */
-	public String getCurrentToken() {
-		return currentToken;
-	}
-
-	/**
-	 * Ends the execution of the current experiment and stores information about
-	 * it.
-	 */
-	synchronized void finished() {
-		LOGGER.info("Experiment id:" + runningExperiment.getScheduledExperiment().getId() + " finished on: "
-				+ runningExperiment.getScheduledExperiment().getControllerUrl());
-
-		runningExperiment.setTimeEnded(System.currentTimeMillis());
-		saveDurationInExperiment();
-
-		notifyAccount();
-
-		executeStatus = null;
-		runningExperiment = null;
-		checkQueue();
 	}
 
 	/**
@@ -256,7 +201,7 @@ public class ControllerQueue implements IStatusListener {
 	 * @param statusMessage
 	 */
 	public void nextStatusMessage(StatusMessage statusMessage) {
-		runningExperiment.getEventLogList().add(statusMessage);
+		runningExperiment.getStatusMessageList().add(statusMessage);
 		if (statusMessage.getStatusInfo() != null && statusMessage.getStatusInfo() instanceof ProgressInfo) {
 			runningExperiment.setLastProgressInfo((ProgressInfo) statusMessage.getStatusInfo());
 		}
@@ -301,10 +246,76 @@ public class ControllerQueue implements IStatusListener {
 	// #################################### \/ \/ \/ checken \/ \/ \/ \/ \/ \/
 	//
 
+	public void check() {
+		if (!isExecuting() && runningExperiment != null) {
+			LOGGER.fine("Thread finished but experiment was not completed. Adding MEASUREMENT_FINISHED event.");
+			StatusMessage sm = new StatusMessage();
+			sm.setEventType(EventType.MEASUREMENT_FINISHED);
+			onNewStatus(sm);
+		}
+	}
+
 	@Override
 	public void onNewStatus(StatusMessage statusMessage) {
 		LOGGER.info("New Status on '" + this.controllerURL + "': " + statusMessage.getEventType());
 		nextStatusMessage(statusMessage);
+
+		if (statusMessage.getEventType() == EventType.EXECUTION_FAILED) {
+			System.out.println();
+		}
+
+		if (statusMessage.getEventType() == EventType.MEASUREMENT_FINISHED) {
+			finished();
+		}
+	}
+
+	/**
+	 * Ends the execution of the current experiment and stores information about
+	 * it.
+	 */
+	private synchronized void finished() {
+		LOGGER.info("Experiment id:" + runningExperiment.getScheduledExperiment().getId() + " finished on: "
+				+ runningExperiment.getScheduledExperiment().getControllerUrl());
+
+		runningExperiment.setTimeEnded(System.currentTimeMillis());
+		saveDurationInExperiment();
+
+		saveLogInHistory();
+
+		notifyAccount();
+
+		executeStatus = null;
+		runningExperiment = null;
+		checkQueue();
+	}
+
+	private void saveLogInHistory() {
+		boolean hasError = false;
+		for (StatusMessage sm : runningExperiment.getStatusMessageList()) {
+			if (sm.getStatusInfo() != null && sm.getStatusInfo() instanceof ErrorInfo) {
+				hasError = true;
+				break;
+			}
+		}
+
+		ExecutedExperimentDetails eed = new ExecutedExperimentDetails();
+		eed.setEventLog(runningExperiment.getEventLogLiteList());
+		eed.setSuccessful(!hasError);
+		eed.setTimeFinished(runningExperiment.getTimeEnded());
+		eed.setTimeStarted(runningExperiment.getTimeStarted());
+		eed.setName(runningExperiment.getScheduledExperiment().getLabel());
+		eed.setControllerURL(runningExperiment.getScheduledExperiment().getControllerUrl());
+
+		eed.setAccountId(runningExperiment.getScheduledExperiment().getAccountId());
+		eed.setScenarioName(runningExperiment.getScheduledExperiment().getScenarioDefinition().getScenarioName());
+		// AccountDetails account =
+		// UiPersistence.getUiProvider().loadAccountDetails(
+		// runningExperiment.getScheduledExperiment().getAccountId());
+		// account.getScenarioDetail(runningExperiment.getScheduledExperiment().getScenarioDefinition().getScenarioName())
+		// .getExecutedExperimentsHistory().add(eed);
+		// UiPersistence.getUiProvider().storeAccountDetails(account);
+
+		UiPersistence.getUiProvider().storeExecutedExperimentDetails(eed);
 	}
 
 	/**
@@ -314,13 +325,14 @@ public class ControllerQueue implements IStatusListener {
 	public RunningControllerStatus createControllerStatusPackage() {
 		RunningControllerStatus cce = new RunningControllerStatus();
 
-		cce.setAccount(runningExperiment.getScheduledExperiment().getAccount());
+		cce.setAccount(runningExperiment.getScheduledExperiment().getAccountId());
 		cce.setScenario(runningExperiment.getScheduledExperiment().getScenarioDefinition().getScenarioName());
 		cce.setTimeStart(runningExperiment.getTimeStarted());
 		cce.setLabel(runningExperiment.getScheduledExperiment().getLabel());
 		cce.setEventLogList(runningExperiment.getEventLogLiteList());
 
-		if (runningExperiment.getEventLogList().get(runningExperiment.getEventLogList().size() - 1).getEventType() == EventType.MEASUREMENT_FINISHED) {
+		if (runningExperiment.getStatusMessageList().get(runningExperiment.getStatusMessageList().size() - 1)
+				.getEventType() == EventType.MEASUREMENT_FINISHED) {
 			cce.setHasFinished(true);
 		} else {
 			cce.setHasFinished(false);
@@ -351,7 +363,7 @@ public class ControllerQueue implements IStatusListener {
 	 */
 	private void notifyAccount() {
 		List<ScheduledExperiment> resultList = UiPersistence.getUiProvider().loadScheduledExperimentsByAccount(
-				runningExperiment.getScheduledExperiment().getAccount());
+				runningExperiment.getScheduledExperiment().getAccountId());
 
 		ArrayList<PushSerializable> fseList = new ArrayList<PushSerializable>();
 		for (ScheduledExperiment experiment : resultList) {
@@ -364,7 +376,7 @@ public class ControllerQueue implements IStatusListener {
 
 		for (String sId : UserManager.getAllUsers().keySet()) {
 			DatabaseInstance db = UserManager.getUser(sId).getCurrentAccount();
-			if (db != null && db.getDbName().equals(runningExperiment.getScheduledExperiment().getAccount())) {
+			if (db != null && db.getDbName().equals(runningExperiment.getScheduledExperiment().getAccountId())) {
 				PushRPCImpl.push(sId, listPackage);
 			}
 		}

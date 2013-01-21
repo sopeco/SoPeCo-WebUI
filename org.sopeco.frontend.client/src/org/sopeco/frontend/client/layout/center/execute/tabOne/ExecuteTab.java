@@ -1,10 +1,12 @@
 package org.sopeco.frontend.client.layout.center.execute.tabOne;
 
 import org.sopeco.frontend.client.R;
-import org.sopeco.frontend.client.model.Manager;
+import org.sopeco.frontend.client.LanguageConstants;
+import org.sopeco.frontend.client.manager.Manager;
 import org.sopeco.gwt.widgets.EditableText;
 import org.sopeco.gwt.widgets.Headline;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -36,6 +38,8 @@ public class ExecuteTab extends FlowPanel implements ValueChangeHandler<Boolean>
 	private RepeatPanel repeatTable;
 	private SelectionPanel selectionPanel;
 
+	private LanguageConstants r = GWT.create(LanguageConstants.class);
+	
 	public ExecuteTab() {
 		init();
 	}
@@ -55,7 +59,7 @@ public class ExecuteTab extends FlowPanel implements ValueChangeHandler<Boolean>
 		editLabel = new EditableText("My Scheduling");
 		editController = new EditableText(Manager.get().getControllerUrl());
 		editController.setEditable(false);
-		btnExecute = new Button(R.get("StoreExperiment"));
+		btnExecute = new Button(R.lang().executeExperiment());
 
 		rdioOnReady = new RadioButton("execution");
 		rdioSchedule = new RadioButton("execution");
@@ -111,6 +115,11 @@ public class ExecuteTab extends FlowPanel implements ValueChangeHandler<Boolean>
 		if (event.getSource() == rdioOnReady || event.getSource() == rdioSchedule) {
 			scheduleConfTable.setVisible(rdioSchedule.getValue());
 			repeatTable.setVisible(rdioSchedule.getValue() && scheduleConfTable.getCbRepeat().getValue());
+			if (rdioOnReady.getValue()) {
+				btnExecute.setText(R.lang().executeExperiment());
+			} else {
+				btnExecute.setText(R.lang().scheduleExperiment());
+			}
 		} else if (event.getSource() == scheduleConfTable.getCbRepeat()) {
 			repeatTable.setVisible(scheduleConfTable.getCbRepeat().getValue());
 		}

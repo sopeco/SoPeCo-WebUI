@@ -41,6 +41,10 @@ public final class ExecuteScheduler {
 		try {
 			List<ScheduledExperiment> experimentList = UiPersistence.getUiProvider().loadAllScheduledExperiments();
 
+			for (ControllerQueue queue : ControllerQueueManager.getAllQueues()) {
+				queue.check();
+			}
+			
 			for (ScheduledExperiment experiment : experimentList) {
 				if (experiment.getNextExecutionTime() < System.currentTimeMillis() && experiment.isActive()) {
 					// Experiment will be executed
@@ -65,7 +69,7 @@ public final class ExecuteScheduler {
 	 */
 	private void queueExperiment(ScheduledExperiment experiment) {
 		LOGGER.info("Insert experiment '" + experiment.getLabel() + "' (id: " + experiment.getId() + " - account: "
-				+ experiment.getAccount() + ") in queue");
+				+ experiment.getAccountId() + ") in queue");
 
 		ControllerQueueManager.get(experiment.getControllerUrl()).addExperiment(experiment.createQueuedExperiment());
 

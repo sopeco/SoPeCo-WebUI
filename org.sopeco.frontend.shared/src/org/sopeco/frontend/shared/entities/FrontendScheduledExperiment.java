@@ -1,6 +1,7 @@
 package org.sopeco.frontend.shared.entities;
 
 import java.util.List;
+import java.util.Map;
 
 import org.sopeco.frontend.shared.push.PushSerializable;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
@@ -48,6 +49,16 @@ public class FrontendScheduledExperiment implements PushSerializable {
 	private List<Long> durations;
 
 	private boolean isRunning;
+
+	private Map<String, List<String>> filterMap;
+
+	public Map<String, List<String>> getFilterMap() {
+		return filterMap;
+	}
+
+	public void setFilterMap(Map<String, List<String>> filterMap) {
+		this.filterMap = filterMap;
+	}
 
 	public boolean isRunning() {
 		return isRunning;

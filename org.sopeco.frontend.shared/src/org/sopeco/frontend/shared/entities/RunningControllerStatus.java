@@ -2,7 +2,7 @@ package org.sopeco.frontend.shared.entities;
 
 import java.util.List;
 
-import org.sopeco.frontend.shared.helper.EventLogLite;
+import org.sopeco.frontend.shared.helper.MECLogEntry;
 import org.sopeco.frontend.shared.push.PushSerializable;
 
 /**
@@ -24,14 +24,14 @@ public class RunningControllerStatus implements PushSerializable {
 	private String scenario;
 	private float progress;
 	
-	private List<EventLogLite> eventLogList;
+	private List<MECLogEntry> eventLogList;
 
 	private boolean hasFinished;
 
 	/**
 	 * @return the eventLogList
 	 */
-	public List<EventLogLite> getEventLogList() {
+	public List<MECLogEntry> getEventLogList() {
 		return eventLogList;
 	}
 
@@ -39,7 +39,7 @@ public class RunningControllerStatus implements PushSerializable {
 	 * @param eventLogList
 	 *            the eventLogList to set
 	 */
-	public void setEventLogList(List<EventLogLite> eventLogList) {
+	public void setEventLogList(List<MECLogEntry> eventLogList) {
 		this.eventLogList = eventLogList;
 	}
 

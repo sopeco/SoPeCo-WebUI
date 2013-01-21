@@ -13,8 +13,8 @@ import org.sopeco.frontend.client.layout.center.specification.SpecificationContr
 import org.sopeco.frontend.client.layout.center.visualization.VisualizationController;
 import org.sopeco.frontend.client.layout.navigation.NavigationController;
 import org.sopeco.frontend.client.layout.navigation.NavigationView;
-import org.sopeco.frontend.client.model.Manager;
-import org.sopeco.frontend.client.model.ScenarioManager;
+import org.sopeco.frontend.client.manager.Manager;
+import org.sopeco.frontend.client.manager.ScenarioManager;
 import org.sopeco.frontend.shared.helper.Metering;
 
 import com.google.gwt.core.client.GWT;

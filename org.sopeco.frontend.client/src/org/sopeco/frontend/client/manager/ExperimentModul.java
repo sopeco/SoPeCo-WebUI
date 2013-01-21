@@ -1,4 +1,4 @@
-package org.sopeco.frontend.client.model;
+package org.sopeco.frontend.client.manager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +13,7 @@ import org.sopeco.frontend.client.event.handler.ExperimentChangedEventHandler;
 import org.sopeco.frontend.client.extensions.Extensions;
 import org.sopeco.frontend.client.layout.MainLayoutPanel;
 import org.sopeco.frontend.client.layout.center.experiment.ExperimentController;
-import org.sopeco.frontend.client.model.helper.Duplicator;
+import org.sopeco.frontend.client.manager.helper.Duplicator;
 import org.sopeco.frontend.shared.builder.SimpleEntityFactory;
 import org.sopeco.frontend.shared.helper.ExtensionTypes;
 import org.sopeco.frontend.shared.helper.Metering;

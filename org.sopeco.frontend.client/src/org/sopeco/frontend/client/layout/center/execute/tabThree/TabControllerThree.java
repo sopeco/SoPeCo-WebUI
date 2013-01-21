@@ -7,7 +7,7 @@ import org.sopeco.frontend.client.layout.center.execute.ExecuteController;
 import org.sopeco.frontend.client.layout.center.execute.TabController;
 import org.sopeco.frontend.shared.entities.FrontendScheduledExperiment;
 import org.sopeco.frontend.shared.entities.RunningControllerStatus;
-import org.sopeco.frontend.shared.helper.EventLogLite;
+import org.sopeco.frontend.shared.helper.MECLogEntry;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.NumberFormat;
@@ -87,8 +87,12 @@ public class TabControllerThree extends TabController {
 		tabView.getStatusPanel().clearLog();
 		tabView.getStatusPanel().addLogText(new HTML("<b>Executing '" + experiment.getLabel() + "'</b>"));
 
-		for (EventLogLite log : experiment.getEventLogList()) {
+		for (MECLogEntry log : experiment.getEventLogList()) {
 			HTML html = new HTML(dft.format(new Date(log.getTime())) + ": " + log.getMessage());
+			if (log.isError()) {
+				html.addStyleName("errorMessage");
+				html.setHTML("<b>" + html.getHTML() + "</b><br>" + log.getErrorMessage());
+			}
 			tabView.getStatusPanel().addLogText(html);
 		}
 

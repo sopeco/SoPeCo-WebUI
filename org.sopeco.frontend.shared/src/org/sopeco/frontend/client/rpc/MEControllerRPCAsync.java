@@ -2,6 +2,7 @@ package org.sopeco.frontend.client.rpc;
 
 import java.util.List;
 
+import org.sopeco.frontend.shared.helper.MEControllerProtocol;
 import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
 import org.sopeco.persistence.entities.definition.ParameterRole;
 
@@ -16,7 +17,7 @@ public interface MEControllerRPCAsync {
 
 	void checkControllerStatus(String url, AsyncCallback<Integer> callback);
 
-//	void getMEControllerList(AsyncCallback<List<String>> callback);
+	// void getMEControllerList(AsyncCallback<List<String>> callback);
 
 	void getValidUrlPattern(AsyncCallback<String[]> callback);
 
@@ -41,5 +42,6 @@ public interface MEControllerRPCAsync {
 
 	void isPortReachable(String host, int port, AsyncCallback<Boolean> callback);
 
-	void getRMIController(String host, int port, AsyncCallback<List<String>> callback);
+	void getController(MEControllerProtocol protocol, String host, int port,
+			AsyncCallback<List<String>> callback);
 }

@@ -7,7 +7,7 @@ import java.util.TreeSet;
 
 import org.sopeco.frontend.client.extensions.Extensions;
 import org.sopeco.frontend.client.layout.center.experiment.assignment.AssignmentController;
-import org.sopeco.frontend.client.model.ScenarioManager;
+import org.sopeco.frontend.client.manager.ScenarioManager;
 import org.sopeco.frontend.shared.helper.ExtensionTypes;
 import org.sopeco.gwt.widgets.ComboBox;
 import org.sopeco.persistence.entities.definition.ConstantValueAssignment;

@@ -2,7 +2,7 @@ package org.sopeco.frontend.client.layout;
 
 import org.sopeco.frontend.client.R;
 import org.sopeco.frontend.client.helper.SimpleNotify;
-import org.sopeco.frontend.client.model.ScenarioManager;
+import org.sopeco.frontend.client.manager.ScenarioManager;
 import org.sopeco.frontend.client.resources.FrontEndResources;
 import org.sopeco.gwt.widgets.ExtendedTextBox;
 import org.sopeco.gwt.widgets.Headline;

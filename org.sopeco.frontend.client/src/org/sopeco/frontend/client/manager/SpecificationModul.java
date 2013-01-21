@@ -1,4 +1,4 @@
-package org.sopeco.frontend.client.model;
+package org.sopeco.frontend.client.manager;
 
 import java.util.logging.Logger;
 

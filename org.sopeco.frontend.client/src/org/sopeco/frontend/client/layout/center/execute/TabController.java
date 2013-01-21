@@ -1,6 +1,6 @@
 package org.sopeco.frontend.client.layout.center.execute;
 
-import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Panel;
 
 /**
  * 
@@ -15,7 +15,7 @@ public abstract class TabController {
 		executeController = pExecuteController;
 	}
 
-	public abstract FlowPanel getView();
+	public abstract Panel getView();
 
 	/**
 	 * This method is executed when the tab is selected.

@@ -6,6 +6,7 @@ import org.sopeco.frontend.client.helper.INotifyHandler;
 import org.sopeco.frontend.client.helper.INotifyHandler.Result;
 import org.sopeco.frontend.client.layout.popups.Message;
 import org.sopeco.frontend.client.rpc.RPC;
+import org.sopeco.frontend.shared.helper.MEControllerProtocol;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -21,13 +22,10 @@ public final class ControllerInteraction {
 	public static final String KEY_RETRIEVE_MEC = "KEY_RETRIEVE_MEC";
 
 	/**
-	 * Enumeration of the supported protocols, which can be used to get the
-	 * running controller.
+	 * Default ports of the MEController, ordered by {@link Protocol} (RMI,
+	 * HTTP).
 	 */
-	public enum Protocol {
-		/** */
-		RMI
-	}
+	public static final int[] DEFAULT_PORTS = new int[] { 1099, 1300 };
 
 	private ControllerInteraction() {
 	}
@@ -42,7 +40,8 @@ public final class ControllerInteraction {
 	 * @param handler
 	 *            event that is called after the result was determined
 	 */
-	public static void isPortReachable(String host, int port, final INotifyHandler<Boolean> handler) {
+	public static void isPortReachable(String host, int port,
+			final INotifyHandler<Boolean> handler) {
 		final double myId = Math.random();
 		checkId = myId;
 
@@ -69,31 +68,31 @@ public final class ControllerInteraction {
 		});
 	}
 
-	public static void retrieveController(Protocol prot, final String host, final int port,
+	public static void retrieveController(MEControllerProtocol protocol, final String host, final int port,
 			final INotifyHandler<String[]> handler) {
-		if (prot == Protocol.RMI) {
-			RPC.getMEControllerRPC().getRMIController(host, port, new AsyncCallback<List<String>>() {
 
-				@Override
-				public void onFailure(Throwable caught) {
-					Message.error(caught.getMessage());
-					Result<String[]> callResult = new Result<String[]>(false, null);
-					handler.call(callResult);
+		RPC.getMEControllerRPC().getController(protocol, host, port, new AsyncCallback<List<String>>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				Message.error(caught.getMessage());
+				Result<String[]> callResult = new Result<String[]>(false, null);
+				handler.call(callResult);
+			}
+
+			@Override
+			public void onSuccess(List<String> result) {
+				if (result == null) {
+					handler.call(null);
+					return;
 				}
 
-				@Override
-				public void onSuccess(List<String> result) {
-					if (result == null) {
-						handler.call(null);
-						return;
-					}
+				String[] resultArray = result.toArray(new String[0]);
+				Result<String[]> callResult = new Result<String[]>(true, resultArray, KEY_RETRIEVE_MEC);
+				handler.call(callResult);
+			}
+		});
 
-					String[] resultArray = result.toArray(new String[0]);
-					Result<String[]> callResult = new Result<String[]>(true, resultArray, KEY_RETRIEVE_MEC);
-					handler.call(callResult);
-				}
-			});
-		}
 	}
 
 }

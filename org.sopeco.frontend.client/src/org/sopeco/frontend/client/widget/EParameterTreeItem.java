@@ -4,7 +4,7 @@ import java.util.logging.Logger;
 
 import org.sopeco.frontend.client.R;
 import org.sopeco.frontend.client.layout.popups.Message;
-import org.sopeco.frontend.client.model.ScenarioManager;
+import org.sopeco.frontend.client.manager.ScenarioManager;
 import org.sopeco.frontend.client.rpc.RPC;
 import org.sopeco.persistence.dataset.util.ParameterType;
 import org.sopeco.persistence.entities.definition.ParameterRole;

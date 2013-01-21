@@ -8,6 +8,7 @@
 		<class>org.sopeco.frontend.server.persistence.entities.MEControllerUrl</class>
 		<class>org.sopeco.frontend.shared.entities.AccountDetails</class>
 		<class>org.sopeco.frontend.server.persistence.entities.ScheduledExperiment</class>
+		<class>org.sopeco.frontend.shared.entities.ExecutedExperimentDetails</class>
 		
 		<properties>
 			

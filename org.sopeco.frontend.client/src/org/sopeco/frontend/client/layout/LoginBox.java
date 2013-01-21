@@ -14,7 +14,7 @@ import org.sopeco.frontend.client.layout.popups.InputDialog.Icon;
 import org.sopeco.frontend.client.layout.popups.InputDialogHandler;
 import org.sopeco.frontend.client.layout.popups.Loader;
 import org.sopeco.frontend.client.layout.popups.Message;
-import org.sopeco.frontend.client.model.Manager;
+import org.sopeco.frontend.client.manager.Manager;
 import org.sopeco.frontend.client.resources.FrontEndResources;
 import org.sopeco.frontend.client.rpc.RPC;
 import org.sopeco.frontend.shared.entities.AccountDetails;
@@ -222,6 +222,8 @@ public class LoginBox extends DialogBox implements ClickHandler, Deactivatable, 
 				if (instance == null) {
 					return;
 				}
+
+				Manager.get().setSelectedDatabaseIndex(listboxDatabases.getSelectedIndex());
 
 				Cookies.setCookie(COOKIE_DATABASE, instance.getDbName());
 

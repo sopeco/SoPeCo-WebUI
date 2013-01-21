@@ -2,6 +2,7 @@ package org.sopeco.frontend.client.rpc;
 
 import java.util.List;
 
+import org.sopeco.frontend.shared.helper.MEControllerProtocol;
 import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
 import org.sopeco.persistence.entities.definition.ParameterRole;
 
@@ -39,7 +40,7 @@ public interface MEControllerRPC extends RemoteService {
 	 * 
 	 * @return List of Controller URLs
 	 */
-//	List<String> getMEControllerList();
+	// List<String> getMEControllerList();
 
 	/**
 	 * Checks the current status of a controller.
@@ -86,5 +87,5 @@ public interface MEControllerRPC extends RemoteService {
 
 	boolean isPortReachable(String host, int port);
 
-	List<String> getRMIController(String host, int port);
+	List<String> getController(MEControllerProtocol protocol, String host, int port);
 }

@@ -10,6 +10,8 @@ import javax.persistence.TypedQuery;
 
 import org.sopeco.frontend.server.persistence.entities.ScheduledExperiment;
 import org.sopeco.frontend.shared.entities.AccountDetails;
+import org.sopeco.frontend.shared.entities.ExecutedExperimentDetails;
+import org.sopeco.frontend.shared.entities.MECLog;
 import org.sopeco.persistence.exceptions.DataNotFoundException;
 
 /**
@@ -141,6 +143,36 @@ public class UiPersistenceProvider {
 		} catch (Exception e) {
 			return new ArrayList<ScheduledExperiment>();
 		} finally {
+			em.close();
+		}
+	}
+
+	public List<ExecutedExperimentDetails> loadExecutedExperimentDetails(String accountId, String scenarioName) {
+		List<ExecutedExperimentDetails> mecLogs = null;
+		EntityManager em = emf.createEntityManager();
+		try {
+			TypedQuery<ExecutedExperimentDetails> query = em.createNamedQuery("getExperiments",
+					ExecutedExperimentDetails.class);
+			mecLogs = query.setParameter("accountId", accountId).setParameter("scenarioName", scenarioName)
+					.getResultList();
+			return mecLogs;
+		} catch (Exception e) {
+			return new ArrayList<ExecutedExperimentDetails>();
+		} finally {
+			em.close();
+		}
+	}
+
+	public void storeExecutedExperimentDetails(ExecutedExperimentDetails experimentDetails) {
+		EntityManager em = emf.createEntityManager();
+		try {
+			em.getTransaction().begin();
+			em.merge(experimentDetails);
+			em.getTransaction().commit();
+		} finally {
+			if (em.getTransaction().isActive()) {
+				em.getTransaction().rollback();
+			}
 			em.close();
 		}
 	}
