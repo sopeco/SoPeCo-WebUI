@@ -90,26 +90,20 @@ public class Object {
 		return getClass().getName() + '@' + Integer.toHexString(hashCode());
 	}
 
-	/**
-	 * Never called; here for JRE compatibility.
-	 * 
-	 * @skip
-	 */
 	protected void finalize() throws Throwable {
 	}
 
 	protected native Object clone() throws CloneNotSupportedException /*-{
-		var r = {};
+		var cloned = {};
 
-		// prevents to use same hash code
-		@com.google.gwt.core.client.impl.Impl::getHashCode(Ljava/lang/Object;)(r);
+		@com.google.gwt.core.client.impl.Impl::getHashCode(Ljava/lang/Object;)(cloned);
 
-		var o = this;
-		for ( var i in o) {
-			if (!(i in r)) {
-				r[i] = o[i];
+		var obj = this;
+		for ( var i in obj) {
+			if (!(i in cloned)) {
+				cloned[i] = obj[i];
 			}
 		}
-		return r;
+		return cloned;
 	}-*/;
 }

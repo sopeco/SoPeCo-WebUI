@@ -147,6 +147,10 @@ public class TabControllerThree extends TabController {
 		// }
 	}
 
+	public void startingMessage () {
+		tabView.getStatusPanel().addLogText(new HTML("starting.."));
+	}
+	
 	// TODO
 	private void updateTimes() {
 		String elapsed = "";

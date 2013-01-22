@@ -104,7 +104,7 @@ public class ControllerView extends FlowPanel {
 		imgReCheck = new Image(IMG_RECHECK);
 		imgStatus = new Image();
 
-		infoText = new Paragraph("asd adfk jdsakfj askjf adkj fsk jfsak jsaklj askjf adkj fsk jfsak jsaklj dfaka sj");
+		infoText = new Paragraph(R.get("mecInformation"));
 
 		cbProtocol.setWidth(100);
 		cbProtocol.addStyleName(CB_PROTOCOL_CSS);

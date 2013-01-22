@@ -26,21 +26,13 @@
  */
 package java.lang;
 
-/**
- * NOTE: in GWT this will never be thrown for normal array accesses, only for
- * explicit throws.
- * 
- * See <a
- * href="http://java.sun.com/j2se/1.5.0/docs/api/java/lang/ArrayIndexOutOfBoundsException.html">the
- * official Java API doc</a> for details.
- */
 public class CloneNotSupportedException extends Exception {
 
-  public CloneNotSupportedException() {
-    super();
-  }
+	public CloneNotSupportedException() {
+		super();
+	}
 
-  public CloneNotSupportedException(String msg) {
-    super(msg);
-  }
+	public CloneNotSupportedException(String errorMessage) {
+		super(errorMessage);
+	}
 }

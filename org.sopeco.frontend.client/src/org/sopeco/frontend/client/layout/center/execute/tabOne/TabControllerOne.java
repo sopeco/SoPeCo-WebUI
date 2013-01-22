@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import org.sopeco.frontend.client.layout.center.execute.ExecuteController;
+import org.sopeco.frontend.client.layout.center.execute.ExecuteTabPanel;
 import org.sopeco.frontend.client.layout.center.execute.TabController;
 import org.sopeco.frontend.client.layout.popups.Message;
 import org.sopeco.frontend.client.manager.Manager;
@@ -169,7 +170,8 @@ public class TabControllerOne extends TabController implements ClickHandler {
 
 		if (view.isExecutingImmediately()) {
 			LOGGER.fine("Execute NOW");
-			// view.selectTab(2);
+			((ExecuteTabPanel) getParentController().getView()).selectTab(2);
+			getParentController().getTabControllerThree().startingMessage();
 		}
 
 		getParentController().getTabControllerTwo().loadScheduledExperiments();

@@ -54,7 +54,7 @@ public final class ServerCheck {
 
 	private static final Logger LOGGER = Logger.getLogger(ServerCheck.class.getName());
 
-	private static final int SOCKET_TIMEOUT = 1000;
+	private static final int SOCKET_TIMEOUT = 10000;
 
 	private ServerCheck() {
 	}

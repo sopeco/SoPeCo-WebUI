@@ -131,6 +131,9 @@ public class TabControllerFour extends TabController {
 		dataGrid.addColumn(controllerColumn, "Controller");
 
 		dataGrid.setColumnWidth(imageColumn, "40px");
+		
+		dataGrid.setColumnWidth(timeStartColumn, "180px");
+		dataGrid.setColumnWidth(timeEndColumn, "180px");
 
 		final SingleSelectionModel<ExecutedExperimentDetails> selectionModel = new SingleSelectionModel<ExecutedExperimentDetails>();
 		dataGrid.setSelectionModel(selectionModel);

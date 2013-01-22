@@ -227,6 +227,9 @@ public class ControllerQueue implements IStatusListener {
 	 * @param statusMessage
 	 */
 	public void nextStatusMessage(StatusMessage statusMessage) {
+		if (runningExperiment == null) {
+			return;
+		}
 		runningExperiment.getStatusMessageList().add(statusMessage);
 		if (statusMessage.getStatusInfo() != null && statusMessage.getStatusInfo() instanceof ProgressInfo) {
 			runningExperiment.setLastProgressInfo((ProgressInfo) statusMessage.getStatusInfo());
