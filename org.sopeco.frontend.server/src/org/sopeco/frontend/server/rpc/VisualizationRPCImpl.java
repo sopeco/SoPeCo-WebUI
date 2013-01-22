@@ -29,11 +29,8 @@ package org.sopeco.frontend.server.rpc;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.sopeco.engine.registry.ExtensionRegistry;
 import org.sopeco.frontend.client.rpc.VisualizationRPC;
 import org.sopeco.frontend.server.chartconnector.IChartConnection;
-import org.sopeco.frontend.server.chartconnector.IChartConnectionExtension;
-import org.sopeco.frontend.server.chartconnector.IChartConnection.ChartTypes;
 import org.sopeco.frontend.server.gcharts.GCharts;
 import org.sopeco.frontend.server.user.User;
 import org.sopeco.frontend.server.user.UserManager;
@@ -59,15 +56,12 @@ public class VisualizationRPCImpl extends SuperRemoteServlet implements
 	@Override
 	public Visualization getChart(SharedExperimentRuns experiementRun, ChartParameter[] chartParameter, ChartOptions options) {
 		Double[][] data;
-		String[] columnNames = new String[chartParameter.length];
 		data = new Double[chartParameter.length][];
 		ExperimentSeriesRun run = getRun(experiementRun);
 		DataSetAggregated dataset = run.getSuccessfulResultDataSet();
 		SimpleDataSet simpledata = dataset.convertToSimpleDataSet();
 		int i = 0;
-		int j = 0;
 		for (ChartParameter cp : chartParameter){
-			columnNames[j] = cp.getParameterName();
 			for (SimpleDataSetColumn<?> dataSetColumn : simpledata.getColumns()) {
 				if (dataSetColumn.getParameter().getFullName().equals(cp.getParameterName())){
 					List<ParameterValue<?>> values = dataSetColumn.getParameterValues();
@@ -78,21 +72,8 @@ public class VisualizationRPCImpl extends SuperRemoteServlet implements
 					i++;
 				}
 			}
-			j++;
 		}
-		ChartTypes type;
-		switch (options.getType()){
-		case BARCHART:
-			type = ChartTypes.BAR_CHART;
-			break;
-		case PIECHART:
-			type = ChartTypes.PIE_CHART;
-			break;
-		default:
-			type = ChartTypes.LINE_CHART;
-		}
-		System.out.println("type2: " + type);
-		return chartCreator.getChartHTML(experiementRun.getLabel(), data, columnNames, type);
+		return chartCreator.createVisualization(run.getLabel(), data, chartParameter, options);
 
 	}
 	

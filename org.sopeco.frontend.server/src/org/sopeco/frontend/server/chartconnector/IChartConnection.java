@@ -27,15 +27,13 @@
 package org.sopeco.frontend.server.chartconnector;
 
 import org.sopeco.engine.registry.ISoPeCoExtensionArtifact;
+import org.sopeco.frontend.shared.entities.ChartOptions;
+import org.sopeco.frontend.shared.entities.ChartParameter;
 import org.sopeco.frontend.shared.entities.Visualization;
 
 public interface IChartConnection extends ISoPeCoExtensionArtifact {
 	
-	public Visualization getChartHTML(String experimentName, Double[][] data, String[] columnNames, ChartTypes type);
+	public Visualization createVisualization(String experimentName, Double[][] data, ChartParameter[] chartParameter, ChartOptions options);
 
 	public Visualization[] getAllVisualizations();
-	
-	public static enum ChartTypes{
-		LINE_CHART, BAR_CHART, PIE_CHART;
-	}
 }

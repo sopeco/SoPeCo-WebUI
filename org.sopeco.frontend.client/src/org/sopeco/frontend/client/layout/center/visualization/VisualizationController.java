@@ -27,12 +27,11 @@
 package org.sopeco.frontend.client.layout.center.visualization;
 
 import org.sopeco.frontend.client.layout.center.ICenterController;
-import org.sopeco.frontend.client.layout.center.visualization.types.RPlot;
-import org.sopeco.frontend.client.layout.center.visualization.types.VisualizationType;
 import org.sopeco.frontend.client.resources.FrontEndResources;
 import org.sopeco.frontend.client.resources.R;
 import org.sopeco.frontend.client.rpc.RPC;
-import org.sopeco.frontend.shared.definitions.result.SharedExperimentRuns;
+import org.sopeco.frontend.shared.entities.ChartOptions;
+import org.sopeco.frontend.shared.entities.ChartParameter;
 import org.sopeco.frontend.shared.entities.Visualization;
 
 import com.google.gwt.cell.client.AbstractCell;
@@ -45,7 +44,7 @@ import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -53,8 +52,15 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
+import com.google.gwt.view.client.ProvidesKey;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
+import com.google.gwt.visualization.client.AbstractDataTable;
+import com.google.gwt.visualization.client.AbstractDataTable.ColumnType;
+import com.google.gwt.visualization.client.DataTable;
+import com.google.gwt.visualization.client.VisualizationUtils;
+import com.google.gwt.visualization.client.visualizations.corechart.LineChart;
+import com.google.gwt.visualization.client.visualizations.corechart.Options;
 
 public class VisualizationController implements ICenterController {
 	private DockLayoutPanel rootWidget;
@@ -64,11 +70,19 @@ public class VisualizationController implements ICenterController {
 	private FlowPanel centerPanel;
 	private Timer timer;
 	private boolean refreshing = false;
+	private Widget chartWidget;
 
 	public static ListDataProvider<Visualization> visualizationDataProvider = new ListDataProvider<Visualization>();
+	public static final ProvidesKey<Visualization> KEY_PROVIDER = new ProvidesKey<Visualization>() {
+		@Override
+		public Object getKey(Visualization item) {
+			return item == null ? null : item.getId();
+		}
+	};
 
 	public VisualizationController() {
 		FrontEndResources.loadVisualizationViewCSS();
+		centerPanel = new FlowPanel();
 		rootWidget = new DockLayoutPanel(Unit.EM);
 		controlWidget = new HorizontalPanel();
 		controlWidget.addStyleName("visualizationControl");
@@ -80,20 +94,17 @@ public class VisualizationController implements ICenterController {
 		controlWidget.add(chartLink);
 		controlWidget.setCellVerticalAlignment(chartLink,
 				HasVerticalAlignment.ALIGN_MIDDLE);
-		visualizationList = new CellList<Visualization>(new VisualizationCell());
+		visualizationList = new CellList<Visualization>(new VisualizationCell(),KEY_PROVIDER);
 		// visualizationList.setPageSize(8);
 		visualizationList
 				.setEmptyListWidget(new Label(
 						"Either the visualizations are still loading or there are no visualizations yet."));
-		final SingleSelectionModel<Visualization> ssm = new SingleSelectionModel<Visualization>();
+		final SingleSelectionModel<Visualization> ssm = new SingleSelectionModel<Visualization>(KEY_PROVIDER);
 		ssm.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
 
 			@Override
 			public void onSelectionChange(SelectionChangeEvent event) {
-				centerPanel.clear();
-				SafeHtmlBuilder builder = new SafeHtmlBuilder();
-				builder.appendHtmlConstant(ssm.getSelectedObject().getChart());
-				centerPanel.add(new HTML(builder.toSafeHtml()));
+				createChart(ssm.getSelectedObject());
 				chartLink.setHref(ssm.getSelectedObject().getLink());
 				chartLink.setText(ssm.getSelectedObject().getLink());
 
@@ -106,14 +117,13 @@ public class VisualizationController implements ICenterController {
 		ScrollPanel scrollPanel = new ScrollPanel(visualizationList);
 		scrollPanel.addStyleName("visualizationList");
 		rootWidget.addWest(scrollPanel, 25);
-		centerPanel = new FlowPanel();
 		rootWidget.add(centerPanel);
 		loadAllCharts();
 		timer = new Timer() {
 
 			@Override
 			public void run() {
-				if (rootWidget.isAttached()){
+				if (rootWidget.isAttached()) {
 					loadAllCharts();
 				}
 			}
@@ -136,7 +146,7 @@ public class VisualizationController implements ICenterController {
 	}
 
 	public void loadAllCharts() {
-		if (refreshing){
+		if (refreshing) {
 			return;
 		}
 		refreshing = true;
@@ -164,6 +174,67 @@ public class VisualizationController implements ICenterController {
 		visualizationDataProvider.getList().add(visualization);
 	}
 
+	public Widget createChart(final Visualization visualization) {
+		if (visualization == null) {
+			return null;
+		}
+		switch (visualization.getType()) {
+		case GCHART:
+			Runnable onLoadCallback = new Runnable() {
+				public void run() {
+					chartWidget = new FlowPanel();
+
+					// Create a pie chart visualization.
+					LineChart pie = new LineChart(createTable(
+							visualization.getData(),
+							visualization.getChartParameters()),
+							createOptions(visualization.getOptions(),
+									visualization.getName()));
+					((FlowPanel) chartWidget).add(pie);
+					centerPanel.clear();
+					centerPanel.add(chartWidget);
+				}
+			};
+
+			// Load the visualization api, passing the onLoadCallback to be
+			// called
+			// when loading is done.
+			VisualizationUtils.loadVisualizationApi(onLoadCallback,
+					LineChart.PACKAGE);
+
+			break;
+		default:
+			chartWidget = new Frame(visualization.getLink());
+			centerPanel.clear();
+			centerPanel.add(chartWidget);
+		}
+		return chartWidget;
+	}
+
+	private Options createOptions(ChartOptions chartOptions, String name) {
+		Options options = Options.create();
+		options.setLineWidth(0);
+		options.setPointSize(3);
+		options.setWidth(900);
+		options.setHeight(500);
+		options.setTitle(name);
+		return options;
+	}
+
+	private AbstractDataTable createTable(Double[][] data,
+			ChartParameter[] chartParameters) {
+		DataTable dataTable = DataTable.create();
+		dataTable.addRows(data[0].length);
+		for (int col = 0; col < data.length; col++) {
+			dataTable.addColumn(ColumnType.NUMBER,
+					chartParameters[col].getParameterName());
+			for (int row = 0; row < data[col].length; row++) {
+				dataTable.setValue(row, col, data[col][row]);
+			}
+		}
+		return dataTable;
+	}
+
 	private static class VisualizationCell extends AbstractCell<Visualization> {
 
 		private static final String EXPERIMENT_IMAGE = "images/experiment.png";
@@ -187,8 +258,7 @@ public class VisualizationController implements ICenterController {
 			sb.appendHtmlConstant("</td>");
 
 			sb.appendHtmlConstant("<td style='font-size:95%;'>");
-			sb.appendHtmlConstant("<div>" + value.getName()
-					+ "</div>");
+			sb.appendHtmlConstant("<div>" + value.getName() + "</div>");
 			sb.appendHtmlConstant("</td></tr><tr><td>");
 			sb.appendHtmlConstant("<div>" + value.getLink());
 			sb.appendHtmlConstant("</div>");

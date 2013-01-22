@@ -37,20 +37,16 @@ public class Visualization implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 2591904277445541753L;
-	private String chart;
+	private long id;
 	private String name;
 	private String link;
+	private Type type = Type.LINK;
+	private Double[][] data;
+	private ChartOptions options;
+	private ChartParameter[] chartParameters;
 
 	public Visualization(){
 		
-	}
-
-	public String getChart() {
-		return chart;
-	}
-
-	public void setChart(String chart) {
-		this.chart = chart;
 	}
 
 	public String getName() {
@@ -69,5 +65,47 @@ public class Visualization implements Serializable {
 		this.link = link;
 	}
 	
-	
+	public Type getType() {
+		return type;
+	}
+
+	public void setType(Type type) {
+		this.type = type;
+	}
+
+	public Double[][] getData() {
+		return data;
+	}
+
+	public void setData(Double[][] data) {
+		this.data = data;
+	}
+
+	public static enum Type {
+		LINK, GCHART;
+	}
+
+	public ChartOptions getOptions() {
+		return options;
+	}
+
+	public void setOptions(ChartOptions options) {
+		this.options = options;
+	}
+
+	public ChartParameter[] getChartParameters() {
+		return chartParameters;
+	}
+
+	public void setChartParameters(ChartParameter[] chartParameters) {
+		this.chartParameters = chartParameters;
+	}
+
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
 }

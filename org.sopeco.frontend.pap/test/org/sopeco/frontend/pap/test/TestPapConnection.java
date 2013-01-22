@@ -1,15 +1,12 @@
 package org.sopeco.frontend.pap.test;
 
 import org.junit.Test;
-import org.omg.PortableInterceptor.SUCCESSFUL;
 import org.sopeco.frontend.pap.PAPChartConnection;
 import org.sopeco.frontend.pap.PAPChartConnectionExtension;
-import org.sopeco.frontend.server.chartconnector.IChartConnection.ChartTypes;
+import org.sopeco.frontend.shared.entities.ChartOptions;
+import org.sopeco.frontend.shared.entities.ChartOptions.ChartType;
+import org.sopeco.frontend.shared.entities.ChartParameter;
 import org.sopeco.frontend.shared.entities.Visualization;
-
-import com.google.gwt.http.client.Request;
-import com.google.gwt.http.client.RequestCallback;
-import com.google.gwt.http.client.Response;
 
 import static junit.framework.Assert.*;
 
@@ -19,7 +16,16 @@ public class TestPapConnection {
 	
 	@Test
 	public void testConnection(){
-		papConnector.getChartHTML("test_experiment", new Double[][]{{1.0,1.0},{2.0,1.5},{3.0,3.0}}, new String[]{"x","y","z"}, ChartTypes.LINE_CHART);
+		ChartParameter[] chartParameter = new ChartParameter[3];
+		chartParameter[0] = new ChartParameter();
+		chartParameter[0].setParameterName("x");
+		chartParameter[1] = new ChartParameter();
+		chartParameter[1].setParameterName("y");
+		chartParameter[2] = new ChartParameter();
+		chartParameter[2].setParameterName("z");
+		ChartOptions options = new ChartOptions();
+		options.setType(ChartType.LINECHART);
+		papConnector.createVisualization("test_experiment", new Double[][]{{1.0,1.0},{2.0,1.5},{3.0,3.0}}, chartParameter, options);
 		Visualization[] vis = papConnector.getAllVisualizations();
 		boolean b = false;
 		for (Visualization v : vis){
