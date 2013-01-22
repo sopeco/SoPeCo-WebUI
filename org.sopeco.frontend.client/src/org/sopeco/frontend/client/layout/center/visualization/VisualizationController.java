@@ -91,7 +91,9 @@ public class VisualizationController implements ICenterController {
 			@Override
 			public void onSelectionChange(SelectionChangeEvent event) {
 				centerPanel.clear();
-				centerPanel.add(new HTML(ssm.getSelectedObject().getChart()));
+				SafeHtmlBuilder builder = new SafeHtmlBuilder();
+				builder.appendHtmlConstant(ssm.getSelectedObject().getChart());
+				centerPanel.add(new HTML(builder.toSafeHtml()));
 				chartLink.setHref(ssm.getSelectedObject().getLink());
 				chartLink.setText(ssm.getSelectedObject().getLink());
 

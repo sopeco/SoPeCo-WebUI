@@ -145,14 +145,7 @@ public class PAPChartConnection implements IChartConnection {
 	
 	private static Visualization createVisualization(String link, String name){
 		Visualization visualization = new Visualization();
-		String safeLink = "";
-		try {
-			safeLink = URLEncoder.encode(link,"UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		visualization.setChart("<iframe class='gwt-Frame chartView' src='" + safeLink+"'></iframe>");
+		visualization.setChart("<iframe class='gwt-Frame chartView' src='" + link+"'></iframe>");
 		visualization.setLink(link);
 		visualization.setName(name);
 		return visualization;

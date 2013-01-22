@@ -34,6 +34,7 @@ import org.sopeco.frontend.client.rpc.VisualizationRPC;
 import org.sopeco.frontend.server.chartconnector.IChartConnection;
 import org.sopeco.frontend.server.chartconnector.IChartConnectionExtension;
 import org.sopeco.frontend.server.chartconnector.IChartConnection.ChartTypes;
+import org.sopeco.frontend.server.gcharts.GCharts;
 import org.sopeco.frontend.server.user.User;
 import org.sopeco.frontend.server.user.UserManager;
 import org.sopeco.frontend.shared.definitions.result.SharedExperimentRuns;
@@ -52,7 +53,8 @@ import org.sopeco.persistence.exceptions.DataNotFoundException;
 
 public class VisualizationRPCImpl extends SuperRemoteServlet implements
 		VisualizationRPC {
-	private IChartConnection chartCreator = ExtensionRegistry.getSingleton().getExtensionArtifact(IChartConnectionExtension.class, "PAP Connection");
+//	private IChartConnection chartCreator = ExtensionRegistry.getSingleton().getExtensionArtifact(IChartConnectionExtension.class, "PAP Connection");
+	private IChartConnection chartCreator = new GCharts();
 
 	@Override
 	public Visualization getChart(SharedExperimentRuns experiementRun, ChartParameter[] chartParameter, ChartOptions options) {
