@@ -26,7 +26,7 @@
  */
 package org.sopeco.frontend.client.layout.center.experiment.assignment.items;
 
-import org.sopeco.frontend.client.R;
+import org.sopeco.frontend.client.resources.R;
 import org.sopeco.gwt.widgets.EditableText;
 import org.sopeco.persistence.entities.definition.ConstantValueAssignment;
 import org.sopeco.persistence.entities.definition.ParameterValueAssignment;

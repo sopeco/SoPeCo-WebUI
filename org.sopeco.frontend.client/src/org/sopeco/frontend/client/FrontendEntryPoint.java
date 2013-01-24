@@ -38,12 +38,13 @@ import org.sopeco.frontend.client.helper.SimpleNotify;
 import org.sopeco.frontend.client.helper.SystemDetails;
 import org.sopeco.frontend.client.helper.callback.CallbackBatch;
 import org.sopeco.frontend.client.helper.callback.ParallelCallback;
-import org.sopeco.frontend.client.layout.LoginBox;
 import org.sopeco.frontend.client.layout.MainLayoutPanel;
+import org.sopeco.frontend.client.layout.login.LoginPanelNew;
 import org.sopeco.frontend.client.layout.popups.Message;
 import org.sopeco.frontend.client.log.LogHandler;
 import org.sopeco.frontend.client.manager.Manager;
 import org.sopeco.frontend.client.manager.ScenarioManager;
+import org.sopeco.frontend.client.resources.R;
 import org.sopeco.frontend.client.rpc.RPC;
 import org.sopeco.frontend.shared.helper.ExtensionContainer;
 import org.sopeco.persistence.metadata.entities.DatabaseInstance;
@@ -63,7 +64,7 @@ public class FrontendEntryPoint implements EntryPoint, SimpleNotify {
 	private static FrontendEntryPoint frontend;
 
 	private static final Logger LOGGER = Logger.getLogger(FrontendEntryPoint.class.getName());
-	private static HTML sapResearch;
+
 
 	/**
 	 * Returns the FrontendEntryPoint object of this application.
@@ -74,13 +75,6 @@ public class FrontendEntryPoint implements EntryPoint, SimpleNotify {
 		return frontend;
 	}
 
-	public static HTML getSapResearch() {
-		if (sapResearch == null) {
-			sapResearch = new HTML("<span>SAP</span> <span>RESEARCH</span>");
-			sapResearch.addStyleName("sapResearch");
-		}
-		return sapResearch;
-	}
 
 	/**
 	 * Returns a string, which contains the date when this document was modified
@@ -91,6 +85,11 @@ public class FrontendEntryPoint implements EntryPoint, SimpleNotify {
 	public static native String getDocumentLastModifiedDate()
 	/*-{
 		return document.lastModified;
+	}-*/;
+
+	public static native String getBuildInfo()
+	/*-{
+		return $wnd.buildInfo;
 	}-*/;
 
 	private DatabaseInstance connectedDatabase;
@@ -104,6 +103,9 @@ public class FrontendEntryPoint implements EntryPoint, SimpleNotify {
 	@Override
 	public void onModuleLoad() {
 		frontend = this;
+
+		R.resc.cssCommon().ensureInjected();
+
 		configLogger();
 		R.loadLangFile(FrontendEntryPoint.this);
 	}
@@ -162,8 +164,9 @@ public class FrontendEntryPoint implements EntryPoint, SimpleNotify {
 		Manager.get().reset();
 		EventControl.removeAllHandler();
 
-		LoginBox box = new LoginBox();
-		box.center();
+		// LoginBox box = new LoginBox();
+		// box.center();
+		RootLayoutPanel.get().add(new LoginPanelNew());
 	}
 
 	/**
@@ -188,6 +191,7 @@ public class FrontendEntryPoint implements EntryPoint, SimpleNotify {
 		MainLayoutPanel.destroy();
 
 		RootLayoutPanel rootLayoutPanel = RootLayoutPanel.get();
+		rootLayoutPanel.clear();
 		rootLayoutPanel.add(MainLayoutPanel.get());
 	}
 
@@ -198,8 +202,6 @@ public class FrontendEntryPoint implements EntryPoint, SimpleNotify {
 	private void clearRootLayout() {
 		RootLayoutPanel rootLayoutPanel = RootLayoutPanel.get();
 		rootLayoutPanel.clear();
-
-		rootLayoutPanel.add(getSapResearch());
 	}
 
 }

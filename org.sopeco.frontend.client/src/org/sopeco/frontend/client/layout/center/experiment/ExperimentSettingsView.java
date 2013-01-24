@@ -26,7 +26,7 @@
  */
 package org.sopeco.frontend.client.layout.center.experiment;
 
-import org.sopeco.frontend.client.R;
+import org.sopeco.frontend.client.resources.R;
 import org.sopeco.gwt.widgets.ClearDiv;
 
 import com.google.gwt.user.client.ui.FlowPanel;

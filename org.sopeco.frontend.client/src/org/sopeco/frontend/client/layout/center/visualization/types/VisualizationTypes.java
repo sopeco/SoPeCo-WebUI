@@ -26,7 +26,7 @@
  */
 package org.sopeco.frontend.client.layout.center.visualization.types;
 
-import org.sopeco.frontend.client.R;
+import org.sopeco.frontend.client.resources.R;
 
 import com.google.gwt.user.client.ui.Image;
 

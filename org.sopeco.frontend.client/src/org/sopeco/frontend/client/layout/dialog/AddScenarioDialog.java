@@ -26,9 +26,9 @@
  */
 package org.sopeco.frontend.client.layout.dialog;
 
-import org.sopeco.frontend.client.R;
 import org.sopeco.frontend.client.helper.SimpleNotify;
 import org.sopeco.frontend.client.layout.CreateScenarioWizzard;
+import org.sopeco.frontend.client.resources.R;
 
 import com.google.gwt.dom.client.Style.Float;
 import com.google.gwt.dom.client.Style.Unit;

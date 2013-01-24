@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import org.sopeco.frontend.client.R;
 import org.sopeco.frontend.client.event.EventControl;
 import org.sopeco.frontend.client.event.ExperimentChangedEvent;
 import org.sopeco.frontend.client.event.handler.ExperimentChangedEventHandler;
@@ -47,6 +46,7 @@ import org.sopeco.frontend.client.layout.popups.InputDialogValidator;
 import org.sopeco.frontend.client.manager.Manager;
 import org.sopeco.frontend.client.manager.ScenarioManager;
 import org.sopeco.frontend.client.resources.FrontEndResources;
+import org.sopeco.frontend.client.resources.R;
 import org.sopeco.frontend.shared.helper.ExtensionTypes;
 import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
 
@@ -85,7 +85,7 @@ public class ExperimentController implements ICenterController, ValueChangeHandl
 	private InputDialog inputClone, inputRename;
 
 	public ExperimentController() {
-		FrontEndResources.loadExperimentCSS();
+		R.resc.cssExperiment().ensureInjected();
 
 		tabPanel = new ExperimentTabPanel();
 
@@ -169,7 +169,7 @@ public class ExperimentController implements ICenterController, ValueChangeHandl
 	@Override
 	public void onSwitchTo() {
 	}
-	
+
 	private void duplicateExperiment() {
 		if (inputClone == null) {
 			inputClone = new InputDialog(R.get("cloneExperiment"), R.get("nameForExperimentClone") + ":");

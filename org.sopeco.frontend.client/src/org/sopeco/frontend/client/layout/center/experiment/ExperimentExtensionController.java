@@ -32,9 +32,9 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Logger;
 
-import org.sopeco.frontend.client.R;
 import org.sopeco.frontend.client.extensions.Extensions;
 import org.sopeco.frontend.client.manager.ScenarioManager;
+import org.sopeco.frontend.client.resources.R;
 import org.sopeco.frontend.shared.helper.ExtensionTypes;
 import org.sopeco.frontend.shared.helper.Metering;
 import org.sopeco.gwt.widgets.EditableText;

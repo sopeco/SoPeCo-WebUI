@@ -24,6 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+@url backgroundNoise imgBackgroundNoise;
 .loginBox .vPanel {
 	border-spacing: 8px;
 	width: 100%;
@@ -41,4 +42,96 @@
 .loginBox .gwt-HTML {
 	font-weight: bold;
 	white-space: nowrap;
+}
+
+.loginPanel {
+	display: table;
+	vertical-align: middle;
+	height: 100%;
+	width: 100%;
+	background-color: #f3f3f3;
+	background-image: backgroundNoise;
+}
+
+.loginPanel>* {
+	display: table-cell;
+	vertical-align: middle
+}
+
+.loginPanel .htmlFEVersionInfo {
+	display: block;
+	position: absolute;
+	right: 1em;
+	bottom: 0;
+	color: #c3c3c3;
+}
+
+.loginPanel .imgSapResearch {
+	display: block;
+	position: absolute;
+	right: .5em;
+	top: .5em;
+}
+
+.loginPanel .content {
+	width: 320px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.loginPanel .content .infoText {
+	font-weight: bold;
+	margin-bottom: 0.5em;
+}
+
+.loginPanel .content .btnConnect {
+	width: 100%;
+}
+
+.loginPanel .content .panelSelection {
+	margin-bottom: 0.5em;
+}
+
+.loginPanel .content .cbAccounts {
+	float: left;
+}
+
+.loginPanel .content .accountButton {
+	margin-left: 0.5em;
+	padding: 4px 6px;
+	height: 24px;
+	float: right;
+}
+
+.loginPanel .content h3 {
+	margin-top: 0;
+}
+
+.loginPanel .content .addAccountGrid {
+	width: 100%;
+	border-spacing: 3px;
+}
+
+.loginPanel .content .addAccountGrid td {
+	padding: 0;
+}
+
+.loginPanel .content .addAccountGrid .gwt-TextBox,.loginPanel .content .addAccountGrid .gwt-PasswordTextBox
+	{
+	width: 175px;
+	margin: 2px 0;
+}
+
+.loginPanel .content .addAccountButtons {
+	float: right;
+	margin: 0 3px 0 6px;
+}
+
+.loginPanel .content .finePrint {
+	font-size: 10px;
+	color: gray;
+}
+
+.loginPanel .content .notValid {
+	background-color: rgb(255, 179, 179);
 }

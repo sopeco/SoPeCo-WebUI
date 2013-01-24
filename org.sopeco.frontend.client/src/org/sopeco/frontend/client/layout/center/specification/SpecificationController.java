@@ -26,7 +26,6 @@
  */
 package org.sopeco.frontend.client.layout.center.specification;
 
-import org.sopeco.frontend.client.R;
 import org.sopeco.frontend.client.event.EventControl;
 import org.sopeco.frontend.client.event.InitialAssignmentChangedEvent;
 import org.sopeco.frontend.client.event.InitialAssignmentChangedEvent.ChangeType;
@@ -39,6 +38,7 @@ import org.sopeco.frontend.client.layout.popups.InputDialogValidator;
 import org.sopeco.frontend.client.layout.popups.Message;
 import org.sopeco.frontend.client.manager.ScenarioManager;
 import org.sopeco.frontend.client.resources.FrontEndResources;
+import org.sopeco.frontend.client.resources.R;
 import org.sopeco.frontend.client.widget.grid.EditGridItem;
 import org.sopeco.frontend.shared.helper.Metering;
 import org.sopeco.persistence.entities.definition.ConstantValueAssignment;
@@ -65,7 +65,7 @@ public class SpecificationController implements ICenterController, ClickHandler,
 	private InputDialog inputRename;
 
 	public SpecificationController() {
-		FrontEndResources.loadSpecificationCSS();
+		R.resc.cssSpecification().ensureInjected();
 
 		if (ScenarioManager.get().isScenarioAvailable()) {
 			reset();

@@ -28,7 +28,6 @@ package org.sopeco.frontend.client.layout.center.execute;
 
 import java.util.logging.Logger;
 
-import org.sopeco.frontend.client.R;
 import org.sopeco.frontend.client.layout.center.ICenterController;
 import org.sopeco.frontend.client.layout.center.execute.tabFour.TabControllerFour;
 import org.sopeco.frontend.client.layout.center.execute.tabOne.ExecuteTab;
@@ -37,6 +36,7 @@ import org.sopeco.frontend.client.layout.center.execute.tabThree.TabControllerTh
 import org.sopeco.frontend.client.layout.center.execute.tabTwo.TabControllerTwo;
 import org.sopeco.frontend.client.manager.Manager;
 import org.sopeco.frontend.client.resources.FrontEndResources;
+import org.sopeco.frontend.client.resources.R;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -65,7 +65,7 @@ public class ExecuteController implements ICenterController, ClickHandler, Selec
 	 * method.
 	 */
 	public ExecuteController() {
-		FrontEndResources.loadExecuteViewCSS();
+		R.resc.cssExecuteView().ensureInjected();
 		init();
 	}
 

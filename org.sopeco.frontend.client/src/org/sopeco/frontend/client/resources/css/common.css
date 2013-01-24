@@ -1,0 +1,18 @@
+.dialogBox {
+	border: 1px solid #ccc;
+	border-radius: 8px;
+	box-shadow: 0 0 13px 0 #bcd;
+	background-color: #fff;
+}
+
+.dialogBox-padding {
+	padding: 1em;
+}
+
+.horizontalLine {
+	display: block;
+	height: 1px;
+	width: 100%;
+	background-color: #ccc;
+	margin: .5em 0 .5em;
+}

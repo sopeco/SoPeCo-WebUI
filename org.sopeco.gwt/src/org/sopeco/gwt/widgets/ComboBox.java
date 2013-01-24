@@ -92,11 +92,12 @@ public class ComboBox extends FlowPanel implements
 	private List<FocusPanel> itemList;
 	private int selectedIndex = -1;
 	private boolean editable;
+	private boolean enabled;
 
 	private boolean userEditedText;
 
 	public ComboBox() {
-		WidgetResources.loadComboBoxCSS();
+		WidgetResources.resc.comboBoxCss().ensureInjected();
 		initialize();
 	}
 
@@ -167,6 +168,29 @@ public class ComboBox extends FlowPanel implements
 	 */
 	public int getSelectedIndex() {
 		return selectedIndex;
+	}
+
+	/**
+	 * Return whether the combobox is enabled or not.
+	 * 
+	 * @return true if the combobox is enabled
+	 */
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	/**
+	 * Enables or disables the combobox.
+	 * 
+	 * @param pEnabled
+	 */
+	public void setEnabled(boolean pEnabled) {
+		this.enabled = pEnabled;
+		if (!pEnabled) {
+			inputField.addStyleName("disabled");
+		} else {
+			inputField.removeStyleName("disabled");
+		}
 	}
 
 	/**
@@ -298,6 +322,7 @@ public class ComboBox extends FlowPanel implements
 		itemList = new ArrayList<FocusPanel>();
 		userEditedText = false;
 		editable = true;
+		enabled = true;
 		dummyPanel = new FocusPanel();
 
 		addStyleName(CCS_CLASS_NAME);
@@ -352,6 +377,9 @@ public class ComboBox extends FlowPanel implements
 	 * Shows the dropdown list.
 	 */
 	private void showDropdownList() {
+		if (!enabled) {
+			return;
+		}
 		RootPanel.get().add(dropdownView);
 
 		int left = getElement().getAbsoluteLeft();
@@ -421,6 +449,10 @@ public class ComboBox extends FlowPanel implements
 
 		@Override
 		public void onFocus(FocusEvent event) {
+			if (!enabled) {
+				inputField.setFocus(false);
+				return;
+			}
 			if (!editable) {
 				inputField.setFocus(false);
 				showDropdownList();

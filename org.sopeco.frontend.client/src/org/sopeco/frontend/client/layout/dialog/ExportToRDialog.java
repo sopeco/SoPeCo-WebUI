@@ -26,7 +26,7 @@
  */
 package org.sopeco.frontend.client.layout.dialog;
 
-import org.sopeco.frontend.client.R;
+import org.sopeco.frontend.client.resources.R;
 import org.sopeco.gwt.widgets.Headline;
 import org.sopeco.gwt.widgets.Paragraph;
 

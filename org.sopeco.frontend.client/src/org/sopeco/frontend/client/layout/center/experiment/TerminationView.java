@@ -29,7 +29,7 @@ package org.sopeco.frontend.client.layout.center.experiment;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.sopeco.frontend.client.R;
+import org.sopeco.frontend.client.resources.R;
 import org.sopeco.persistence.entities.definition.ExperimentTerminationCondition;
 
 import com.google.gwt.dom.client.Element;

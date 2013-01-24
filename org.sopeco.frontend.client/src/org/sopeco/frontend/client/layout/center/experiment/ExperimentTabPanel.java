@@ -26,8 +26,8 @@
  */
 package org.sopeco.frontend.client.layout.center.experiment;
 
-import org.sopeco.frontend.client.R;
 import org.sopeco.frontend.client.resources.FrontEndResources;
+import org.sopeco.frontend.client.resources.R;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -46,7 +46,7 @@ public class ExperimentTabPanel extends TabPanel implements ClickHandler {
 	private ExperimentParameterView parameterView;
 
 	public ExperimentTabPanel() {
-		FrontEndResources.loadSopecoTabPanelCSS();
+		R.resc.cssSopecoTabPanel().ensureInjected();
 		init();
 	}
 

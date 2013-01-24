@@ -26,13 +26,13 @@
  */
 package org.sopeco.frontend.client.layout.center.specification;
 
-import org.sopeco.frontend.client.R;
 import org.sopeco.frontend.client.event.EventControl;
 import org.sopeco.frontend.client.event.InitialAssignmentChangedEvent;
 import org.sopeco.frontend.client.event.InitialAssignmentChangedEvent.ChangeType;
 import org.sopeco.frontend.client.layout.environment.EnvTreeItem;
 import org.sopeco.frontend.client.layout.environment.EnvironmentTree;
 import org.sopeco.frontend.client.manager.ScenarioManager;
+import org.sopeco.frontend.client.resources.R;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 
 import com.google.gwt.core.client.GWT;

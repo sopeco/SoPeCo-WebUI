@@ -63,7 +63,7 @@ public class ProgressBar extends FlowPanel {
 		minValue = pMinValue;
 		value = pValue;
 
-		WidgetResources.loadProgressBarCSS();
+		WidgetResources.resc.progressBarCss().ensureInjected();
 		init();
 	}
 

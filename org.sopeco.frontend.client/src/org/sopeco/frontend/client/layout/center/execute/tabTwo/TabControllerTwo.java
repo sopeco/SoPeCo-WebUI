@@ -31,13 +31,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.sopeco.frontend.client.R;
 import org.sopeco.frontend.client.layout.center.execute.ExecuteController;
 import org.sopeco.frontend.client.layout.center.execute.ExecuteTabPanel;
 import org.sopeco.frontend.client.layout.center.execute.TabController;
 import org.sopeco.frontend.client.layout.popups.Confirmation;
 import org.sopeco.frontend.client.layout.popups.Message;
 import org.sopeco.frontend.client.manager.Manager;
+import org.sopeco.frontend.client.resources.R;
 import org.sopeco.frontend.client.rpc.RPC;
 import org.sopeco.frontend.shared.entities.FrontendScheduledExperiment;
 import org.sopeco.frontend.shared.helper.Metering;

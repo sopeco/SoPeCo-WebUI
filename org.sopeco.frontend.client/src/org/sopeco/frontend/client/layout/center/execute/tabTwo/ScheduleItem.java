@@ -29,7 +29,7 @@ package org.sopeco.frontend.client.layout.center.execute.tabTwo;
 import java.util.Date;
 import java.util.logging.Logger;
 
-import org.sopeco.frontend.client.R;
+import org.sopeco.frontend.client.resources.R;
 import org.sopeco.frontend.shared.entities.FrontendScheduledExperiment;
 import org.sopeco.gwt.widgets.ClearDiv;
 import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;

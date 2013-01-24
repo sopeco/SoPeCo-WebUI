@@ -26,10 +26,10 @@
  */
 package org.sopeco.frontend.client.layout;
 
-import org.sopeco.frontend.client.R;
 import org.sopeco.frontend.client.helper.SimpleNotify;
 import org.sopeco.frontend.client.manager.ScenarioManager;
 import org.sopeco.frontend.client.resources.FrontEndResources;
+import org.sopeco.frontend.client.resources.R;
 import org.sopeco.gwt.widgets.ExtendedTextBox;
 import org.sopeco.gwt.widgets.Headline;
 import org.sopeco.gwt.widgets.Paragraph;
@@ -68,7 +68,7 @@ public class ScenarioAddController implements ClickHandler, BlurHandler, KeyPres
 	private ClickHandler hideHandler;
 
 	public ScenarioAddController(boolean pHasInfoText, boolean pHasCancelButton, boolean pHasAddButton) {
-		FrontEndResources.loadScenarioAddCSS();
+		R.resc.cssScenarioAdd().ensureInjected();
 
 		hasInfoText = pHasInfoText;
 		hasCancelButton = pHasCancelButton;

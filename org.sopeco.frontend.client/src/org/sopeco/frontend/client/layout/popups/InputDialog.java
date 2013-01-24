@@ -29,7 +29,7 @@ package org.sopeco.frontend.client.layout.popups;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.sopeco.frontend.client.R;
+import org.sopeco.frontend.client.resources.R;
 
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.BlurEvent;

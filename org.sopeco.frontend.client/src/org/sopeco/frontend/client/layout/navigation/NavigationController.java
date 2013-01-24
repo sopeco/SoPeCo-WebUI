@@ -29,7 +29,6 @@ package org.sopeco.frontend.client.layout.navigation;
 import java.util.HashMap;
 import java.util.logging.Logger;
 
-import org.sopeco.frontend.client.R;
 import org.sopeco.frontend.client.layout.MainLayoutPanel;
 import org.sopeco.frontend.client.layout.center.CenterType;
 import org.sopeco.frontend.client.layout.popups.InputDialog;
@@ -38,6 +37,7 @@ import org.sopeco.frontend.client.layout.popups.InputDialogHandler;
 import org.sopeco.frontend.client.layout.popups.InputDialogValidator;
 import org.sopeco.frontend.client.manager.Manager;
 import org.sopeco.frontend.client.manager.ScenarioManager;
+import org.sopeco.frontend.client.resources.R;
 import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
 import org.sopeco.persistence.entities.definition.MeasurementSpecification;
 

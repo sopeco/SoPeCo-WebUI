@@ -29,7 +29,6 @@ package org.sopeco.frontend.client.layout;
 import java.util.logging.Logger;
 
 import org.sopeco.frontend.client.FrontendEntryPoint;
-import org.sopeco.frontend.client.R;
 import org.sopeco.frontend.client.layout.dialog.AddScenarioDialog;
 import org.sopeco.frontend.client.layout.dialog.LogDialog;
 import org.sopeco.frontend.client.layout.popups.Confirmation;
@@ -38,6 +37,7 @@ import org.sopeco.frontend.client.layout.popups.InputDialogHandler;
 import org.sopeco.frontend.client.manager.Manager;
 import org.sopeco.frontend.client.manager.ScenarioManager;
 import org.sopeco.frontend.client.resources.FrontEndResources;
+import org.sopeco.frontend.client.resources.R;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -94,7 +94,7 @@ public class NorthPanel extends FlowPanel implements ClickHandler, ChangeHandler
 	private HorizontalPanel navigationPanel;
 
 	public NorthPanel(MainLayoutPanel parent) {
-		FrontEndResources.loadTopNavigationCSS();
+		R.resc.cssTopNavigation().ensureInjected();
 		initialize();
 	}
 

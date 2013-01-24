@@ -36,7 +36,7 @@
 
 	<!-- Default page to serve -->
 	<welcome-file-list>
-		<welcome-file>sopeco_frontend.html</welcome-file>
+		<welcome-file>frontend.jsp</welcome-file>
 	</welcome-file-list>
 
 	<listener>

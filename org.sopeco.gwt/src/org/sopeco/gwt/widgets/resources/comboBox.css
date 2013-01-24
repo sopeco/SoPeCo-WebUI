@@ -35,16 +35,21 @@
 .spc-ComboBox>input {
 	border: none;
 	outline: none;
-	margin: 1px 2px;
-	padding: 3px;
+	margin: 0px 2px;
+	padding: 2px;
 	background: transparent;
 	color: #333 !important;
 	float: left;
 }
 
+.spc-ComboBox>input.disabled {
+	color: #aaa !important;
+	font-style: italic;
+}
+
 .spc-ComboBox>img {
 	margin: 0px;
-	padding: 2px 8px;
+	padding: 0px 4px;
 	float: right;
 	border-left: 1px solid #AAA;
 	background-color: #F7F7F7;

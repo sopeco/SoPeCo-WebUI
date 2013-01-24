@@ -75,7 +75,7 @@ public class EditableText extends FocusPanel implements ClickHandler,
 	private boolean editable = true;
 
 	public EditableText(String text) {
-		WidgetResources.loadEditableTextCSS();
+		WidgetResources.resc.editableTextCss().ensureInjected();
 
 		addStyleName(STYLE_CLASS);
 		addFocusHandler(this);

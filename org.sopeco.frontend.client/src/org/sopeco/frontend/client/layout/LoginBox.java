@@ -30,9 +30,6 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.sopeco.frontend.client.FrontendEntryPoint;
-import org.sopeco.frontend.client.R;
-import org.sopeco.frontend.client.helper.serverstatus.Deactivatable;
-import org.sopeco.frontend.client.helper.serverstatus.Serverstatus;
 import org.sopeco.frontend.client.layout.dialog.AddDBDialog;
 import org.sopeco.frontend.client.layout.popups.Confirmation;
 import org.sopeco.frontend.client.layout.popups.InputDialog;
@@ -41,7 +38,7 @@ import org.sopeco.frontend.client.layout.popups.InputDialogHandler;
 import org.sopeco.frontend.client.layout.popups.Loader;
 import org.sopeco.frontend.client.layout.popups.Message;
 import org.sopeco.frontend.client.manager.Manager;
-import org.sopeco.frontend.client.resources.FrontEndResources;
+import org.sopeco.frontend.client.resources.R;
 import org.sopeco.frontend.client.rpc.RPC;
 import org.sopeco.frontend.shared.entities.AccountDetails;
 import org.sopeco.persistence.metadata.entities.DatabaseInstance;
@@ -69,7 +66,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  * @author Marius Oehler
  * 
  */
-public class LoginBox extends DialogBox implements ClickHandler, Deactivatable, AsyncCallback<List<DatabaseInstance>>,
+public class LoginBox extends DialogBox implements ClickHandler, AsyncCallback<List<DatabaseInstance>>,
 		InputDialogHandler {
 
 	private static final String COOKIE_DATABASE = "selected_database";
@@ -96,9 +93,7 @@ public class LoginBox extends DialogBox implements ClickHandler, Deactivatable, 
 	 */
 	public LoginBox() {
 		super(false, true);
-		FrontEndResources.loadLoginBoxCSS();
-
-		Serverstatus.register(this);
+		R.resc.cssLoginBox().ensureInjected();
 
 		initialize();
 
@@ -159,22 +154,6 @@ public class LoginBox extends DialogBox implements ClickHandler, Deactivatable, 
 		setWidget(mainPanel);
 	}
 
-	@Override
-	public void goOffline() {
-		btnAddDb.setEnabled(false);
-		btnRemoveDb.setEnabled(false);
-		btnConnect.setEnabled(false);
-		listboxDatabases.setEnabled(false);
-	}
-
-	@Override
-	public void goOnline() {
-		btnAddDb.setEnabled(true);
-		btnRemoveDb.setEnabled(true);
-		btnConnect.setEnabled(true);
-		listboxDatabases.setEnabled(true);
-	}
-
 	/**
 	 * Returns the database instance, which is related to the selected item of
 	 * the listbox.
@@ -200,7 +179,6 @@ public class LoginBox extends DialogBox implements ClickHandler, Deactivatable, 
 
 	@Override
 	public void onFailure(Throwable caught) {
-		Serverstatus.setOffline();
 		Message.error(R.get("faild_loading_accounts"));
 	}
 

@@ -26,8 +26,8 @@
  */
 package org.sopeco.frontend.client.layout.center.experiment.assignment;
 
-import org.sopeco.frontend.client.R;
 import org.sopeco.frontend.client.layout.center.experiment.assignment.items.AssignmentItem;
+import org.sopeco.frontend.client.resources.R;
 import org.sopeco.gwt.widgets.Headline;
 
 import com.google.gwt.dom.client.Style.Unit;

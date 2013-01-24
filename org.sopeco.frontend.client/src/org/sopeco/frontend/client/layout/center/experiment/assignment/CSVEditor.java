@@ -29,8 +29,8 @@ package org.sopeco.frontend.client.layout.center.experiment.assignment;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.sopeco.frontend.client.R;
 import org.sopeco.frontend.client.resources.FrontEndResources;
+import org.sopeco.frontend.client.resources.R;
 import org.sopeco.gwt.widgets.Headline;
 
 import com.google.gwt.dom.client.Style.Cursor;
@@ -78,7 +78,7 @@ public class CSVEditor extends DialogBox implements HasValueChangeHandlers<Strin
 	private ListElement newRowElement;
 
 	public CSVEditor() {
-		FrontEndResources.loadCSVEditorCSS();
+		R.resc.cssCsvEditor().ensureInjected();
 
 		initialize();
 	}

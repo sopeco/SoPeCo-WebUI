@@ -28,7 +28,7 @@ package org.sopeco.frontend.client.layout.navigation;
 
 import java.util.HashMap;
 
-import org.sopeco.frontend.client.R;
+import org.sopeco.frontend.client.resources.R;
 
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.VerticalPanel;

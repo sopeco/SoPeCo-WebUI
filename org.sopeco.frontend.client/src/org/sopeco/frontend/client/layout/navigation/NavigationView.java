@@ -30,8 +30,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.sopeco.frontend.client.FrontendEntryPoint;
-import org.sopeco.frontend.client.R;
 import org.sopeco.frontend.client.layout.center.CenterType;
+import org.sopeco.frontend.client.resources.R;
 
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;

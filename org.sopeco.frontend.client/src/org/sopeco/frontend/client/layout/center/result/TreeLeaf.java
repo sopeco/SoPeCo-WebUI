@@ -28,11 +28,11 @@ package org.sopeco.frontend.client.layout.center.result;
 
 import java.util.logging.Logger;
 
-import org.sopeco.frontend.client.R;
 import org.sopeco.frontend.client.layout.center.visualization.wizard.VisualizationWizard;
 import org.sopeco.frontend.client.layout.dialog.ExportCsvDialog;
 import org.sopeco.frontend.client.layout.dialog.ExportToRDialog;
 import org.sopeco.frontend.client.layout.popups.Message;
+import org.sopeco.frontend.client.resources.R;
 import org.sopeco.frontend.client.rpc.RPC;
 import org.sopeco.frontend.shared.definitions.result.SharedExperimentRuns;
 import org.sopeco.gwt.widgets.tree.TreeItem;

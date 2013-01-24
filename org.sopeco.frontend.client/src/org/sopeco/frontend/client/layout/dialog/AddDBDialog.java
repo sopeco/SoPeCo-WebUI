@@ -26,12 +26,12 @@
  */
 package org.sopeco.frontend.client.layout.dialog;
 
-import org.sopeco.frontend.client.R;
 import org.sopeco.frontend.client.helper.SystemDetails;
 import org.sopeco.frontend.client.helper.handler.NumbersOnlyHandler;
 import org.sopeco.frontend.client.layout.LoginBox;
 import org.sopeco.frontend.client.layout.popups.Loader;
 import org.sopeco.frontend.client.layout.popups.Message;
+import org.sopeco.frontend.client.resources.R;
 import org.sopeco.frontend.client.rpc.DatabaseManagerRPC;
 import org.sopeco.frontend.client.rpc.DatabaseManagerRPCAsync;
 import org.sopeco.frontend.shared.helper.Utilities;

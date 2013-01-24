@@ -26,7 +26,7 @@
  */
 package org.sopeco.frontend.client.widget.grid;
 
-import org.sopeco.frontend.client.R;
+import org.sopeco.frontend.client.resources.R;
 
 import com.google.gwt.user.client.ui.Grid;
 

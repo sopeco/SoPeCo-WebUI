@@ -26,11 +26,11 @@
  */
 package org.sopeco.frontend.client.layout.center.visualization;
 
-import org.sopeco.frontend.client.R;
 import org.sopeco.frontend.client.layout.center.ICenterController;
 import org.sopeco.frontend.client.layout.center.visualization.types.RPlot;
 import org.sopeco.frontend.client.layout.center.visualization.types.VisualizationType;
 import org.sopeco.frontend.client.resources.FrontEndResources;
+import org.sopeco.frontend.client.resources.R;
 import org.sopeco.frontend.client.rpc.RPC;
 import org.sopeco.frontend.shared.definitions.result.SharedExperimentRuns;
 import org.sopeco.frontend.shared.entities.Visualization;

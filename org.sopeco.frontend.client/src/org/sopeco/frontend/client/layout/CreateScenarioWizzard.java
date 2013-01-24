@@ -26,7 +26,6 @@
  */
 package org.sopeco.frontend.client.layout;
 
-import org.sopeco.frontend.client.R;
 import org.sopeco.frontend.client.event.EventControl;
 import org.sopeco.frontend.client.event.MEControllerEvent;
 import org.sopeco.frontend.client.event.MEControllerEvent.EventType;
@@ -35,6 +34,7 @@ import org.sopeco.frontend.client.manager.Manager;
 import org.sopeco.frontend.client.manager.ScenarioManager;
 import org.sopeco.frontend.client.manager.Manager.ControllerStatus;
 import org.sopeco.frontend.client.mec.ControllerView;
+import org.sopeco.frontend.client.resources.R;
 import org.sopeco.gwt.widgets.SlidePanel;
 
 import com.google.gwt.dom.client.Style.Float;

@@ -33,7 +33,6 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Logger;
 
-import org.sopeco.frontend.client.R;
 import org.sopeco.frontend.client.event.EventControl;
 import org.sopeco.frontend.client.event.ExperimentAssignmentsChangedEvent;
 import org.sopeco.frontend.client.event.ExperimentChangedEvent;
@@ -41,6 +40,7 @@ import org.sopeco.frontend.client.event.handler.ExperimentAssignmentsChangedEven
 import org.sopeco.frontend.client.event.handler.ExperimentChangedEventHandler;
 import org.sopeco.frontend.client.layout.center.experiment.assignment.items.AssignmentItem;
 import org.sopeco.frontend.client.manager.ScenarioManager;
+import org.sopeco.frontend.client.resources.R;
 import org.sopeco.frontend.shared.helper.Metering;
 import org.sopeco.persistence.entities.definition.ParameterValueAssignment;
 

@@ -26,9 +26,9 @@
  */
 package org.sopeco.frontend.client.layout.center.execute.tabOne;
 
-import org.sopeco.frontend.client.R;
-import org.sopeco.frontend.client.LanguageConstants;
 import org.sopeco.frontend.client.manager.Manager;
+import org.sopeco.frontend.client.resources.LanguageConstants;
+import org.sopeco.frontend.client.resources.R;
 import org.sopeco.gwt.widgets.EditableText;
 import org.sopeco.gwt.widgets.Headline;
 
@@ -85,7 +85,7 @@ public class ExecuteTab extends FlowPanel implements ValueChangeHandler<Boolean>
 		editLabel = new EditableText("My Scheduling");
 		editController = new EditableText(Manager.get().getControllerUrl());
 		editController.setEditable(false);
-		btnExecute = new Button(R.lang().executeExperiment());
+		btnExecute = new Button(R.lang.executeExperiment());
 
 		rdioOnReady = new RadioButton("execution");
 		rdioSchedule = new RadioButton("execution");
@@ -142,9 +142,9 @@ public class ExecuteTab extends FlowPanel implements ValueChangeHandler<Boolean>
 			scheduleConfTable.setVisible(rdioSchedule.getValue());
 			repeatTable.setVisible(rdioSchedule.getValue() && scheduleConfTable.getCbRepeat().getValue());
 			if (rdioOnReady.getValue()) {
-				btnExecute.setText(R.lang().executeExperiment());
+				btnExecute.setText(R.lang.executeExperiment());
 			} else {
-				btnExecute.setText(R.lang().scheduleExperiment());
+				btnExecute.setText(R.lang.scheduleExperiment());
 			}
 		} else if (event.getSource() == scheduleConfTable.getCbRepeat()) {
 			repeatTable.setVisible(scheduleConfTable.getCbRepeat().getValue());

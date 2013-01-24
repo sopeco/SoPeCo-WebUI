@@ -1,0 +1,19 @@
+.spc-ToggleSeparator {
+	width: 100%;
+}
+
+.spc-ToggleSeparator .gwt-HTML {
+	color: #777;
+	margin-right: 10px;
+	margin-left: 4px;
+	cursor: pointer;
+	white-space: nowrap;
+}
+
+.spc-ToggleSeparator .horizontalLine {
+	margin-top: 10px;
+}
+
+.spc-ToggleSeparator .gwt-Image {
+	cursor: pointer;
+}

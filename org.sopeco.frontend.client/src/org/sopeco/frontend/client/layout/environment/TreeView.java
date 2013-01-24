@@ -26,7 +26,7 @@
  */
 package org.sopeco.frontend.client.layout.environment;
 
-import org.sopeco.frontend.client.R;
+import org.sopeco.frontend.client.resources.R;
 import org.sopeco.gwt.widgets.ClearDiv;
 import org.sopeco.gwt.widgets.tree.Tree;
 

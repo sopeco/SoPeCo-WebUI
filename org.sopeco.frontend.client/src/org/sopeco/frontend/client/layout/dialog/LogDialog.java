@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
-import org.sopeco.frontend.client.R;
+import org.sopeco.frontend.client.resources.R;
 import org.sopeco.gwt.widgets.Headline;
 import org.sopeco.gwt.widgets.Preformatted;
 

@@ -26,10 +26,14 @@
  */
 package org.sopeco.gwt.widgets.resources;
 
+import java.awt.image.RescaleOp;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.resources.client.ClientBundle.Source;
 import com.google.gwt.user.client.Window;
 
 /**
@@ -41,64 +45,12 @@ public final class WidgetResources {
 	private WidgetResources() {
 	}
 
-	/**
-	 * 
-	 */
-	public static void loadComboBoxCSS() {
-		GWT.runAsync(new RunAsyncCallback() {
-			@Override
-			public void onFailure(Throwable reason) {
-				Window.alert("Can't load comboBox.css");
-			}
-
-			@Override
-			public void onSuccess() {
-				ResourceBundle rsc = GWT.create(ResourceBundle.class);
-				rsc.comboBoxCss().ensureInjected();
-			}
-		});
-	}
-
-	/**
-	 * 
-	 */
-	public static void loadEditableTextCSS() {
-		GWT.runAsync(new RunAsyncCallback() {
-			@Override
-			public void onFailure(Throwable reason) {
-				Window.alert("Can't load comboBox.css");
-			}
-
-			@Override
-			public void onSuccess() {
-				ResourceBundle rsc = GWT.create(ResourceBundle.class);
-				rsc.editableTextCss().ensureInjected();
-			}
-		});
-	}
-
-	/**
-	 * 
-	 */
-	public static void loadProgressBarCSS() {
-		GWT.runAsync(new RunAsyncCallback() {
-			@Override
-			public void onFailure(Throwable reason) {
-				Window.alert("Can't load comboBox.css");
-			}
-
-			@Override
-			public void onSuccess() {
-				ResourceBundle rsc = GWT.create(ResourceBundle.class);
-				rsc.progressBarCss().ensureInjected();
-			}
-		});
-	}
+	public static final ResourceBundle resc = GWT.create(ResourceBundle.class);
 
 	/**
 	 * ClientBundle to load Resources.
 	 */
-	interface ResourceBundle extends ClientBundle {
+	public static interface ResourceBundle extends ClientBundle {
 		@Source("comboBox.css")
 		@CssResource.NotStrict
 		CssResource comboBoxCss();
@@ -110,5 +62,15 @@ public final class WidgetResources {
 		@Source("progressBar.css")
 		@CssResource.NotStrict
 		CssResource progressBarCss();
+
+		@Source("toggleSeparator.css")
+		@CssResource.NotStrict
+		CssResource toggleSeparatorCss();
+
+		@Source("images/arrow_state_right.png")
+		ImageResource imgArrowStateRight();
+
+		@Source("images/arrow_state_down.png")
+		ImageResource imgArrowStateDown();
 	}
 }

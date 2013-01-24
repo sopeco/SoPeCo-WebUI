@@ -32,7 +32,10 @@ import javax.servlet.ServletContextListener;
 import org.sopeco.config.Configuration;
 import org.sopeco.config.IConfiguration;
 import org.sopeco.config.exception.ConfigurationException;
+import org.sopeco.frontend.client.rpc.PushRPC.Type;
+import org.sopeco.frontend.server.rpc.PushRPCImpl;
 import org.sopeco.frontend.server.rpc.database.DatabaseManagerRPCImpl;
+import org.sopeco.frontend.shared.push.PushPackage;
 
 /**
  * 
@@ -45,7 +48,7 @@ public final class StartUp implements ServletContextListener {
 
 	public StartUp() {
 	}
-	
+
 	// @Override
 	// public void init() throws ServletException {
 	// System.out.println(">> Starting webapp..");
@@ -70,6 +73,7 @@ public final class StartUp implements ServletContextListener {
 
 	@Override
 	public void contextDestroyed(ServletContextEvent arg0) {
+		System.out.println(">> Destroying webapp..");
 	}
 
 	@Override

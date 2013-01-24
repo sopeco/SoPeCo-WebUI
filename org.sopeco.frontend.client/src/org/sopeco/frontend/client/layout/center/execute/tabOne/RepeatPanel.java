@@ -29,7 +29,7 @@ package org.sopeco.frontend.client.layout.center.execute.tabOne;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.sopeco.frontend.client.R;
+import org.sopeco.frontend.client.resources.R;
 import org.sopeco.gwt.widgets.EditableText;
 
 import com.google.gwt.dom.client.Style.Unit;

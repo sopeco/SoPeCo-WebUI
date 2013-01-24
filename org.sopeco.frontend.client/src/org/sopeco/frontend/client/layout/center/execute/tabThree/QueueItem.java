@@ -26,7 +26,7 @@
  */
 package org.sopeco.frontend.client.layout.center.execute.tabThree;
 
-import org.sopeco.frontend.client.R;
+import org.sopeco.frontend.client.resources.R;
 import org.sopeco.frontend.shared.entities.FrontendScheduledExperiment;
 
 import com.google.gwt.user.client.ui.FlexTable;

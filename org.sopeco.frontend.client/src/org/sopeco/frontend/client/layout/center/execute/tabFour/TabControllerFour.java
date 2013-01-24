@@ -26,14 +26,16 @@
  */
 package org.sopeco.frontend.client.layout.center.execute.tabFour;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.ListIterator;
 
 import org.sopeco.frontend.client.layout.center.execute.ExecuteController;
 import org.sopeco.frontend.client.layout.center.execute.TabController;
 import org.sopeco.frontend.client.layout.popups.Message;
 import org.sopeco.frontend.client.manager.Manager;
-import org.sopeco.frontend.client.resources.FrontEndImages;
+import org.sopeco.frontend.client.resources.R;
 import org.sopeco.frontend.client.rpc.RPC;
 import org.sopeco.frontend.shared.entities.ExecutedExperimentDetails;
 import org.sopeco.frontend.shared.helper.MECLogEntry;
@@ -111,9 +113,9 @@ public class TabControllerFour extends TabController {
 			@Override
 			public ImageResource getValue(ExecutedExperimentDetails object) {
 				if (object.isSuccessful()) {
-					return FrontEndImages.images().success();
+					return R.resc.imgSuccess();
 				} else {
-					return FrontEndImages.images().error();
+					return R.resc.imgError();
 				}
 			}
 		};
@@ -131,7 +133,7 @@ public class TabControllerFour extends TabController {
 		dataGrid.addColumn(controllerColumn, "Controller");
 
 		dataGrid.setColumnWidth(imageColumn, "40px");
-		
+
 		dataGrid.setColumnWidth(timeStartColumn, "180px");
 		dataGrid.setColumnWidth(timeEndColumn, "180px");
 
@@ -164,8 +166,15 @@ public class TabControllerFour extends TabController {
 		RPC.getExecuteRPC().getExecutedExperimentDetails(new AsyncCallback<List<ExecutedExperimentDetails>>() {
 			@Override
 			public void onSuccess(List<ExecutedExperimentDetails> result) {
-				dataGrid.setRowCount(result.size(), true);
-				dataGrid.setRowData(0, result);
+				List<ExecutedExperimentDetails> reverse = new ArrayList<ExecutedExperimentDetails>();
+
+				for (ListIterator<ExecutedExperimentDetails> iterator = result.listIterator(result.size()); iterator
+						.hasPrevious();) {
+					reverse.add(iterator.previous());
+				}
+
+				dataGrid.setRowCount(reverse.size(), true);
+				dataGrid.setRowData(0, reverse);
 				dataGrid.redraw();
 			}
 

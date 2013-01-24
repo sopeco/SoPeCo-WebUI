@@ -28,10 +28,10 @@ package org.sopeco.frontend.client.widget;
 
 import java.util.logging.Logger;
 
-import org.sopeco.frontend.client.R;
 import org.sopeco.frontend.client.helper.handler.NoSpecialCharsHandler;
 import org.sopeco.frontend.client.layout.popups.Loader;
 import org.sopeco.frontend.client.layout.popups.Message;
+import org.sopeco.frontend.client.resources.R;
 import org.sopeco.frontend.client.rpc.RPC;
 import org.sopeco.persistence.dataset.util.ParameterType;
 import org.sopeco.persistence.entities.definition.ParameterRole;

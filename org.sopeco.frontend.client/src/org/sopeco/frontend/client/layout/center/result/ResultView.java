@@ -26,8 +26,8 @@
  */
 package org.sopeco.frontend.client.layout.center.result;
 
-import org.sopeco.frontend.client.R;
 import org.sopeco.frontend.client.layout.center.CenterPanel;
+import org.sopeco.frontend.client.resources.R;
 import org.sopeco.gwt.widgets.tree.Tree;
 
 import com.google.gwt.dom.client.Style.Overflow;

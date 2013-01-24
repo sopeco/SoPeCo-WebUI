@@ -51,10 +51,12 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public final class ServerPush implements AsyncCallback<PushPackage> {
 
 	private static final Logger LOGGER = Logger.getLogger(ServerPush.class.getName());
-	
+
 	private static ServerPush push;
 	private static PushRPCAsync pushRPC = GWT.create(PushRPC.class);
 	private boolean waiting = false;
+
+	private int errorCount = 0;
 
 	public static ServerPush get() {
 		if (push == null) {
@@ -68,13 +70,21 @@ public final class ServerPush implements AsyncCallback<PushPackage> {
 
 	@Override
 	public void onFailure(Throwable caught) {
-		waiting = false;
-		LOGGER.severe("ServerPush failed..");
-		startRequest();
+		errorCount++;
+
+		if (errorCount < 3) {
+			waiting = false;
+			LOGGER.severe("ServerPush failed..");
+			startRequest();
+		} else {
+			Message.error("Server has been shut down.");
+		}
 	}
 
 	@Override
 	public void onSuccess(PushPackage result) {
+		errorCount = 0;
+
 		waiting = false;
 		execute(result);
 		startRequest();
@@ -105,6 +115,8 @@ public final class ServerPush implements AsyncCallback<PushPackage> {
 			PushListPackage inPackage = (PushListPackage) pushPackage;
 			List<FrontendScheduledExperiment> list = inPackage.getAttachment(FrontendScheduledExperiment.class);
 			MainLayoutPanel.get().getExecuteController().getTabControllerThree().setControllerQueue(list);
+		} else if (pushPackage.getType() == Type.PUSH_SERVER_SHUTTING_DOWN) {
+			Message.warning("The server has been shut down. The execution of the webapp is therefore no longer possible.");
 		}
 	}
 

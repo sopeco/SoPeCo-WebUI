@@ -26,7 +26,7 @@
  */
 package org.sopeco.frontend.client.layout.center.visualization.types;
 
-import org.sopeco.frontend.client.R;
+import org.sopeco.frontend.client.resources.R;
 import org.sopeco.frontend.shared.definitions.result.SharedExperimentRuns;
 
 import com.google.gwt.core.client.JsArray;

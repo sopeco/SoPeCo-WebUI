@@ -190,6 +190,7 @@
 								<include>**/images/*</include>
 								<include>**/*.css</include>
 								<include>**/*.html</include>
+								<include>**/*.jsp</include>
 								<include>**/*.ico</include>
 								<include>**/rsc/lang/*</include>
 

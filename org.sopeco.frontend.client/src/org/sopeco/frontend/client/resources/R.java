@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sopeco.frontend.client;
+package org.sopeco.frontend.client.resources;
 
 import java.util.HashMap;
 
@@ -50,12 +50,9 @@ public final class R {
 
 	private static final String PAIRSEPERATOR = "=";
 
-	private static LanguageConstants languageConstants = GWT.create(LanguageConstants.class);
-	
-	public static LanguageConstants lang() {
-		return languageConstants;
-	}
-	
+	public static final LanguageConstants lang = GWT.create(LanguageConstants.class);
+	public static final Resources resc = GWT.create(Resources.class);
+
 	/**
 	 * Returns the string of the language file(map) which is related to the
 	 * given key.

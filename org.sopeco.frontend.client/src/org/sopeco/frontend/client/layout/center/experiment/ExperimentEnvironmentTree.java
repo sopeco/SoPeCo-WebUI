@@ -26,13 +26,13 @@
  */
 package org.sopeco.frontend.client.layout.center.experiment;
 
-import org.sopeco.frontend.client.R;
 import org.sopeco.frontend.client.event.EventControl;
 import org.sopeco.frontend.client.event.ExperimentChangedEvent;
 import org.sopeco.frontend.client.event.handler.ExperimentChangedEventHandler;
 import org.sopeco.frontend.client.layout.environment.EnvTreeItem;
 import org.sopeco.frontend.client.layout.environment.EnvironmentTree;
 import org.sopeco.frontend.client.manager.ScenarioManager;
+import org.sopeco.frontend.client.resources.R;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 
 /**
