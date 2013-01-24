@@ -6,7 +6,9 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-	<!--<meta name="gwt:property" content="locale=en">-->
+
+	<!-- Internet Explorer have to use the latest render mode -->
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" >
 	
 	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
    
