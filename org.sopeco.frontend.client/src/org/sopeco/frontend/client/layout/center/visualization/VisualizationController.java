@@ -26,6 +26,10 @@
  */
 package org.sopeco.frontend.client.layout.center.visualization;
 
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
 import org.sopeco.frontend.client.layout.center.ICenterController;
 import org.sopeco.frontend.client.resources.FrontEndResources;
 import org.sopeco.frontend.client.resources.R;
@@ -33,25 +37,33 @@ import org.sopeco.frontend.client.rpc.RPC;
 import org.sopeco.frontend.shared.entities.ChartOptions;
 import org.sopeco.frontend.shared.entities.ChartParameter;
 import org.sopeco.frontend.shared.entities.Visualization;
+import org.sopeco.frontend.shared.entities.ChartOptions.ChartType;
 
 import com.google.gwt.cell.client.AbstractCell;
+import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.CellList;
-import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.cellview.client.HasKeyboardPagingPolicy.KeyboardPagingPolicy;
+import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
+import com.google.gwt.user.cellview.client.SimplePager.TextLocation;
+import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Frame;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.ProvidesKey;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
@@ -59,20 +71,25 @@ import com.google.gwt.visualization.client.AbstractDataTable;
 import com.google.gwt.visualization.client.AbstractDataTable.ColumnType;
 import com.google.gwt.visualization.client.DataTable;
 import com.google.gwt.visualization.client.VisualizationUtils;
+import com.google.gwt.visualization.client.visualizations.corechart.ColumnChart;
+import com.google.gwt.visualization.client.visualizations.corechart.CoreChart;
 import com.google.gwt.visualization.client.visualizations.corechart.LineChart;
 import com.google.gwt.visualization.client.visualizations.corechart.Options;
+import com.google.gwt.visualization.client.visualizations.corechart.PieChart;
 
 public class VisualizationController implements ICenterController {
+	private static final String ADD_IMAGE = "images/add.png";
+	private static final String REMOVE_IMAGE = "images/remove_cross.png";
+	private static final String REFRESH_IMAGE = "images/refresh_small.png";
+	
 	private DockLayoutPanel rootWidget;
-	private HorizontalPanel controlWidget;
+	private FlowPanel controlWidget;
 	private CellList<Visualization> visualizationList;
 	private Anchor chartLink;
 	private FlowPanel centerPanel;
-	private Timer timer;
-	private boolean refreshing = false;
 	private Widget chartWidget;
 
-	public static ListDataProvider<Visualization> visualizationDataProvider = new ListDataProvider<Visualization>();
+	public static ChartsDataProvider visualizationDataProvider = new ChartsDataProvider();
 	public static final ProvidesKey<Visualization> KEY_PROVIDER = new ProvidesKey<Visualization>() {
 		@Override
 		public Object getKey(Visualization item) {
@@ -84,22 +101,61 @@ public class VisualizationController implements ICenterController {
 		FrontEndResources.loadVisualizationViewCSS();
 		centerPanel = new FlowPanel();
 		rootWidget = new DockLayoutPanel(Unit.EM);
-		controlWidget = new HorizontalPanel();
+		controlWidget = new FlowPanel();
+		final SingleSelectionModel<Visualization> ssm = new SingleSelectionModel<Visualization>(KEY_PROVIDER);
 		controlWidget.addStyleName("visualizationControl");
-		Button addVisualization = new Button(R.get("addvisualization"));
+		Image addVisualization = new Image(ADD_IMAGE);
+		addVisualization.setTitle(R.get("addchart"));
+		addVisualization.getElement().getStyle().setMarginLeft(1, Unit.EM);
+		addVisualization.getElement().getStyle().setMarginTop(1, Unit.EM);
+		addVisualization.getElement().getStyle().setCursor(Cursor.POINTER);
 		controlWidget.add(addVisualization);
-		controlWidget.setCellVerticalAlignment(addVisualization,
-				HasVerticalAlignment.ALIGN_MIDDLE);
+		
+		Image remove = new Image(REMOVE_IMAGE);
+		remove.setTitle(R.get("removechart"));
+		remove.getElement().getStyle().setMarginLeft(1, Unit.EM);
+		remove.getElement().getStyle().setMarginTop(1, Unit.EM);
+		remove.getElement().getStyle().setCursor(Cursor.POINTER);
+		remove.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				RPC.getVisualizationRPC().deleteVisualization(ssm.getSelectedObject(), new AsyncCallback<Void>() {
+
+					@Override
+					public void onFailure(Throwable caught) {
+					}
+
+					@Override
+					public void onSuccess(Void result) {
+						visualizationDataProvider.updateRowCount(visualizationList.getRowCount(), false);
+					}
+				});
+			}
+		});
+		controlWidget.add(remove);
+		
+		Image refresh = new Image(REFRESH_IMAGE);
+		refresh.setTitle(R.get("refreshcharts"));
+		refresh.getElement().getStyle().setMarginLeft(1, Unit.EM);
+		refresh.getElement().getStyle().setMarginTop(1, Unit.EM);
+		refresh.getElement().getStyle().setCursor(Cursor.POINTER);
+		refresh.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				refreshVisualizations();
+			}
+		});
+		controlWidget.add(refresh);
+		
 		chartLink = new Anchor("");
 		controlWidget.add(chartLink);
-		controlWidget.setCellVerticalAlignment(chartLink,
-				HasVerticalAlignment.ALIGN_MIDDLE);
 		visualizationList = new CellList<Visualization>(new VisualizationCell(),KEY_PROVIDER);
-		// visualizationList.setPageSize(8);
+		visualizationList.setPageSize(8);
 		visualizationList
 				.setEmptyListWidget(new Label(
 						"Either the visualizations are still loading or there are no visualizations yet."));
-		final SingleSelectionModel<Visualization> ssm = new SingleSelectionModel<Visualization>(KEY_PROVIDER);
 		ssm.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
 
 			@Override
@@ -111,24 +167,21 @@ public class VisualizationController implements ICenterController {
 			}
 		});
 		visualizationList.setSelectionModel(ssm);
+		visualizationList.addStyleName("visualizationList");
 		visualizationDataProvider.addDataDisplay(visualizationList);
 		visualizationList.setWidth("300px");
-		rootWidget.addNorth(controlWidget, 5);
-		ScrollPanel scrollPanel = new ScrollPanel(visualizationList);
-		scrollPanel.addStyleName("visualizationList");
-		rootWidget.addWest(scrollPanel, 25);
+		rootWidget.addNorth(controlWidget, 3);
+		FlowPanel listPanel = new FlowPanel();
+		listPanel.addStyleName("visualizationPanel");
+		SimplePager pager = new SimplePager(TextLocation.CENTER);
+		listPanel.add(pager);
+		pager.setPageSize(8);
+		pager.getElement().getStyle().setWidth(24, Unit.EM);
+		pager.setRangeLimited(true);
+		pager.setDisplay(visualizationList);
+		listPanel.add(visualizationList);
+		rootWidget.addWest(listPanel, 25);
 		rootWidget.add(centerPanel);
-		loadAllCharts();
-		timer = new Timer() {
-
-			@Override
-			public void run() {
-				if (rootWidget.isAttached()) {
-					loadAllCharts();
-				}
-			}
-		};
-		timer.scheduleRepeating(10000);
 	}
 
 	@Override
@@ -142,36 +195,7 @@ public class VisualizationController implements ICenterController {
 
 	@Override
 	public void onSwitchTo() {
-		loadAllCharts();
-	}
-
-	public void loadAllCharts() {
-		if (refreshing) {
-			return;
-		}
-		refreshing = true;
-		RPC.getVisualizationRPC().getAllVisualizations(
-				new AsyncCallback<Visualization[]>() {
-
-					@Override
-					public void onSuccess(Visualization[] result) {
-						visualizationDataProvider.getList().clear();
-						for (Visualization visualization : result) {
-							addVisualization(visualization);
-						}
-						refreshing = false;
-					}
-
-					@Override
-					public void onFailure(Throwable caught) {
-						refreshing = false;
-					}
-				});
-
-	}
-
-	public void addVisualization(Visualization visualization) {
-		visualizationDataProvider.getList().add(visualization);
+		refreshVisualizations();
 	}
 
 	public Widget createChart(final Visualization visualization) {
@@ -183,14 +207,31 @@ public class VisualizationController implements ICenterController {
 			Runnable onLoadCallback = new Runnable() {
 				public void run() {
 					chartWidget = new FlowPanel();
-
-					// Create a pie chart visualization.
-					LineChart pie = new LineChart(createTable(
+					
+					CoreChart chart = null;
+					switch (visualization.getOptions().getType()){
+					case BARCHART:
+						chart = new ColumnChart(createTable(
+								visualization.getData(),
+								visualization.getChartParameters(), ChartType.BARCHART),
+								createOptions(visualization.getOptions(),
+										visualization.getName()));
+						break;
+					case PIECHART:
+						chart = new PieChart(createTable(
+								visualization.getData(),
+								visualization.getChartParameters(), ChartType.PIECHART),
+								createOptions(visualization.getOptions(),
+										visualization.getName()));
+						break;
+					default:
+					chart = new LineChart(createTable(
 							visualization.getData(),
-							visualization.getChartParameters()),
+							visualization.getChartParameters(), ChartType.LINECHART),
 							createOptions(visualization.getOptions(),
 									visualization.getName()));
-					((FlowPanel) chartWidget).add(pie);
+					}
+					((FlowPanel) chartWidget).add(chart);
 					centerPanel.clear();
 					centerPanel.add(chartWidget);
 				}
@@ -200,11 +241,13 @@ public class VisualizationController implements ICenterController {
 			// called
 			// when loading is done.
 			VisualizationUtils.loadVisualizationApi(onLoadCallback,
-					LineChart.PACKAGE);
+					CoreChart.PACKAGE);
 
 			break;
 		default:
 			chartWidget = new Frame(visualization.getLink());
+			chartWidget.getElement().getStyle().setWidth(100, Unit.PCT);
+			chartWidget.getElement().getStyle().setHeight(100, Unit.PCT);
 			centerPanel.clear();
 			centerPanel.add(chartWidget);
 		}
@@ -213,8 +256,18 @@ public class VisualizationController implements ICenterController {
 
 	private Options createOptions(ChartOptions chartOptions, String name) {
 		Options options = Options.create();
-		options.setLineWidth(0);
-		options.setPointSize(3);
+		switch(chartOptions.getType()){
+		case BARCHART:
+			options.set("bar.groupWidth", "50");
+			break;
+		case PIECHART:
+			options.set("is3D", true);
+			break;
+		case LINECHART:
+			options.setLineWidth(0);
+			options.setPointSize(3);
+			break;
+		}
 		options.setWidth(900);
 		options.setHeight(500);
 		options.setTitle(name);
@@ -222,17 +275,100 @@ public class VisualizationController implements ICenterController {
 	}
 
 	private AbstractDataTable createTable(Double[][] data,
-			ChartParameter[] chartParameters) {
+			List<ChartParameter> chartParameters, ChartType type) {
 		DataTable dataTable = DataTable.create();
-		dataTable.addRows(data[0].length);
-		for (int col = 0; col < data.length; col++) {
-			dataTable.addColumn(ColumnType.NUMBER,
-					chartParameters[col].getParameterName());
-			for (int row = 0; row < data[col].length; row++) {
-				dataTable.setValue(row, col, data[col][row]);
+		switch (type) {
+		case PIECHART:
+			dataTable.addColumn(ColumnType.STRING,
+					chartParameters.get(0).getParameterName());
+			Map<String, Double> values = new TreeMap<String, Double>();
+			for (int row = 0; row < data[0].length; row++) {
+				values.put(""+data[0][row], 0.0);
 			}
+			dataTable.addRows(values.size());
+			int j = 0;
+			for (String key : values.keySet()){
+				dataTable.setValue(j, 0, key);
+				j++;
+			}
+			
+			for (int col = 1; col < data.length; col++) {
+				dataTable.addColumn(ColumnType.NUMBER,
+						chartParameters.get(0).getParameterName());
+				for (String key : values.keySet()){
+					values.put(key, 0.0);
+				}
+				for (int row = 0; row < data[col].length; row++) {
+					values.put(""+data[0][row], values.get(""+data[0][row])+data[col][row]);
+				}
+				j = 0;
+				for (Double value : values.values()){
+					dataTable.setValue(j, col, value);
+					j++;
+				}
+			}
+			break;
+		case BARCHART:
+			dataTable.addColumn(ColumnType.STRING,
+					chartParameters.get(0).getParameterName());
+			Map<String, Double> values2 = new TreeMap<String, Double>();
+			for (int row = 0; row < data[0].length; row++) {
+				values2.put(""+data[0][row], 0.0);
+			}
+			dataTable.addRows(values2.size());
+			j = 0;
+			for (String key : values2.keySet()){
+				dataTable.setValue(j, 0, key);
+				j++;
+			}
+			
+			for (int col = 1; col < data.length; col++) {
+				dataTable.addColumn(ColumnType.NUMBER,
+						chartParameters.get(0).getParameterName());
+				for (String key : values2.keySet()){
+					values2.put(key, 0.0);
+				}
+				for (int row = 0; row < data[col].length; row++) {
+					values2.put(""+data[0][row], values2.get(""+data[0][row])+data[col][row]);
+				}
+				j = 0;
+				for (Double value : values2.values()){
+					dataTable.setValue(j, col, value);
+					j++;
+				}
+			}
+			break;
+		default:
+			dataTable.addRows(data[0].length);
+			dataTable.addColumn(ColumnType.NUMBER,
+					chartParameters.get(0).getParameterName());
+			for (int row = 0; row < data[0].length; row++) {
+				dataTable.setValue(row, 0, data[0][row]);
+			}
+			for (int col = 1; col < data.length; col++) {
+				dataTable.addColumn(ColumnType.NUMBER,
+						chartParameters.get(col).getParameterName());
+				for (int row = 0; row < data[col].length; row++) {
+					dataTable.setValue(row, col, data[col][row]);
+				}
+			}
+			break;
 		}
 		return dataTable;
+	}
+	
+	public void refreshVisualizations(){
+		RPC.getVisualizationRPC().getVisualizations(visualizationList.getPageStart(), visualizationList.getPageSize(), new AsyncCallback<List<Visualization>>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+			}
+
+			@Override
+			public void onSuccess(List<Visualization> result) {
+				visualizationDataProvider.updateRowData(visualizationList.getPageStart(), result);
+			}
+		});
 	}
 
 	private static class VisualizationCell extends AbstractCell<Visualization> {
@@ -260,8 +396,8 @@ public class VisualizationController implements ICenterController {
 			sb.appendHtmlConstant("<td style='font-size:95%;'>");
 			sb.appendHtmlConstant("<div>" + value.getName() + "</div>");
 			sb.appendHtmlConstant("</td></tr><tr><td>");
-			sb.appendHtmlConstant("<div>" + value.getLink());
-			sb.appendHtmlConstant("</div>");
+//			sb.appendHtmlConstant("<div>" + value.getOptions().getType().toString().toLowerCase());
+//			sb.appendHtmlConstant("</div>");
 			sb.appendHtmlConstant("</td></tr></table>");
 
 		}

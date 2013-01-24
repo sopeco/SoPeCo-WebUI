@@ -26,9 +26,13 @@
  */
 package org.sopeco.frontend.client.layout.center.visualization.wizard;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.sopeco.frontend.client.resources.FrontEndResources;
 import org.sopeco.frontend.shared.entities.ChartOptions.ChartType;
 
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -42,10 +46,11 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 public class ChartSelectionPanel extends FlowPanel{
 	
 	private ChartType selectedType = ChartType.LINECHART;
+	private List<ClickHandler> clickHandler;
 
 	public ChartSelectionPanel() {
 		FrontEndResources.loadVisualizationWizardCSS();
-		this.setWidth("750px");
+		clickHandler = new ArrayList<ClickHandler>();
 		ChartType[] types = ChartType.values();
 		for (int i = 0; i < types.length; i++){
 			final ChartType type = types[i];
@@ -55,12 +60,22 @@ public class ChartSelectionPanel extends FlowPanel{
 				
 				@Override
 				public void onClick(ClickEvent event) {
-					System.out.println("selected type: " + type);
 					selectedType = type;
+					for (ClickHandler handler : clickHandler){
+						handler.onClick(event);
+					}
 				}
 			});
 			this.add(chartIconPanel);
 		}
+	}
+	
+	public void addClickHandler(ClickHandler clickHandler){
+		this.clickHandler.add(clickHandler);
+	}
+	
+	public void removeClickHandler(ClickHandler clickHandler){
+		this.clickHandler.remove(clickHandler);
 	}
 
 	public ChartType getSelectedType() {
@@ -72,8 +87,8 @@ public class ChartSelectionPanel extends FlowPanel{
 
 		public ChartIconPanel(String labelString, Image image) {
 			rootWidget = new VerticalPanel();
-			this.setPixelSize(250, 250);
-			rootWidget.setPixelSize(250, 250);
+			this.setPixelSize(100, 100);
+			rootWidget.setPixelSize(100, 100);
 			rootWidget.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
 			if(image != null){
 				rootWidget.add(image);
@@ -86,6 +101,7 @@ public class ChartSelectionPanel extends FlowPanel{
 			rootWidget.setCellVerticalAlignment(label, HasVerticalAlignment.ALIGN_MIDDLE);
 			
 			this.add(rootWidget);
+			this.getElement().getStyle().setMargin(1, Unit.EM);
 		}
 	}
 }

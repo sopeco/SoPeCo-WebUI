@@ -26,8 +26,11 @@
  */
 package org.sopeco.frontend.client.layout.center.visualization.wizard;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.sopeco.frontend.client.layout.MainLayoutPanel;
+import org.sopeco.frontend.client.layout.center.CenterType;
 import org.sopeco.frontend.client.resources.FrontEndResources;
 import org.sopeco.frontend.client.resources.R;
 import org.sopeco.frontend.client.rpc.RPC;
@@ -35,10 +38,10 @@ import org.sopeco.frontend.shared.definitions.result.SharedExperimentRuns;
 import org.sopeco.frontend.shared.entities.ChartOptions;
 import org.sopeco.frontend.shared.entities.ChartParameter;
 import org.sopeco.frontend.shared.entities.Visualization;
+import org.sopeco.gwt.widgets.Headline;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
@@ -56,18 +59,17 @@ public class VisualizationWizard extends DialogBox {
 	private int maxColumns;
 	private SharedExperimentRuns experimentRun;
 	private HorizontalPanel buttonPanel;
-	private ChartParameter[] chartParameter;
+	private List<ChartParameter> inputParameter;
+	private List<ChartParameter> outputParameter;
 	private Image loadingIndicator;
 	private final ChartSelectionPanel chartSelectionPanel = new ChartSelectionPanel();
 	final ColumnSelector columnSelector = new ColumnSelector();
 
-	public VisualizationWizard() {
-		FrontEndResources.loadVisualizationWizardCSS();
-	}
-
 	public VisualizationWizard(final SharedExperimentRuns experimentRun) {
-		this.experimentRun = experimentRun;
 		FrontEndResources.loadVisualizationWizardCSS();
+		this.experimentRun = experimentRun;
+		inputParameter = new ArrayList<ChartParameter>();
+		outputParameter = new ArrayList<ChartParameter>();
 		rootWidget = new VerticalPanel();
 		loadingIndicator = new Image(LOADING_INDICATOR);
 		buttonPanel = new HorizontalPanel();
@@ -90,16 +92,30 @@ public class VisualizationWizard extends DialogBox {
 		});
 		buttonPanel.add(next);
 		this.setWidget(rootWidget);
+		chartSelectionPanel.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				nextScreen();
+			}
+		});
 		RPC.getVisualizationRPC().getChartParameter(experimentRun, new AsyncCallback<ChartParameter[]>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
-				Window.alert("Failed to receive chart parameter");
+				
 			}
 
 			@Override
 			public void onSuccess(ChartParameter[] result) {
-				chartParameter = result;
+				for (ChartParameter param: result){
+					if (param.getType() == ChartParameter.INPUT){
+						inputParameter.add(param);
+					}
+					else {
+						outputParameter.add(param);
+					}
+				}
 			}
 		});
 	}
@@ -109,16 +125,21 @@ public class VisualizationWizard extends DialogBox {
 		currentScreen = screen;
 		switch(screen){
 		case CHART_SELECTION:
+			rootWidget.add(new Headline("Choose chart type"));
 			rootWidget.add(chartSelectionPanel);
+			chartSelectionPanel.setPixelSize(400, 200);
 			break;
 		case COLUMN_SELECTION:
-			columnSelector.setChartParameter(chartParameter);
-			columnSelector.setMaxColumns(maxColumns);
+			rootWidget.add(new Headline("Choose columns"));
+			columnSelector.setChartParameter(inputParameter, outputParameter);
 			columnSelector.showColumnSelection();
 			rootWidget.add(columnSelector);
+			columnSelector.setPixelSize(400, 200);
 			break;
 		case LOADING_COLUMNS:
+			rootWidget.add(new Headline("Loading..."));
 			rootWidget.add(loadingIndicator);
+			loadingIndicator.setPixelSize(400, 200);
 			break;
 		}
 		rootWidget.add(buttonPanel);
@@ -129,7 +150,7 @@ public class VisualizationWizard extends DialogBox {
 	private void nextScreen() {
 		switch (currentScreen) {
 		case CHART_SELECTION:
-			if (chartParameter == null){
+			if (inputParameter == null){
 				setScreen(Screen.LOADING_COLUMNS);
 			}
 			else {
@@ -137,13 +158,14 @@ public class VisualizationWizard extends DialogBox {
 			}
 			break;
 		case COLUMN_SELECTION:
+			MainLayoutPanel.get().getViewSwitch().switchTo(CenterType.Visualization);
 			VisualizationWizard.this.hide();
 			ChartOptions options = new ChartOptions();
 			options.setType(chartSelectionPanel.getSelectedType());
 			for (ChartParameter p : columnSelector.getSelectedColumns()){
 				System.out.println("cparam: " + p.getParameterName());
 			}
-			RPC.getVisualizationRPC().getChart(experimentRun, columnSelector.getSelectedColumns(), options, new AsyncCallback<Visualization>() {
+			RPC.getVisualizationRPC().createChart(experimentRun, columnSelector.getSelectedColumns(), options, new AsyncCallback<Visualization>() {
 
 				@Override
 				public void onFailure(Throwable caught) {
@@ -159,7 +181,7 @@ public class VisualizationWizard extends DialogBox {
 			});
 			break;
 		case LOADING_COLUMNS:
-			if (chartParameter != null){
+			if (inputParameter != null){
 				showColumnSelector();
 			}
 			break;

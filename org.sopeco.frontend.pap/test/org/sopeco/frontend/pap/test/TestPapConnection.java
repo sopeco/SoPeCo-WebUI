@@ -1,5 +1,8 @@
 package org.sopeco.frontend.pap.test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Test;
 import org.sopeco.frontend.pap.PAPChartConnection;
 import org.sopeco.frontend.pap.PAPChartConnectionExtension;
@@ -16,17 +19,16 @@ public class TestPapConnection {
 	
 	@Test
 	public void testConnection(){
-		ChartParameter[] chartParameter = new ChartParameter[3];
-		chartParameter[0] = new ChartParameter();
-		chartParameter[0].setParameterName("x");
-		chartParameter[1] = new ChartParameter();
-		chartParameter[1].setParameterName("y");
-		chartParameter[2] = new ChartParameter();
-		chartParameter[2].setParameterName("z");
+		List<ChartParameter> chartParameter = new ArrayList<ChartParameter>();
+		for (int i = 0; i < 3; i++){
+			ChartParameter param = new ChartParameter();
+			param.setParameterName("x" + i);
+			chartParameter.add(param);
+		}
 		ChartOptions options = new ChartOptions();
 		options.setType(ChartType.LINECHART);
 		papConnector.createVisualization("test_experiment", new Double[][]{{1.0,1.0},{2.0,1.5},{3.0,3.0}}, chartParameter, options);
-		Visualization[] vis = papConnector.getAllVisualizations();
+		List<Visualization> vis = papConnector.getVisualizations(0,Integer.MAX_VALUE);
 		boolean b = false;
 		for (Visualization v : vis){
 			if (v.getName().equals("test_experiment")){

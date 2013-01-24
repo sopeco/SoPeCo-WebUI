@@ -33,7 +33,7 @@
 }
 
 .chartIconBox:hover {
-	border-color: red;
+	border-color: orange;
 }
 
 .chartIconBox:active {

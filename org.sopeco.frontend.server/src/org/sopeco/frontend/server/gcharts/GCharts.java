@@ -1,7 +1,10 @@
 package org.sopeco.frontend.server.gcharts;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.sopeco.engine.registry.ISoPeCoExtension;
 import org.sopeco.frontend.server.chartconnector.IChartConnection;
@@ -16,16 +19,6 @@ public class GCharts implements IChartConnection {
 	
 	public GCharts() {
 		visualizations = new ArrayList<Visualization>();
-		ChartParameter[] chartParameter = new ChartParameter[3];
-		chartParameter[0] = new ChartParameter();
-		chartParameter[0].setParameterName("x");
-		chartParameter[1] = new ChartParameter();
-		chartParameter[1].setParameterName("y");
-		chartParameter[2] = new ChartParameter();
-		chartParameter[2].setParameterName("z");
-		ChartOptions options = new ChartOptions();
-		options.setType(ChartType.LINECHART);
-		createVisualization("test_experiment", new Double[][]{{1.0,2.0},{2.0,1.5},{3.0,3.0}}, chartParameter, options);
 	}
 
 	@Override
@@ -34,18 +27,20 @@ public class GCharts implements IChartConnection {
 	}
 
 	@Override
-	public Visualization[] getAllVisualizations() {
-		return visualizations.toArray(new Visualization[visualizations.size()]);
+	public List<Visualization> getVisualizations(int start, int length) {
+		if (start > visualizations.size() - 1){
+			return new ArrayList<Visualization>();
+		}
+		start = start < 0 ? 0 : start;
+		length = start + length > visualizations.size() ? visualizations.size()-start : length;
+		return visualizations.subList(start, start+length);
 	}
-	
-	private static final String html = "<div id='chart_div' style='width: 900px; height: 500px;'></div>";
 
 	@Override
 	public synchronized Visualization createVisualization(String experimentName,
-			Double[][] data, ChartParameter[] chartParameter,
+			Double[][] data, List<ChartParameter> chartParameter,
 			ChartOptions options) {
 		Visualization visualization = new Visualization();
-		visualization.setId(System.nanoTime());
 		visualization.setLink("");
 		visualization.setName(experimentName);
 		visualization.setData(data);
@@ -54,5 +49,15 @@ public class GCharts implements IChartConnection {
 		visualization.setOptions(options);
 		visualizations.add(visualization);
 		return visualization;
+	}
+
+	@Override
+	public void addAll(Collection<Visualization> collection) {
+		visualizations.addAll(collection);
+	}
+
+	@Override
+	public void remove(Visualization visualization) {
+		visualizations.remove(visualization);
 	}
 }

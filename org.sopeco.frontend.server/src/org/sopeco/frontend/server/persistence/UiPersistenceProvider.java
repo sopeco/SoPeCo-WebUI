@@ -38,6 +38,7 @@ import org.sopeco.frontend.server.persistence.entities.ScheduledExperiment;
 import org.sopeco.frontend.shared.entities.AccountDetails;
 import org.sopeco.frontend.shared.entities.ExecutedExperimentDetails;
 import org.sopeco.frontend.shared.entities.MECLog;
+import org.sopeco.frontend.shared.entities.Visualization;
 import org.sopeco.persistence.exceptions.DataNotFoundException;
 
 /**
@@ -215,6 +216,64 @@ public class UiPersistenceProvider {
 		try {
 			em.getTransaction().begin();
 			ScheduledExperiment toBeRemoved = em.merge(experiment);
+			em.remove(toBeRemoved);
+			em.getTransaction().commit();
+		} finally {
+			if (em.getTransaction().isActive()) {
+				em.getTransaction().rollback();
+			}
+			em.close();
+		}
+	}
+	
+	public List<Visualization> loadAllVisualizations() {
+		List<Visualization> visualizations = null;
+		EntityManager em = emf.createEntityManager();
+		try {
+			TypedQuery<Visualization> query = em.createNamedQuery("getAllVisualizations", Visualization.class);
+			visualizations = query.getResultList();
+			return visualizations;
+		} catch (Exception e) {
+			return new ArrayList<Visualization>();
+		} finally {
+			em.close();
+		}
+	}
+
+	public List<Visualization> loadVisualizationsByAccount(String accountName) {
+		List<Visualization> visualizations = null;
+		EntityManager em = emf.createEntityManager();
+		try {
+			TypedQuery<Visualization> query = em.createNamedQuery("getVisualizationsByAccount",
+					Visualization.class);
+			visualizations = query.setParameter("accountId", accountName).getResultList();
+			return visualizations;
+		} catch (Exception e) {
+			return new ArrayList<Visualization>();
+		} finally {
+			em.close();
+		}
+	}
+	
+	public void storeVisualization(Visualization visualization) {
+		EntityManager em = emf.createEntityManager();
+		try {
+			em.getTransaction().begin();
+			em.merge(visualization);
+			em.getTransaction().commit();
+		} finally {
+			if (em.getTransaction().isActive()) {
+				em.getTransaction().rollback();
+			}
+			em.close();
+		}
+	}
+
+	public void removeVisualization(Visualization visualization) {
+		EntityManager em = emf.createEntityManager();
+		try {
+			em.getTransaction().begin();
+			Visualization toBeRemoved = em.merge(visualization);
 			em.remove(toBeRemoved);
 			em.getTransaction().commit();
 		} finally {

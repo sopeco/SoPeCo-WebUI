@@ -26,6 +26,8 @@
  */
 package org.sopeco.frontend.client.rpc;
 
+import java.util.List;
+
 import org.sopeco.frontend.shared.definitions.result.SharedExperimentRuns;
 import org.sopeco.frontend.shared.entities.ChartOptions;
 import org.sopeco.frontend.shared.entities.ChartParameter;
@@ -35,11 +37,11 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public interface VisualizationRPCAsync {
 	
-	void getChart(SharedExperimentRuns experiementRun, ChartParameter[] chartParameter, ChartOptions options, AsyncCallback<Visualization> callback);
-	
-	void getDataSet(SharedExperimentRuns experiementRun, ChartParameter[] chartParameter, AsyncCallback<Double[][]> callback);
+	void createChart(SharedExperimentRuns experiementRun, List<ChartParameter> chartParameter, ChartOptions options, AsyncCallback<Visualization> callback);
 	
 	void getChartParameter(SharedExperimentRuns experiementRun, AsyncCallback<ChartParameter[]> callback);
 	
-	void getAllVisualizations(AsyncCallback<Visualization[]> callback);
+	void getVisualizations(int start, int length, AsyncCallback<List<Visualization>> callback);
+	
+	void deleteVisualization(Visualization visualization, AsyncCallback<Void> callback);
 }

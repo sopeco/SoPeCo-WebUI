@@ -33,74 +33,83 @@ import org.sopeco.frontend.shared.entities.ChartParameter;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 
-public class ColumnSelector extends VerticalPanel {
-	private int maxColumns;
+public class ColumnSelector extends HorizontalPanel {
+	private int maxColumns = 1;
+	private FlowPanel verticalPanel1;
+	private FlowPanel verticalPanel2;
 	private List<ListBox> columnSelector = new ArrayList<ListBox>();
-	private ChartParameter[] chartParameter;
+	private List<ChartParameter> inputParameter;
+	private List<ChartParameter> outputParameter;
 
 	public ColumnSelector() {
+		inputParameter = new ArrayList<ChartParameter>();
+		outputParameter = new ArrayList<ChartParameter>();
+		verticalPanel1 = new FlowPanel();
+		this.add(verticalPanel1);
+		verticalPanel2 = new FlowPanel();
+		this.add(verticalPanel2);
 	}
 
-	public int getMaxColumns() {
-		return maxColumns;
-	}
-
-
-	public void setMaxColumns(int maxColumns) {
-		this.maxColumns = maxColumns;
-	}
-
-
-	public ChartParameter[] getChartParameter() {
-		return chartParameter;
-	}
-
-
-	public void setChartParameter(ChartParameter[] chartParameter) {
-		this.chartParameter = chartParameter;
+	public void setChartParameter(List<ChartParameter> inputParameter, List<ChartParameter> outputParameter) {
+		this.inputParameter = inputParameter;
+		this.outputParameter = outputParameter;
 	}
 
 
 	public void showColumnSelection() {
-		this.clear();
+		verticalPanel1.clear();
+		verticalPanel2.clear();
 		final ListBox nrPicker = new ListBox();
-		nrPicker.addItem("2");
-		nrPicker.addItem("3");
-		nrPicker.addItem("4");
+		for (int i = 0; i < outputParameter.size(); i++){
+			nrPicker.addItem(""+(i+1));
+		}
+		nrPicker.setSelectedIndex(maxColumns-1);
 		nrPicker.addChangeHandler(new ChangeHandler() {
 			
 			@Override
 			public void onChange(ChangeEvent event) {
-				maxColumns = Integer.parseInt(nrPicker.getValue(nrPicker.getSelectedIndex()));
+				maxColumns = nrPicker.getSelectedIndex()+1;
 				showColumnSelection();
 			}
 		});
-		this.add(nrPicker);
+		HorizontalPanel horizontalPanel = new HorizontalPanel();
+		horizontalPanel.setSpacing(4);
+		horizontalPanel.add(new Label("No. of outputs"));
+		horizontalPanel.add(nrPicker);
+		verticalPanel2.add(horizontalPanel);
 		columnSelector.clear();
+		
+		verticalPanel1.add(createChartSelectorWidget("x-Axis ", inputParameter));
 		for (int i = 0; i < maxColumns; i++) {
-			HorizontalPanel hp = new HorizontalPanel();
-			hp.add(new Label("Column " + i + ": "));
-			final ListBox lb = new ListBox();
-			columnSelector.add(lb);
-			hp.add(lb);
-			for (int j = 0; j < chartParameter.length; j++) {
-				lb.addItem(chartParameter[j].getParameterName());
-			}
-			this.add(hp);
+			verticalPanel2.add(createChartSelectorWidget("Output " + i + " ", outputParameter));
 		}
 	}
+	
+	private Widget createChartSelectorWidget(String name, List<ChartParameter> params){
+		HorizontalPanel hp = new HorizontalPanel();
+		hp.setSpacing(4);
+		hp.add(new Label(name));
+		final ListBox lb = new ListBox();
+		columnSelector.add(lb);
+		hp.add(lb);
+		for (int j = 0; j < params.size(); j++) {
+			lb.addItem(params.get(j).getParameterName());
+		}
+		return hp;
+	}
 
-	public ChartParameter[] getSelectedColumns() {
-		ChartParameter[] sel = new ChartParameter[maxColumns];
-		System.out.println("getSelectedColumns() maxColumns: " + maxColumns);
-		for (int i = 0; i < sel.length; i++){
-			sel[i] = chartParameter[columnSelector.get(i).getSelectedIndex()];
-			System.out.println("i: " + i + " seli: " + columnSelector.get(i).getSelectedIndex() + " sel[i]: " + sel[i]);
+	public List<ChartParameter> getSelectedColumns() {
+		List<ChartParameter> sel = new ArrayList<ChartParameter>();
+		sel.add(inputParameter.get(columnSelector.get(0).getSelectedIndex()));
+		for (int i = 1; i < columnSelector.size(); i++){
+			sel.add(outputParameter.get(columnSelector.get(i).getSelectedIndex()));
 		}
 		return sel;
 	}

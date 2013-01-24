@@ -27,23 +27,71 @@
 package org.sopeco.frontend.shared.entities;
 
 import java.io.Serializable;
+import java.util.List;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Lob;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 
+/**
+ * 
+ * @author Benjamin Ebling
+ *
+ */
+@Entity
+@NamedQueries({
+	@NamedQuery(name = "getAllVisualizations", query = "SELECT u FROM Visualization u"),
+	@NamedQuery(name = "getVisualizationsByAccount", query = "SELECT s FROM Visualization s WHERE s.accountId = :accountId") })
 public class Visualization implements Serializable {
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 2591904277445541753L;
+	
+	@Id
+	@Column(name = "id")
 	private long id;
+	
+	@Column(name = "accountId")
+	private String accountId;
+	
+	@Column(name = "name")
 	private String name;
+	
+	@Column(name = "link")
 	private String link;
+	
+	@Column(name = "type")
 	private Type type = Type.LINK;
+	
 	private Double[][] data;
+	
+	@Lob
+	@Column(name = "chartOptions")
 	private ChartOptions options;
-	private ChartParameter[] chartParameters;
+	
+	@Lob
+	@Column(name = "chartParameters")
+	private List<ChartParameter> chartParameters;
+	
+	@Column(name = "scenarioName")
+	private String scenarioName;
+	
+	@Column(name = "measurementEnvironmentUrl")
+	private String measurementEnvironmentUrl;
+	
+	@Column(name = "timestamp")
+	private Long timestamp;
+	
+	@Column(name = "experimentName")
+	private String experimentName;
 
 	public Visualization(){
 		
@@ -93,11 +141,11 @@ public class Visualization implements Serializable {
 		this.options = options;
 	}
 
-	public ChartParameter[] getChartParameters() {
+	public List<ChartParameter> getChartParameters() {
 		return chartParameters;
 	}
 
-	public void setChartParameters(ChartParameter[] chartParameters) {
+	public void setChartParameters(List<ChartParameter> chartParameters) {
 		this.chartParameters = chartParameters;
 	}
 
@@ -108,4 +156,54 @@ public class Visualization implements Serializable {
 	public void setId(long id) {
 		this.id = id;
 	}
+
+	public String getScenarioName() {
+		return scenarioName;
+	}
+
+	public void setScenarioName(String scenarioName) {
+		this.scenarioName = scenarioName;
+	}
+
+	public String getMeasurementEnvironmentUrl() {
+		return measurementEnvironmentUrl;
+	}
+
+	public void setMeasurementEnvironmentUrl(String measurementEnvironmentUrl) {
+		this.measurementEnvironmentUrl = measurementEnvironmentUrl;
+	}
+
+	public Long getTimestamp() {
+		return timestamp;
+	}
+
+	public void setTimestamp(Long timestamp) {
+		this.timestamp = timestamp;
+	}
+
+	public String getExperimentName() {
+		return experimentName;
+	}
+
+	public void setExperimentName(String experimentName) {
+		this.experimentName = experimentName;
+	}
+
+	public String getAccountId() {
+		return accountId;
+	}
+
+	public void setAccountId(String accountId) {
+		this.accountId = accountId;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj.getClass() != Visualization.class){
+			return false;
+		}
+		return this.getId() == ((Visualization) obj).getId();
+	}
+	
+	
 }

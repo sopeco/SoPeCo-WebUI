@@ -27,6 +27,7 @@
 package org.sopeco.frontend.client.rpc;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.sopeco.frontend.shared.definitions.result.SharedExperimentRuns;
 import org.sopeco.frontend.shared.entities.ChartOptions;
@@ -40,11 +41,11 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 @RemoteServiceRelativePath("visualizationRPC")
 public interface VisualizationRPC extends RemoteService {
 
-	Visualization getChart(SharedExperimentRuns experiementRun, ChartParameter[] chartParameter, ChartOptions options);
-	
-	Double[][] getDataSet(SharedExperimentRuns experiementRun, ChartParameter[] chartParameter);
+	Visualization createChart(SharedExperimentRuns experiementRun, List<ChartParameter> chartParameter, ChartOptions options);
 	
 	ChartParameter[] getChartParameter(SharedExperimentRuns experiementRun);
 	
-	Visualization[] getAllVisualizations();
+	List<Visualization> getVisualizations(int start, int length);
+	
+	Void deleteVisualization(Visualization visualization);
 }

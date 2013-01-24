@@ -28,9 +28,12 @@ package org.sopeco.frontend.pap;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.sopeco.engine.registry.ISoPeCoExtension;
@@ -50,7 +53,7 @@ public class PAPChartConnection implements IChartConnection {
 	private static PAPConnector papConnector = new PAPConnector();
 	private static final String SQL_DUMMY = "SELECT * FROM perf_pap.pvexperiment";
 
-	private static Set<Visualization> savedVisualizations = new HashSet<Visualization>(); // link, projectname
+	private static List<Visualization> savedVisualizations = new ArrayList<Visualization>(); // link, projectname
 	private static HashMap<String, String> savedProjects = new HashMap<String, String>();// projectname, pid
 	private static String uid;
 	private static Runnable run = new Runnable() {
@@ -123,11 +126,11 @@ public class PAPChartConnection implements IChartConnection {
 		this.provider = provider;
 	}
 
-	private String createProcessScript(Double[][] data, ChartParameter[] chartParameter){
+	private String createProcessScript(Double[][] data, List<ChartParameter> chartParameter){
 		StringBuffer rValue = new StringBuffer();
 
 		for (int i = 0; i < data.length; i++) {
-			rValue.append(chartParameter[i].getParameterName());
+			rValue.append(chartParameter.get(i).getParameterName());
 			rValue.append(i);
 			rValue.append(" <- c(");
 			for (int j = 0; j < data[i].length; j++) {
@@ -141,55 +144,60 @@ public class PAPChartConnection implements IChartConnection {
 		return rValue.toString();
 	}
 	
-	private String creatOutputScript(ChartOptions options, ChartParameter[] chartParameter){
+	private String creatOutputScript(ChartOptions options, List<ChartParameter> chartParameter){
 		StringBuffer outputScript = new StringBuffer();
 		switch (options.getType()){
 		case BARCHART:
 			outputScript.append("data <- do.call(rbind, list(");
-			for (int i = 1; i < chartParameter.length; i++){
-				outputScript.append(chartParameter[i].getParameterName()+i);
-				if (i < chartParameter.length-1){
+			for (int i = 1; i < chartParameter.size(); i++){
+				outputScript.append(chartParameter.get(i).getParameterName()+i);
+				if (i < chartParameter.size()-1){
 					outputScript.append(",");
 				}
 			}
 			outputScript.append("))\n");
-			outputScript.append("matr <- as.matrix(data,nrow=" + (chartParameter.length-1) +")\n");
+			outputScript.append("matr <- as.matrix(data,nrow=" + (chartParameter.size()-1) +")\n");
 			outputScript.append("barplot(matr,");
 			
-			outputScript.append("names.arg="+chartParameter[0].getParameterName()+0);
-			outputScript.append(",beside=TRUE,col=rainbow("+(chartParameter.length-1)+"))");
+			outputScript.append("names.arg="+chartParameter.get(0).getParameterName()+0);
+			outputScript.append(",beside=TRUE,col=rainbow("+(chartParameter.size()-1)+"))");
 			break;
 		case PIECHART:
 			outputScript.append("pie3D(");
-			outputScript.append(chartParameter[1].getParameterName()+1+","+chartParameter[0].getParameterName()+0);
-			outputScript.append(",explode=0.1,col=rainbow(length("+chartParameter[0].getParameterName()+0+")))");
+			outputScript.append(chartParameter.get(1).getParameterName()+1+","+chartParameter.get(0).getParameterName()+0);
+			outputScript.append(",explode=0.1,col=rainbow(length("+chartParameter.get(0).getParameterName()+0+")))");
 			break;
 		default:
 			outputScript.append("plot(");
-			outputScript.append(chartParameter[0].getParameterName()+0);
-			outputScript.append(","+chartParameter[1].getParameterName()+1);
-			outputScript.append(",type=\"l\",col=rainbow("+(chartParameter.length-1)+")[1])");
-			for (int i = 2; i < chartParameter.length; i++){
+			outputScript.append(chartParameter.get(0).getParameterName()+0);
+			outputScript.append(","+chartParameter.get(1).getParameterName()+1);
+			outputScript.append(",type=\"l\",col=rainbow("+(chartParameter.size()-1)+")[1])");
+			for (int i = 2; i < chartParameter.size(); i++){
 				outputScript.append("\nlines(");
-				outputScript.append(chartParameter[i].getParameterName()+i);
-				outputScript.append(",type=\"l\",col=rainbow("+(chartParameter.length-1)+")["+i+"])");
+				outputScript.append(chartParameter.get(i).getParameterName()+i);
+				outputScript.append(",type=\"l\",col=rainbow("+(chartParameter.size()-1)+")["+i+"])");
 			}
 		}
 		outputScript.append("\nlegend(\"topleft\", c(");
-		for (int i = 1; i < chartParameter.length; i++){
-			outputScript.append("\""+chartParameter[i].getParameterName()+i+ "\"");
-			if (i < chartParameter.length -1){
+		for (int i = 1; i < chartParameter.size(); i++){
+			outputScript.append("\""+chartParameter.get(i).getParameterName()+i+ "\"");
+			if (i < chartParameter.size() -1){
 				outputScript.append(",");
 			}
 		}
-		outputScript.append("), col=rainbow("+(chartParameter.length-1)+"),lwd=2,bty=\"n\")");
+		outputScript.append("), col=rainbow("+(chartParameter.size()-1)+"),lwd=2,bty=\"n\")");
 //		legend("topleft", c("outNs.out1","inputNs.input2"), col=rainbow(2), 
 //				   lwd=2, bty="n");
 		return outputScript.toString();
 	}
 
-	public Visualization[] getAllVisualizations() {
-		return savedVisualizations.toArray(new Visualization[savedVisualizations.size()]);
+	public List<Visualization> getVisualizations(int start, int length) {
+		if (start > savedVisualizations.size() - 1){
+			return new ArrayList<Visualization>();
+		}
+		start = start < 0 ? 0 : start;
+		length = start + length > savedVisualizations.size() ? savedVisualizations.size()-start : length;
+		return savedVisualizations.subList(start, start+length);
 	}
 
 	private String getOrCreateProject(String projectname) {
@@ -217,7 +225,7 @@ public class PAPChartConnection implements IChartConnection {
 
 	@Override
 	public Visualization createVisualization(String experimentName,
-			Double[][] data, ChartParameter[] chartParameter,
+			Double[][] data, List<ChartParameter> chartParameter,
 			ChartOptions options) {
 		String processScript = createProcessScript(data, chartParameter);
 		String outputScript = creatOutputScript(options, chartParameter);
@@ -236,5 +244,15 @@ public class PAPChartConnection implements IChartConnection {
 		visualization.setName(experimentName);
 		savedVisualizations.add(visualization);
 		return visualization;
+	}
+
+	@Override
+	public void addAll(Collection<Visualization> collection) {
+		savedVisualizations.addAll(collection);
+	}
+
+	@Override
+	public void remove(Visualization visualization) {
+		savedVisualizations.remove(visualization);
 	}
 }
