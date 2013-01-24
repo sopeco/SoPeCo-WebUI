@@ -45,15 +45,19 @@ import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -64,7 +68,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  * 
  */
 public class ComboBox extends FlowPanel implements
-		HasValueChangeHandlers<String> {
+		HasValueChangeHandlers<String>, ResizeHandler {
 
 	private static final String CCS_CLASS_NAME = "spc-ComboBox";
 	private static final String CCS_DROPDOWN_VIEW_NAME = "spc-ComboBox-DropDownView";
@@ -74,6 +78,7 @@ public class ComboBox extends FlowPanel implements
 	private static final int DD_ICON_WIDTH = 54;
 	private static final int DEFAULT_WIDTH = 200;
 	private static final int OUT_OF_SCREEN = -1000;
+	private static final int BORDER_SPACE = 5;
 
 	private ComboBoxItemHandler comboBoxItemHandler;
 	private InputFieldHandler inputfieldHandler;
@@ -81,6 +86,7 @@ public class ComboBox extends FlowPanel implements
 	private TextBox inputField;
 	private Image dropdownIcon;
 	private VerticalPanel dropdownView;
+	private SimplePanel dropdownWrapper;
 
 	/**
 	 * This element is located outside the visible screen, and serves only to
@@ -309,7 +315,7 @@ public class ComboBox extends FlowPanel implements
 	 * Hides the dropdown list.
 	 */
 	private void hideDropdownList() {
-		dropdownView.removeFromParent();
+		dropdownWrapper.removeFromParent();
 	}
 
 	/**
@@ -324,9 +330,11 @@ public class ComboBox extends FlowPanel implements
 		editable = true;
 		enabled = true;
 		dummyPanel = new FocusPanel();
+		dropdownWrapper = new SimplePanel();
 
 		addStyleName(CCS_CLASS_NAME);
-		dropdownView.addStyleName(CCS_DROPDOWN_VIEW_NAME);
+		dropdownWrapper.addStyleName(CCS_DROPDOWN_VIEW_NAME);
+		dropdownWrapper.add(dropdownView);
 
 		dummyPanel.getElement().getStyle().setPosition(Position.FIXED);
 		dummyPanel.getElement().getStyle().setTop(OUT_OF_SCREEN, Unit.PX);
@@ -349,6 +357,8 @@ public class ComboBox extends FlowPanel implements
 		inputField.addFocusHandler(getInputFieldHandler());
 		dummyPanel.addBlurHandler(getComboBoxItemHandler());
 
+		Window.addResizeHandler(this);
+
 		add(inputField);
 		add(dropdownIcon);
 		getElement().appendChild(clearDiv);
@@ -361,7 +371,6 @@ public class ComboBox extends FlowPanel implements
 	 * Sets whether the text of the combobox is editable.
 	 */
 	public void setEditable(boolean pEditable) {
-		// inputField.setEnabled(editable);
 		editable = pEditable;
 	}
 
@@ -380,18 +389,34 @@ public class ComboBox extends FlowPanel implements
 		if (!enabled) {
 			return;
 		}
-		RootPanel.get().add(dropdownView);
+		RootPanel.get().add(dropdownWrapper);
 
-		int left = getElement().getAbsoluteLeft();
-		int top = getElement().getAbsoluteTop() + getOffsetHeight();
-		dropdownView.getElement().getStyle().setLeft(left, Unit.PX);
-		dropdownView.getElement().getStyle().setTop(top, Unit.PX);
+		updatePositionOfDropDown();
 
 		if (selectedIndex != -1) {
 			itemList.get(selectedIndex).setFocus(true);
 		} else {
 			dummyPanel.setFocus(true);
 		}
+	}
+
+	private void updatePositionOfDropDown() {
+		dropdownWrapper.getElement().getStyle().clearBottom();
+
+		int left = getElement().getAbsoluteLeft();
+		int top = getElement().getAbsoluteTop() + getOffsetHeight();
+		dropdownWrapper.getElement().getStyle().setLeft(left, Unit.PX);
+		dropdownWrapper.getElement().getStyle().setTop(top, Unit.PX);
+
+		if (Window.getClientHeight() < top + dropdownWrapper.getOffsetHeight()
+				+ BORDER_SPACE) {
+			dropdownWrapper.getElement().getStyle().setBottom(BORDER_SPACE, Unit.PX);
+		}
+	}
+
+	@Override
+	public void onResize(ResizeEvent event) {
+		updatePositionOfDropDown();
 	}
 
 	@Override

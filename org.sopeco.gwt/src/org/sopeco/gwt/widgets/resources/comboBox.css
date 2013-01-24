@@ -62,7 +62,7 @@
 }
 
 .spc-ComboBox-DropDownView {
-	position: absolute;
+	position: fixed;
 	z-index: 1099;
 	background-color: white;
 	margin-top: 2px;
@@ -70,6 +70,8 @@
 	min-width: 100px;
 	border-radius: 3px;
 	left: 0;
+	overflow-x: hidden;
+	overflow-y: auto;
 }
 
 .spc-ComboBox-DropDownView .spc-ComboBox-FocusPanel {
