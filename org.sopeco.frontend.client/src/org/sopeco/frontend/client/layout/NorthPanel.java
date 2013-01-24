@@ -36,19 +36,18 @@ import org.sopeco.frontend.client.layout.popups.InputDialog;
 import org.sopeco.frontend.client.layout.popups.InputDialogHandler;
 import org.sopeco.frontend.client.manager.Manager;
 import org.sopeco.frontend.client.manager.ScenarioManager;
-import org.sopeco.frontend.client.resources.FrontEndResources;
 import org.sopeco.frontend.client.resources.R;
+import org.sopeco.gwt.widgets.ComboBox;
 
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.UIObject;
 
 /**
@@ -57,7 +56,7 @@ import com.google.gwt.user.client.ui.UIObject;
  * @author Marius Oehler
  * 
  */
-public class NorthPanel extends FlowPanel implements ClickHandler, ChangeHandler, InputDialogHandler {
+public class NorthPanel extends FlowPanel implements ClickHandler, InputDialogHandler, ValueChangeHandler<String> {
 
 	private static final Logger LOGGER = Logger.getLogger(NorthPanel.class.getName());
 
@@ -89,7 +88,7 @@ public class NorthPanel extends FlowPanel implements ClickHandler, ChangeHandler
 			imageLog, imageScenarioClone;
 	private InputDialog inputClone;
 
-	private ListBox listboxScenarios;
+	private ComboBox cbScenarios;
 
 	private HorizontalPanel navigationPanel;
 
@@ -99,9 +98,9 @@ public class NorthPanel extends FlowPanel implements ClickHandler, ChangeHandler
 	}
 
 	@Override
-	public void onChange(ChangeEvent event) {
-		if (event.getSource() == listboxScenarios) {
-			switchScenario(getSelectedItem());
+	public void onValueChange(ValueChangeEvent<String> event) {
+		if (event.getSource() == cbScenarios) {
+			switchScenario(event.getValue());
 		}
 	}
 
@@ -139,15 +138,15 @@ public class NorthPanel extends FlowPanel implements ClickHandler, ChangeHandler
 	 */
 	public void setButtonsEnabled(boolean enabled) {
 		if (enabled) {
-			listboxScenarios.setEnabled(true);
+			cbScenarios.setEnabled(true);
 			imageScenarioAdd.removeStyleName(DISABLED_CSS_CLASS);
 			imageScenarioClone.removeStyleName(DISABLED_CSS_CLASS);
 			imageScenarioRemove.removeStyleName(DISABLED_CSS_CLASS);
 			imageExport.removeStyleName(DISABLED_CSS_CLASS);
 			imageSatellite.removeStyleName(DISABLED_CSS_CLASS);
 		} else {
-			listboxScenarios.addItem(R.get("no_scenarios"));
-			listboxScenarios.setEnabled(false);
+			cbScenarios.setEnabled(false);
+			cbScenarios.addItem("No scenarios");
 			imageScenarioAdd.addStyleName(DISABLED_CSS_CLASS);
 			imageScenarioClone.addStyleName(DISABLED_CSS_CLASS);
 			imageScenarioRemove.addStyleName(DISABLED_CSS_CLASS);
@@ -166,14 +165,14 @@ public class NorthPanel extends FlowPanel implements ClickHandler, ChangeHandler
 	 */
 	public void updateScenarioList() {
 		LOGGER.fine("Update the scenario list");
-		listboxScenarios.clear();
+		cbScenarios.clear();
 		String[] names = Manager.get().getAccountDetails().getScenarioNames();
 		if (names == null || names.length == 0) {
 			setButtonsEnabled(false);
 		} else {
 			setButtonsEnabled(true);
 			for (String name : names) {
-				listboxScenarios.addItem(name);
+				cbScenarios.addItem(name);
 			}
 			selectListboxItem(Manager.get().getAccountDetails().getSelectedScenario());
 		}
@@ -210,15 +209,6 @@ public class NorthPanel extends FlowPanel implements ClickHandler, ChangeHandler
 	}
 
 	/**
-	 * Returns the selected item of the listbox.
-	 * 
-	 * @return
-	 */
-	private String getSelectedItem() {
-		return listboxScenarios.getItemText(listboxScenarios.getSelectedIndex());
-	}
-
-	/**
 	 * initialize the user interface.
 	 */
 	private void initialize() {
@@ -244,11 +234,10 @@ public class NorthPanel extends FlowPanel implements ClickHandler, ChangeHandler
 		htmlSelectScenario = new HTML(R.get("scenario_select") + ":");
 		navigationPanel.add(htmlSelectScenario);
 
-		listboxScenarios = new ListBox();
-		listboxScenarios.setSize("120px", "1.8em");
-		listboxScenarios.setVisibleItemCount(1);
-		listboxScenarios.addChangeHandler(this);
-		navigationPanel.add(listboxScenarios);
+		cbScenarios = new ComboBox();
+		cbScenarios.setEditable(false);
+		cbScenarios.addValueChangeHandler(this);
+		navigationPanel.add(cbScenarios);
 
 		imageScenarioAdd = new Image(IMAGE_SCENARIO_ADD);
 		imageScenarioAdd.addStyleName(IMG_BUTTON_CSS_CLASS);
@@ -346,12 +335,7 @@ public class NorthPanel extends FlowPanel implements ClickHandler, ChangeHandler
 		if (itemToSelect == null) {
 			return;
 		}
-		for (int i = 0; i < listboxScenarios.getItemCount(); i++) {
-			if (listboxScenarios.getItemText(i).equals(itemToSelect)) {
-				listboxScenarios.setSelectedIndex(i);
-				return;
-			}
-		}
+		cbScenarios.setSelectedText(itemToSelect);
 	}
 
 	/**

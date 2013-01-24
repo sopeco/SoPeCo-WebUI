@@ -26,15 +26,11 @@
  */
 package org.sopeco.gwt.widgets.resources;
 
-import java.awt.image.RescaleOp;
-
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.resources.client.DataResource;
 import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.resources.client.ClientBundle.Source;
-import com.google.gwt.user.client.Window;
 
 /**
  * 
@@ -67,10 +63,16 @@ public final class WidgetResources {
 		@CssResource.NotStrict
 		CssResource toggleSeparatorCss();
 
+		/** IMAGES. */
+
 		@Source("images/arrow_state_right.png")
 		ImageResource imgArrowStateRight();
 
 		@Source("images/arrow_state_down.png")
 		ImageResource imgArrowStateDown();
+
+		@Source("images/triangle_20x20.png")
+		DataResource imgTriangle20x20();
+
 	}
 }

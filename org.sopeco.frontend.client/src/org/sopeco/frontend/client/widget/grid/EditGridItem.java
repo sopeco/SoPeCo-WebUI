@@ -57,6 +57,11 @@ public class EditGridItem implements ValueChangeHandler<String> {
 		editText = new EditableText(value);
 		editText.addValueChangeHandler(this);
 
+		if (pParameter.getName().toLowerCase().equals("password")
+				|| pParameter.getName().toLowerCase().equals("passwd")) {
+			editText.setAsPassword();
+		}
+
 		if (parameter.getType().toLowerCase().equals("integer")) {
 			editText.setValidPattern(EditableText.PATTERN_INTEGER);
 		} else if (parameter.getType().toLowerCase().equals("double")) {

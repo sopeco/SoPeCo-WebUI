@@ -54,7 +54,6 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -73,7 +72,6 @@ public class ComboBox extends FlowPanel implements
 	private static final String CCS_CLASS_NAME = "spc-ComboBox";
 	private static final String CCS_DROPDOWN_VIEW_NAME = "spc-ComboBox-DropDownView";
 	private static final String CSS_FOCUSPANEL_NAME = "spc-ComboBox-FocusPanel";
-	private static final String DROPDOWN_ICON_URL = "images/triangle.png";
 
 	private static final int DD_ICON_WIDTH = 54;
 	private static final int DEFAULT_WIDTH = 200;
@@ -82,9 +80,10 @@ public class ComboBox extends FlowPanel implements
 
 	private ComboBoxItemHandler comboBoxItemHandler;
 	private InputFieldHandler inputfieldHandler;
+	private HandlerRegistration resizeHandlerRegistration;
 
 	private TextBox inputField;
-	private Image dropdownIcon;
+	private FocusPanel dropdownIcon;
 	private VerticalPanel dropdownView;
 	private SimplePanel dropdownWrapper;
 
@@ -315,6 +314,7 @@ public class ComboBox extends FlowPanel implements
 	 * Hides the dropdown list.
 	 */
 	private void hideDropdownList() {
+		resizeHandlerRegistration.removeHandler();
 		dropdownWrapper.removeFromParent();
 	}
 
@@ -323,7 +323,6 @@ public class ComboBox extends FlowPanel implements
 	 */
 	private void initialize() {
 		inputField = new TextBox();
-		dropdownIcon = new Image(DROPDOWN_ICON_URL);
 		dropdownView = new VerticalPanel();
 		itemList = new ArrayList<FocusPanel>();
 		userEditedText = false;
@@ -331,6 +330,9 @@ public class ComboBox extends FlowPanel implements
 		enabled = true;
 		dummyPanel = new FocusPanel();
 		dropdownWrapper = new SimplePanel();
+
+		dropdownIcon = new FocusPanel();
+		dropdownIcon.addStyleName("icon");
 
 		addStyleName(CCS_CLASS_NAME);
 		dropdownWrapper.addStyleName(CCS_DROPDOWN_VIEW_NAME);
@@ -356,8 +358,6 @@ public class ComboBox extends FlowPanel implements
 		inputField.addValueChangeHandler(getInputFieldHandler());
 		inputField.addFocusHandler(getInputFieldHandler());
 		dummyPanel.addBlurHandler(getComboBoxItemHandler());
-
-		Window.addResizeHandler(this);
 
 		add(inputField);
 		add(dropdownIcon);
@@ -389,6 +389,8 @@ public class ComboBox extends FlowPanel implements
 		if (!enabled) {
 			return;
 		}
+		resizeHandlerRegistration = Window.addResizeHandler(this);
+
 		RootPanel.get().add(dropdownWrapper);
 
 		updatePositionOfDropDown();

@@ -45,7 +45,6 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.TextBox;
@@ -73,6 +72,7 @@ public class EditableText extends FocusPanel implements ClickHandler,
 	private String validPattern = "";
 	private String defaultValue;
 	private boolean editable = true;
+	private boolean isPassword = false;
 
 	public EditableText(String text) {
 		WidgetResources.resc.editableTextCss().ensureInjected();
@@ -136,7 +136,7 @@ public class EditableText extends FocusPanel implements ClickHandler,
 	 */
 	public void setValue(String newValue, boolean fireEvent) {
 		value = newValue;
-		htmlText.setText(value);
+		setHtmlText(value);
 		tbValue.getTextbox().setText(value);
 		if (fireEvent) {
 			ValueChangeEvent.fire(this, value);
@@ -180,10 +180,22 @@ public class EditableText extends FocusPanel implements ClickHandler,
 		if (value.isEmpty()) {
 			htmlText.setHTML("&nbsp;");
 		} else {
-			htmlText.setText(value);
+			setHtmlText(value);
 		}
 		tbValue.removeFromParent();
 		add(htmlText);
+	}
+
+	private void setHtmlText(String text) {
+		if (isPassword) {
+			String hidden = "";
+			for (int i = 0; i < text.length(); i++) {
+				hidden += "*";
+			}
+			htmlText.setText(hidden);
+		} else {
+			htmlText.setText(value);
+		}
 	}
 
 	private void checkDefaultValue() {
@@ -240,6 +252,14 @@ public class EditableText extends FocusPanel implements ClickHandler,
 			break;
 		default:
 			break;
+		}
+	}
+
+	public void setAsPassword() {
+		isPassword = true;
+		tbValue.setAsPasswordTextbox();
+		if (!value.isEmpty()) {
+			setHtmlText(value);
 		}
 	}
 }

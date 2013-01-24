@@ -24,6 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+@url triangle imgTriangle20x20;
 .spc-ComboBox {
 	border: 1px solid #AAA;
 	border-radius: 3px;
@@ -47,17 +48,23 @@
 	font-style: italic;
 }
 
-.spc-ComboBox>img {
+.spc-ComboBox>.icon {
 	margin: 0px;
-	padding: 0px 4px;
+	padding: 1px 4px;
 	float: right;
 	border-left: 1px solid #AAA;
 	background-color: #F7F7F7;
+	background-image: triangle;
 	cursor: pointer;
 	border-radius: 0px 2px 2px 0px;
+	height: 20px;
+	width: 20px;
+	background-position: center;
+	background-repeat: no-repeat;
+	outline: 0;
 }
 
-.spc-ComboBox>img:hover {
+.spc-ComboBox>.icon:hover {
 	background-color: #FFF;
 }
 
