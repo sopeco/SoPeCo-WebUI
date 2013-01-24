@@ -39,7 +39,7 @@ import org.sopeco.frontend.client.helper.SystemDetails;
 import org.sopeco.frontend.client.helper.callback.CallbackBatch;
 import org.sopeco.frontend.client.helper.callback.ParallelCallback;
 import org.sopeco.frontend.client.layout.MainLayoutPanel;
-import org.sopeco.frontend.client.layout.login.LoginPanelNew;
+import org.sopeco.frontend.client.layout.login.LoginPanel;
 import org.sopeco.frontend.client.layout.popups.Message;
 import org.sopeco.frontend.client.log.LogHandler;
 import org.sopeco.frontend.client.manager.Manager;
@@ -166,7 +166,7 @@ public class FrontendEntryPoint implements EntryPoint, SimpleNotify {
 
 		// LoginBox box = new LoginBox();
 		// box.center();
-		RootLayoutPanel.get().add(new LoginPanelNew());
+		RootLayoutPanel.get().add(new LoginPanel());
 	}
 
 	/**

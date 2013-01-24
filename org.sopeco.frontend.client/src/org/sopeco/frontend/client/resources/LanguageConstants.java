@@ -67,28 +67,40 @@ public interface LanguageConstants extends Constants {
 
 	@DefaultStringValue("Password")
 	String password();
-	
+
 	@DefaultStringValue("Confirm password")
 	String confirmPassword();
-	
+
 	@DefaultStringValue("optional")
 	String optional();
-	
+
 	@DefaultStringValue("Database")
 	String database();
-	
+
 	@DefaultStringValue("Host")
 	String host();
-	
+
 	@DefaultStringValue("Port")
 	String port();
-	
+
 	@DefaultStringValue("Show")
 	String show();
-	
+
 	@DefaultStringValue("Hide")
 	String hide();
-	
+
 	@DefaultStringValue("Settings")
 	String settings();
+
+	@DefaultStringValue("Delete")
+	String delete();
+
+	@DefaultStringValue("Account")
+	String account();
+
+	@DefaultStringValue("The password you entered is incorrect.")
+	String wrongPassword();
+	
+	@DefaultStringValue("Continue")
+	String continueString();
 }

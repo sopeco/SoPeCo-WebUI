@@ -1,6 +1,7 @@
 package org.sopeco.frontend.client.layout.login;
 
 import org.sopeco.frontend.client.helper.SystemDetails;
+import org.sopeco.frontend.client.helper.handler.EnterButtonHandler;
 import org.sopeco.frontend.client.resources.R;
 import org.sopeco.gwt.widgets.ClearDiv;
 import org.sopeco.gwt.widgets.Headline;
@@ -34,7 +35,6 @@ public class AddAccountPanel extends FlowPanel implements ToggleHandler {
 
 	private TextBox tbDatabaseHost;
 	private TextBox tbDatabasePort;
-	private PasswordTextBox tbDatabasePassword;
 
 	private Button btnAddAccount;
 	private Button btnCancel;
@@ -81,35 +81,36 @@ public class AddAccountPanel extends FlowPanel implements ToggleHandler {
 
 		tbDatabaseHost = new TextBox();
 		tbDatabasePort = new TextBox();
-		tbDatabasePassword = new PasswordTextBox();
 
-		gridDatabaseSettings = new Grid(3, 2);
+		gridDatabaseSettings = new Grid(2, 2);
 		gridDatabaseSettings.setWidth("100%");
 		gridDatabaseSettings.addStyleName("addAccountGrid");
 		gridDatabaseSettings.setVisible(false);
 
 		gridDatabaseSettings.setWidget(0, 0, new HTML(R.lang.database() + " " + R.lang.host() + ":"));
 		gridDatabaseSettings.setWidget(1, 0, new HTML(R.lang.database() + " " + R.lang.port() + ":"));
-		gridDatabaseSettings.setWidget(2, 0, new HTML(R.lang.database() + " " + R.lang.password() + ":"));
 
 		gridDatabaseSettings.setWidget(0, 1, tbDatabaseHost);
 		gridDatabaseSettings.setWidget(1, 1, tbDatabasePort);
-		gridDatabaseSettings.setWidget(2, 1, tbDatabasePassword);
 
 		gridDatabaseSettings.getCellFormatter().setHorizontalAlignment(0, 1, HasHorizontalAlignment.ALIGN_RIGHT);
 		gridDatabaseSettings.getCellFormatter().setHorizontalAlignment(1, 1, HasHorizontalAlignment.ALIGN_RIGHT);
-		gridDatabaseSettings.getCellFormatter().setHorizontalAlignment(2, 1, HasHorizontalAlignment.ALIGN_RIGHT);
 
 		btnAddAccount = new Button(R.lang.addAccount());
-		btnAddAccount.addStyleName("addAccountButtons");
+		btnAddAccount.addStyleName("buttons");
 
 		btnCancel = new Button(R.lang.cancel());
-		btnCancel.addStyleName("addAccountButtons");
+		btnCancel.addStyleName("buttons");
 
 		panelButtons = new FlowPanel();
 		panelButtons.add(btnCancel);
 		panelButtons.add(btnAddAccount);
 		panelButtons.add(new ClearDiv());
+
+		EnterButtonHandler enterHandler = new EnterButtonHandler(btnAddAccount);
+		tbName.addKeyPressHandler(enterHandler);
+		tbPassword.addKeyPressHandler(enterHandler);
+		tbPasswordConfirm.addKeyPressHandler(enterHandler);
 
 		addStyleName("content");
 		addStyleName("dialogBox");
@@ -140,7 +141,6 @@ public class AddAccountPanel extends FlowPanel implements ToggleHandler {
 
 		tbDatabaseHost.setText(SystemDetails.getMetaDatabaseHost());
 		tbDatabasePort.setText(SystemDetails.getMetaDatabasePort());
-		tbDatabasePassword.setText("");
 	}
 
 	@Override
@@ -164,10 +164,6 @@ public class AddAccountPanel extends FlowPanel implements ToggleHandler {
 		return tbDatabasePort;
 	}
 
-	public PasswordTextBox getTbDatabasePassword() {
-		return tbDatabasePassword;
-	}
-
 	public boolean formValid() {
 		boolean empty = false;
 		for (TextBox tb : new TextBox[] { tbName, tbDatabaseHost, tbDatabasePort }) {
@@ -185,7 +181,7 @@ public class AddAccountPanel extends FlowPanel implements ToggleHandler {
 		} else {
 			tbPasswordConfirm.removeStyleName(NOT_VALID_CLASS);
 		}
-		
+
 		if (empty) {
 			return false;
 		}

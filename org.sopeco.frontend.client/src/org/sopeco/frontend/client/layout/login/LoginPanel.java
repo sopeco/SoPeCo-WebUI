@@ -28,7 +28,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
  * @author Marius Oehler
  * 
  */
-public class LoginPanelNew extends FlowPanel implements AsyncCallback<List<DatabaseInstance>>, ClickHandler {
+public class LoginPanel extends FlowPanel implements ClickHandler {
 
 	public static final String COOKIE_DATABASE = "selected_database";
 
@@ -36,13 +36,15 @@ public class LoginPanelNew extends FlowPanel implements AsyncCallback<List<Datab
 
 	private SelectAccountPanel selectAccountPanel;
 	private AddAccountPanel addAccountPanel;
+	private DeleteAccountPanel deleteAccountPanel;
+	private PasswordLoginPanel passwordLoginPanel;
 
 	private HTML htmlFEVersionInfo;
 
 	/**
 	 * Cosntructor.
 	 */
-	public LoginPanelNew() {
+	public LoginPanel() {
 		init();
 
 		fetchAccounts();
@@ -66,10 +68,19 @@ public class LoginPanelNew extends FlowPanel implements AsyncCallback<List<Datab
 		selectAccountPanel = new SelectAccountPanel();
 		selectAccountPanel.getBtnConnect().addClickHandler(this);
 		selectAccountPanel.getBtnAddAccount().addClickHandler(this);
+		selectAccountPanel.getBtnRemoveAccount().addClickHandler(this);
 
 		addAccountPanel = new AddAccountPanel();
 		addAccountPanel.getBtnCancel().addClickHandler(this);
 		addAccountPanel.getBtnAddAccount().addClickHandler(this);
+
+		deleteAccountPanel = new DeleteAccountPanel();
+		deleteAccountPanel.getBtnCancel().addClickHandler(this);
+		deleteAccountPanel.getBtnDelete().addClickHandler(this);
+
+		passwordLoginPanel = new PasswordLoginPanel();
+		passwordLoginPanel.getBtnCancel().addClickHandler(this);
+		passwordLoginPanel.getBtnContinue().addClickHandler(this);
 
 		verticalCell.add(selectAccountPanel);
 		add(verticalCell);
@@ -77,21 +88,29 @@ public class LoginPanelNew extends FlowPanel implements AsyncCallback<List<Datab
 		add(imgSapResearch);
 	}
 
-	@Override
-	public void onFailure(Throwable caught) {
-		// TODO Errorhandling
-	}
-
-	@Override
-	public void onSuccess(List<DatabaseInstance> result) {
-		selectAccountPanel.updateAccountList(result);
-	}
-
 	/**
 	 * Fetches the available accounts from the server.
 	 */
 	private void fetchAccounts() {
-		RPC.getDatabaseManagerRPC().getAllDatabases(this);
+		fetchAccounts(null);
+	}
+
+	private void fetchAccounts(final String setSelectedAccount) {
+		RPC.getDatabaseManagerRPC().getAllDatabases(new AsyncCallback<List<DatabaseInstance>>() {
+			@Override
+			public void onSuccess(List<DatabaseInstance> result) {
+				selectAccountPanel.updateAccountList(result);
+
+				if (setSelectedAccount != null) {
+					selectAccountPanel.getCbAccounts().setSelectedText(setSelectedAccount);
+				}
+			}
+
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Errorhandling
+			}
+		});
 	}
 
 	@Override
@@ -99,13 +118,13 @@ public class LoginPanelNew extends FlowPanel implements AsyncCallback<List<Datab
 		if (event.getSource() == selectAccountPanel.getBtnConnect()) {
 			// Connect to the selected account if accounts are available
 			if (Manager.get().getAvailableDatabases() != null && !Manager.get().getAvailableDatabases().isEmpty()) {
-				selectAccountPanel.setIsLogginIn(true);
 				login();
 			}
 		} else if (event.getSource() == selectAccountPanel.getBtnAddAccount()) {
 			verticalCell.clear();
 			addAccountPanel.reset();
 			verticalCell.add(addAccountPanel);
+			addAccountPanel.getTbName().setFocus(true);
 		} else if (event.getSource() == addAccountPanel.getBtnCancel()) {
 			verticalCell.clear();
 			verticalCell.add(selectAccountPanel);
@@ -113,6 +132,21 @@ public class LoginPanelNew extends FlowPanel implements AsyncCallback<List<Datab
 			if (addAccountPanel.formValid()) {
 				addAccount();
 			}
+		} else if (event.getSource() == selectAccountPanel.getBtnRemoveAccount()) {
+			verticalCell.clear();
+			deleteAccountPanel.setAccountInfos(getSelectedAccount());
+			verticalCell.add(deleteAccountPanel);
+			deleteAccountPanel.getTbPassword().setFocus(true);
+		} else if (event.getSource() == deleteAccountPanel.getBtnCancel()) {
+			verticalCell.clear();
+			verticalCell.add(selectAccountPanel);
+		} else if (event.getSource() == deleteAccountPanel.getBtnDelete()) {
+			delete();
+		} else if (event.getSource() == passwordLoginPanel.getBtnCancel()) {
+			verticalCell.clear();
+			verticalCell.add(selectAccountPanel);
+		} else if (event.getSource() == passwordLoginPanel.getBtnContinue()) {
+			loginCheckPassword();
 		}
 	}
 
@@ -126,33 +160,89 @@ public class LoginPanelNew extends FlowPanel implements AsyncCallback<List<Datab
 		return Manager.get().getAvailableDatabases().get(selectAccountPanel.getCbAccounts().getSelectedIndex());
 	}
 
-	private void login() {
+	private void delete() {
+		final DatabaseInstance account = getSelectedAccount();
 
-		final DatabaseInstance instance = getSelectedAccount();
-		Manager.get().setSelectedDatabaseIndex(selectAccountPanel.getCbAccounts().getSelectedIndex());
-		Cookies.setCookie(COOKIE_DATABASE, instance.getDbName());
+		if (account.isProtectedByPassword()) {
+			RPC.getDatabaseManagerRPC().checkPassword(account, deleteAccountPanel.getTbPassword().getText(),
+					new AsyncCallback<Boolean>() {
+						@Override
+						public void onFailure(Throwable caught) {
+							Message.error(caught.getMessage());
+						}
 
-		if (instance.isProtectedByPassword()) {
-			// TODO
-			// if (inputLogin == null) {
-			// inputLogin = new InputDialog(R.get("insert_db_passwd_for"),
-			// R.get("db_passwd") + ":", true,
-			// Icon.Password);
-			// inputLogin.addHandler(new InputDialogHandler() {
-			// @Override
-			// public void onInput(InputDialog source, String value) {
-			// switchDatabaseRequest(instance, value);
-			// }
-			// });
-			// }
-			// inputLogin.setValue("");
-			// inputLogin.center();
+						@Override
+						public void onSuccess(Boolean result) {
+							if (result) {
+								deleteAccount(account);
+							} else {
+								deleteAccountPanel.getHtmlWrongPassword().setVisible(true);
+								deleteAccountPanel.getTbPassword().setText("");
+							}
+						}
+					});
 		} else {
-			loginIntoAccount(instance, "");
+			deleteAccount(account);
 		}
 	}
 
+	private void deleteAccount(DatabaseInstance account) {
+		RPC.getDatabaseManagerRPC().removeDatabase(account, new AsyncCallback<Boolean>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				Message.error(R.get("cant_delete_db"));
+			}
+
+			@Override
+			public void onSuccess(Boolean result) {
+				verticalCell.clear();
+				verticalCell.add(selectAccountPanel);
+				fetchAccounts();
+			}
+		});
+	}
+
+	private void login() {
+
+		final DatabaseInstance account = getSelectedAccount();
+		Manager.get().setSelectedDatabaseIndex(selectAccountPanel.getCbAccounts().getSelectedIndex());
+		Cookies.setCookie(COOKIE_DATABASE, account.getDbName());
+
+		if (account.isProtectedByPassword()) {
+			verticalCell.clear();
+			passwordLoginPanel.setAccountInfos(account);
+			verticalCell.add(passwordLoginPanel);
+			passwordLoginPanel.getTbPassword().setFocus(true);
+		} else {
+			loginIntoAccount(account, "");
+		}
+
+	}
+
+	private void loginCheckPassword() {
+		final DatabaseInstance account = getSelectedAccount();
+		final String password = passwordLoginPanel.getTbPassword().getText();
+		RPC.getDatabaseManagerRPC().checkPassword(account, password, new AsyncCallback<Boolean>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				Message.error(caught.getMessage());
+			}
+
+			@Override
+			public void onSuccess(Boolean result) {
+				if (result) {
+					loginIntoAccount(account, password);
+				} else {
+					passwordLoginPanel.getHtmlWrongPassword().setVisible(true);
+					passwordLoginPanel.getTbPassword().setText("");
+				}
+			}
+		});
+	}
+
 	private void loginIntoAccount(final DatabaseInstance account, final String password) {
+		selectAccountPanel.setIsLogginIn(true);
+
 		/** code split point */
 		GWT.runAsync(new RunAsyncCallback() {
 			@Override
@@ -171,7 +261,6 @@ public class LoginPanelNew extends FlowPanel implements AsyncCallback<List<Datab
 
 					@Override
 					public void onSuccess(Boolean result) {
-
 						if (result) {
 							getAccountSettings(account);
 						} else {
@@ -202,8 +291,7 @@ public class LoginPanelNew extends FlowPanel implements AsyncCallback<List<Datab
 
 	private void addAccount() {
 
-		DatabaseInstance newAccount = new DatabaseInstance();
-
+		final DatabaseInstance newAccount = new DatabaseInstance();
 		final String accountName = Utilities.cleanString(addAccountPanel.getTbName().getText());
 
 		newAccount.setDbName(accountName);
@@ -229,7 +317,13 @@ public class LoginPanelNew extends FlowPanel implements AsyncCallback<List<Datab
 			public void onSuccess(Boolean result) {
 				verticalCell.clear();
 				verticalCell.add(selectAccountPanel);
-				fetchAccounts();
+
+				String selectAccount = accountName;
+				if (newAccount.isProtectedByPassword()) {
+					selectAccount = "* " + selectAccount;
+				}
+
+				fetchAccounts(selectAccount);
 			}
 		});
 

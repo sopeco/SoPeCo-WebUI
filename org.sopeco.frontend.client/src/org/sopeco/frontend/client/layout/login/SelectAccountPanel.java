@@ -117,7 +117,7 @@ public class SelectAccountPanel extends VerticalPanel {
 			cbAccounts.addItem(itemName);
 		}
 
-		String cookieLastAccount = Cookies.getCookie(LoginPanelNew.COOKIE_DATABASE);
+		String cookieLastAccount = Cookies.getCookie(LoginPanel.COOKIE_DATABASE);
 		if (cookieLastAccount != null) {
 			cbAccounts.setSelectedText(cookieLastAccount);
 		}
