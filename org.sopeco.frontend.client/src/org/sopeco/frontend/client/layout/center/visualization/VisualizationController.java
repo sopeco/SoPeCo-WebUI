@@ -248,6 +248,7 @@ public class VisualizationController implements ICenterController {
 			chartWidget = new Frame(visualization.getLink());
 			chartWidget.getElement().getStyle().setWidth(100, Unit.PCT);
 			chartWidget.getElement().getStyle().setHeight(100, Unit.PCT);
+			chartWidget.getElement().getStyle().setBorderWidth(0, Unit.EM);
 			centerPanel.clear();
 			centerPanel.add(chartWidget);
 		}
@@ -288,7 +289,7 @@ public class VisualizationController implements ICenterController {
 			dataTable.addRows(values.size());
 			int j = 0;
 			for (String key : values.keySet()){
-				dataTable.setValue(j, 0, key);
+				dataTable.setValue(j, 0, chartParameters.get(0).getParameterName() + " = "+key);
 				j++;
 			}
 			
@@ -396,8 +397,8 @@ public class VisualizationController implements ICenterController {
 			sb.appendHtmlConstant("<td style='font-size:95%;'>");
 			sb.appendHtmlConstant("<div>" + value.getName() + "</div>");
 			sb.appendHtmlConstant("</td></tr><tr><td>");
-//			sb.appendHtmlConstant("<div>" + value.getOptions().getType().toString().toLowerCase());
-//			sb.appendHtmlConstant("</div>");
+			sb.appendHtmlConstant("<div>" + value.getType() + "/" + value.getOptions().getType().toString().toLowerCase());
+			sb.appendHtmlConstant("</div>");
 			sb.appendHtmlConstant("</td></tr></table>");
 
 		}

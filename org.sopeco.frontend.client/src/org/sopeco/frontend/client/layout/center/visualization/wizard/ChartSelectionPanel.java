@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.sopeco.frontend.client.resources.FrontEndResources;
+import org.sopeco.frontend.client.rpc.RPC;
 import org.sopeco.frontend.shared.entities.ChartOptions.ChartType;
 
 import com.google.gwt.dom.client.Style.Unit;
@@ -41,12 +42,14 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class ChartSelectionPanel extends FlowPanel{
 	
 	private ChartType selectedType = ChartType.LINECHART;
 	private List<ClickHandler> clickHandler;
+	private ListBox extensionSelection;
 
 	public ChartSelectionPanel() {
 		FrontEndResources.loadVisualizationWizardCSS();
@@ -68,6 +71,18 @@ public class ChartSelectionPanel extends FlowPanel{
 			});
 			this.add(chartIconPanel);
 		}
+		extensionSelection = new ListBox();
+		this.add(extensionSelection);
+	}
+	
+	public void setExtensions(List<String> extensions){
+		for (String ext : extensions){
+			extensionSelection.addItem(ext);
+		}
+	}
+	
+	public String getExtension(){
+		return extensionSelection.getItemText(extensionSelection.getSelectedIndex());
 	}
 	
 	public void addClickHandler(ClickHandler clickHandler){

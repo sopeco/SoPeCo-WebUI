@@ -49,88 +49,45 @@ import com.google.gson.JsonParser;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 
 public class PAPChartConnection implements IChartConnection {
-	private static final String BASE_URL = "http://deqkal279.qkal.sap.corp:8080/pap/j/result/";
+	private static final String BASE_URL = "http://deqkal279.qkal.sap.corp:8080/pap/j/result/s/";
 	private static PAPConnector papConnector = new PAPConnector();
 	private static final String SQL_DUMMY = "SELECT * FROM perf_pap.pvexperiment";
-
-	private static List<Visualization> savedVisualizations = new ArrayList<Visualization>(); // link, projectname
 	private static HashMap<String, String> savedProjects = new HashMap<String, String>();// projectname, pid
 	private static String uid;
-	private static Runnable run = new Runnable() {
-		
-		@Override
-		public void run() {
-			papConnector.addUser("testuser", "testmail@test.de");
-			uid = papConnector.verifyUser("testuser");
-			String pList = papConnector.getProjectList(uid);
-			//TODO check pList for null
-			JsonElement elem = new JsonParser().parse(pList).getAsJsonObject()
-					.get("adProject");
-			JsonArray jArray;
-			if (elem instanceof JsonArray){
-				jArray = elem.getAsJsonArray();
-			}
-			else {
-				jArray = new JsonArray();
-				jArray.add(elem);
-			}
-			
-			for (int i = 0; i < jArray.size(); i++) {
-				String pid = jArray.get(i).getAsJsonObject().get("PID")
-						.getAsString();
-				String pname = jArray.get(i).getAsJsonObject().get("projectName")
-						.getAsString();
-				savedProjects.put(pname, pid);
-				String bList = papConnector.getResult(pid);
-				
-				if (bList != null && !bList.equals("null")) {
-					JsonElement element = new JsonParser().parse(bList).getAsJsonObject().get("adBinding");
-					if (element instanceof JsonArray) {
-						JsonArray array = element.getAsJsonArray();
-						for (int j = 0; j < array.size(); j++) {
-							JsonObject lobject = array.get(j).getAsJsonObject();
-							String bid = lobject.get("BID")
-									.getAsString();
-							
-							String link = BASE_URL + uid + "/" + pid + "/" + bid;
-							Visualization visualization = new Visualization();
-							visualization.setLink(link);
-							visualization.setName(pname);
-							savedVisualizations.add(visualization);
-						}
-					} else if (element instanceof JsonObject) {
-						JsonObject object = element.getAsJsonObject();
-						String bid = object.get("BID")
-								.getAsString();
-						
-						String link = BASE_URL + uid + "/" + pid + "/" + bid;
-						Visualization visualization = new Visualization();
-						visualization.setLink(link);
-						visualization.setName(pname);
-						savedVisualizations.add(visualization);
-					}
-				}
-
-			}
-		}
-	};
-	
-	static {
-		Thread thread = new Thread(run);
-		thread.start();
-	}
 	
 	private ISoPeCoExtension<?> provider;
 
 	public PAPChartConnection(ISoPeCoExtension<?> provider) {
 		this.provider = provider;
+		papConnector.addUser("testuser", "testmail@test.de");
+		uid = papConnector.verifyUser("testuser");
+		String pList = papConnector.getProjectList(uid);
+		//TODO check pList for null
+		JsonElement elem = new JsonParser().parse(pList).getAsJsonObject()
+				.get("adProject");
+		JsonArray jArray;
+		if (elem instanceof JsonArray){
+			jArray = elem.getAsJsonArray();
+		}
+		else {
+			jArray = new JsonArray();
+			jArray.add(elem);
+		}
+		
+		for (int i = 0; i < jArray.size(); i++) {
+			String pid = jArray.get(i).getAsJsonObject().get("PID")
+					.getAsString();
+			String pname = jArray.get(i).getAsJsonObject().get("projectName")
+					.getAsString();
+			savedProjects.put(pname, pid);
+		}
 	}
 
-	private String createProcessScript(Double[][] data, List<ChartParameter> chartParameter){
+	private String createProcessScript(Double[][] data, String[] chartParameter){
 		StringBuffer rValue = new StringBuffer();
 
 		for (int i = 0; i < data.length; i++) {
-			rValue.append(chartParameter.get(i).getParameterName());
+			rValue.append(chartParameter[i]);
 			rValue.append(i);
 			rValue.append(" <- c(");
 			for (int j = 0; j < data[i].length; j++) {
@@ -144,60 +101,44 @@ public class PAPChartConnection implements IChartConnection {
 		return rValue.toString();
 	}
 	
-	private String creatOutputScript(ChartOptions options, List<ChartParameter> chartParameter){
+	private String creatOutputScript(ChartOptions options, String[] chartParameter){
 		StringBuffer outputScript = new StringBuffer();
 		switch (options.getType()){
 		case BARCHART:
 			outputScript.append("data <- do.call(rbind, list(");
-			for (int i = 1; i < chartParameter.size(); i++){
-				outputScript.append(chartParameter.get(i).getParameterName()+i);
-				if (i < chartParameter.size()-1){
+			for (int i = 1; i < chartParameter.length; i++){
+				outputScript.append(chartParameter[i]+i);
+				if (i < chartParameter.length-1){
 					outputScript.append(",");
 				}
 			}
 			outputScript.append("))\n");
-			outputScript.append("matr <- as.matrix(data,nrow=" + (chartParameter.size()-1) +")\n");
+			outputScript.append("matr <- as.matrix(data,nrow=" + (chartParameter.length-1) +")\n");
 			outputScript.append("barplot(matr,");
 			
-			outputScript.append("names.arg="+chartParameter.get(0).getParameterName()+0);
-			outputScript.append(",beside=TRUE,col=rainbow("+(chartParameter.size()-1)+"))");
+			outputScript.append("names.arg="+chartParameter[0]+0);
+			outputScript.append(",beside=TRUE,col=rainbow("+(chartParameter.length-1)+"))");
 			break;
 		case PIECHART:
 			outputScript.append("pie3D(");
-			outputScript.append(chartParameter.get(1).getParameterName()+1+","+chartParameter.get(0).getParameterName()+0);
-			outputScript.append(",explode=0.1,col=rainbow(length("+chartParameter.get(0).getParameterName()+0+")))");
+			outputScript.append(chartParameter[1]+1+","+chartParameter[0]+0);
+			outputScript.append(",explode=0.1,col=rainbow(length("+chartParameter[0]+0+")))");
 			break;
 		default:
 			outputScript.append("plot(");
-			outputScript.append(chartParameter.get(0).getParameterName()+0);
-			outputScript.append(","+chartParameter.get(1).getParameterName()+1);
-			outputScript.append(",type=\"l\",col=rainbow("+(chartParameter.size()-1)+")[1])");
-			for (int i = 2; i < chartParameter.size(); i++){
+			outputScript.append(chartParameter[0]+0);
+			outputScript.append(","+chartParameter[1]+1);
+			outputScript.append(",type=\"l\",col=rainbow("+(chartParameter.length-1)+")[1])");
+			for (int i = 2; i < chartParameter.length; i++){
 				outputScript.append("\nlines(");
-				outputScript.append(chartParameter.get(i).getParameterName()+i);
-				outputScript.append(",type=\"l\",col=rainbow("+(chartParameter.size()-1)+")["+i+"])");
+				outputScript.append(chartParameter[i]+i);
+				outputScript.append(",type=\"l\",col=rainbow("+(chartParameter.length-1)+")["+i+"])");
 			}
+			RBuilder.createLegend(outputScript, chartParameter);
 		}
-		outputScript.append("\nlegend(\"topleft\", c(");
-		for (int i = 1; i < chartParameter.size(); i++){
-			outputScript.append("\""+chartParameter.get(i).getParameterName()+i+ "\"");
-			if (i < chartParameter.size() -1){
-				outputScript.append(",");
-			}
-		}
-		outputScript.append("), col=rainbow("+(chartParameter.size()-1)+"),lwd=2,bty=\"n\")");
 //		legend("topleft", c("outNs.out1","inputNs.input2"), col=rainbow(2), 
 //				   lwd=2, bty="n");
 		return outputScript.toString();
-	}
-
-	public List<Visualization> getVisualizations(int start, int length) {
-		if (start > savedVisualizations.size() - 1){
-			return new ArrayList<Visualization>();
-		}
-		start = start < 0 ? 0 : start;
-		length = start + length > savedVisualizations.size() ? savedVisualizations.size()-start : length;
-		return savedVisualizations.subList(start, start+length);
 	}
 
 	private String getOrCreateProject(String projectname) {
@@ -215,7 +156,7 @@ public class PAPChartConnection implements IChartConnection {
 		} catch (UnsupportedEncodingException e) {
 			id = "badid";
 		}
-		return id;
+		return "+"+id;
 	}
 
 	@Override
@@ -227,8 +168,12 @@ public class PAPChartConnection implements IChartConnection {
 	public Visualization createVisualization(String experimentName,
 			Double[][] data, List<ChartParameter> chartParameter,
 			ChartOptions options) {
-		String processScript = createProcessScript(data, chartParameter);
-		String outputScript = creatOutputScript(options, chartParameter);
+		String[] columnNames = new String[chartParameter.size()];
+		for (int i = 0; i < columnNames.length; i++){
+			columnNames[i] = chartParameter.get(i).getParameterName();
+		}
+		String processScript = createProcessScript(data, columnNames);
+		String outputScript = creatOutputScript(options, columnNames);
 		String pid = getOrCreateProject(experimentName);
 		String qid = papConnector.addQuery(pid, "testquery" + generateID(),
 				SQL_DUMMY, "empty");
@@ -242,17 +187,8 @@ public class PAPChartConnection implements IChartConnection {
 		Visualization visualization = new Visualization();
 		visualization.setLink(link);
 		visualization.setName(experimentName);
-		savedVisualizations.add(visualization);
+		visualization.setChartParameters(chartParameter);
+		visualization.setOptions(options);
 		return visualization;
-	}
-
-	@Override
-	public void addAll(Collection<Visualization> collection) {
-		savedVisualizations.addAll(collection);
-	}
-
-	@Override
-	public void remove(Visualization visualization) {
-		savedVisualizations.remove(visualization);
 	}
 }

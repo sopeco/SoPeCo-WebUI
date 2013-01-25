@@ -26,7 +26,6 @@
  */
 package org.sopeco.frontend.server.chartconnector;
 
-import java.util.Collection;
 import java.util.List;
 
 import org.sopeco.engine.registry.ISoPeCoExtensionArtifact;
@@ -37,10 +36,4 @@ import org.sopeco.frontend.shared.entities.Visualization;
 public interface IChartConnection extends ISoPeCoExtensionArtifact {
 	
 	public Visualization createVisualization(String experimentName, Double[][] data, List<ChartParameter> chartParameter, ChartOptions options);
-
-	public List<Visualization> getVisualizations(int start, int length);
-	
-	public void addAll(Collection<Visualization> collection);
-	
-	public void remove(Visualization visualization);
 }

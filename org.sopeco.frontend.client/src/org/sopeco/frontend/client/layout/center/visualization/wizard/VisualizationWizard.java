@@ -99,6 +99,17 @@ public class VisualizationWizard extends DialogBox {
 				nextScreen();
 			}
 		});
+		RPC.getVisualizationRPC().getExtensions(new AsyncCallback<List<String>>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+			}
+
+			@Override
+			public void onSuccess(List<String> result) {
+				chartSelectionPanel.setExtensions(result);
+			}
+		});
 		RPC.getVisualizationRPC().getChartParameter(experimentRun, new AsyncCallback<ChartParameter[]>() {
 
 			@Override
@@ -165,7 +176,7 @@ public class VisualizationWizard extends DialogBox {
 			for (ChartParameter p : columnSelector.getSelectedColumns()){
 				System.out.println("cparam: " + p.getParameterName());
 			}
-			RPC.getVisualizationRPC().createChart(experimentRun, columnSelector.getSelectedColumns(), options, new AsyncCallback<Visualization>() {
+			RPC.getVisualizationRPC().createChart(experimentRun, columnSelector.getSelectedColumns(), options, chartSelectionPanel.getExtension(), new AsyncCallback<Visualization>() {
 
 				@Override
 				public void onFailure(Throwable caught) {

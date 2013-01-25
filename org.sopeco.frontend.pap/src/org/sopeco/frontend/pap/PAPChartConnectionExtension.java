@@ -7,6 +7,7 @@ import org.sopeco.frontend.server.chartconnector.IChartConnectionExtension;
 
 public class PAPChartConnectionExtension implements IChartConnectionExtension {
 	public static final String NAME = "PAP Connection";
+	private PAPChartConnection papChartConnection;
 
 	@Override
 	public String getName() {
@@ -22,8 +23,10 @@ public class PAPChartConnectionExtension implements IChartConnectionExtension {
 
 	@Override
 	public IChartConnection createExtensionArtifact() {
-		// TODO Auto-generated method stub
-		return new PAPChartConnection(this);
+		if (papChartConnection == null){
+			papChartConnection = new PAPChartConnection(this);
+		}
+		return papChartConnection;
 	}
 
 }

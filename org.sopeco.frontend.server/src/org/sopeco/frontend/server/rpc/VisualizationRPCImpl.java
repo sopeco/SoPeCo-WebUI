@@ -28,6 +28,8 @@ package org.sopeco.frontend.server.rpc;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.sopeco.engine.registry.ExtensionRegistry;
 import org.sopeco.frontend.client.rpc.VisualizationRPC;
@@ -54,19 +56,23 @@ import org.sopeco.persistence.exceptions.DataNotFoundException;
 public class VisualizationRPCImpl extends SuperRemoteServlet implements
 		VisualizationRPC {
 	private IChartConnection chartCreator;
+	private List<Visualization> visualizations;
 	private boolean loaded = false;
+	private List<IChartConnectionExtension> extensions;
+	private static final String G_CHARTS = "Google Charts";
 
 	public VisualizationRPCImpl() {
 		chartCreator = new GCharts();
-		chartCreator = (ExtensionRegistry.getSingleton()
-				.getExtensions(IChartConnectionExtension.class)).getList()
-				.get(0).createExtensionArtifact();
+		visualizations = new ArrayList<Visualization>();
+		extensions = (ExtensionRegistry.getSingleton()
+				.getExtensions(IChartConnectionExtension.class)).getList();
 	}
 
 	@Override
 	public Visualization createChart(SharedExperimentRuns experiementRun,
-			List<ChartParameter> chartParameter, ChartOptions options) {
+			List<ChartParameter> chartParameter, ChartOptions options, String extension) {
 		Double[][] data;
+		loadExtension(extension);
 		String scenarioName = experiementRun.getParentSeries()
 				.getParentInstance().getScenarioName();
 		String measurementEnvironmentUrl = experiementRun.getParentSeries()
@@ -85,8 +91,9 @@ public class VisualizationRPCImpl extends SuperRemoteServlet implements
 		visualization.setExperimentName(experimentName);
 		visualization.setTimestamp(timestamp);
 		visualization.setAccountId(accountName);
-		visualization.setId(System.nanoTime());
+		visualization.setId(System.currentTimeMillis());
 		System.out.println("saving chart...");
+		visualizations.add(visualization);
 		UiPersistence.getUiProvider().storeVisualization(visualization);
 		return visualization;
 
@@ -97,19 +104,24 @@ public class VisualizationRPCImpl extends SuperRemoteServlet implements
 		if (!loaded) {
 			String accountName = getUser().getCurrentAccount().getId();
 			System.out.println("loading charts...");
-			chartCreator.addAll(UiPersistence.getUiProvider()
+			visualizations.addAll(UiPersistence.getUiProvider()
 					.loadVisualizationsByAccount(accountName));
 			loaded = true;
 		}
-		List<Visualization> visualizations = new ArrayList<Visualization>(chartCreator.getVisualizations(start, length));
-		for (Visualization visualization : visualizations) {
+		if (start > visualizations.size() - 1){
+			return new ArrayList<Visualization>();
+		}
+		start = start < 0 ? 0 : start;
+		length = start + length > visualizations.size() ? visualizations.size()-start : length;
+		List<Visualization> vis = new ArrayList<Visualization>(visualizations.subList(start, start+length));
+		for (Visualization visualization : vis) {
 			if (visualization.getData() == null
 					&& visualization.getType() == Visualization.Type.GCHART) {
 				visualization.setData(loadData(getRun(visualization),
 						visualization.getChartParameters()));
 			}
 		}
-		return visualizations;
+		return vis;
 	}
 
 	private Double[][] loadData(ExperimentSeriesRun run,
@@ -170,7 +182,6 @@ public class VisualizationRPCImpl extends SuperRemoteServlet implements
 				}
 			}
 		} catch (DataNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
@@ -204,8 +215,31 @@ public class VisualizationRPCImpl extends SuperRemoteServlet implements
 	@Override
 	public Void deleteVisualization(Visualization visualization) {
 		System.out.println("deleting chart...");
-		chartCreator.remove(visualization);
+		visualizations.remove(visualization);
 		UiPersistence.getUiProvider().removeVisualization(visualization);
 		return null;
+	}
+	
+	private void loadExtension(String name){
+		if (name.equals(G_CHARTS)){
+			chartCreator = new GCharts();
+			return;
+		}
+		for (IChartConnectionExtension ex : extensions){
+			if (ex.getName().equals(name)){
+				chartCreator = ex.createExtensionArtifact();
+				return;
+			}
+		}
+	}
+
+	@Override
+	public List<String> getExtensions() {
+		List<String> extensionNames = new ArrayList<String>();
+		extensionNames.add(G_CHARTS);
+		for (IChartConnectionExtension ex : extensions){
+			extensionNames.add(ex.getName());
+		}
+		return extensionNames;
 	}
 }
