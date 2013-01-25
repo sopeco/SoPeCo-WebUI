@@ -26,6 +26,8 @@
  */
 package org.sopeco.frontend.server.execute;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -104,15 +106,7 @@ public class QueuedExperiment {
 
 			MECLogEntry logLite = new MECLogEntry();
 			logLite.setTime(log.getTimestamp());
-			// if (log.getEventType() == EventType.EXECUTE_EXPERIMENTRUN &&
-			// log.getStatusInfo() != null) {
-			// ProgressInfo info = (ProgressInfo) log.getStatusInfo();
-			// logLite.setMessage(getStatusString(log.getEventType()) + " " +
-			// info.getRepetition() + " of "
-			// + info.getNumberOfRepetition());
-			// } else {
-			// logLite.setMessage(log.getEventType().toString());
-			// }
+
 			String message = getStatusString(log.getEventType());
 			if (log.getDescription() != null && !log.getDescription().isEmpty()) {
 				message += " - " + log.getDescription();
@@ -122,6 +116,12 @@ public class QueuedExperiment {
 			if (log.getStatusInfo() != null && log.getStatusInfo() instanceof ErrorInfo) {
 				logLite.setError(true);
 				logLite.setErrorMessage(((ErrorInfo) log.getStatusInfo()).getThrowable().getMessage());
+				
+				StringWriter sw = new StringWriter();
+				PrintWriter pw = new PrintWriter(sw);
+				((ErrorInfo) log.getStatusInfo()).getThrowable().printStackTrace(pw);
+				String errorStack = sw.toString().replaceAll("\n", "\n<br>").replaceAll("\t", "&nbsp;&nbsp;&nbsp;");
+				logLite.setErrorMessage(errorStack);
 			} else {
 				logLite.setError(false);
 			}
@@ -137,7 +137,7 @@ public class QueuedExperiment {
 		case ACQUIRE_MEC:
 			return "Acquiring MeasurementEnvironmentController";
 		case ACQUIRE_MEC_FAILED:
-			return "Acquiring MeasurementEnvironmentController";
+			return "Acquiring MeasurementEnvironmentController failed";
 		case EXECUTE_EXPERIMENTRUN:
 			return "Executing ExperimentRun";
 		case FINALIZE_EXPERIMENTSERIES:
@@ -158,6 +158,8 @@ public class QueuedExperiment {
 			return "Connect to MeasurementEnvironmentController";
 		case ERROR:
 			return "Error";
+		case INFORMATION:
+			return "Information";
 		default:
 			throw new IllegalStateException("No eventType " + type + " expected.");
 		}

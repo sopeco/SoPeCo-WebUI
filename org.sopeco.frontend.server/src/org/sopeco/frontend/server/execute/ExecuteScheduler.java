@@ -110,7 +110,7 @@ public final class ExecuteScheduler {
 
 		// notifyFrontend(experiment.getAccount());
 	}
-
+	
 	/**
 	 * Calculates the next date when the experiment is to be executed.
 	 * 

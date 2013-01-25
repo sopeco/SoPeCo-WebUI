@@ -1,5 +1,6 @@
 package org.sopeco.frontend.client.layout.login;
 
+import java.util.Date;
 import java.util.List;
 
 import org.sopeco.frontend.client.FrontendEntryPoint;
@@ -31,6 +32,8 @@ import com.google.gwt.user.client.ui.SimplePanel;
 public class LoginPanel extends FlowPanel implements ClickHandler {
 
 	public static final String COOKIE_DATABASE = "selected_database";
+
+	private static final long COOKIE_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7;
 
 	private SimplePanel verticalCell;
 
@@ -96,6 +99,10 @@ public class LoginPanel extends FlowPanel implements ClickHandler {
 	}
 
 	private void fetchAccounts(final String setSelectedAccount) {
+		fetchAccounts(setSelectedAccount, false);
+	}
+
+	private void fetchAccounts(final String setSelectedAccount, final boolean login) {
 		RPC.getDatabaseManagerRPC().getAllDatabases(new AsyncCallback<List<DatabaseInstance>>() {
 			@Override
 			public void onSuccess(List<DatabaseInstance> result) {
@@ -103,6 +110,10 @@ public class LoginPanel extends FlowPanel implements ClickHandler {
 
 				if (setSelectedAccount != null) {
 					selectAccountPanel.getCbAccounts().setSelectedText(setSelectedAccount);
+				}
+
+				if (login) {
+					login();
 				}
 			}
 
@@ -203,10 +214,14 @@ public class LoginPanel extends FlowPanel implements ClickHandler {
 	}
 
 	private void login() {
-
 		final DatabaseInstance account = getSelectedAccount();
 		Manager.get().setSelectedDatabaseIndex(selectAccountPanel.getCbAccounts().getSelectedIndex());
-		Cookies.setCookie(COOKIE_DATABASE, account.getDbName());
+
+		Date expireDate = new Date();
+		long sevenDaysInFuture = expireDate.getTime() + COOKIE_EXPIRE_TIME;
+		expireDate.setTime(sevenDaysInFuture);
+
+		Cookies.setCookie(COOKIE_DATABASE, account.getDbName(), expireDate);
 
 		if (account.isProtectedByPassword()) {
 			verticalCell.clear();
@@ -323,7 +338,7 @@ public class LoginPanel extends FlowPanel implements ClickHandler {
 					selectAccount = "* " + selectAccount;
 				}
 
-				fetchAccounts(selectAccount);
+				fetchAccounts(selectAccount, true);
 			}
 		});
 
