@@ -64,20 +64,17 @@ public class ResultController implements ICenterController, ClickHandler {
 
 	@Override
 	public void onSwitchTo() {	
+		refreshTree();
 	}
 	
 	@Override
 	public void reset() {
 		view = new ResultView();
-
-		view.getBtnTest().addClickHandler(this);
 	}
 
 	@Override
 	public void onClick(ClickEvent event) {
-		if (event.getSource() == view.getBtnTest()) {
-			refreshTree();
-		} else if (event.getSource() instanceof TreeLeaf) {
+	 if (event.getSource() instanceof TreeLeaf) {
 			SharedExperimentRuns run = ((TreeLeaf) event.getSource()).getExperimentRun();
 
 			StringBuffer param = new StringBuffer();
