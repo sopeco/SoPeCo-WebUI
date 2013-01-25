@@ -56,7 +56,7 @@ public class ExecuteRPCImpl extends SuperRemoteServlet implements ExecuteRPC {
 		scheduledExperiment.setActive(true);
 		scheduledExperiment.setLastExecutionTime(-1);
 		scheduledExperiment.setAddedTime(System.currentTimeMillis());
-		scheduledExperiment.setConfiguration(Configuration.getSessionSingleton(getSessionId()));
+		scheduledExperiment.setProperties(Configuration.getSessionSingleton(getSessionId()));
 
 		long nextExecution = scheduledExperiment.getStartTime();
 		if (scheduledExperiment.isRepeating()) {

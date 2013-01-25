@@ -30,11 +30,17 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.sopeco.config.Configuration;
+import org.sopeco.config.IConfiguration;
 import org.sopeco.engine.model.ScenarioDefinitionWriter;
 import org.sopeco.frontend.client.rpc.ScenarioManagerRPC;
 import org.sopeco.frontend.server.rpc.SuperRemoteServlet;
 import org.sopeco.frontend.shared.builder.ScenarioDefinitionBuilder;
 import org.sopeco.persistence.IPersistenceProvider;
+import org.sopeco.persistence.entities.ArchiveEntry;
+import org.sopeco.persistence.entities.ExperimentSeries;
+import org.sopeco.persistence.entities.ExperimentSeriesRun;
+import org.sopeco.persistence.entities.ScenarioInstance;
 import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 import org.sopeco.persistence.exceptions.DataNotFoundException;
@@ -171,11 +177,26 @@ public class ScenarioManagerRPCImpl extends SuperRemoteServlet implements Scenar
 	@Override
 	public boolean storeScenarioDefinition(ScenarioDefinition definition) {
 		ScenarioDefinition current = getUser().getCurrentScenarioDefinitionBuilder().getBuiltScenario();
+		try {
+			for (ScenarioInstance instance : getUser().getCurrentPersistenceProvider().loadScenarioInstances(
+					current.getScenarioName())) {
+				if (!definition.equals(current)) {
+					String changeHandlingMode = Configuration.getSessionSingleton(getSessionId()).getPropertyAsStr(
+							IConfiguration.CONF_DEFINITION_CHANGE_HANDLING_MODE);
+					if (changeHandlingMode.equals(IConfiguration.DCHM_ARCHIVE)) {
 
-		current.setScenarioName(definition.getScenarioName());
-		current.setMeasurementEnvironmentDefinition(definition.getMeasurementEnvironmentDefinition());
-		current.getMeasurementSpecifications().clear();
-		current.getMeasurementSpecifications().addAll(definition.getMeasurementSpecifications());
+						archiveOldResults(instance);
+					}
+
+					getUser().getCurrentPersistenceProvider().removeScenarioInstanceKeepResults(instance);
+				}
+			}
+		} catch (DataNotFoundException e) {
+			LOGGER.debug("No scenario instance with name {} available. Skip archiving old results!",
+					current.getScenarioName());
+		}
+
+		getUser().setCurrentScenarioDefinitionBuilder(ScenarioDefinitionBuilder.load(definition));
 
 		getUser().storeCurrentScenarioDefinition();
 		return true;
@@ -190,5 +211,18 @@ public class ScenarioManagerRPCImpl extends SuperRemoteServlet implements Scenar
 			return writer.convertToXMLString(definition);
 		}
 		return "";
+	}
+
+	private void archiveOldResults(ScenarioInstance scenarioInstance) {
+		ScenarioDefinitionWriter writer = new ScenarioDefinitionWriter(getSessionId());
+		String scenarioDefinitionXML = writer.convertToXMLString(scenarioInstance.getScenarioDefinition());
+		for (ExperimentSeries es : scenarioInstance.getExperimentSeriesList()) {
+			for (ExperimentSeriesRun run : es.getExperimentSeriesRuns()) {
+				ArchiveEntry entry = new ArchiveEntry(getUser().getCurrentPersistenceProvider(), run.getTimestamp(),
+						scenarioInstance.getName(), scenarioInstance.getMeasurementEnvironmentUrl(), es.getName(),
+						run.getLabel(), scenarioDefinitionXML, run.getDatasetId());
+				getUser().getCurrentPersistenceProvider().store(entry);
+			}
+		}
 	}
 }

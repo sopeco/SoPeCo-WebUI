@@ -137,6 +137,7 @@ public class ScenarioDefinitionBuilder {
 
 		return currentBuild;
 	}
+	
 
 	/**
 	 * Creates an empty scenario.

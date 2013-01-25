@@ -43,7 +43,7 @@ public class SharedExperimentSeries implements Serializable {
 
 	private String experimentName;
 
-	private long version;
+
 
 	private List<SharedExperimentRuns> experimentRuns;
 	public SharedExperimentSeries() {
@@ -76,12 +76,7 @@ public class SharedExperimentSeries implements Serializable {
 		return parentInstance;
 	}
 
-	/**
-	 * @return the version
-	 */
-	public long getVersion() {
-		return version;
-	}
+
 
 	/**
 	 * @param experimentName
@@ -99,11 +94,4 @@ public class SharedExperimentSeries implements Serializable {
 		this.parentInstance = parentInstance;
 	}
 
-	/**
-	 * @param version
-	 *            the version to set
-	 */
-	public void setVersion(long version) {
-		this.version = version;
-	}
 }

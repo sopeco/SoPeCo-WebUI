@@ -262,13 +262,7 @@ public class NavigationController implements ClickHandler, InputDialogHandler, I
 		HashMap<String, ExperimentSeriesDefinition> expMap = new HashMap<String, ExperimentSeriesDefinition>();
 		for (ExperimentSeriesDefinition experiment : ScenarioManager.get().experiment()
 				.getExperimentsOfCurrentSpecififcation()) {
-			if (expMap.containsKey(experiment.getName())) {
-				if (expMap.get(experiment.getName()).getVersion() < experiment.getVersion()) {
-					expMap.put(experiment.getName(), experiment);
-				}
-			} else {
 				expMap.put(experiment.getName(), experiment);
-			}
 		}
 
 		for (ExperimentSeriesDefinition experiment : expMap.values()) {

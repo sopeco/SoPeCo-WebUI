@@ -61,7 +61,6 @@ public final class Duplicator {
 			return null;
 		}
 		ExperimentSeriesDefinition clone = new ExperimentSeriesDefinition();
-		clone.setVersion(source.getVersion());
 		clone.setName(new String(source.getName()));
 
 		ExplorationStrategy cloneExplStgy = cloneExplorationStrategy(source.getExplorationStrategy());

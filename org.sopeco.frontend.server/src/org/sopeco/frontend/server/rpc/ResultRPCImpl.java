@@ -111,7 +111,6 @@ public class ResultRPCImpl extends SuperRemoteServlet implements ResultRPC {
 		for (ExperimentSeries series : instance.getExperimentSeriesList()) {
 			SharedExperimentSeries sharedSeries = new SharedExperimentSeries();
 			sharedSeries.setExperimentName(series.getName());
-			sharedSeries.setVersion(series.getVersion());
 
 			for (ExperimentSeriesRun run : series.getExperimentSeriesRuns()) {
 				SharedExperimentRuns sharedRun = new SharedExperimentRuns();

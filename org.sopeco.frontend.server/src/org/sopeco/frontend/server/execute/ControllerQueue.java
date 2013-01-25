@@ -26,16 +26,18 @@
  */
 package org.sopeco.frontend.server.execute;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.logging.Logger;
 
-import org.sopeco.config.Configuration;
 import org.sopeco.config.IConfiguration;
-import org.sopeco.config.exception.ConfigurationException;
 import org.sopeco.engine.status.ErrorInfo;
 import org.sopeco.engine.status.EventType;
 import org.sopeco.engine.status.IStatusListener;
@@ -172,27 +174,37 @@ public class ControllerQueue implements IStatusListener {
 		LOGGER.info("Start experiment id:" + runningExperiment.getScheduledExperiment().getId() + " on: "
 				+ runningExperiment.getScheduledExperiment().getControllerUrl());
 
+		Map<String, Object> executionProperties = new HashMap<String, Object>();
 		try {
+			executionProperties.putAll(runningExperiment.getScheduledExperiment().getProperties());
 
-			String randomId = "RANDOMID" + (long) (Long.MAX_VALUE * Math.random());
+			executionProperties.put(IConfiguration.CONF_MEASUREMENT_CONTROLLER_URI, new URI(runningExperiment
+					.getScheduledExperiment().getControllerUrl()));
 
-			IConfiguration config = Configuration.getSessionSingleton(randomId);
-			config.overwrite((Configuration) runningExperiment.getScheduledExperiment().getConfiguration());
-			config.setMeasurementControllerURI(runningExperiment.getScheduledExperiment().getControllerUrl());
-			config.setScenarioDescription(runningExperiment.getScheduledExperiment().getScenarioDefinition());
-			config.setProperty(IConfiguration.EXECUTION_EXPERIMENT_FILTER, runningExperiment.getScheduledExperiment()
-					.getFilterMap());
-
-			SoPeCoRunner runner = new SoPeCoRunner(randomId);
-			executeStatus = getThreadPool().submit(runner);
-
-			runningExperiment.setTimeStarted(System.currentTimeMillis());
-
-			notifyAccount();
-			// notifyStatusChange(EStatus.START_MEASUREMENT.toString());
-		} catch (ConfigurationException e) {
+			executionProperties.put(IConfiguration.CONF_SCENARIO_DESCRIPTION, runningExperiment
+					.getScheduledExperiment().getScenarioDefinition());
+			executionProperties.put(IConfiguration.CONF_EXPERIMENT_EXECUTION_SELECTION, runningExperiment
+					.getScheduledExperiment().getSelectedExperiments());
+		} catch (URISyntaxException e) {
 			throw new RuntimeException(e);
 		}
+		// IConfiguration config = Configuration.getSessionSingleton(randomId);
+		// config.overwrite((Configuration)
+		// runningExperiment.getScheduledExperiment().getConfiguration());
+		// config.setMeasurementControllerURI(runningExperiment.getScheduledExperiment().getControllerUrl());
+		// config.setScenarioDescription(runningExperiment.getScheduledExperiment().getScenarioDefinition());
+		// config.setProperty(IConfiguration.EXECUTION_EXPERIMENT_FILTER,
+		// runningExperiment.getScheduledExperiment()
+		// .getFilterMap());
+		String randomId = "RANDOMID" + (long) (Long.MAX_VALUE * Math.random());
+		SoPeCoRunner runner = new SoPeCoRunner(randomId, executionProperties);
+		executeStatus = getThreadPool().submit(runner);
+
+		runningExperiment.setTimeStarted(System.currentTimeMillis());
+
+		notifyAccount();
+		// notifyStatusChange(EStatus.START_MEASUREMENT.toString());
+
 	}
 
 	/**

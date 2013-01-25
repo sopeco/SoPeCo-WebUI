@@ -76,14 +76,14 @@ public class FrontendScheduledExperiment implements PushSerializable {
 
 	private boolean isRunning;
 
-	private Map<String, List<String>> filterMap;
+	private List<String> selectedExperiments;
 
-	public Map<String, List<String>> getFilterMap() {
-		return filterMap;
+	public List<String> getSelectedExperiments() {
+		return selectedExperiments;
 	}
 
-	public void setFilterMap(Map<String, List<String>> filterMap) {
-		this.filterMap = filterMap;
+	public void setSelectedExperiments(List<String> filterMap) {
+		this.selectedExperiments = filterMap;
 	}
 
 	public boolean isRunning() {

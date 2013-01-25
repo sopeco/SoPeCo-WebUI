@@ -121,21 +121,18 @@ public class TabControllerOne extends TabController implements ClickHandler {
 		}
 	}
 
-	private Map<String, List<String>> createFilterMap() {
-		Map<String, List<String>> filterMap = new HashMap<String, List<String>>();
+	private  List<String> createExperimentSelection() {
+		List<String> selectedExperimentSeries = new ArrayList<String>();
 
 		for (String spec : view.getSelectionPanel().getTreeItems().keySet()) {
 			for (String esd : view.getSelectionPanel().getTreeItems().get(spec).keySet()) {
-				if (!view.getSelectionPanel().getTreeItems().get(spec).get(esd).getCheckBox().getValue()) {
-					if (!filterMap.containsKey(spec)) {
-						filterMap.put(spec, new ArrayList<String>());
-					}
-					filterMap.get(spec).add(esd);
+				if (view.getSelectionPanel().getTreeItems().get(spec).get(esd).getCheckBox().getValue()) {
+					selectedExperimentSeries.add(esd);
 				}
 			}
 		}
 
-		return filterMap;
+		return selectedExperimentSeries;
 	}
 
 	private void scheduleExperiment() {
@@ -146,7 +143,7 @@ public class TabControllerOne extends TabController implements ClickHandler {
 		scheduledExperiment.setStartTime(getStartTime());
 		scheduledExperiment.setControllerUrl(Manager.get().getControllerUrl());
 		scheduledExperiment.setScenarioDefinition(ScenarioManager.get().getCurrentScenarioDefinition());
-		scheduledExperiment.setFilterMap(createFilterMap());
+		scheduledExperiment.setSelectedExperiments(createExperimentSelection());
 
 		if (isRepeating()) {
 			scheduledExperiment.setRepeating(true);

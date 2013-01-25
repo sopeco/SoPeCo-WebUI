@@ -28,8 +28,10 @@ package org.sopeco.frontend.server.persistence.entities;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -72,8 +74,8 @@ public class ScheduledExperiment implements Serializable {
 	@Column(name = "nextExecutionTime")
 	private long nextExecutionTime;
 
-	@Column(name = "configuration")
-	private IConfiguration configuration;
+	@Column(name = "properties")
+	private Map<String, Object> properties = new HashMap<String, Object>();
 
 	@Lob
 	@Column(name = "scenarioDefinition")
@@ -111,8 +113,8 @@ public class ScheduledExperiment implements Serializable {
 	private List<Long> durations;
 
 	@Lob
-	@Column(name = "filterMap")
-	private Map<String, List<String>> filterMap;
+	@Column(name = "selectedExperiments")
+	private List<String> selectedExperiments;
 
 	public ScheduledExperiment() {
 	}
@@ -129,7 +131,7 @@ public class ScheduledExperiment implements Serializable {
 		startTime = raw.getStartTime();
 		addedTime = System.currentTimeMillis();
 		durations = new ArrayList<Long>();
-		filterMap = raw.getFilterMap();
+		selectedExperiments = raw.getSelectedExperiments();
 	}
 
 	public FrontendScheduledExperiment createFrontendScheduledExperiment() {
@@ -149,7 +151,7 @@ public class ScheduledExperiment implements Serializable {
 		fse.setEnabled(active);
 		fse.setDurations(durations);
 		fse.setScenarioDefinition(scenarioDefinition);
-		fse.setFilterMap(filterMap);
+		fse.setSelectedExperiments(selectedExperiments);
 		return fse;
 	}
 
@@ -159,12 +161,12 @@ public class ScheduledExperiment implements Serializable {
 		return queuedExperiment;
 	}
 
-	public Map<String, List<String>> getFilterMap() {
-		return filterMap;
+	public List<String> getSelectedExperiments() {
+		return selectedExperiments;
 	}
 
-	public void setFilterMap(Map<String, List<String>> filterMap) {
-		this.filterMap = filterMap;
+	public void setSelectedExperiments(List<String> selectedExperiments) {
+		this.selectedExperiments = selectedExperiments;
 	}
 
 	public List<Long> getDurations() {
@@ -175,12 +177,12 @@ public class ScheduledExperiment implements Serializable {
 		this.durations = pDurations;
 	}
 
-	public IConfiguration getConfiguration() {
-		return configuration;
+	public Map<String, Object> getProperties() {
+		return properties;
 	}
 
-	public void setConfiguration(IConfiguration iConfiguration) {
-		this.configuration = iConfiguration;
+	public void setProperties(IConfiguration configuration) {
+		properties.putAll(configuration.getProperties());
 	}
 
 	public boolean isActive() {
