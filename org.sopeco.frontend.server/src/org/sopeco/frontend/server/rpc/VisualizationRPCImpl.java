@@ -27,9 +27,12 @@
 package org.sopeco.frontend.server.rpc;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.Map.Entry;
 
 import org.sopeco.engine.registry.ExtensionRegistry;
 import org.sopeco.frontend.client.rpc.VisualizationRPC;
@@ -40,17 +43,23 @@ import org.sopeco.frontend.server.persistence.UiPersistence;
 import org.sopeco.frontend.server.user.User;
 import org.sopeco.frontend.server.user.UserManager;
 import org.sopeco.frontend.shared.definitions.result.SharedExperimentRuns;
+import org.sopeco.frontend.shared.entities.ChartData;
 import org.sopeco.frontend.shared.entities.ChartOptions;
 import org.sopeco.frontend.shared.entities.ChartParameter;
 import org.sopeco.frontend.shared.entities.Visualization;
+import org.sopeco.frontend.shared.helper.AggregationInputType;
+import org.sopeco.frontend.shared.helper.AggregationOutputType;
 import org.sopeco.persistence.dataset.DataSetAggregated;
 import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.dataset.SimpleDataSet;
 import org.sopeco.persistence.dataset.SimpleDataSetColumn;
+import org.sopeco.persistence.dataset.SimpleDataSetRow;
+import org.sopeco.persistence.dataset.SimpleDataSetRowBuilder;
 import org.sopeco.persistence.entities.ExperimentSeries;
 import org.sopeco.persistence.entities.ExperimentSeriesRun;
 import org.sopeco.persistence.entities.ScenarioInstance;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
+import org.sopeco.persistence.entities.definition.ParameterRole;
 import org.sopeco.persistence.exceptions.DataNotFoundException;
 
 public class VisualizationRPCImpl extends SuperRemoteServlet implements
@@ -71,7 +80,7 @@ public class VisualizationRPCImpl extends SuperRemoteServlet implements
 	@Override
 	public Visualization createChart(SharedExperimentRuns experiementRun,
 			List<ChartParameter> chartParameter, ChartOptions options, String extension) {
-		Double[][] data;
+		ChartData data;
 		loadExtension(extension);
 		String scenarioName = experiementRun.getParentSeries()
 				.getParentInstance().getScenarioName();
@@ -124,27 +133,68 @@ public class VisualizationRPCImpl extends SuperRemoteServlet implements
 		return vis;
 	}
 
-	private Double[][] loadData(ExperimentSeriesRun run,
+	private ChartData loadData(ExperimentSeriesRun run,
 			List<ChartParameter> chartParameter) {
-		Double[][] data;
-		data = new Double[chartParameter.size()][];
+		ChartData data;
+		data = new ChartData();
 		DataSetAggregated dataset = run.getSuccessfulResultDataSet();
 		SimpleDataSet simpledata = dataset.convertToSimpleDataSet();
-		int i = 0;
-		for (ChartParameter cp : chartParameter) {
-			for (SimpleDataSetColumn<?> dataSetColumn : simpledata.getColumns()) {
-				if (dataSetColumn.getParameter().getFullName()
-						.equals(cp.getParameterName())) {
-					List<ParameterValue<?>> values = dataSetColumn
-							.getParameterValues();
-					data[i] = new Double[values.size()];
-					for (int k = 0; k < values.size(); k++) {
-						data[i][k] = values.get(k).getValueAsDouble();
-					}
-					i++;
-				}
+		Map<String, AggregationInputType> inParams = new HashMap<String, AggregationInputType>();
+		Map<String, AggregationOutputType> outParams = new HashMap<String, AggregationOutputType>();
+		for (ChartParameter cp : chartParameter){
+			switch (cp.getType()) {
+			case ChartParameter.INPUT:
+				inParams.put(cp.getParameterName(), cp.getAggregationInputType());
+				break;
+			default:
+				outParams.put(cp.getParameterName(), cp.getAggregationOutputType());
+				break;
 			}
 		}
+
+		String name;
+		Map<String, List<Double>> datamap = new HashMap<String, List<Double>>();
+		for (SimpleDataSetRow row : simpledata) {
+			name = "";
+			for (ParameterValue<?> value : row.getRowValues()){
+				if(value.getParameter().getRole() == ParameterRole.INPUT){
+					if (inParams.get(value.getParameter().getFullName()) != null){
+						switch (inParams.get(value.getParameter().getFullName())){
+						case SHOW:
+							name += value.getValueAsString();
+							break;
+						case AGGREGATE:
+							break;
+						}
+					}
+				}
+			}
+			for (ParameterValue<?> value : row.getRowValues()){
+				if(value.getParameter().getRole() == ParameterRole.OBSERVATION){
+					String cname = value.getParameter().getFullName()+ " " +name;
+					List<Double> list = datamap.get(cname);
+					if (list == null){
+						list = new ArrayList<Double>();
+						datamap.put(cname, list);
+					}
+					if (outParams.get(value.getParameter().getFullName()) != null){
+						switch (outParams.get(value.getParameter().getFullName())){
+						case SCATTER:
+							list.add(value.getValueAsDouble());
+							break;
+						case SUM:
+							if (list.size() <= 0){
+								list.add(0.0);
+							}
+							list.set(0, list.get(0)+value.getValueAsDouble());
+							break;
+						}
+					}
+				}
+			}
+			
+		}
+		data.setData(datamap);
 		return data;
 	}
 

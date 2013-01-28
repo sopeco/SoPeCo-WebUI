@@ -38,6 +38,7 @@ import java.util.Set;
 
 import org.sopeco.engine.registry.ISoPeCoExtension;
 import org.sopeco.frontend.server.chartconnector.IChartConnection;
+import org.sopeco.frontend.shared.entities.ChartData;
 import org.sopeco.frontend.shared.entities.ChartOptions;
 import org.sopeco.frontend.shared.entities.ChartParameter;
 import org.sopeco.frontend.shared.entities.Visualization;
@@ -83,21 +84,21 @@ public class PAPChartConnection implements IChartConnection {
 		}
 	}
 
-	private String createProcessScript(Double[][] data, String[] chartParameter){
+	private String createProcessScript(ChartData data, String[] chartParameter){
 		StringBuffer rValue = new StringBuffer();
 
-		for (int i = 0; i < data.length; i++) {
-			rValue.append(chartParameter[i]);
-			rValue.append(i);
-			rValue.append(" <- c(");
-			for (int j = 0; j < data[i].length; j++) {
-				rValue.append(data[i][j]);
-				if (j < data[i].length - 1) {
-					rValue.append(", ");
-				}
-			}
-			rValue.append(")\n");
-		}
+//		for (int i = 0; i < data.length; i++) {
+//			rValue.append(chartParameter[i]);
+//			rValue.append(i);
+//			rValue.append(" <- c(");
+//			for (int j = 0; j < data[i].length; j++) {
+//				rValue.append(data[i][j]);
+//				if (j < data[i].length - 1) {
+//					rValue.append(", ");
+//				}
+//			}
+//			rValue.append(")\n");
+//		}
 		return rValue.toString();
 	}
 	
@@ -166,7 +167,7 @@ public class PAPChartConnection implements IChartConnection {
 
 	@Override
 	public Visualization createVisualization(String experimentName,
-			Double[][] data, List<ChartParameter> chartParameter,
+			ChartData data, List<ChartParameter> chartParameter,
 			ChartOptions options) {
 		String[] columnNames = new String[chartParameter.size()];
 		for (int i = 0; i < columnNames.length; i++){

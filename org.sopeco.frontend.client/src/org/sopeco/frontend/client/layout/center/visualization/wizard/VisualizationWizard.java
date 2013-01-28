@@ -56,7 +56,6 @@ public class VisualizationWizard extends DialogBox {
 	private VerticalPanel rootWidget;
 	private Button next;
 	private Screen currentScreen = Screen.CHART_SELECTION;
-	private int maxColumns;
 	private SharedExperimentRuns experimentRun;
 	private HorizontalPanel buttonPanel;
 	private List<ChartParameter> inputParameter;
@@ -200,7 +199,6 @@ public class VisualizationWizard extends DialogBox {
 	}
 	
 	private void showColumnSelector(){
-		maxColumns = 2;
 		setScreen(Screen.COLUMN_SELECTION);
 		next.setText(R.get("finish"));
 	}

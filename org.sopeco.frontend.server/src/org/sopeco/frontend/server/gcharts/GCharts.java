@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.sopeco.engine.registry.ISoPeCoExtension;
 import org.sopeco.frontend.server.chartconnector.IChartConnection;
+import org.sopeco.frontend.shared.entities.ChartData;
 import org.sopeco.frontend.shared.entities.ChartOptions;
 import org.sopeco.frontend.shared.entities.ChartParameter;
 import org.sopeco.frontend.shared.entities.Visualization;
@@ -21,7 +22,7 @@ public class GCharts implements IChartConnection {
 
 	@Override
 	public synchronized Visualization createVisualization(String experimentName,
-			Double[][] data, List<ChartParameter> chartParameter,
+			ChartData data, List<ChartParameter> chartParameter,
 			ChartOptions options) {
 		Visualization visualization = new Visualization();
 		visualization.setLink("");

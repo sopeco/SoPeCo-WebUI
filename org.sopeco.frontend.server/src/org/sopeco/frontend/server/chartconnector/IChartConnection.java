@@ -29,11 +29,12 @@ package org.sopeco.frontend.server.chartconnector;
 import java.util.List;
 
 import org.sopeco.engine.registry.ISoPeCoExtensionArtifact;
+import org.sopeco.frontend.shared.entities.ChartData;
 import org.sopeco.frontend.shared.entities.ChartOptions;
 import org.sopeco.frontend.shared.entities.ChartParameter;
 import org.sopeco.frontend.shared.entities.Visualization;
 
 public interface IChartConnection extends ISoPeCoExtensionArtifact {
 	
-	public Visualization createVisualization(String experimentName, Double[][] data, List<ChartParameter> chartParameter, ChartOptions options);
+	public Visualization createVisualization(String experimentName, ChartData data, List<ChartParameter> chartParameter, ChartOptions options);
 }

@@ -71,7 +71,7 @@ public class Visualization implements Serializable {
 	@Column(name = "type")
 	private Type type = Type.LINK;
 	
-	private Double[][] data;
+	private ChartData data;
 	
 	@Lob
 	@Column(name = "chartOptions")
@@ -121,11 +121,11 @@ public class Visualization implements Serializable {
 		this.type = type;
 	}
 
-	public Double[][] getData() {
+	public ChartData getData() {
 		return data;
 	}
 
-	public void setData(Double[][] data) {
+	public void setData(ChartData data) {
 		this.data = data;
 	}
 

@@ -34,6 +34,7 @@ import org.sopeco.frontend.client.layout.center.ICenterController;
 import org.sopeco.frontend.client.resources.FrontEndResources;
 import org.sopeco.frontend.client.resources.R;
 import org.sopeco.frontend.client.rpc.RPC;
+import org.sopeco.frontend.shared.entities.ChartData;
 import org.sopeco.frontend.shared.entities.ChartOptions;
 import org.sopeco.frontend.shared.entities.ChartOptions.ChartType;
 import org.sopeco.frontend.shared.entities.ChartParameter;
@@ -48,6 +49,7 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.cellview.client.SimplePager.TextLocation;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
@@ -267,86 +269,104 @@ public class VisualizationController implements ICenterController {
 		return options;
 	}
 
-	private AbstractDataTable createTable(Double[][] data,
+	private AbstractDataTable createTable(ChartData data,
 			List<ChartParameter> chartParameters, ChartType type) {
 		DataTable dataTable = DataTable.create();
-		switch (type) {
-		case PIECHART:
-			dataTable.addColumn(ColumnType.STRING,
-					chartParameters.get(0).getParameterName());
-			Map<String, Double> values = new TreeMap<String, Double>();
-			for (int row = 0; row < data[0].length; row++) {
-				values.put(""+data[0][row], 0.0);
-			}
-			dataTable.addRows(values.size());
-			int j = 0;
-			for (String key : values.keySet()){
-				dataTable.setValue(j, 0, chartParameters.get(0).getParameterName() + " = "+key);
-				j++;
-			}
-			
-			for (int col = 1; col < data.length; col++) {
-				dataTable.addColumn(ColumnType.NUMBER,
-						chartParameters.get(0).getParameterName());
-				for (String key : values.keySet()){
-					values.put(key, 0.0);
-				}
-				for (int row = 0; row < data[col].length; row++) {
-					values.put(""+data[0][row], values.get(""+data[0][row])+data[col][row]);
-				}
-				j = 0;
-				for (Double value : values.values()){
-					dataTable.setValue(j, col, value);
-					j++;
-				}
-			}
-			break;
-		case BARCHART:
-			dataTable.addColumn(ColumnType.STRING,
-					chartParameters.get(0).getParameterName());
-			Map<String, Double> values2 = new TreeMap<String, Double>();
-			for (int row = 0; row < data[0].length; row++) {
-				values2.put(""+data[0][row], 0.0);
-			}
-			dataTable.addRows(values2.size());
-			j = 0;
-			for (String key : values2.keySet()){
-				dataTable.setValue(j, 0, key);
-				j++;
-			}
-			
-			for (int col = 1; col < data.length; col++) {
-				dataTable.addColumn(ColumnType.NUMBER,
-						chartParameters.get(0).getParameterName());
-				for (String key : values2.keySet()){
-					values2.put(key, 0.0);
-				}
-				for (int row = 0; row < data[col].length; row++) {
-					values2.put(""+data[0][row], values2.get(""+data[0][row])+data[col][row]);
-				}
-				j = 0;
-				for (Double value : values2.values()){
-					dataTable.setValue(j, col, value);
-					j++;
-				}
-			}
-			break;
-		default:
-			dataTable.addRows(data[0].length);
-			dataTable.addColumn(ColumnType.NUMBER,
-					chartParameters.get(0).getParameterName());
-			for (int row = 0; row < data[0].length; row++) {
-				dataTable.setValue(row, 0, data[0][row]);
-			}
-			for (int col = 1; col < data.length; col++) {
-				dataTable.addColumn(ColumnType.NUMBER,
-						chartParameters.get(col).getParameterName());
-				for (int row = 0; row < data[col].length; row++) {
-					dataTable.setValue(row, col, data[col][row]);
-				}
-			}
-			break;
+		List<List<Double>> dataList = data.getDatarows();
+		List<String> names = data.getxAxis();
+		if (names.size() <= 0 || dataList.size() <= 0){
+			return dataTable;
 		}
+		dataTable.addColumn(ColumnType.STRING, "Input");
+		for (int i = 0; i < dataList.get(0).size(); i++){
+			dataTable.addColumn(ColumnType.NUMBER, "Out " + i);
+		}
+		dataTable.addRows(names.size());
+		for (int row = 0; row < names.size(); row++){
+			dataTable.setValue(row, 0, names.get(row));
+		}
+		for (int row = 0; row < names.size(); row++){
+			for (int column = 0; column < dataList.get(row).size(); column++){
+				dataTable.setValue(row, column+1,dataList.get(row).get(column));
+			}
+		}
+//		switch (type) {
+//		case PIECHART:
+//			dataTable.addColumn(ColumnType.STRING,
+//					chartParameters.get(0).getParameterName());
+//			Map<String, Double> values = new TreeMap<String, Double>();
+//			for (int row = 0; row < data[0].length; row++) {
+//				values.put(""+data[0][row], 0.0);
+//			}
+//			dataTable.addRows(values.size());
+//			int j = 0;
+//			for (String key : values.keySet()){
+//				dataTable.setValue(j, 0, chartParameters.get(0).getParameterName() + " = "+key);
+//				j++;
+//			}
+//			
+//			for (int col = 1; col < data.length; col++) {
+//				dataTable.addColumn(ColumnType.NUMBER,
+//						chartParameters.get(0).getParameterName());
+//				for (String key : values.keySet()){
+//					values.put(key, 0.0);
+//				}
+//				for (int row = 0; row < data[col].length; row++) {
+//					values.put(""+data[0][row], values.get(""+data[0][row])+data[col][row]);
+//				}
+//				j = 0;
+//				for (Double value : values.values()){
+//					dataTable.setValue(j, col, value);
+//					j++;
+//				}
+//			}
+//			break;
+//		case BARCHART:
+//			dataTable.addColumn(ColumnType.STRING,
+//					chartParameters.get(0).getParameterName());
+//			Map<String, Double> values2 = new TreeMap<String, Double>();
+//			for (int row = 0; row < data[0].length; row++) {
+//				values2.put(""+data[0][row], 0.0);
+//			}
+//			dataTable.addRows(values2.size());
+//			j = 0;
+//			for (String key : values2.keySet()){
+//				dataTable.setValue(j, 0, key);
+//				j++;
+//			}
+//			
+//			for (int col = 1; col < data.length; col++) {
+//				dataTable.addColumn(ColumnType.NUMBER,
+//						chartParameters.get(0).getParameterName());
+//				for (String key : values2.keySet()){
+//					values2.put(key, 0.0);
+//				}
+//				for (int row = 0; row < data[col].length; row++) {
+//					values2.put(""+data[0][row], values2.get(""+data[0][row])+data[col][row]);
+//				}
+//				j = 0;
+//				for (Double value : values2.values()){
+//					dataTable.setValue(j, col, value);
+//					j++;
+//				}
+//			}
+//			break;
+//		default:
+//			dataTable.addRows(data[0].length);
+//			dataTable.addColumn(ColumnType.NUMBER,
+//					chartParameters.get(0).getParameterName());
+//			for (int row = 0; row < data[0].length; row++) {
+//				dataTable.setValue(row, 0, data[0][row]);
+//			}
+//			for (int col = 1; col < data.length; col++) {
+//				dataTable.addColumn(ColumnType.NUMBER,
+//						chartParameters.get(col).getParameterName());
+//				for (int row = 0; row < data[col].length; row++) {
+//					dataTable.setValue(row, col, data[col][row]);
+//				}
+//			}
+//			break;
+//		}
 		return dataTable;
 	}
 	

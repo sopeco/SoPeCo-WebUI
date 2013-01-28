@@ -28,6 +28,9 @@ package org.sopeco.frontend.shared.entities;
 
 import java.io.Serializable;
 
+import org.sopeco.frontend.shared.helper.AggregationInputType;
+import org.sopeco.frontend.shared.helper.AggregationOutputType;
+
 public class ChartParameter implements Serializable {
 	/**
 	 * 
@@ -38,6 +41,8 @@ public class ChartParameter implements Serializable {
 	public static final int OBSERVATION = 1;
 	private String parameterName;
 	private int type = INPUT;	
+	private AggregationInputType aggregationInputType;
+	private AggregationOutputType aggregationOutputType;
 
 	public ChartParameter() {
 	}
@@ -56,6 +61,22 @@ public class ChartParameter implements Serializable {
 
 	public void setType(int type) {
 		this.type = type;
+	}
+
+	public AggregationInputType getAggregationInputType() {
+		return aggregationInputType;
+	}
+
+	public void setAggregationInputType(AggregationInputType aggregationInputType) {
+		this.aggregationInputType = aggregationInputType;
+	}
+
+	public AggregationOutputType getAggregationOutputType() {
+		return aggregationOutputType;
+	}
+
+	public void setAggregationOutputType(AggregationOutputType aggregationOutputType) {
+		this.aggregationOutputType = aggregationOutputType;
 	}
 	
 }
