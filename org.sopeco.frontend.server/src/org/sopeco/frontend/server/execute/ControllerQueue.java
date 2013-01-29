@@ -50,6 +50,7 @@ import org.sopeco.frontend.server.persistence.entities.ScheduledExperiment;
 import org.sopeco.frontend.server.rpc.PushRPCImpl;
 import org.sopeco.frontend.server.user.UserManager;
 import org.sopeco.frontend.shared.entities.ExecutedExperimentDetails;
+import org.sopeco.frontend.shared.entities.MECLog;
 import org.sopeco.frontend.shared.entities.RunningControllerStatus;
 import org.sopeco.frontend.shared.push.PushListPackage;
 import org.sopeco.frontend.shared.push.PushObjectPackage;
@@ -340,7 +341,8 @@ public class ControllerQueue implements IStatusListener {
 		}
 
 		ExecutedExperimentDetails eed = new ExecutedExperimentDetails();
-		eed.setEventLog(runningExperiment.getEventLogLiteList());
+		// eed.setEventLog(runningExperiment.getEventLogLiteList());
+
 		eed.setSuccessful(!hasError);
 		eed.setTimeFinished(runningExperiment.getTimeEnded());
 		eed.setTimeStarted(runningExperiment.getTimeStarted());
@@ -349,14 +351,14 @@ public class ControllerQueue implements IStatusListener {
 
 		eed.setAccountId(runningExperiment.getScheduledExperiment().getAccountId());
 		eed.setScenarioName(runningExperiment.getScheduledExperiment().getScenarioDefinition().getScenarioName());
-		// AccountDetails account =
-		// UiPersistence.getUiProvider().loadAccountDetails(
-		// runningExperiment.getScheduledExperiment().getAccountId());
-		// account.getScenarioDetail(runningExperiment.getScheduledExperiment().getScenarioDefinition().getScenarioName())
-		// .getExecutedExperimentsHistory().add(eed);
-		// UiPersistence.getUiProvider().storeAccountDetails(account);
 
-		UiPersistence.getUiProvider().storeExecutedExperimentDetails(eed);
+		long generatedId = UiPersistence.getUiProvider().storeExecutedExperimentDetails(eed);
+
+		MECLog log = new MECLog();
+		log.setId(generatedId);
+		log.setEntries(runningExperiment.getEventLogLiteList());
+
+		UiPersistence.getUiProvider().storeMECLog(log);
 	}
 
 	/**
@@ -364,6 +366,9 @@ public class ControllerQueue implements IStatusListener {
 	 * necessary information about the current controller state.
 	 * */
 	public RunningControllerStatus createControllerStatusPackage() {
+		if (runningExperiment == null) {
+			return null;
+		}
 		RunningControllerStatus cce = new RunningControllerStatus();
 
 		cce.setAccount(runningExperiment.getScheduledExperiment().getAccountId());

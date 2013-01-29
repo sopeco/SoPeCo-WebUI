@@ -36,6 +36,7 @@ import org.sopeco.frontend.client.layout.popups.InputDialog;
 import org.sopeco.frontend.client.layout.popups.InputDialogHandler;
 import org.sopeco.frontend.client.layout.popups.InputDialogValidator;
 import org.sopeco.frontend.client.layout.popups.Message;
+import org.sopeco.frontend.client.manager.Manager;
 import org.sopeco.frontend.client.manager.ScenarioManager;
 import org.sopeco.frontend.client.resources.FrontEndResources;
 import org.sopeco.frontend.client.resources.R;
@@ -68,7 +69,7 @@ public class SpecificationController implements ICenterController, ClickHandler,
 		R.resc.cssSpecification().ensureInjected();
 
 		if (ScenarioManager.get().isScenarioAvailable()) {
-			reset();
+			reload();
 		}
 
 		// EventControl.get().addHandler(SpecificationChangedEvent.TYPE, new
@@ -159,7 +160,7 @@ public class SpecificationController implements ICenterController, ClickHandler,
 	}
 
 	@Override
-	public void reset() {
+	public void reload() {
 		if (assignmentController == null) {
 			assignmentController = new AssignmentController();
 		} else {
@@ -181,10 +182,11 @@ public class SpecificationController implements ICenterController, ClickHandler,
 
 		addExistingAssignments();
 		// addRenameSpecificationHandler();
+		changeSpecification(Manager.get().getCurrentScenarioDetails().getSelectedSpecification());
 	}
 
 	@Override
-	public Widget getView() {
+	public SpecificationView getView() {
 		return view;
 	}
 

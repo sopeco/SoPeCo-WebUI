@@ -157,7 +157,6 @@ public class SpecificationView extends FlowPanel {
 	 * @param name
 	 */
 	public void setSpecificationName(String name) {
-		// textboxName.setText(name);
 		htmlName.setText(name);
 	}
 

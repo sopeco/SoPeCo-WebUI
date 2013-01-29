@@ -131,7 +131,7 @@ public class ExecuteController implements ICenterController, ClickHandler, Selec
 	}
 
 	@Override
-	public void reset() {
+	public void reload() {
 	}
 
 	/**

@@ -38,6 +38,7 @@ import org.sopeco.frontend.client.manager.Manager;
 import org.sopeco.frontend.client.resources.R;
 import org.sopeco.frontend.client.rpc.RPC;
 import org.sopeco.frontend.shared.entities.ExecutedExperimentDetails;
+import org.sopeco.frontend.shared.entities.MECLog;
 import org.sopeco.frontend.shared.helper.MECLogEntry;
 
 import com.google.gwt.cell.client.ImageResourceCell;
@@ -143,7 +144,7 @@ public class TabControllerFour extends TabController {
 			public void onSelectionChange(SelectionChangeEvent event) {
 				ExecutedExperimentDetails selectedExperiment = selectionModel.getSelectedObject();
 				if (selectedExperiment != null) {
-					setDetailLog(selectedExperiment.getEventLog());
+					setDetailLog(selectedExperiment.getId());
 				}
 			}
 		});
@@ -157,11 +158,6 @@ public class TabControllerFour extends TabController {
 		if (dataGrid == null) {
 			return;
 		}
-		// List<ExecutedExperimentDetails> details =
-		// Manager.get().getCurrentScenarioDetails()
-		// .getExecutedExperimentsHistory();
-		// Collections.reverse(new
-		// ArrayList<ExecutedExperimentDetails>(details));
 
 		RPC.getExecuteRPC().getExecutedExperimentDetails(new AsyncCallback<List<ExecutedExperimentDetails>>() {
 			@Override
@@ -192,20 +188,37 @@ public class TabControllerFour extends TabController {
 
 	@Override
 	public void onSelection() {
-		updateGrid(tabView.getDataGrid());
+		if (tabView.getDataGrid() == null) {
+			buildTable();
+		} else {
+			updateGrid(tabView.getDataGrid());
+		}
 	}
 
-	private void setDetailLog(List<MECLogEntry> logList) {
-		tabView.getDetailPanel().clear();
-
-		for (MECLogEntry log : logList) {
-			HTML html = new HTML(dtf.format(new Date(log.getTime())) + ": " + log.getMessage());
-			if (log.isError()) {
-				html.addStyleName("errorMessage");
-				html.setHTML("<b>" + html.getHTML() + "</b><br>" + log.getErrorMessage());
+	private void setDetailLog(long logList) {
+		RPC.getExecuteRPC().getMECLog(logList, new AsyncCallback<MECLog>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO
+				Message.error(caught.getLocalizedMessage());
 			}
-			tabView.getDetailPanel().add(html);
-		}
+
+			public void onSuccess(MECLog result) {
+				if (result == null) {
+					return;
+				}
+				tabView.getDetailPanel().clear();
+
+				for (MECLogEntry log : result.getEntries()) {
+					HTML html = new HTML(dtf.format(new Date(log.getTime())) + ": " + log.getMessage());
+					if (log.isError()) {
+						html.addStyleName("errorMessage");
+						html.setHTML("<b>" + html.getHTML() + "</b><br>" + log.getErrorMessage());
+					}
+					tabView.getDetailPanel().add(html);
+				}
+			};
+		});
 	}
 
 }

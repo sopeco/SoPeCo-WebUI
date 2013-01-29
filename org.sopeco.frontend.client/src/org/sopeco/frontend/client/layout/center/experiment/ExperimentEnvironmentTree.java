@@ -26,9 +26,6 @@
  */
 package org.sopeco.frontend.client.layout.center.experiment;
 
-import org.sopeco.frontend.client.event.EventControl;
-import org.sopeco.frontend.client.event.ExperimentChangedEvent;
-import org.sopeco.frontend.client.event.handler.ExperimentChangedEventHandler;
 import org.sopeco.frontend.client.layout.environment.EnvTreeItem;
 import org.sopeco.frontend.client.layout.environment.EnvironmentTree;
 import org.sopeco.frontend.client.manager.ScenarioManager;
@@ -48,12 +45,6 @@ public class ExperimentEnvironmentTree extends EnvironmentTree {
 		getView().setFirstInfoText(R.get("addToExpAssignments"));
 		getView().setSecondInfoText(R.get("addToPrepAssignments"));
 
-		EventControl.get().addHandler(ExperimentChangedEvent.TYPE, new ExperimentChangedEventHandler() {
-			@Override
-			public void onExperimentChanged(ExperimentChangedEvent event) {
-				generateTree();
-			}
-		});
 	}
 
 	@Override

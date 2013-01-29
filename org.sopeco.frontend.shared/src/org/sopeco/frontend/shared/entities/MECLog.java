@@ -26,13 +26,13 @@
  */
 package org.sopeco.frontend.shared.entities;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Lob;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 
 import org.sopeco.frontend.shared.helper.MECLogEntry;
 
@@ -42,33 +42,21 @@ import org.sopeco.frontend.shared.helper.MECLogEntry;
  * 
  */
 @Entity
-@NamedQueries({ @NamedQuery(name = "getLogs", query = "SELECT s FROM MECLog s WHERE s.accountId = :accountId AND s.scenarioName = :scenarioName") })
-public class MECLog {
+public class MECLog implements Serializable {
 
-	@Column(name = "accountId")
-	private String accountId;
-
-	@Column(name = "scenarioName")
-	private String scenarioName;
+	@Id
+	private long id;
 
 	@Lob
 	@Column(name = "entries")
 	private List<MECLogEntry> entries;
 
-	public String getAccountId() {
-		return accountId;
+	public long getId() {
+		return id;
 	}
 
-	public void setAccountId(String pAccountId) {
-		this.accountId = pAccountId;
-	}
-
-	public String getScenarioName() {
-		return scenarioName;
-	}
-
-	public void setScenarioName(String pScenarioName) {
-		this.scenarioName = pScenarioName;
+	public void setId(long pId) {
+		this.id = pId;
 	}
 
 	public List<MECLogEntry> getEntries() {
@@ -78,5 +66,4 @@ public class MECLog {
 	public void setEntries(List<MECLogEntry> pEntries) {
 		this.entries = pEntries;
 	}
-
 }

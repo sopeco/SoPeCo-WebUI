@@ -50,7 +50,6 @@ import org.sopeco.frontend.shared.helper.ExtensionContainer;
 import org.sopeco.persistence.metadata.entities.DatabaseInstance;
 
 import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 
 /**
@@ -65,7 +64,6 @@ public class FrontendEntryPoint implements EntryPoint, SimpleNotify {
 
 	private static final Logger LOGGER = Logger.getLogger(FrontendEntryPoint.class.getName());
 
-
 	/**
 	 * Returns the FrontendEntryPoint object of this application.
 	 * 
@@ -74,18 +72,6 @@ public class FrontendEntryPoint implements EntryPoint, SimpleNotify {
 	public static FrontendEntryPoint get() {
 		return frontend;
 	}
-
-
-	/**
-	 * Returns a string, which contains the date when this document was modified
-	 * (normally the tomcat deploy date).
-	 * 
-	 * @return date as a string
-	 */
-	public static native String getDocumentLastModifiedDate()
-	/*-{
-		return document.lastModified;
-	}-*/;
 
 	public static native String getBuildInfo()
 	/*-{

@@ -72,17 +72,16 @@ public class NavigationController implements ClickHandler, InputDialogHandler, I
 			item.addClickHandler(this);
 		}
 
-		// Events
+	}
 
-//		EventControl.get().addHandler(SpecificationChangedEvent.TYPE, new SpecificationChangedEventHandler() {
-//			@Override
-//			public void onSpecificationChangedEvent(SpecificationChangedEvent event) {
-//				setActiveSpecification(event.getSelectedSpecification());
-//
-//				view.getNaviItemsMap().get(CenterType.Specification).setSubText(event.getSelectedSpecification());
-//				loadExperiments();
-//			}
-//		});
+	public void addItem(Class clazz, String text) {
+		addItem(clazz, text, null);
+	}
+
+	public void addItem(Class clazz, String text, String subText) {
+		NaviItem nItem = new NaviItem(text, subText);
+
+		view.add(nItem);
 	}
 
 	/**
@@ -170,7 +169,7 @@ public class NavigationController implements ClickHandler, InputDialogHandler, I
 	 * the adding of new specifications.
 	 */
 	private void addCreateSpecificationClickHandler() {
-		view.getChangeSpecificationPanel().getAddSpecificationHTML().addClickHandler(new ClickHandler() {
+		view.getChangeSpecificationPanel().getAddItem().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				view.getChangeSpecificationPanel().setVisible(false);
@@ -262,7 +261,7 @@ public class NavigationController implements ClickHandler, InputDialogHandler, I
 		HashMap<String, ExperimentSeriesDefinition> expMap = new HashMap<String, ExperimentSeriesDefinition>();
 		for (ExperimentSeriesDefinition experiment : ScenarioManager.get().experiment()
 				.getExperimentsOfCurrentSpecififcation()) {
-				expMap.put(experiment.getName(), experiment);
+			expMap.put(experiment.getName(), experiment);
 		}
 
 		for (ExperimentSeriesDefinition experiment : expMap.values()) {

@@ -26,6 +26,8 @@
  */
 package org.sopeco.frontend.client.layout.center;
 
+import org.sopeco.frontend.client.layout.ViewSwitch;
+
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -37,7 +39,7 @@ public interface ICenterController {
 
 	Widget getView();
 
-	void reset();
+	void reload();
 
 	/**
 	 * Is called, when the view is displayed because of the

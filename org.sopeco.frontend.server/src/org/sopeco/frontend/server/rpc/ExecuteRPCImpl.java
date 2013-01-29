@@ -31,11 +31,14 @@ import java.util.List;
 
 import org.sopeco.config.Configuration;
 import org.sopeco.frontend.client.rpc.ExecuteRPC;
+import org.sopeco.frontend.server.execute.ControllerQueueManager;
 import org.sopeco.frontend.server.helper.ScheduleExpression;
 import org.sopeco.frontend.server.persistence.UiPersistence;
 import org.sopeco.frontend.server.persistence.entities.ScheduledExperiment;
 import org.sopeco.frontend.shared.entities.ExecutedExperimentDetails;
 import org.sopeco.frontend.shared.entities.FrontendScheduledExperiment;
+import org.sopeco.frontend.shared.entities.MECLog;
+import org.sopeco.frontend.shared.entities.RunningControllerStatus;
 
 /**
  * 
@@ -113,5 +116,16 @@ public class ExecuteRPCImpl extends SuperRemoteServlet implements ExecuteRPC {
 		String scenarioName = getUser().getAccountDetails().getSelectedScenario();
 
 		return UiPersistence.getUiProvider().loadExecutedExperimentDetails(accountId, scenarioName);
+	}
+
+	@Override
+	public MECLog getMECLog(long id) {
+		return UiPersistence.getUiProvider().loadMECLog(id);
+	}
+
+	@Override
+	public RunningControllerStatus getControllerLog() {
+		return ControllerQueueManager.get(getUser().getAccountDetails().getControllerUrl())
+				.createControllerStatusPackage();
 	}
 }

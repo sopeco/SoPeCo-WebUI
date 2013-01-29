@@ -190,7 +190,7 @@ public class VisualizationController implements ICenterController {
 	}
 
 	@Override
-	public void reset() {
+	public void reload() {
 	}
 
 	@Override

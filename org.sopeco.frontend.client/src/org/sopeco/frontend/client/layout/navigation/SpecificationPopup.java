@@ -28,8 +28,11 @@ package org.sopeco.frontend.client.layout.navigation;
 
 import java.util.HashMap;
 
+import org.sopeco.frontend.client.manager.ScenarioManager;
 import org.sopeco.frontend.client.resources.R;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -39,61 +42,78 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  * @author Marius Oehler
  * 
  */
-public class ChangeSpecificationPanel extends VerticalPanel {
+public class SpecificationPopup extends VerticalPanel implements ClickHandler {
 
-	private static final String CHANGE_SPECIFICATION_PANEL_ID = "changeSpecPanel";
-	private static final String ADD_SPECIFICATION_IMAGE = "<img src=\"images/add_blue.png\" />";
-	private static final String ADD_SPECIFIACTION_ID = "addSpecification";
+	private static final String CSS_CLASS = "changeSpecPanel";
+	private static final String CSS_CLASS_ADD = "addItem";
+	private static final String CSS_CLASS_SELECTED = "selected";
 
 	private HashMap<String, HTML> itemMap;
 	private HTML addSpecificationHTML;
 
-	public ChangeSpecificationPanel() {
-		getElement().setId(CHANGE_SPECIFICATION_PANEL_ID);
+	private HTML selectedItem;
+
+	public SpecificationPopup() {
+		addStyleName(CSS_CLASS);
 
 		itemMap = new HashMap<String, HTML>();
 
-		addSpecificationHTML = new HTML(ADD_SPECIFICATION_IMAGE + R.get("addSpecification"));
-		addSpecificationHTML.getElement().setId(ADD_SPECIFIACTION_ID);
+		addSpecificationHTML = new HTML(R.get("addSpecification"));
+		addSpecificationHTML.addStyleName(CSS_CLASS_ADD);
 		add(addSpecificationHTML);
-
-		setVisible(false);
 	}
 
-	/**
-	 * The map, where all existing items are stored.
-	 * 
-	 * @return the HashMap
-	 */
 	public HashMap<String, HTML> getItemMap() {
 		return itemMap;
 	}
 
-	/**
-	 * Returns the "add Spec" HTML Element.
-	 * 
-	 * @return HTML
-	 */
-	public HTML getAddSpecificationHTML() {
+	public HTML getAddItem() {
 		return addSpecificationHTML;
 	}
 
-	/**
-	 * Adds a new item to this panel and to the HashMap. The created Element
-	 * will be returned.
-	 * 
-	 * @param text
-	 *            the text of the item
-	 * @return the created element
-	 */
 	public HTML addItem(String text) {
-		remove(addSpecificationHTML);
-
 		HTML newItem = new HTML(text);
 		add(newItem);
-		add(addSpecificationHTML);
+
+		newItem.addClickHandler(this);
 
 		itemMap.put(text, newItem);
 		return newItem;
+	}
+
+	public void addAddItem() {
+		if (addSpecificationHTML.isAttached()) {
+			addSpecificationHTML.removeFromParent();
+		}
+		add(addSpecificationHTML);
+	}
+
+	@Override
+	public void clear() {
+		super.clear();
+		itemMap.clear();
+		selectedItem = null;
+	}
+
+	public void setSelectedItem(String specificationName) {
+		if (!itemMap.containsKey(specificationName)) {
+			return;
+		}
+		if (selectedItem != null) {
+			selectedItem.removeStyleName(CSS_CLASS_SELECTED);
+		}
+		selectedItem = itemMap.get(specificationName);
+		selectedItem.addStyleName(CSS_CLASS_SELECTED);
+	}
+
+	@Override
+	public void onClick(ClickEvent event) {
+		removeFromParent();
+		if (event.getSource() == selectedItem) {
+			return;
+		}
+		String specificationName = ((HTML) event.getSource()).getText();
+		setSelectedItem(specificationName);
+		ScenarioManager.get().specification().changeSpecification(specificationName);
 	}
 }

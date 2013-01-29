@@ -31,6 +31,7 @@ import java.util.logging.Logger;
 import org.sopeco.frontend.client.helper.SimpleNotify;
 import org.sopeco.frontend.client.layout.MainLayoutPanel;
 import org.sopeco.frontend.client.layout.center.CenterType;
+import org.sopeco.frontend.client.layout.center.experiment.ExperimentController;
 import org.sopeco.frontend.client.layout.center.specification.SpecificationController;
 import org.sopeco.frontend.client.layout.popups.Message;
 import org.sopeco.frontend.client.manager.helper.Duplicator;
@@ -273,14 +274,15 @@ public final class ScenarioManager {
 				if (specification == null || !specification().existSpecification(specification)) {
 					specification = builder.getBuiltScenario().getMeasurementSpecifications().get(0).getName();
 				}
-				MainLayoutPanel.get().createNewCenterPanels();
-
+				MainLayoutPanel.get().reloadPanels();
+				
 				specification().changeSpecification(specification);
 
 				// EventControl.get().fireEvent(new
 				// EnvironmentDefinitionChangedEvent());
 
-				MainLayoutPanel.get().getViewSwitch().switchTo(CenterType.Specification);
+				// MainLayoutPanel.get().getViewSwitch().switchTo(CenterType.Specification);
+				MainLayoutPanel.get().switchView(SpecificationController.class);
 			}
 		});
 	}
@@ -346,11 +348,11 @@ public final class ScenarioManager {
 	public void setMeasurementDefinition(MeasurementEnvironmentDefinition environment) {
 		builder.getBuiltScenario().setMeasurementEnvironmentDefinition(environment);
 
-		if (MainLayoutPanel.get().getSpecificationController().getEnvironmentTree() != null) {
-			MainLayoutPanel.get().getSpecificationController().getEnvironmentTree().generateTree();
+		if (MainLayoutPanel.get().getController(SpecificationController.class).getEnvironmentTree() != null) {
+			MainLayoutPanel.get().getController(SpecificationController.class).getEnvironmentTree().generateTree();
 		}
-		if (MainLayoutPanel.get().getExperimentController().getEnvironmentTree() != null) {
-			MainLayoutPanel.get().getExperimentController().getEnvironmentTree().generateTree();
+		if (MainLayoutPanel.get().getController(ExperimentController.class).getEnvironmentTree() != null) {
+			MainLayoutPanel.get().getController(ExperimentController.class).getEnvironmentTree().generateTree();
 		}
 	}
 
@@ -457,8 +459,7 @@ public final class ScenarioManager {
 
 		if (initialAssignmentParameter != null) {
 			initialAssignmentParameter.setParameter(parameter);
-			((SpecificationController) MainLayoutPanel.get().getCenterController(CenterType.Specification))
-					.addExistingAssignments();
+			MainLayoutPanel.get().getController(SpecificationController.class).addExistingAssignments();
 		}
 
 		storeScenario();

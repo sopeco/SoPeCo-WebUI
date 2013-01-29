@@ -30,6 +30,8 @@ import java.util.List;
 
 import org.sopeco.frontend.shared.entities.ExecutedExperimentDetails;
 import org.sopeco.frontend.shared.entities.FrontendScheduledExperiment;
+import org.sopeco.frontend.shared.entities.MECLog;
+import org.sopeco.frontend.shared.entities.RunningControllerStatus;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -48,4 +50,8 @@ public interface ExecuteRPCAsync {
 	void setScheduledExperimentEnabled(long id, boolean enabled, AsyncCallback<Boolean> callback);
 
 	void getExecutedExperimentDetails(AsyncCallback<List<ExecutedExperimentDetails>> callback);
+
+	void getControllerLog(AsyncCallback<RunningControllerStatus> callback);
+
+	void getMECLog(long id, AsyncCallback<MECLog> callback);
 }

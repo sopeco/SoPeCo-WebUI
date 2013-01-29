@@ -44,6 +44,7 @@ import org.sopeco.frontend.shared.entities.FrontendScheduledExperiment;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 
@@ -57,7 +58,8 @@ public class TabControllerOne extends TabController implements ClickHandler {
 	private static final Logger LOGGER = Logger.getLogger(TabControllerOne.class.getName());
 
 	private ExecuteTab view;
-
+	private DateTimeFormat dtf;
+	
 	/**
 	 * Constructor.
 	 * 
@@ -84,6 +86,11 @@ public class TabControllerOne extends TabController implements ClickHandler {
 	@Override
 	public void onSelection() {
 		view.getEditController().setValue(Manager.get().getControllerUrl());
+		
+		if (dtf == null) {
+			dtf = DateTimeFormat.getFormat("yyyy-MM-dd hh:mm aa");
+		}
+		view.getEditLabel().setValue("ExperimentRun " + dtf.format(new Date()));
 	}
 
 	@Override
@@ -145,7 +152,7 @@ public class TabControllerOne extends TabController implements ClickHandler {
 		scheduledExperiment.setScenarioDefinition(ScenarioManager.get().getCurrentScenarioDefinition());
 		scheduledExperiment.setSelectedExperiments(createExperimentSelection());
 
-		if (isRepeating()) {
+		if ( !view.isExecutingImmediately() && isRepeating()) {
 			scheduledExperiment.setRepeating(true);
 			scheduledExperiment.setRepeatDays(view.getRepeatTable().getScheduleDays());
 			scheduledExperiment.setRepeatHours(view.getRepeatTable().getScheduleHours());

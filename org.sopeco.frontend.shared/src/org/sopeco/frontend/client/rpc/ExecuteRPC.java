@@ -30,6 +30,8 @@ import java.util.List;
 
 import org.sopeco.frontend.shared.entities.ExecutedExperimentDetails;
 import org.sopeco.frontend.shared.entities.FrontendScheduledExperiment;
+import org.sopeco.frontend.shared.entities.MECLog;
+import org.sopeco.frontend.shared.entities.RunningControllerStatus;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
@@ -51,4 +53,8 @@ public interface ExecuteRPC extends RemoteService {
 	boolean setScheduledExperimentEnabled(long id, boolean enabled);
 
 	List<ExecutedExperimentDetails> getExecutedExperimentDetails();
+
+	RunningControllerStatus getControllerLog();
+
+	MECLog getMECLog(long id);
 }

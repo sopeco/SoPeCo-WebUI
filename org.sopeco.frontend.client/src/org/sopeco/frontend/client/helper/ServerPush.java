@@ -30,12 +30,13 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.sopeco.frontend.client.layout.MainLayoutPanel;
+import org.sopeco.frontend.client.layout.center.execute.ExecuteController;
 import org.sopeco.frontend.client.layout.popups.Message;
 import org.sopeco.frontend.client.rpc.PushRPC;
 import org.sopeco.frontend.client.rpc.PushRPC.Type;
 import org.sopeco.frontend.client.rpc.PushRPCAsync;
-import org.sopeco.frontend.shared.entities.RunningControllerStatus;
 import org.sopeco.frontend.shared.entities.FrontendScheduledExperiment;
+import org.sopeco.frontend.shared.entities.RunningControllerStatus;
 import org.sopeco.frontend.shared.push.PushListPackage;
 import org.sopeco.frontend.shared.push.PushObjectPackage;
 import org.sopeco.frontend.shared.push.PushPackage;
@@ -105,16 +106,18 @@ public final class ServerPush implements AsyncCallback<PushPackage> {
 		if (pushPackage.getType() == Type.PUSH_SCHEDULED_EXPERIMENT) {
 			PushListPackage inPackage = (PushListPackage) pushPackage;
 			List<FrontendScheduledExperiment> list = inPackage.getAttachment(FrontendScheduledExperiment.class);
-			MainLayoutPanel.get().getExecuteController().getTabControllerTwo().setScheduledExperiments(list);
+			MainLayoutPanel.get().getController(ExecuteController.class).getTabControllerTwo()
+					.setScheduledExperiments(list);
 		} else if (pushPackage.getType() == Type.PUSH_CURRENT_CONTROLLER_EXPERIMENT) {
 			PushObjectPackage inPackage = (PushObjectPackage) pushPackage;
 			RunningControllerStatus ccExperiment = inPackage.getAttachment(RunningControllerStatus.class);
-			MainLayoutPanel.get().getExecuteController().getTabControllerThree()
+			MainLayoutPanel.get().getController(ExecuteController.class).getTabControllerThree()
 					.setCurrentControllerExperiment(ccExperiment);
 		} else if (pushPackage.getType() == Type.PUSH_CURRENT_CONTROLLER_QUEUE) {
 			PushListPackage inPackage = (PushListPackage) pushPackage;
 			List<FrontendScheduledExperiment> list = inPackage.getAttachment(FrontendScheduledExperiment.class);
-			MainLayoutPanel.get().getExecuteController().getTabControllerThree().setControllerQueue(list);
+			MainLayoutPanel.get().getController(ExecuteController.class).getTabControllerThree()
+					.setControllerQueue(list);
 		} else if (pushPackage.getType() == Type.PUSH_SERVER_SHUTTING_DOWN) {
 			Message.warning("The server has been shut down. The execution of the webapp is therefore no longer possible.");
 		}

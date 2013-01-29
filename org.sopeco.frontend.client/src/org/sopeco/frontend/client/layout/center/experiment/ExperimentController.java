@@ -30,22 +30,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import org.sopeco.frontend.client.event.EventControl;
-import org.sopeco.frontend.client.event.ExperimentChangedEvent;
-import org.sopeco.frontend.client.event.handler.ExperimentChangedEventHandler;
 import org.sopeco.frontend.client.layout.MainLayoutPanel;
 import org.sopeco.frontend.client.layout.center.CenterType;
 import org.sopeco.frontend.client.layout.center.ICenterController;
 import org.sopeco.frontend.client.layout.center.experiment.assignment.AssignmentController;
-import org.sopeco.frontend.client.layout.center.experiment.assignment.AssignmentController.Type;
 import org.sopeco.frontend.client.layout.center.experiment.assignment.PreparationController;
+import org.sopeco.frontend.client.layout.center.experiment.assignment.AssignmentController.Type;
 import org.sopeco.frontend.client.layout.popups.Confirmation;
 import org.sopeco.frontend.client.layout.popups.InputDialog;
 import org.sopeco.frontend.client.layout.popups.InputDialogHandler;
 import org.sopeco.frontend.client.layout.popups.InputDialogValidator;
 import org.sopeco.frontend.client.manager.Manager;
 import org.sopeco.frontend.client.manager.ScenarioManager;
-import org.sopeco.frontend.client.resources.FrontEndResources;
 import org.sopeco.frontend.client.resources.R;
 import org.sopeco.frontend.shared.helper.ExtensionTypes;
 import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
@@ -66,7 +62,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  */
 public class ExperimentController implements ICenterController, ValueChangeHandler<String>, ClickHandler,
-		ExperimentChangedEventHandler, InputDialogHandler, InputDialogValidator {
+		InputDialogHandler, InputDialogValidator {
 
 	private static final Logger LOGGER = Logger.getLogger(ExperimentController.class.getName());
 	private static final String ENV_TREE_CSS_CLASS = "expEnvTree";
@@ -77,7 +73,7 @@ public class ExperimentController implements ICenterController, ValueChangeHandl
 	private TerminationController terminationController;
 	private ExperimentEnvironmentTree expEnvironmentTree;
 
-	private AssignmentController assignmentPreperation, assignmentExperiment;
+	private AssignmentController assignmentExperiment;
 	private PreparationController preparationController;
 
 	private ExperimentTabPanel tabPanel;
@@ -134,7 +130,7 @@ public class ExperimentController implements ICenterController, ValueChangeHandl
 		getSettingsView().getImgRename().addClickHandler(this);
 		getSettingsView().getImgDuplicate().addClickHandler(this);
 
-		registerEventHandlers();
+		// registerEventHandlers();
 	}
 
 	/**
@@ -246,9 +242,9 @@ public class ExperimentController implements ICenterController, ValueChangeHandl
 	/**
 	 * Register handlers to catch events.
 	 */
-	private void registerEventHandlers() {
-		EventControl.get().addHandler(ExperimentChangedEvent.TYPE, this);
-	}
+	// private void registerEventHandlers() {
+	// EventControl.get().addHandler(ExperimentChangedEvent.TYPE, this);
+	// }
 
 	/**
 	 * Event method of the ExperimentChanged Event.
@@ -256,12 +252,12 @@ public class ExperimentController implements ICenterController, ValueChangeHandl
 	 * @param experimentName
 	 */
 
-	@Override
-	public void onExperimentChanged(ExperimentChangedEvent event) {
-		LOGGER.fine("Change experiment to '" + event.getExperimentName() + "'");
+	// @Override
+	public void experimentChanged(String experimentName) {
+		LOGGER.fine("Change experiment to '" + experimentName + "'");
 
 		ExperimentSeriesDefinition experiment = ScenarioManager.get().getBuilder().getSpecificationBuilder()
-				.getExperimentSeries(event.getExperimentName());
+				.getExperimentSeries(experimentName);
 
 		getSettingsView().setExperimentName(experiment.getName());
 
@@ -274,6 +270,12 @@ public class ExperimentController implements ICenterController, ValueChangeHandl
 		explorationExtController.setConfigMap(explorationConfig);
 
 		expEnvironmentTree.generateTree();
+		
+		terminationController.updateConditions();
+		assignmentExperiment.addExisitngAssignments();
+//		assignmentPreperation.addExisitngAssignments();
+		
+		preparationController.addExistingAssignments();
 	}
 
 	@Override
@@ -286,7 +288,7 @@ public class ExperimentController implements ICenterController, ValueChangeHandl
 	}
 
 	@Override
-	public void reset() {
+	public void reload() {
 		view.reset();
 	}
 

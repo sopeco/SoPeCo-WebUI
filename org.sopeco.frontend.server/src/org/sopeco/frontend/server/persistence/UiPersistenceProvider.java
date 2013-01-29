@@ -190,11 +190,11 @@ public class UiPersistenceProvider {
 		}
 	}
 
-	public void storeExecutedExperimentDetails(ExecutedExperimentDetails experimentDetails) {
+	public long storeExecutedExperimentDetails(ExecutedExperimentDetails experimentDetails) {
 		EntityManager em = emf.createEntityManager();
 		try {
 			em.getTransaction().begin();
-			em.merge(experimentDetails);
+			experimentDetails = em.merge(experimentDetails);
 			em.getTransaction().commit();
 		} finally {
 			if (em.getTransaction().isActive()) {
@@ -202,6 +202,28 @@ public class UiPersistenceProvider {
 			}
 			em.close();
 		}
+		return experimentDetails.getId();
+	}
+
+	public void storeMECLog(MECLog mecLog) {
+		EntityManager em = emf.createEntityManager();
+		try {
+			em.getTransaction().begin();
+			em.merge(mecLog);
+			em.getTransaction().commit();
+		} finally {
+			if (em.getTransaction().isActive()) {
+				em.getTransaction().rollback();
+			}
+			em.close();
+		}
+	}
+
+	public MECLog loadMECLog(long id) {
+		EntityManager em = emf.createEntityManager();
+		MECLog log = em.find(MECLog.class, id);
+		em.close();
+		return log;
 	}
 
 	public ScheduledExperiment loadScheduledExperiment(long id) {
@@ -225,7 +247,7 @@ public class UiPersistenceProvider {
 			em.close();
 		}
 	}
-	
+
 	public List<Visualization> loadAllVisualizations() {
 		List<Visualization> visualizations = null;
 		EntityManager em = emf.createEntityManager();
@@ -244,8 +266,7 @@ public class UiPersistenceProvider {
 		List<Visualization> visualizations = null;
 		EntityManager em = emf.createEntityManager();
 		try {
-			TypedQuery<Visualization> query = em.createNamedQuery("getVisualizationsByAccount",
-					Visualization.class);
+			TypedQuery<Visualization> query = em.createNamedQuery("getVisualizationsByAccount", Visualization.class);
 			visualizations = query.setParameter("accountId", accountName).getResultList();
 			return visualizations;
 		} catch (Exception e) {
@@ -254,7 +275,7 @@ public class UiPersistenceProvider {
 			em.close();
 		}
 	}
-	
+
 	public void storeVisualization(Visualization visualization) {
 		EntityManager em = emf.createEntityManager();
 		try {

@@ -37,13 +37,15 @@ import org.sopeco.frontend.client.layout.center.experiment.ExperimentController;
 import org.sopeco.frontend.client.layout.center.result.ResultController;
 import org.sopeco.frontend.client.layout.center.specification.SpecificationController;
 import org.sopeco.frontend.client.layout.center.visualization.VisualizationController;
-import org.sopeco.frontend.client.layout.navigation.NavigationController;
-import org.sopeco.frontend.client.layout.navigation.NavigationView;
+import org.sopeco.frontend.client.layout.navigation.NaviController;
+import org.sopeco.frontend.client.layout.navigation.NaviItem;
 import org.sopeco.frontend.client.manager.Manager;
 import org.sopeco.frontend.client.manager.ScenarioManager;
 import org.sopeco.frontend.shared.helper.Metering;
+import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -62,11 +64,19 @@ public final class MainLayoutPanel extends DockLayoutPanel {
 	private static final CenterType DEFAULT_CENTER_TYPE = CenterType.Other;
 
 	private NorthPanel northPanel;
-	private NavigationController navigationController;
+
+	// private NavigationController navigationController;
+	private NaviController naviController;
+
 	private ViewSwitch viewSwitch;
 
-	private CenterType currentCenterPanel;
-	private HashMap<CenterType, ICenterController> centerController = new HashMap<CenterType, ICenterController>();
+	// private CenterType currentCenterPanel;
+	// private HashMap<CenterType, ICenterController> centerControllerMap = new
+	// HashMap<CenterType, ICenterController>();
+
+	// TODO
+	private HashMap<Class<ICenterController>, ICenterController> controllerMap = new HashMap<Class<ICenterController>, ICenterController>();
+	private Class currentCenterClass;
 
 	private MainLayoutPanel() {
 		super(Unit.EM);
@@ -95,20 +105,27 @@ public final class MainLayoutPanel extends DockLayoutPanel {
 	 * Hides the navigation panel.
 	 */
 	public void hideNavigation() {
-		remove(navigationController.getView());
+		// remove(navigationController.getView());
+		remove(naviController.getView());
 	}
 
 	/**
 	 * Show the navigation panel.
 	 */
 	public void showNavigation() {
-		// if (!getNavigationController().getView().isAttached()) {
 		Widget center = getCenter();
 		if (center != null) {
 			remove(center);
+
 		}
-		addWest(getNavigationController().getView(), Float.parseFloat(NavigationView.PANEL_WIDTH));
-		getWidgetContainerElement(getNavigationController().getView()).setId(NAVIGATION_PANEL_ID);
+		// addWest(getNavigationController().getView(),
+		// Float.parseFloat(NavigationView.PANEL_WIDTH));
+		// TODO
+		addWest(naviController.getView(), 15);
+		getWidgetContainerElement(naviController.getView()).getStyle().setOverflow(Overflow.VISIBLE);
+
+		// getWidgetContainerElement(getNavigationController().getView()).setId(NAVIGATION_PANEL_ID);
+
 		if (center != null) {
 			add(center);
 		}
@@ -130,64 +147,142 @@ public final class MainLayoutPanel extends DockLayoutPanel {
 	 */
 	private void initialize() {
 		GWT.log("initialize >");
-		currentCenterPanel = DEFAULT_CENTER_TYPE;
-
+		// currentCenterPanel = DEFAULT_CENTER_TYPE;
 		addNorth(getNorthPanel(), Float.parseFloat(NorthPanel.PANEL_HEIGHT));
-		addWest(getNavigationController().getView(), Float.parseFloat(NavigationView.PANEL_WIDTH));
-		getWidgetContainerElement(getNavigationController().getView()).setId(NAVIGATION_PANEL_ID);
 
-		centerController.put(CenterType.Specification, new SpecificationController());
+		// addWest(getNavigationController().getView(),
+		// Float.parseFloat(NavigationView.PANEL_WIDTH));
+		// TODO
+		naviController = new NaviController();
+		addWest(naviController.getView(), 15);
 
-		centerController.put(CenterType.Execute, new ExecuteController());
+		// getWidgetContainerElement(getNavigationController().getView()).setId(NAVIGATION_PANEL_ID);
+
+		// centerControllerMap.put(CenterType.Specification, new
+		// SpecificationController());
+		//
+		// centerControllerMap.put(CenterType.Execute, new ExecuteController());
 		// centerController.put(CenterType.Execute, new ExecuteController());
 
-		centerController.put(CenterType.Result, new ResultController());
-		centerController.put(CenterType.Experiment, new ExperimentController());
-		centerController.put(CenterType.Visualization, new VisualizationController());
+		// centerControllerMap.put(CenterType.Result, new ResultController());
+		// centerControllerMap.put(CenterType.Experiment, new
+		// ExperimentController());
+		// centerControllerMap.put(CenterType.Visualization, new
+		// VisualizationController());
 
-		updateCenterPanel(currentCenterPanel);
+		registerCenterController(new SpecificationController());
+		registerCenterController(new ExperimentController());
+		registerCenterController(new ExecuteController());
+		registerCenterController(new ResultController());
+		registerCenterController(new VisualizationController());
+
+		// updateCenterPanel(currentCenterPanel);
+
+		refreshView();
 
 		ScenarioManager.get().switchScenario(Manager.get().getAccountDetails().getSelectedScenario());
 		GWT.log("< initialize");
 	}
 
-	/**
-	 * Returns the SpecificationController of the layout, which is stored in the
-	 * centerController-Map.
-	 * 
-	 * @return SpecificationController
-	 */
-	public SpecificationController getSpecificationController() {
-		if (!centerController.containsKey(CenterType.Specification)) {
-			return null;
+	private void registerCenterController(ICenterController controller) {
+		Class clazz = controller.getClass();
+		if (controllerMap.containsKey(clazz)) {
+			throw new RuntimeException("ICenterController of class " + clazz.getName() + " already exists.");
 		}
-		return (SpecificationController) centerController.get(CenterType.Specification);
+
+		controllerMap.put(clazz, controller);
 	}
 
-	/**
-	 * Returns the SpecificationController of the layout, which is stored in the
-	 * centerController-Map.
-	 * 
-	 * @return SpecificationController
-	 */
-	public ExperimentController getExperimentController() {
-		if (!centerController.containsKey(CenterType.Experiment)) {
-			return null;
-		}
-		return (ExperimentController) centerController.get(CenterType.Experiment);
+	public void buildNavigation() {
+		GWT.log("Build Navi");
+
+		naviController.clear();
+		addCenterController(SpecificationController.class, "Specification", Manager.get().getCurrentScenarioDetails()
+				.getSelectedSpecification());
+		addExperiments();
+		naviController.addAddExpSeriesItem();
+		addCenterController(ExecuteController.class, "Execute");
+		addCenterController(ResultController.class, "Result");
+		addCenterController(VisualizationController.class, "Visualization");
+
+		naviController.refreshSpecificationPopup();
 	}
 
-	/**
-	 * Returns the ExecuteController of the layout, which is stored in the
-	 * centerController-Map.
-	 * 
-	 * @return ExecuteController
-	 */
-	public ExecuteController getExecuteController() {
-		if (!centerController.containsKey(CenterType.Execute)) {
-			return null;
+	private void addExperiments() {
+		for (ExperimentSeriesDefinition experiment : ScenarioManager.get().experiment()
+				.getExperimentsOfCurrentSpecififcation()) {
+			addCenterController(ExperimentController.class, experiment.getName()).setAsExperiment();
 		}
-		return (ExecuteController) centerController.get(CenterType.Execute);
+	}
+
+	public <T extends ICenterController> T getController(Class<T> clazz) {
+		for (ICenterController controller : controllerMap.values()) {
+			if (clazz.equals(controller.getClass())) {
+				return (T) controller;
+			}
+		}
+		return null;
+	}
+
+	public <T extends ICenterController> NaviItem addCenterController(Class<T> controllerClass) {
+		return addCenterController(controllerClass, null);
+	}
+
+	public <T extends ICenterController> NaviItem addCenterController(Class<T> controllerClass, String text) {
+		return addCenterController(controllerClass, text, null);
+	}
+
+	public <T extends ICenterController> NaviItem addCenterController(Class<T> controllerClass, String text,
+			String subText) {
+		return naviController.addItem(controllerClass, text, subText);
+	}
+
+	public <T extends ICenterController> void switchView(Class<T> targetClass) {
+		currentCenterClass = targetClass;
+		controllerMap.get(targetClass).onSwitchTo();
+		refreshView();
+	}
+
+	public void switchToExperiment(String experimentName) {
+		ScenarioManager.get().experiment().setCurrentExperiment(experimentName);
+		switchView(ExperimentController.class);
+	}
+
+	public NaviController getNaviController() {
+		return naviController;
+	}
+
+	private void refreshView() {
+		if (getCenter() != null) {
+			remove(getCenter());
+		}
+
+		naviController.setSelectedItem(currentCenterClass);
+
+		if (currentCenterClass == null) {
+
+			hideNavigation();
+			add(new EmptyCenterPanel());
+
+		} else if (Manager.get().getAccountDetails().getScenarioNames().length == 0) {
+
+			hideNavigation();
+			add(new NoScenario());
+
+		} else {
+
+			showNavigation();
+			add(controllerMap.get(currentCenterClass).getView());
+
+		}
+	}
+
+	public void setSpecification(String specificationName) {
+		buildNavigation();
+		switchView(SpecificationController.class);
+		naviController.getItem(SpecificationController.class).get(0).setSubText(specificationName);
+		getController(SpecificationController.class).getView().setSpecificationName(specificationName);
+		naviController.getSpecificationPopup().setSelectedItem(specificationName);
 	}
 
 	/**
@@ -195,20 +290,26 @@ public final class MainLayoutPanel extends DockLayoutPanel {
 	 * 
 	 * @return
 	 */
-	public CenterType getCenterType() {
-		return currentCenterPanel;
-	}
+	// public CenterType getCenterType() {
+	// return currentCenterPanel;
+	// }
 
 	/**
 	 * Creates new center panel for the main layout and updates the current
 	 * panel.
 	 */
-	public void createNewCenterPanels() {
+	public void reloadPanels() {
 		double metering = Metering.start();
-		for (ICenterController controller : centerController.values()) {
-			controller.reset();
+		// for (ICenterController controller : centerControllerMap.values()) {
+		// controller.reload();
+		// }
+		// TODO
+		for (ICenterController controller : controllerMap.values()) {
+			controller.reload();
 		}
-		updateCenterPanel(currentCenterPanel);
+		// updateCenterPanel(currentCenterPanel);
+		buildNavigation();
+		refreshView();
 		Metering.stop(metering);
 	}
 
@@ -217,32 +318,33 @@ public final class MainLayoutPanel extends DockLayoutPanel {
 	 * 
 	 * @param type
 	 */
-	public void updateCenterPanel(CenterType type) {
-		double metering = Metering.start();
-
-		if (getCenter() != null) {
-			remove(getCenter());
-		}
-		currentCenterPanel = type;
-
-		getNavigationController().setCurrentCenterType(type);
-
-		if (Manager.get().getAccountDetails().getScenarioNames().length == 0 || type == CenterType.NoScenario) {
-			hideNavigation();
-			add(new NoScenario());
-			Metering.stop(metering);
-			return;
-		} else if (type == CenterType.Other) {
-			hideNavigation();
-			add(new EmptyCenterPanel());
-			Metering.stop(metering);
-			return;
-		}
-
-		showNavigation();
-		add(centerController.get(type).getView());
-		Metering.stop(metering);
-	}
+	// public void updateCenterPanel(CenterType type) {
+	// double metering = Metering.start();
+	//
+	// if (getCenter() != null) {
+	// remove(getCenter());
+	// }
+	// currentCenterPanel = type;
+	//
+	// getNavigationController().setCurrentCenterType(type);
+	//
+	// if (Manager.get().getAccountDetails().getScenarioNames().length == 0 ||
+	// type == CenterType.NoScenario) {
+	// hideNavigation();
+	// add(new NoScenario());
+	// Metering.stop(metering);
+	// return;
+	// } else if (type == CenterType.Other) {
+	// hideNavigation();
+	// add(new EmptyCenterPanel());
+	// Metering.stop(metering);
+	// return;
+	// }
+	//
+	// showNavigation();
+	// add(centerControllerMap.get(type).getView());
+	// Metering.stop(metering);
+	// }
 
 	/**
 	 * Returns the panel for the northern area.
@@ -260,14 +362,14 @@ public final class MainLayoutPanel extends DockLayoutPanel {
 	 * 
 	 * @return
 	 */
-	public NavigationController getNavigationController() {
-		if (navigationController == null) {
-			navigationController = new NavigationController();
-		}
-		return navigationController;
-	}
+	// public NavigationController getNavigationController() {
+	// if (navigationController == null) {
+	// navigationController = new NavigationController();
+	// }
+	// return navigationController;
+	// }
 
-	public ICenterController getCenterController(CenterType type) {
-		return centerController.get(type);
-	}
+	// public ICenterController getCenterController(CenterType type) {
+	// return centerControllerMap.get(type);
+	// }
 }

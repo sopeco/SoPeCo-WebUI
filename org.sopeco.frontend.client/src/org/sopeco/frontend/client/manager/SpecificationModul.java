@@ -31,6 +31,7 @@ import java.util.logging.Logger;
 import org.sopeco.frontend.client.helper.INotifyHandler;
 import org.sopeco.frontend.client.helper.INotifyHandler.Result;
 import org.sopeco.frontend.client.layout.MainLayoutPanel;
+import org.sopeco.frontend.client.layout.center.specification.SpecificationController;
 import org.sopeco.frontend.shared.builder.MeasurementSpecificationBuilder;
 import org.sopeco.persistence.entities.definition.MeasurementSpecification;
 
@@ -73,9 +74,7 @@ public class SpecificationModul {
 		MeasurementSpecificationBuilder specificationBuilder = new MeasurementSpecificationBuilder(getSpecification());
 		manager.getBuilder().setSpecificationBuilder(specificationBuilder);
 
-		MainLayoutPanel.get().getNavigationController().changeSpecification(newWorkingSpecification);
-
-		MainLayoutPanel.get().getSpecificationController().changeSpecification(newWorkingSpecification);
+		MainLayoutPanel.get().setSpecification(newWorkingSpecification);
 	}
 
 	/**
@@ -98,9 +97,8 @@ public class SpecificationModul {
 		newBuilder.setName(name);
 		manager.storeScenario();
 
-		MainLayoutPanel.get().getNavigationController().addSpecifications(name);
-
-
+		MainLayoutPanel.get().getNaviController().refreshSpecificationPopup();
+		
 		changeSpecification(name);
 	}
 
@@ -152,6 +150,7 @@ public class SpecificationModul {
 		manager.storeScenario();
 		String name = manager.getCurrentScenarioDefinition().getMeasurementSpecifications().get(0).getName();
 
+		MainLayoutPanel.get().getNaviController().refreshSpecificationPopup();
 		changeSpecification(name);
 
 		return true;
@@ -169,8 +168,8 @@ public class SpecificationModul {
 	 */
 	public void renameWorkingSpecification(String newName, INotifyHandler<Boolean> handler) {
 		manager.getBuilder().getSpecificationBuilder().setName(newName);
-		// MainLayoutPanel.get().getNavigationController().updateSpecifications();
-		// EventControl.get().fireEvent(new SpecificationChangedEvent(newName));
+
+		MainLayoutPanel.get().getNaviController().refreshSpecificationPopup();
 		changeSpecification(newName);
 
 		manager.storeScenario();

@@ -31,9 +31,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.sopeco.frontend.client.event.EventControl;
-import org.sopeco.frontend.client.event.ExperimentChangedEvent;
 import org.sopeco.frontend.client.event.PreperationAssignmentsChangedEvent;
-import org.sopeco.frontend.client.event.handler.ExperimentChangedEventHandler;
 import org.sopeco.frontend.client.event.handler.PreperationAssignmentsChangedEventHandler;
 import org.sopeco.frontend.client.manager.ScenarioManager;
 import org.sopeco.frontend.client.widget.grid.EditGridHandler;
@@ -58,12 +56,6 @@ public class PreparationController implements EditGridHandler {
 	private void init() {
 		view = new PreparationView();
 
-		EventControl.get().addHandler(ExperimentChangedEvent.TYPE, new ExperimentChangedEventHandler() {
-			@Override
-			public void onExperimentChanged(ExperimentChangedEvent event) {
-				addExistingAssignments();
-			}
-		});
 
 		EventControl.get().addHandler(PreperationAssignmentsChangedEvent.TYPE,
 				new PreperationAssignmentsChangedEventHandler() {
@@ -78,7 +70,7 @@ public class PreparationController implements EditGridHandler {
 		return view;
 	}
 
-	private void addExistingAssignments() {
+	public void addExistingAssignments() {
 		if (ScenarioManager.get().experiment().getCurrentExperiment() == null) {
 			return;
 		}

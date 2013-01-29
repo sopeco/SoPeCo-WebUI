@@ -59,6 +59,10 @@ public interface Resources extends ClientBundle {
 	@Source("visualizationWizard.css")
 	@CssResource.NotStrict
 	CssResource visualizationWizardCss();
+	
+	@Source("css/navigation.css")
+	@CssResource.NotStrict
+	CssResource cssNavigation();
 
 	/** IMAGES. */
 
@@ -88,4 +92,13 @@ public interface Resources extends ClientBundle {
 
 	@Source("images/loading_indicator.gif")
 	ImageResource imgLoadingIndicatorCircle();
+	
+	@Source("images/gear.png")
+	DataResource imgGear();
+	
+	@Source("images/add_blue.png")
+	DataResource imgAddBlue();
+	
+	@Source("images/switch.png")
+	ImageResource imgSwitch();
 }

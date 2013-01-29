@@ -30,14 +30,18 @@ import java.util.Date;
 import java.util.List;
 
 import org.sopeco.frontend.client.layout.center.execute.ExecuteController;
+import org.sopeco.frontend.client.layout.center.execute.ExecuteTabPanel;
 import org.sopeco.frontend.client.layout.center.execute.TabController;
+import org.sopeco.frontend.client.rpc.RPC;
 import org.sopeco.frontend.shared.entities.FrontendScheduledExperiment;
 import org.sopeco.frontend.shared.entities.RunningControllerStatus;
 import org.sopeco.frontend.shared.helper.MECLogEntry;
+import org.sopeco.frontend.shared.helper.Metering;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 
@@ -76,6 +80,20 @@ public class TabControllerThree extends TabController {
 
 	@Override
 	public void onSelection() {
+		RPC.getExecuteRPC().getControllerLog(new AsyncCallback<RunningControllerStatus>() {
+			@Override
+			public void onSuccess(RunningControllerStatus result) {
+				if (result == null) {
+					return;
+				}
+				setCurrentControllerExperiment(result);
+			}
+
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO error handling
+			}
+		});
 	}
 
 	/**
@@ -100,6 +118,12 @@ public class TabControllerThree extends TabController {
 
 	public void setCurrentControllerExperiment(RunningControllerStatus experiment) {
 		controllerExperiment = experiment;
+
+		if (((ExecuteTabPanel) getParentController().getView()).getTabBar().getSelectedTab() != 2) {
+			return;
+		}
+
+		double meter = Metering.start();
 
 		// tabView.getStatusPanel().setStatusLabel(experiment.getLabel() + " - "
 		// + experiment.getStatusString());
@@ -145,12 +169,14 @@ public class TabControllerThree extends TabController {
 		// elapsedTimeTimer.scheduleRepeating(1000);
 		// tabView.getStatusPanel().getProgressBar().setValue(0, false);
 		// }
+
+		Metering.stop(meter);
 	}
 
-	public void startingMessage () {
+	public void startingMessage() {
 		tabView.getStatusPanel().addLogText(new HTML("starting.."));
 	}
-	
+
 	// TODO
 	private void updateTimes() {
 		String elapsed = "";

@@ -103,4 +103,8 @@ public interface LanguageConstants extends Constants {
 	
 	@DefaultStringValue("Continue")
 	String continueString();
+	
+	@DefaultStringValue("Add ExperimentSeries")
+	String addExperimentSeries();
+	
 }

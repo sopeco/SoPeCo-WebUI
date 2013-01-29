@@ -28,8 +28,6 @@ package org.sopeco.frontend.client.layout;
 
 import java.util.logging.Logger;
 
-import org.sopeco.frontend.client.event.EventControl;
-import org.sopeco.frontend.client.event.ExperimentChangedEvent;
 import org.sopeco.frontend.client.layout.center.CenterType;
 
 /**
@@ -51,11 +49,11 @@ public class ViewSwitch {
 	}
 
 	private void switchTo(CenterType type, boolean historyEvent) {
-		LOGGER.fine("Switch view to type: " + type.toString());
-
-		MainLayoutPanel.get().getCenterController(type).onSwitchTo();
-		MainLayoutPanel.get().updateCenterPanel(type);
-		MainLayoutPanel.get().getNavigationController().hideChangeSpecpanel();
+//		LOGGER.fine("Switch view to type: " + type.toString());
+//
+//		MainLayoutPanel.get().getCenterController(type).onSwitchTo();
+//		MainLayoutPanel.get().updateCenterPanel(type);
+//		MainLayoutPanel.get().getNavigationController().hideChangeSpecpanel();
 	}
 
 	/**
@@ -68,13 +66,13 @@ public class ViewSwitch {
 	public void switchToExperiment(String experimentName) {
 		LOGGER.fine("Switch view to experiment: " + experimentName);
 
-		if (MainLayoutPanel.get().getCenterType() != CenterType.Experiment) {
-			switchTo(CenterType.Experiment);
-		}
+//		if (MainLayoutPanel.get().getCenterType() != CenterType.Experiment) {
+//			switchTo(CenterType.Experiment);
+//		}
 
-		MainLayoutPanel.get().getNavigationController().highlightExperiment(experimentName);
-
-		ExperimentChangedEvent expChangedEvent = new ExperimentChangedEvent(experimentName);
-		EventControl.get().fireEvent(expChangedEvent);
+//		MainLayoutPanel.get().getNavigationController().highlightExperiment(experimentName);
+//
+//		ExperimentChangedEvent expChangedEvent = new ExperimentChangedEvent(experimentName);
+//		EventControl.get().fireEvent(expChangedEvent);
 	}
 }

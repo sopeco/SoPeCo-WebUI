@@ -135,11 +135,11 @@ public class NavigationItem extends FocusPanel {
 	 * Adds the item/icon to show the panel, where you can change the current
 	 * specification.
 	 */
-	public ChangeSpecificationPanel addChangeSpecificationIcon() {
+	public SpecificationPopup addChangeSpecificationIcon() {
 		Image changeSpecification = new Image(CHANGE_SPECIFICATION_ICON);
 		changeSpecification.getElement().setId(CHANGE_SPECIFICATION_ICON_ID);
 
-		final ChangeSpecificationPanel specificationPanel = new ChangeSpecificationPanel();
+		final SpecificationPopup specificationPanel = new SpecificationPopup();
 
 		changeSpecification.addClickHandler(new ClickHandler() {
 			@Override

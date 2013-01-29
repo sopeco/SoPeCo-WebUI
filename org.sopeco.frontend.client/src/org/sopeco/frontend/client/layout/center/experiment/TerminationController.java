@@ -26,9 +26,6 @@
  */
 package org.sopeco.frontend.client.layout.center.experiment;
 
-import org.sopeco.frontend.client.event.EventControl;
-import org.sopeco.frontend.client.event.ExperimentChangedEvent;
-import org.sopeco.frontend.client.event.handler.ExperimentChangedEventHandler;
 import org.sopeco.frontend.client.layout.center.experiment.TerminationView.Condition;
 import org.sopeco.frontend.client.manager.ScenarioManager;
 import org.sopeco.persistence.entities.definition.ExperimentTerminationCondition;
@@ -49,29 +46,6 @@ public class TerminationController implements ValueChangeHandler<Boolean> {
 
 	public TerminationController() {
 		view = new TerminationView();
-
-		// ExperimentTerminationCondition t = new
-		// ExperimentTerminationCondition("test 1", "desc 1");
-		// ExperimentTerminationCondition t2 = new
-		// ExperimentTerminationCondition("test 2", "desc 2");
-		//
-		// t.addParameter("para1", "1");
-		// t.addParameter("para2", "2");
-		// t.addParameter("para3", "3");
-		//
-		// t2.addParameter("para1", "1");
-		// t2.addParameter("para2", "2");
-		//
-		// view.addCondition(t);
-		// view.addCondition(t2);
-
-		EventControl.get().addHandler(ExperimentChangedEvent.TYPE, new ExperimentChangedEventHandler() {
-			@Override
-			public void onExperimentChanged(ExperimentChangedEvent event) {
-				updateConditions();
-			}
-		});
-
 	}
 
 	public TerminationView getView() {
@@ -81,7 +55,7 @@ public class TerminationController implements ValueChangeHandler<Boolean> {
 	/**
 	 * 
 	 */
-	private void updateConditions() {
+	public void updateConditions() {
 		view.clear();
 
 		MeasurementEnvironmentDefinition med = ScenarioManager.get().getCurrentScenarioDefinition()

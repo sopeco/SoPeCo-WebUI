@@ -29,14 +29,10 @@ package org.sopeco.frontend.client.layout.navigation;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.sopeco.frontend.client.FrontendEntryPoint;
 import org.sopeco.frontend.client.layout.center.CenterType;
 import org.sopeco.frontend.client.resources.R;
 
-import com.google.gwt.dom.client.Style.Position;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
 
 /**
  * 
@@ -57,7 +53,7 @@ public class NavigationView extends FlowPanel {
 	private Map<CenterType, NavigationItem> naviItems;
 	private Map<String, NavigationSubItem> experimentItems;
 	private FlowPanel experimentsPanel;
-	private ChangeSpecificationPanel changeSpecificationPanel;
+	private SpecificationPopup changeSpecificationPanel;
 
 	public NavigationView() {
 		initialize();
@@ -85,14 +81,6 @@ public class NavigationView extends FlowPanel {
 		addNaviItem(CenterType.Visualization, R.get("visualization"));
 
 		changeSpecificationPanel = naviItems.get(CenterType.Specification).addChangeSpecificationIcon();
-
-		HTML lastModified = new HTML("Last modified: " + FrontendEntryPoint.getDocumentLastModifiedDate());
-		lastModified.getElement().getStyle().setFontSize(11, Unit.PX);
-		lastModified.getElement().getStyle().setColor("#CCC");
-		lastModified.getElement().getStyle().setPosition(Position.ABSOLUTE);
-		lastModified.getElement().getStyle().setBottom(0, Unit.PX);
-		lastModified.getElement().getStyle().setLeft(1, Unit.EM);
-		add(lastModified);
 	}
 
 	/**
@@ -115,7 +103,7 @@ public class NavigationView extends FlowPanel {
 	 * 
 	 * @return ChangeSpecificationPanel
 	 */
-	public ChangeSpecificationPanel getChangeSpecificationPanel() {
+	public SpecificationPopup getChangeSpecificationPanel() {
 		return changeSpecificationPanel;
 	}
 

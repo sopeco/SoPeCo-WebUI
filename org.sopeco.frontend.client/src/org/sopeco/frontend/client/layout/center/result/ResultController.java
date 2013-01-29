@@ -54,7 +54,7 @@ public class ResultController implements ICenterController, ClickHandler {
 	private List<SharedScenarioInstance> currentScenarioInstanceList;
 
 	public ResultController() {
-		reset();
+		reload();
 	}
 
 	@Override
@@ -68,7 +68,7 @@ public class ResultController implements ICenterController, ClickHandler {
 	}
 	
 	@Override
-	public void reset() {
+	public void reload() {
 		view = new ResultView();
 	}
 
