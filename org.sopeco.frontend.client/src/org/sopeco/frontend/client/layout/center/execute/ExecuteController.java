@@ -35,7 +35,6 @@ import org.sopeco.frontend.client.layout.center.execute.tabOne.TabControllerOne;
 import org.sopeco.frontend.client.layout.center.execute.tabThree.TabControllerThree;
 import org.sopeco.frontend.client.layout.center.execute.tabTwo.TabControllerTwo;
 import org.sopeco.frontend.client.manager.Manager;
-import org.sopeco.frontend.client.resources.FrontEndResources;
 import org.sopeco.frontend.client.resources.R;
 
 import com.google.gwt.event.dom.client.ClickEvent;

@@ -28,7 +28,6 @@ package org.sopeco.frontend.client.layout;
 
 import java.util.HashMap;
 
-import org.sopeco.frontend.client.layout.center.CenterType;
 import org.sopeco.frontend.client.layout.center.EmptyCenterPanel;
 import org.sopeco.frontend.client.layout.center.ICenterController;
 import org.sopeco.frontend.client.layout.center.NoScenario;
@@ -42,50 +41,43 @@ import org.sopeco.frontend.client.layout.navigation.NaviItem;
 import org.sopeco.frontend.client.manager.Manager;
 import org.sopeco.frontend.client.manager.ScenarioManager;
 import org.sopeco.frontend.shared.helper.Metering;
-import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * The main-layout of the web-application.
+ * The main-layout of the web-application. From here you can reach all layout
+ * objects.
  * 
  * @author Marius Oehler
  * 
  */
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public final class MainLayoutPanel extends DockLayoutPanel {
 
-	private static final String NAVIGATION_PANEL_ID = "mainNavigation";
+	/** Width of the navigation bar on the left. */
+	public static final int NAVI_WIDTH_EM = 15;
 
+	/** Singleton object of this class. */
 	private static MainLayoutPanel layoutPanel;
-	private static final CenterType DEFAULT_CENTER_TYPE = CenterType.Other;
 
-	private NorthPanel northPanel;
-
-	// private NavigationController navigationController;
-	private NaviController naviController;
-
-	private ViewSwitch viewSwitch;
-
-	// private CenterType currentCenterPanel;
-	// private HashMap<CenterType, ICenterController> centerControllerMap = new
-	// HashMap<CenterType, ICenterController>();
-
-	// TODO
-	private HashMap<Class<ICenterController>, ICenterController> controllerMap = new HashMap<Class<ICenterController>, ICenterController>();
-	private Class currentCenterClass;
-
-	private MainLayoutPanel() {
-		super(Unit.EM);
-		initialize();
+	/**
+	 * Removes the {@link MainLayoutPanel} instance which is reachable through
+	 * {@link #get()}.
+	 */
+	public static void destroy() {
+		if (layoutPanel != null) {
+			layoutPanel = null;
+		}
 	}
 
 	/**
+	 * Returns an instance of the {@link MainLayoutPanel}. This instance is a
+	 * singleton object for the current session.
 	 * 
-	 * @return
+	 * @return {@link MainLayoutPanel} instance
 	 */
 	public static MainLayoutPanel get() {
 		if (layoutPanel == null) {
@@ -94,127 +86,64 @@ public final class MainLayoutPanel extends DockLayoutPanel {
 		return layoutPanel;
 	}
 
-	public static void destroy() {
-		if (layoutPanel != null) {
-			layoutPanel = null;
-			// TODO
-		}
+	private HashMap<Class<ICenterController>, ICenterController> controllerMap = new HashMap<Class<ICenterController>, ICenterController>();
+
+	private Class currentCenterClass;
+
+	private NaviController naviController;
+
+	private NorthPanel northPanel;
+
+	/**
+	 * Cosntructor that calls the {@link #initialize()} method.
+	 */
+	private MainLayoutPanel() {
+		super(Unit.EM);
+		initialize();
 	}
 
 	/**
-	 * Hides the navigation panel.
+	 * Adds a new {@link NaviItem} to the left navigation bar, which changes the
+	 * view to the {@link ICenterController#getView()} of the given controller
+	 * by clicking on it.
+	 * 
+	 * @param controllerClass
+	 *            {@link ICenterController} instance which provides the view
+	 * @param text
+	 *            of the {@link NaviItem}
+	 * @return the created {@link NaviItem}
 	 */
-	public void hideNavigation() {
-		// remove(navigationController.getView());
-		remove(naviController.getView());
+	public <T extends ICenterController> NaviItem addCenterController(Class<T> controllerClass, String text) {
+		return addCenterController(controllerClass, text, null);
 	}
 
 	/**
-	 * Show the navigation panel.
+	 * Adds a new {@link NaviItem} to the left navigation bar, which changes the
+	 * view to the {@link ICenterController#getView()} of the given controller
+	 * by clicking on it.
+	 * 
+	 * @param controllerClass
+	 *            {@link ICenterController} instance which provides the view
+	 * @param text
+	 *            of the {@link NaviItem}
+	 * @param subText
+	 *            subtitle of the {@link NaviItem}
+	 * @return the created {@link NaviItem}
 	 */
-	public void showNavigation() {
-		Widget center = getCenter();
-		if (center != null) {
-			remove(center);
-
-		}
-		// addWest(getNavigationController().getView(),
-		// Float.parseFloat(NavigationView.PANEL_WIDTH));
-		// TODO
-		addWest(naviController.getView(), 15);
-		getWidgetContainerElement(naviController.getView()).getStyle().setOverflow(Overflow.VISIBLE);
-
-		// getWidgetContainerElement(getNavigationController().getView()).setId(NAVIGATION_PANEL_ID);
-
-		if (center != null) {
-			add(center);
-		}
-		// }
+	public <T extends ICenterController> NaviItem addCenterController(Class<T> controllerClass, String text,
+			String subText) {
+		return naviController.addItem(controllerClass, text, subText);
 	}
 
 	/**
-	 * @return the viewSwitch
+	 * Returns the existing {@link ICenterController} instance of the specified
+	 * class.
+	 * 
+	 * @param clazz
+	 *            of the desired {@link ICenterController}
+	 * @return {@link ICenterController} instance or <code>null</code> if no
+	 *         instance exists.
 	 */
-	public ViewSwitch getViewSwitch() {
-		if (viewSwitch == null) {
-			viewSwitch = new ViewSwitch();
-		}
-		return viewSwitch;
-	}
-
-	/**
-	 * Initialize the main layout
-	 */
-	private void initialize() {
-		GWT.log("initialize >");
-		// currentCenterPanel = DEFAULT_CENTER_TYPE;
-		addNorth(getNorthPanel(), Float.parseFloat(NorthPanel.PANEL_HEIGHT));
-
-		// addWest(getNavigationController().getView(),
-		// Float.parseFloat(NavigationView.PANEL_WIDTH));
-		// TODO
-		naviController = new NaviController();
-		addWest(naviController.getView(), 15);
-
-		// getWidgetContainerElement(getNavigationController().getView()).setId(NAVIGATION_PANEL_ID);
-
-		// centerControllerMap.put(CenterType.Specification, new
-		// SpecificationController());
-		//
-		// centerControllerMap.put(CenterType.Execute, new ExecuteController());
-		// centerController.put(CenterType.Execute, new ExecuteController());
-
-		// centerControllerMap.put(CenterType.Result, new ResultController());
-		// centerControllerMap.put(CenterType.Experiment, new
-		// ExperimentController());
-		// centerControllerMap.put(CenterType.Visualization, new
-		// VisualizationController());
-
-		registerCenterController(new SpecificationController());
-		registerCenterController(new ExperimentController());
-		registerCenterController(new ExecuteController());
-		registerCenterController(new ResultController());
-		registerCenterController(new VisualizationController());
-
-		// updateCenterPanel(currentCenterPanel);
-
-		refreshView();
-
-		ScenarioManager.get().switchScenario(Manager.get().getAccountDetails().getSelectedScenario());
-		GWT.log("< initialize");
-	}
-
-	private void registerCenterController(ICenterController controller) {
-		Class clazz = controller.getClass();
-		if (controllerMap.containsKey(clazz)) {
-			throw new RuntimeException("ICenterController of class " + clazz.getName() + " already exists.");
-		}
-
-		controllerMap.put(clazz, controller);
-	}
-
-	public void buildNavigation() {
-		GWT.log("Build Navi");
-
-		naviController.clear();
-		addCenterController(SpecificationController.class, "Specification", Manager.get().getCurrentScenarioDetails()
-				.getSelectedSpecification());
-		addExperiments();
-		naviController.addAddExpSeriesItem();
-		addCenterController(ExecuteController.class, "Execute");
-		addCenterController(ResultController.class, "Result");
-		addCenterController(VisualizationController.class, "Visualization");
-
-		naviController.refreshSpecificationPopup();
-	}
-
-	private void addExperiments() {
-		for (ExperimentSeriesDefinition experiment : ScenarioManager.get().experiment()
-				.getExperimentsOfCurrentSpecififcation()) {
-			addCenterController(ExperimentController.class, experiment.getName()).setAsExperiment();
-		}
-	}
-
 	public <T extends ICenterController> T getController(Class<T> clazz) {
 		for (ICenterController controller : controllerMap.values()) {
 			if (clazz.equals(controller.getClass())) {
@@ -224,132 +153,19 @@ public final class MainLayoutPanel extends DockLayoutPanel {
 		return null;
 	}
 
-	public <T extends ICenterController> NaviItem addCenterController(Class<T> controllerClass) {
-		return addCenterController(controllerClass, null);
-	}
-
-	public <T extends ICenterController> NaviItem addCenterController(Class<T> controllerClass, String text) {
-		return addCenterController(controllerClass, text, null);
-	}
-
-	public <T extends ICenterController> NaviItem addCenterController(Class<T> controllerClass, String text,
-			String subText) {
-		return naviController.addItem(controllerClass, text, subText);
-	}
-
-	public <T extends ICenterController> void switchView(Class<T> targetClass) {
-		currentCenterClass = targetClass;
-		controllerMap.get(targetClass).onSwitchTo();
-		refreshView();
-	}
-
-	public void switchToExperiment(String experimentName) {
-		ScenarioManager.get().experiment().setCurrentExperiment(experimentName);
-		switchView(ExperimentController.class);
-	}
-
+	/**
+	 * Returns the controller that is responsible for the left navigation bar.
+	 * 
+	 * @return instance of {@link NaviController}
+	 */
 	public NaviController getNaviController() {
 		return naviController;
 	}
 
-	private void refreshView() {
-		if (getCenter() != null) {
-			remove(getCenter());
-		}
-
-		naviController.setSelectedItem(currentCenterClass);
-
-		if (currentCenterClass == null) {
-
-			hideNavigation();
-			add(new EmptyCenterPanel());
-
-		} else if (Manager.get().getAccountDetails().getScenarioNames().length == 0) {
-
-			hideNavigation();
-			add(new NoScenario());
-
-		} else {
-
-			showNavigation();
-			add(controllerMap.get(currentCenterClass).getView());
-
-		}
-	}
-
-	public void setSpecification(String specificationName) {
-		buildNavigation();
-		switchView(SpecificationController.class);
-		naviController.getItem(SpecificationController.class).get(0).setSubText(specificationName);
-		getController(SpecificationController.class).getView().setSpecificationName(specificationName);
-		naviController.getSpecificationPopup().setSelectedItem(specificationName);
-	}
-
 	/**
-	 * Returns the Type of the current centerPanel.
+	 * Returns the instance of the top navigation bar.
 	 * 
-	 * @return
-	 */
-	// public CenterType getCenterType() {
-	// return currentCenterPanel;
-	// }
-
-	/**
-	 * Creates new center panel for the main layout and updates the current
-	 * panel.
-	 */
-	public void reloadPanels() {
-		double metering = Metering.start();
-		// for (ICenterController controller : centerControllerMap.values()) {
-		// controller.reload();
-		// }
-		// TODO
-		for (ICenterController controller : controllerMap.values()) {
-			controller.reload();
-		}
-		// updateCenterPanel(currentCenterPanel);
-		buildNavigation();
-		refreshView();
-		Metering.stop(metering);
-	}
-
-	/**
-	 * Set the current centerPanel to the given type.
-	 * 
-	 * @param type
-	 */
-	// public void updateCenterPanel(CenterType type) {
-	// double metering = Metering.start();
-	//
-	// if (getCenter() != null) {
-	// remove(getCenter());
-	// }
-	// currentCenterPanel = type;
-	//
-	// getNavigationController().setCurrentCenterType(type);
-	//
-	// if (Manager.get().getAccountDetails().getScenarioNames().length == 0 ||
-	// type == CenterType.NoScenario) {
-	// hideNavigation();
-	// add(new NoScenario());
-	// Metering.stop(metering);
-	// return;
-	// } else if (type == CenterType.Other) {
-	// hideNavigation();
-	// add(new EmptyCenterPanel());
-	// Metering.stop(metering);
-	// return;
-	// }
-	//
-	// showNavigation();
-	// add(centerControllerMap.get(type).getView());
-	// Metering.stop(metering);
-	// }
-
-	/**
-	 * Returns the panel for the northern area.
-	 * 
-	 * @return see description
+	 * @return instance of the {@link NorthPanel}
 	 */
 	public NorthPanel getNorthPanel() {
 		if (northPanel == null) {
@@ -359,17 +175,181 @@ public final class MainLayoutPanel extends DockLayoutPanel {
 	}
 
 	/**
-	 * 
-	 * @return
+	 * Removes the left navigation bar from the layout.
 	 */
-	// public NavigationController getNavigationController() {
-	// if (navigationController == null) {
-	// navigationController = new NavigationController();
-	// }
-	// return navigationController;
-	// }
+	public void hideNavigation() {
+		remove(naviController.getView());
+	}
 
-	// public ICenterController getCenterController(CenterType type) {
-	// return centerControllerMap.get(type);
-	// }
+	/**
+	 * The left navigation bar will be refreshed. This is required if data of
+	 * specification or experiment (like name changed, experiments added..) were
+	 * edited.
+	 */
+	public void refreshNavigation() {
+		naviController.clear();
+
+		// Specification Item
+		String selectedSpecification = Manager.get().getCurrentScenarioDetails().getSelectedSpecification();
+		addCenterController(SpecificationController.class, "Specification", selectedSpecification);
+
+		// Experiments
+		naviController.addExperiments();
+
+		// Add Specification Item
+		naviController.addAddExpSeriesItem();
+
+		// Execution, Results and Visualization Item
+		addCenterController(ExecuteController.class, "Execute");
+		addCenterController(ResultController.class, "Result");
+		addCenterController(VisualizationController.class, "Visualization");
+
+		// Refresh "change-specification" popup
+		naviController.refreshSpecificationPopup();
+	}
+
+	/**
+	 * Calls on all registered {@link ICenterController} instances the
+	 * {@link ICenterController#reload()} method. After that, the navigation and
+	 * the main view will be refreshed.
+	 */
+	public void reloadPanels() {
+		double metering = Metering.start();
+
+		for (ICenterController controller : controllerMap.values()) {
+			controller.reload();
+		}
+		refreshNavigation();
+		refreshView();
+
+		Metering.stop(metering);
+	}
+
+	/**
+	 * Changes the view to the specification with the specified name.
+	 * 
+	 * @param specificationName
+	 *            of the specification
+	 */
+	public void setSpecification(String specificationName) {
+		refreshNavigation();
+		switchView(SpecificationController.class);
+		naviController.getItem(SpecificationController.class).get(0).setSubText(specificationName);
+		getController(SpecificationController.class).getView().setSpecificationName(specificationName);
+		naviController.getSpecificationPopup().setSelectedItem(specificationName);
+	}
+
+	/**
+	 * Adds the left navigation bar to the layout.
+	 */
+	public void showNavigation() {
+		Widget center = getCenter();
+		if (center != null) {
+			remove(center);
+
+		}
+		addWest(naviController.getView(), NAVI_WIDTH_EM);
+		getWidgetContainerElement(naviController.getView()).getStyle().setOverflow(Overflow.VISIBLE);
+
+		if (center != null) {
+			add(center);
+		}
+	}
+
+	/**
+	 * Causes the application to switch to the experiment that has the given
+	 * name. The view is changed, too.
+	 * 
+	 * @param experimentName
+	 *            of the next experiment
+	 */
+	public void switchToExperiment(String experimentName) {
+		ScenarioManager.get().experiment().setCurrentExperiment(experimentName);
+		switchView(ExperimentController.class);
+	}
+
+	/**
+	 * Switches the view to the widget of the existing instance of the given
+	 * {@link ICenterController} class.
+	 * 
+	 * @param targetClass
+	 *            of the instance which provides the next widget
+	 */
+	public <T extends ICenterController> void switchView(Class<T> targetClass) {
+		currentCenterClass = targetClass;
+		controllerMap.get(targetClass).onSwitchTo();
+		refreshView();
+	}
+
+	/**
+	 * Initializes all necessary objects. This is where CenterCotnroller are
+	 * registered. This is necessary that the view can be changed on them by
+	 * calling {@link #switchView(Class)}.
+	 */
+	private void initialize() {
+
+		addNorth(getNorthPanel(), Float.parseFloat(NorthPanel.PANEL_HEIGHT));
+
+		naviController = new NaviController();
+		addWest(naviController.getView(), NAVI_WIDTH_EM);
+
+		registerCenterController(new SpecificationController());
+		registerCenterController(new ExperimentController());
+		registerCenterController(new ExecuteController());
+		registerCenterController(new ResultController());
+		registerCenterController(new VisualizationController());
+
+		refreshView();
+
+		ScenarioManager.get().switchScenario(Manager.get().getAccountDetails().getSelectedScenario());
+
+	}
+
+	/**
+	 * Refreshes the layout. The widget that is related to the
+	 * <code>currentCenterClass</code> attribute will be set as the center view.
+	 * Depending on the view, the navigation on the left hand is hidden or
+	 * visible.
+	 */
+	private void refreshView() {
+		if (getCenter() != null) {
+			remove(getCenter());
+		}
+
+		naviController.setSelectedItem(currentCenterClass);
+
+		if (Manager.get().getAccountDetails().getScenarioNames().length == 0) {
+
+			hideNavigation();
+			add(new NoScenario());
+
+		} else if (currentCenterClass == null) {
+
+			hideNavigation();
+			add(new EmptyCenterPanel());
+
+		} else {
+
+			showNavigation();
+			add(controllerMap.get(currentCenterClass).getView());
+
+		}
+	}
+
+	/**
+	 * The given {@link ICenterController} will be registered. After that the
+	 * view can be changed on his view which is accessible by
+	 * {@link ICenterController#getView()}.
+	 * 
+	 * @param controller
+	 *            {@link ICenterController} instance
+	 */
+	private void registerCenterController(ICenterController controller) {
+		Class clazz = controller.getClass();
+		if (controllerMap.containsKey(clazz)) {
+			throw new RuntimeException("ICenterController of class " + clazz.getName() + " already exists.");
+		}
+
+		controllerMap.put(clazz, controller);
+	}
 }

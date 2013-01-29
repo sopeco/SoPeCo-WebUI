@@ -26,7 +26,6 @@
  */
 package org.sopeco.frontend.client.layout.center.experiment;
 
-import org.sopeco.frontend.client.resources.FrontEndResources;
 import org.sopeco.frontend.client.resources.R;
 
 import com.google.gwt.event.dom.client.ClickEvent;

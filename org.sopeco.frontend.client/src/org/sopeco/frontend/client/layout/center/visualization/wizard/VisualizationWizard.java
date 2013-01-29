@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.sopeco.frontend.client.layout.MainLayoutPanel;
-import org.sopeco.frontend.client.layout.center.CenterType;
+import org.sopeco.frontend.client.layout.center.visualization.VisualizationController;
 import org.sopeco.frontend.client.resources.FrontEndResources;
 import org.sopeco.frontend.client.resources.R;
 import org.sopeco.frontend.client.rpc.RPC;
@@ -169,7 +169,7 @@ public class VisualizationWizard extends DialogBox {
 			}
 			break;
 		case COLUMN_SELECTION:
-			MainLayoutPanel.get().getViewSwitch().switchTo(CenterType.Visualization);
+			MainLayoutPanel.get().switchView(VisualizationController.class);
 			VisualizationWizard.this.hide();
 			ChartOptions options = new ChartOptions();
 			options.setType(chartSelectionPanel.getSelectedType());

@@ -41,8 +41,6 @@ import org.sopeco.frontend.client.resources.R;
 import org.sopeco.frontend.client.rpc.RPC;
 import org.sopeco.frontend.shared.entities.FrontendScheduledExperiment;
 import org.sopeco.frontend.shared.helper.Metering;
-import org.sopeco.frontend.shared.push.PushListPackage;
-import org.sopeco.frontend.shared.push.PushSerializable;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;

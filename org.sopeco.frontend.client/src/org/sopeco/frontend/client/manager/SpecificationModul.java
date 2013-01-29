@@ -31,7 +31,6 @@ import java.util.logging.Logger;
 import org.sopeco.frontend.client.helper.INotifyHandler;
 import org.sopeco.frontend.client.helper.INotifyHandler.Result;
 import org.sopeco.frontend.client.layout.MainLayoutPanel;
-import org.sopeco.frontend.client.layout.center.specification.SpecificationController;
 import org.sopeco.frontend.shared.builder.MeasurementSpecificationBuilder;
 import org.sopeco.persistence.entities.definition.MeasurementSpecification;
 

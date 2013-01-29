@@ -51,6 +51,13 @@ public class NaviController implements ClickHandler, InputDialogHandler, InputDi
 		specificationPopup.getAddItem().addClickHandler(this);
 	}
 
+	public void addExperiments() {
+		for (ExperimentSeriesDefinition experiment : ScenarioManager.get().experiment()
+				.getExperimentsOfCurrentSpecififcation()) {
+			addItem(ExperimentController.class, experiment.getName(), null).setAsExperiment();
+		}
+	}
+
 	@Override
 	public void onClick(ClickEvent event) {
 		if (event.getSource() == selectedItem) {
@@ -181,6 +188,8 @@ public class NaviController implements ClickHandler, InputDialogHandler, InputDi
 		}
 
 		specificationPopup.addAddItem();
+
+		specificationPopup.setSelectedItem(Manager.get().getCurrentScenarioDetails().getSelectedSpecification());
 	}
 
 	//

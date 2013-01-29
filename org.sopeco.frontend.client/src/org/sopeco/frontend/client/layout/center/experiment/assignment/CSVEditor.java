@@ -29,7 +29,6 @@ package org.sopeco.frontend.client.layout.center.experiment.assignment;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.sopeco.frontend.client.resources.FrontEndResources;
 import org.sopeco.frontend.client.resources.R;
 import org.sopeco.gwt.widgets.Headline;
 

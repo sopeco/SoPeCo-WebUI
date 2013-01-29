@@ -31,11 +31,11 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import org.sopeco.frontend.client.layout.MainLayoutPanel;
-import org.sopeco.frontend.client.layout.center.CenterType;
 import org.sopeco.frontend.client.layout.center.ICenterController;
 import org.sopeco.frontend.client.layout.center.experiment.assignment.AssignmentController;
-import org.sopeco.frontend.client.layout.center.experiment.assignment.PreparationController;
 import org.sopeco.frontend.client.layout.center.experiment.assignment.AssignmentController.Type;
+import org.sopeco.frontend.client.layout.center.experiment.assignment.PreparationController;
+import org.sopeco.frontend.client.layout.center.specification.SpecificationController;
 import org.sopeco.frontend.client.layout.popups.Confirmation;
 import org.sopeco.frontend.client.layout.popups.InputDialog;
 import org.sopeco.frontend.client.layout.popups.InputDialogHandler;
@@ -224,9 +224,9 @@ public class ExperimentController implements ICenterController, ValueChangeHandl
 						.getExperimentsOfCurrentSpecififcation();
 
 				if (expList.isEmpty()) {
-					MainLayoutPanel.get().getViewSwitch().switchTo(CenterType.Specification);
+					MainLayoutPanel.get().switchView(SpecificationController.class);
 				} else {
-					MainLayoutPanel.get().getViewSwitch().switchToExperiment(expList.get(0).getName());
+					MainLayoutPanel.get().switchToExperiment(expList.get(0).getName());
 				}
 			}
 		});

@@ -30,7 +30,6 @@ import java.util.logging.Logger;
 
 import org.sopeco.frontend.client.helper.SimpleNotify;
 import org.sopeco.frontend.client.layout.MainLayoutPanel;
-import org.sopeco.frontend.client.layout.center.CenterType;
 import org.sopeco.frontend.client.layout.center.experiment.ExperimentController;
 import org.sopeco.frontend.client.layout.center.specification.SpecificationController;
 import org.sopeco.frontend.client.layout.popups.Message;
@@ -278,10 +277,6 @@ public final class ScenarioManager {
 				
 				specification().changeSpecification(specification);
 
-				// EventControl.get().fireEvent(new
-				// EnvironmentDefinitionChangedEvent());
-
-				// MainLayoutPanel.get().getViewSwitch().switchTo(CenterType.Specification);
 				MainLayoutPanel.get().switchView(SpecificationController.class);
 			}
 		});
@@ -330,7 +325,7 @@ public final class ScenarioManager {
 				}
 				MainLayoutPanel.get().getNorthPanel().updateScenarioList();
 				if (Manager.get().getAccountDetails().getScenarioDetails().isEmpty()) {
-					MainLayoutPanel.get().getViewSwitch().switchTo(CenterType.NoScenario);
+					MainLayoutPanel.get().switchView(null);
 				} else {
 					switchScenario(Manager.get().getAccountDetails().getScenarioNames()[0]);
 				}

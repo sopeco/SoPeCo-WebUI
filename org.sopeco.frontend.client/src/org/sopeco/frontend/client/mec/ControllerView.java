@@ -26,7 +26,6 @@
  */
 package org.sopeco.frontend.client.mec;
 
-import org.sopeco.frontend.client.resources.FrontEndResources;
 import org.sopeco.frontend.client.resources.R;
 import org.sopeco.frontend.client.widget.SmallTableLabel;
 import org.sopeco.gwt.widgets.ComboBox;

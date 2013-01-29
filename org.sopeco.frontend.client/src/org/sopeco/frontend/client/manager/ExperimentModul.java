@@ -68,20 +68,22 @@ public class ExperimentModul {
 	ExperimentModul(ScenarioManager scenarioManager) {
 		manager = scenarioManager;
 
-//		EventControl.get().addHandler(ExperimentChangedEvent.TYPE, getExperimentChangedEventHandler());
+		// EventControl.get().addHandler(ExperimentChangedEvent.TYPE,
+		// getExperimentChangedEventHandler());
 	}
 
 	/**
 	 * Handler which listens to the ExperimentChangedEvent.
 	 */
-//	private ExperimentChangedEventHandler getExperimentChangedEventHandler() {
-//		return new ExperimentChangedEventHandler() {
-//			@Override
-//			public void onExperimentChanged(ExperimentChangedEvent event) {
-//				setCurrentExperiment(event.getExperimentName());
-//			}
-//		};
-//	}
+	// private ExperimentChangedEventHandler getExperimentChangedEventHandler()
+	// {
+	// return new ExperimentChangedEventHandler() {
+	// @Override
+	// public void onExperimentChanged(ExperimentChangedEvent event) {
+	// setCurrentExperiment(event.getExperimentName());
+	// }
+	// };
+	// }
 
 	/**
 	 * @return the currentExperiment
@@ -102,8 +104,8 @@ public class ExperimentModul {
 
 		manager.storeScenario();
 
-//		MainLayoutPanel.get().getNavigationController().loadExperiments();
-		MainLayoutPanel.get().buildNavigation();
+		// MainLayoutPanel.get().getNavigationController().loadExperiments();
+		MainLayoutPanel.get().refreshNavigation();
 	}
 
 	/**
@@ -195,9 +197,8 @@ public class ExperimentModul {
 
 		manager.getBuilder().getSpecificationBuilder().addExperimentSeries(experiment);
 
-		MainLayoutPanel.get().buildNavigation();
-//		MainLayoutPanel.get().getNavigationController().loadExperiments();
-		MainLayoutPanel.get().getViewSwitch().switchToExperiment(name);
+		MainLayoutPanel.get().refreshNavigation();
+		MainLayoutPanel.get().switchToExperiment(name);
 
 		manager.storeScenario();
 	}
@@ -465,10 +466,10 @@ public class ExperimentModul {
 		getCurrentExperiment().setName(newName);
 		setCurrentExperiment(newName);
 
-		MainLayoutPanel.get().buildNavigation();
-//		MainLayoutPanel.get().getNavigationController().loadExperiments();
+		MainLayoutPanel.get().refreshNavigation();
+		// MainLayoutPanel.get().getNavigationController().loadExperiments();
 
-//		EventControl.get().fireEvent(new ExperimentChangedEvent(newName));
+		// EventControl.get().fireEvent(new ExperimentChangedEvent(newName));
 		setCurrentExperiment(newName);
 
 		manager.storeScenario();
@@ -484,8 +485,7 @@ public class ExperimentModul {
 
 		ScenarioManager.get().storeScenario();
 
-		MainLayoutPanel.get().buildNavigation();
-//		MainLayoutPanel.get().getNavigationController().loadExperiments();
-		MainLayoutPanel.get().getViewSwitch().switchToExperiment(targetName);
+		MainLayoutPanel.get().refreshNavigation();
+		MainLayoutPanel.get().switchToExperiment(targetName);
 	}
 }

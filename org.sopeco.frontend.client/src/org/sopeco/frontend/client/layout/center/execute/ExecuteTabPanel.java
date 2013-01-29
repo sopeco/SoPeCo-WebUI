@@ -26,7 +26,6 @@
  */
 package org.sopeco.frontend.client.layout.center.execute;
 
-import org.sopeco.frontend.client.resources.FrontEndResources;
 import org.sopeco.frontend.client.resources.R;
 
 import com.google.gwt.user.client.ui.TabPanel;

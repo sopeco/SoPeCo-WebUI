@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.sopeco.frontend.client.resources.FrontEndResources;
-import org.sopeco.frontend.client.rpc.RPC;
 import org.sopeco.frontend.shared.entities.ChartOptions.ChartType;
 
 import com.google.gwt.dom.client.Style.Unit;

@@ -30,8 +30,8 @@ import org.sopeco.frontend.client.event.EventControl;
 import org.sopeco.frontend.client.event.MEControllerEvent;
 import org.sopeco.frontend.client.event.MEControllerEvent.EventType;
 import org.sopeco.frontend.client.manager.Manager;
-import org.sopeco.frontend.client.manager.ScenarioManager;
 import org.sopeco.frontend.client.manager.Manager.ControllerStatus;
+import org.sopeco.frontend.client.manager.ScenarioManager;
 import org.sopeco.frontend.client.mec.ControllerView;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -62,7 +62,7 @@ public final class MEControllerBox extends DialogBox implements ValueChangeHandl
 
 		mecController = new MECController(false, true);
 		controllerView = (ControllerView) mecController.getView();
-
+		
 		controllerView.getBtnCancel().addClickHandler(this);
 		controllerView.getBtnOk().addClickHandler(this);
 
