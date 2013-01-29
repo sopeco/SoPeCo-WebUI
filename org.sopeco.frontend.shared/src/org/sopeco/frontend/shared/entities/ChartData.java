@@ -15,6 +15,7 @@ public class ChartData implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private Map<String, List<Double>> data;
+	private List<String> dataSetNames = new ArrayList<String>();
 	
 	public ChartData() {
 		data = new HashMap<String, List<Double>>();
@@ -51,6 +52,14 @@ public class ChartData implements Serializable {
 			builder.append("\n");
 		}
 		return builder.toString();
+	}
+
+	public List<String> getDataSetNames() {
+		return dataSetNames;
+	}
+
+	public void setDataSetNames(List<String> dataSetNames) {
+		this.dataSetNames = dataSetNames;
 	}
 
 	

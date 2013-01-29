@@ -27,6 +27,7 @@
 package org.sopeco.frontend.client.layout.center.visualization.wizard;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,6 +49,8 @@ public class ColumnSelector extends HorizontalPanel {
 	private FlowPanel verticalPanel1;
 	private FlowPanel verticalPanel2;
 	private Map<ChartParameter, ListBox> selectors = new HashMap<ChartParameter, ListBox>();
+	private ListBox output;
+	private ListBox outputAggregation;
 	private List<ChartParameter> inputParameter;
 	private List<ChartParameter> outputParameter;
 
@@ -69,6 +72,7 @@ public class ColumnSelector extends HorizontalPanel {
 	public void showColumnSelection() {
 		verticalPanel1.clear();
 		verticalPanel2.clear();
+		final HorizontalPanel horizontalPanel = new HorizontalPanel();
 		final ListBox nrPicker = new ListBox();
 		for (int i = 0; i < outputParameter.size(); i++){
 			nrPicker.addItem(""+(i+1));
@@ -79,12 +83,13 @@ public class ColumnSelector extends HorizontalPanel {
 			@Override
 			public void onChange(ChangeEvent event) {
 				maxColumns = nrPicker.getSelectedIndex()+1;
-				showColumnSelection();
+				verticalPanel2.clear();
+				verticalPanel2.add(horizontalPanel);
+				createChartOutputWidgets();
 			}
 		});
-		HorizontalPanel horizontalPanel = new HorizontalPanel();
 		horizontalPanel.setSpacing(4);
-		horizontalPanel.add(new Label("No. of outputs"));
+		horizontalPanel.add(new Label("No. of datasets"));
 		horizontalPanel.add(nrPicker);
 		verticalPanel2.add(horizontalPanel);
 		createChartInputWidgets();
@@ -109,18 +114,21 @@ public class ColumnSelector extends HorizontalPanel {
 	}
 	
 	private void createChartOutputWidgets(){
-		for (int i = 0; i < outputParameter.size(); i++) {
-			HorizontalPanel hp = new HorizontalPanel();
-			hp.setSpacing(4);
-			hp.add(new Label(outputParameter.get(i).getParameterName()));
-			final ListBox lb = new ListBox();
-			selectors.put(outputParameter.get(i), lb);
-			hp.add(lb);
-			for (AggregationOutputType t : AggregationOutputType.values()) {
-				lb.addItem(t.name());
-			}
-			verticalPanel1.add(hp);
+		Collections.sort(outputParameter);
+		HorizontalPanel hp = new HorizontalPanel();
+		hp.setSpacing(4);
+		hp.add(new Label("Dataset "));
+		output = new ListBox();
+		for (ChartParameter p : outputParameter){
+			output.addItem(p.getParameterName());
 		}
+		hp.add(output);
+		outputAggregation = new ListBox();
+		hp.add(outputAggregation);
+		for (AggregationOutputType t : AggregationOutputType.values()) {
+			outputAggregation.addItem(t.name());
+		}
+		verticalPanel2.add(hp);
 		
 		return;
 	}
@@ -132,10 +140,11 @@ public class ColumnSelector extends HorizontalPanel {
 			inputParameter.get(i).setAggregationInputType(AggregationInputType.valueOf(AggregationInputType.class, lb.getItemText(lb.getSelectedIndex())));
 			sel.add(inputParameter.get(i));
 		}
-		for (int i = 0; i < outputParameter.size(); i++){
-			ListBox lb = selectors.get(outputParameter.get(i));
-			outputParameter.get(i).setAggregationOutputType(AggregationOutputType.valueOf(AggregationOutputType.class, lb.getItemText(lb.getSelectedIndex())));
-			sel.add(outputParameter.get(i));
+		for (ChartParameter cp : outputParameter){
+			if (cp.getParameterName().equals(output.getItemText(output.getSelectedIndex()))){
+				cp.setAggregationOutputType(AggregationOutputType.valueOf(AggregationOutputType.class, outputAggregation.getItemText(outputAggregation.getSelectedIndex())));
+				sel.add(cp);
+			}
 		}
 		return sel;
 	}

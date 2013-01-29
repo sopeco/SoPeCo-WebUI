@@ -259,7 +259,7 @@ public class VisualizationController implements ICenterController {
 			options.set("is3D", true);
 			break;
 		case LINECHART:
-			options.setLineWidth(0);
+			options.setLineWidth(2);
 			options.setPointSize(3);
 			break;
 		}
@@ -278,95 +278,18 @@ public class VisualizationController implements ICenterController {
 			return dataTable;
 		}
 		dataTable.addColumn(ColumnType.STRING, "Input");
-		for (int i = 0; i < dataList.get(0).size(); i++){
-			dataTable.addColumn(ColumnType.NUMBER, "Out " + i);
+		for (int i = 0; i < data.getDataSetNames().size(); i++){
+			dataTable.addColumn(ColumnType.NUMBER, data.getDataSetNames().get(i));
 		}
 		dataTable.addRows(names.size());
 		for (int row = 0; row < names.size(); row++){
 			dataTable.setValue(row, 0, names.get(row));
 		}
-		for (int row = 0; row < names.size(); row++){
+		for (int row = 0; row < dataList.size(); row++){
 			for (int column = 0; column < dataList.get(row).size(); column++){
 				dataTable.setValue(row, column+1,dataList.get(row).get(column));
 			}
 		}
-//		switch (type) {
-//		case PIECHART:
-//			dataTable.addColumn(ColumnType.STRING,
-//					chartParameters.get(0).getParameterName());
-//			Map<String, Double> values = new TreeMap<String, Double>();
-//			for (int row = 0; row < data[0].length; row++) {
-//				values.put(""+data[0][row], 0.0);
-//			}
-//			dataTable.addRows(values.size());
-//			int j = 0;
-//			for (String key : values.keySet()){
-//				dataTable.setValue(j, 0, chartParameters.get(0).getParameterName() + " = "+key);
-//				j++;
-//			}
-//			
-//			for (int col = 1; col < data.length; col++) {
-//				dataTable.addColumn(ColumnType.NUMBER,
-//						chartParameters.get(0).getParameterName());
-//				for (String key : values.keySet()){
-//					values.put(key, 0.0);
-//				}
-//				for (int row = 0; row < data[col].length; row++) {
-//					values.put(""+data[0][row], values.get(""+data[0][row])+data[col][row]);
-//				}
-//				j = 0;
-//				for (Double value : values.values()){
-//					dataTable.setValue(j, col, value);
-//					j++;
-//				}
-//			}
-//			break;
-//		case BARCHART:
-//			dataTable.addColumn(ColumnType.STRING,
-//					chartParameters.get(0).getParameterName());
-//			Map<String, Double> values2 = new TreeMap<String, Double>();
-//			for (int row = 0; row < data[0].length; row++) {
-//				values2.put(""+data[0][row], 0.0);
-//			}
-//			dataTable.addRows(values2.size());
-//			j = 0;
-//			for (String key : values2.keySet()){
-//				dataTable.setValue(j, 0, key);
-//				j++;
-//			}
-//			
-//			for (int col = 1; col < data.length; col++) {
-//				dataTable.addColumn(ColumnType.NUMBER,
-//						chartParameters.get(0).getParameterName());
-//				for (String key : values2.keySet()){
-//					values2.put(key, 0.0);
-//				}
-//				for (int row = 0; row < data[col].length; row++) {
-//					values2.put(""+data[0][row], values2.get(""+data[0][row])+data[col][row]);
-//				}
-//				j = 0;
-//				for (Double value : values2.values()){
-//					dataTable.setValue(j, col, value);
-//					j++;
-//				}
-//			}
-//			break;
-//		default:
-//			dataTable.addRows(data[0].length);
-//			dataTable.addColumn(ColumnType.NUMBER,
-//					chartParameters.get(0).getParameterName());
-//			for (int row = 0; row < data[0].length; row++) {
-//				dataTable.setValue(row, 0, data[0][row]);
-//			}
-//			for (int col = 1; col < data.length; col++) {
-//				dataTable.addColumn(ColumnType.NUMBER,
-//						chartParameters.get(col).getParameterName());
-//				for (int row = 0; row < data[col].length; row++) {
-//					dataTable.setValue(row, col, data[col][row]);
-//				}
-//			}
-//			break;
-//		}
 		return dataTable;
 	}
 	
@@ -409,7 +332,7 @@ public class VisualizationController implements ICenterController {
 			sb.appendHtmlConstant("<td style='font-size:95%;'>");
 			sb.appendHtmlConstant("<div>" + value.getName() + "</div>");
 			sb.appendHtmlConstant("</td></tr><tr><td>");
-			sb.appendHtmlConstant("<div>" + value.getType() + "/" + value.getOptions().getType().toString().toLowerCase());
+			sb.appendHtmlConstant("<div>" + value.getType() + "/" + value.getOptions().getType().toString() + "/" + value.getChartParameters().get(value.getChartParameters().size()-1).getAggregationOutputType());
 			sb.appendHtmlConstant("</div>");
 			sb.appendHtmlConstant("</td></tr></table>");
 

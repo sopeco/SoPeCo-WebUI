@@ -31,7 +31,7 @@ import java.io.Serializable;
 import org.sopeco.frontend.shared.helper.AggregationInputType;
 import org.sopeco.frontend.shared.helper.AggregationOutputType;
 
-public class ChartParameter implements Serializable {
+public class ChartParameter implements Serializable, Comparable<ChartParameter> {
 	/**
 	 * 
 	 */
@@ -77,6 +77,13 @@ public class ChartParameter implements Serializable {
 
 	public void setAggregationOutputType(AggregationOutputType aggregationOutputType) {
 		this.aggregationOutputType = aggregationOutputType;
+	}
+
+	@Override
+	public int compareTo(ChartParameter o) {
+		if (o == null)
+			return -1;
+		return this.getParameterName().compareTo(o.getParameterName());
 	}
 	
 }

@@ -27,6 +27,7 @@
 package org.sopeco.frontend.shared.entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -35,6 +36,7 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.Transient;
 
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
@@ -71,6 +73,7 @@ public class Visualization implements Serializable {
 	@Column(name = "type")
 	private Type type = Type.LINK;
 	
+	@Transient
 	private ChartData data;
 	
 	@Lob
@@ -204,6 +207,5 @@ public class Visualization implements Serializable {
 		}
 		return this.getId() == ((Visualization) obj).getId();
 	}
-	
 	
 }

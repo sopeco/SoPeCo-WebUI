@@ -27,12 +27,14 @@
 package org.sopeco.frontend.server.rpc;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.Map.Entry;
 
 import org.sopeco.engine.registry.ExtensionRegistry;
 import org.sopeco.frontend.client.rpc.VisualizationRPC;
@@ -49,12 +51,11 @@ import org.sopeco.frontend.shared.entities.ChartParameter;
 import org.sopeco.frontend.shared.entities.Visualization;
 import org.sopeco.frontend.shared.helper.AggregationInputType;
 import org.sopeco.frontend.shared.helper.AggregationOutputType;
+import org.sopeco.frontend.shared.helper.ChartXLabelComparator;
 import org.sopeco.persistence.dataset.DataSetAggregated;
 import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.dataset.SimpleDataSet;
-import org.sopeco.persistence.dataset.SimpleDataSetColumn;
 import org.sopeco.persistence.dataset.SimpleDataSetRow;
-import org.sopeco.persistence.dataset.SimpleDataSetRowBuilder;
 import org.sopeco.persistence.entities.ExperimentSeries;
 import org.sopeco.persistence.entities.ExperimentSeriesRun;
 import org.sopeco.persistence.entities.ScenarioInstance;
@@ -65,14 +66,11 @@ import org.sopeco.persistence.exceptions.DataNotFoundException;
 public class VisualizationRPCImpl extends SuperRemoteServlet implements
 		VisualizationRPC {
 	private IChartConnection chartCreator;
-	private List<Visualization> visualizations;
-	private boolean loaded = false;
 	private List<IChartConnectionExtension> extensions;
 	private static final String G_CHARTS = "Google Charts";
 
 	public VisualizationRPCImpl() {
 		chartCreator = new GCharts();
-		visualizations = new ArrayList<Visualization>();
 		extensions = (ExtensionRegistry.getSingleton()
 				.getExtensions(IChartConnectionExtension.class)).getList();
 	}
@@ -102,7 +100,6 @@ public class VisualizationRPCImpl extends SuperRemoteServlet implements
 		visualization.setAccountId(accountName);
 		visualization.setId(System.currentTimeMillis());
 		System.out.println("saving chart...");
-		visualizations.add(visualization);
 		UiPersistence.getUiProvider().storeVisualization(visualization);
 		return visualization;
 
@@ -110,26 +107,33 @@ public class VisualizationRPCImpl extends SuperRemoteServlet implements
 
 	@Override
 	public List<Visualization> getVisualizations(int start, int length) {
-		if (!loaded) {
-			String accountName = getUser().getCurrentAccount().getId();
-			System.out.println("loading charts...");
-			visualizations.addAll(UiPersistence.getUiProvider()
-					.loadVisualizationsByAccount(accountName));
-			loaded = true;
-		}
+		List<Visualization> visualizations = new ArrayList<Visualization>();
+		String accountName = getUser().getCurrentAccount().getId();
+		System.out.println("loading charts...");
+		visualizations.addAll(UiPersistence.getUiProvider()
+				.loadVisualizationsByAccount(accountName));
 		if (start > visualizations.size() - 1){
 			return new ArrayList<Visualization>();
 		}
 		start = start < 0 ? 0 : start;
 		length = start + length > visualizations.size() ? visualizations.size()-start : length;
 		List<Visualization> vis = new ArrayList<Visualization>(visualizations.subList(start, start+length));
+		List<Visualization> visualizationsToRemove = new ArrayList<Visualization>();
 		for (Visualization visualization : vis) {
 			if (visualization.getData() == null
 					&& visualization.getType() == Visualization.Type.GCHART) {
-				visualization.setData(loadData(getRun(visualization),
-						visualization.getChartParameters()));
+				ExperimentSeriesRun run = getRun(visualization);
+				if (run == null){
+					deleteVisualization(visualization);
+					visualizationsToRemove.add(visualization);
+				} else {
+					visualization.setData(loadData(run,
+							visualization.getChartParameters()));
+				}
+				
 			}
 		}
+		vis.removeAll(visualizationsToRemove);
 		return vis;
 	}
 
@@ -151,49 +155,63 @@ public class VisualizationRPCImpl extends SuperRemoteServlet implements
 				break;
 			}
 		}
-
 		String name;
-		Map<String, List<Double>> datamap = new HashMap<String, List<Double>>();
+		String dataSetName;
+		Map<String, List<Double>> datamap = new TreeMap<String, List<Double>>(new ChartXLabelComparator());
+		Set<String> dataSetNames = new TreeSet<String>();
 		for (SimpleDataSetRow row : simpledata) {
 			name = "";
+			dataSetName = "D ";
 			for (ParameterValue<?> value : row.getRowValues()){
 				if(value.getParameter().getRole() == ParameterRole.INPUT){
 					if (inParams.get(value.getParameter().getFullName()) != null){
 						switch (inParams.get(value.getParameter().getFullName())){
 						case SHOW:
-							name += value.getValueAsString();
+							if (name.equals("")){
+								name += value.getValueAsString();
+							} else {
+								name += "."+value.getValueAsString();
+							}
+							
 							break;
 						case AGGREGATE:
+							if (dataSetName.equals("")){
+								dataSetName += value.getParameter().getFullName() + ": " + value.getValueAsString();
+							} else {
+								dataSetName += ", " + value.getParameter().getFullName() + ": " + value.getValueAsString();
+							}
 							break;
 						}
 					}
 				}
 			}
 			for (ParameterValue<?> value : row.getRowValues()){
-				if(value.getParameter().getRole() == ParameterRole.OBSERVATION){
-					String cname = value.getParameter().getFullName()+ " " +name;
-					List<Double> list = datamap.get(cname);
+				if(value.getParameter().getRole() == ParameterRole.OBSERVATION && outParams.get(value.getParameter().getFullName()) != null){
+					List<Double> list = datamap.get(name);
 					if (list == null){
 						list = new ArrayList<Double>();
-						datamap.put(cname, list);
+						datamap.put(name, list);
 					}
-					if (outParams.get(value.getParameter().getFullName()) != null){
-						switch (outParams.get(value.getParameter().getFullName())){
-						case SCATTER:
-							list.add(value.getValueAsDouble());
-							break;
-						case SUM:
-							if (list.size() <= 0){
-								list.add(0.0);
-							}
-							list.set(0, list.get(0)+value.getValueAsDouble());
-							break;
+					switch (outParams.get(value.getParameter().getFullName())){
+					case SCATTER:
+						dataSetNames.add(dataSetName);
+						list.add(value.getValueAsDouble());
+						break;
+					case SUM:
+						if(dataSetNames.size() < 1){
+							dataSetNames.add("SUM");
 						}
+						if (list.size() <= 0){
+							list.add(0.0);
+						}
+						list.set(0, list.get(0)+value.getValueAsDouble());
+						break;
 					}
 				}
 			}
 			
 		}
+		data.setDataSetNames(new ArrayList<String>(dataSetNames));
 		data.setData(datamap);
 		return data;
 	}
@@ -265,7 +283,6 @@ public class VisualizationRPCImpl extends SuperRemoteServlet implements
 	@Override
 	public Void deleteVisualization(Visualization visualization) {
 		System.out.println("deleting chart...");
-		visualizations.remove(visualization);
 		UiPersistence.getUiProvider().removeVisualization(visualization);
 		return null;
 	}
