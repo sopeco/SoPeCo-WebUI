@@ -58,6 +58,28 @@
 	vertical-align: middle
 }
 
+.loginPanel .selectLanguage {
+	position: absolute;
+	top: .5em;
+	left: .5em;
+	opacity: 0.8;
+}
+
+.loginPanel .selectLanguage>* {
+	display: inline-block;
+	margin-right: .5em;
+	color: gray;
+}
+
+.loginPanel .selectLanguage img {
+	vertical-align: middle;
+	opacity: 0.7;
+}
+
+.loginPanel .selectLanguage img:hover {
+	opacity: 1;
+}
+
 .loginPanel .htmlFEVersionInfo {
 	display: block;
 	position: absolute;

@@ -19,6 +19,8 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.AbstractImagePrototype;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
@@ -44,6 +46,8 @@ public class LoginPanel extends FlowPanel implements ClickHandler {
 
 	private HTML htmlFEVersionInfo;
 
+	private FlowPanel selectLanguagePanel;
+
 	/**
 	 * Cosntructor.
 	 */
@@ -65,6 +69,8 @@ public class LoginPanel extends FlowPanel implements ClickHandler {
 
 		Image imgSapResearch = new Image(R.resc.imgSapResearchGrayOrange());
 		imgSapResearch.addStyleName("imgSapResearch");
+
+		createLanguagePanel();
 
 		verticalCell = new SimplePanel();
 
@@ -89,6 +95,18 @@ public class LoginPanel extends FlowPanel implements ClickHandler {
 		add(verticalCell);
 		add(htmlFEVersionInfo);
 		add(imgSapResearch);
+		add(selectLanguagePanel);
+	}
+
+	private void createLanguagePanel() {
+		selectLanguagePanel = new FlowPanel();
+		selectLanguagePanel.addStyleName("selectLanguage");
+
+		selectLanguagePanel.add(new HTML(R.lang.selectLanguage()));
+		selectLanguagePanel.add(new Anchor(AbstractImagePrototype.create(R.resc.imgFlagEn()).getSafeHtml(),
+				"frontend.jsp"));
+		selectLanguagePanel.add(new Anchor(AbstractImagePrototype.create(R.resc.imgFlagDe()).getSafeHtml(),
+				"frontend.jsp?locale=de"));
 	}
 
 	/**

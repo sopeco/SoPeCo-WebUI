@@ -82,4 +82,6 @@ public interface LanguageConstants extends Constants {
 	String continueString();
 
 	String addExperimentSeries();
+
+	String selectLanguage();
 }
