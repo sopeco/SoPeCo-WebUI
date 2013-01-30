@@ -198,13 +198,6 @@
 							</includes>
 						</resource>
 						<resource>
-							<directory>rsc</directory>
-							<targetPath>rsc</targetPath>
-							<includes>
-								<include>**/*</include>
-							</includes>
-						</resource>
-						<resource>
 							<directory>persistence</directory>
 							<targetPath>WEB-INF/classes</targetPath>
 							<includes>
@@ -251,7 +244,7 @@
 					<configLocation>checkstyle-sopeco.config.xml</configLocation>
 				</configuration>
 			</plugin>
-			
+
 			<plugin>
 				<groupId>com.mycila.maven-license-plugin</groupId>
 				<artifactId>maven-license-plugin</artifactId>
@@ -267,9 +260,13 @@
 						<organization>SAP</organization>
 						<copyrightHolder>SAP</copyrightHolder>
 					</properties>
-					
+
 					<useDefaultExcludes>true</useDefaultExcludes>
-                
+
+					<excludes>
+						<exclude>src/com/google/gwt/emul/*</exclude>
+					</excludes>
+
 				</configuration>
 			</plugin>
 

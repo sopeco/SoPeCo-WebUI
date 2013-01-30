@@ -40,16 +40,18 @@ import org.sopeco.frontend.client.helper.callback.CallbackBatch;
 import org.sopeco.frontend.client.helper.callback.ParallelCallback;
 import org.sopeco.frontend.client.layout.MainLayoutPanel;
 import org.sopeco.frontend.client.layout.login.LoginPanel;
-import org.sopeco.frontend.client.layout.popups.Message;
 import org.sopeco.frontend.client.log.LogHandler;
 import org.sopeco.frontend.client.manager.Manager;
 import org.sopeco.frontend.client.manager.ScenarioManager;
 import org.sopeco.frontend.client.resources.R;
 import org.sopeco.frontend.client.rpc.RPC;
+import org.sopeco.frontend.client.widget.ExceptionDialog;
 import org.sopeco.frontend.shared.helper.ExtensionContainer;
 import org.sopeco.persistence.metadata.entities.DatabaseInstance;
 
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 
 /**
@@ -58,18 +60,18 @@ import com.google.gwt.user.client.ui.RootLayoutPanel;
  * @author Marius Oehler
  * 
  */
-public class FrontendEntryPoint implements EntryPoint, SimpleNotify {
+public class SoPeCoUI implements EntryPoint, SimpleNotify, UncaughtExceptionHandler {
 
-	private static FrontendEntryPoint frontend;
+	private static SoPeCoUI frontend;
 
-	private static final Logger LOGGER = Logger.getLogger(FrontendEntryPoint.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(SoPeCoUI.class.getName());
 
 	/**
 	 * Returns the FrontendEntryPoint object of this application.
 	 * 
 	 * @return FrontendEntryPoint-Object
 	 */
-	public static FrontendEntryPoint get() {
+	public static SoPeCoUI get() {
 		return frontend;
 	}
 
@@ -77,14 +79,15 @@ public class FrontendEntryPoint implements EntryPoint, SimpleNotify {
 	/*-{
 		return $wnd.buildInfo;
 	}-*/;
-
+	
 	private DatabaseInstance connectedDatabase;
 
 	private CallbackBatch loadingBatch;
 
 	/**
-	 * This method will be executed at the start of the application. It's like
-	 * the "main-method" of the application.
+	 * This method will be executed at the start of the application. The
+	 * {@link EntryPoint} method {@link #onModuleLoad()}, called automatically
+	 * by loading the module.
 	 */
 	@Override
 	public void onModuleLoad() {
@@ -92,8 +95,10 @@ public class FrontendEntryPoint implements EntryPoint, SimpleNotify {
 
 		R.resc.cssCommon().ensureInjected();
 
+		RootLayoutPanel.get().addStyleName("rootPanel");
+
 		configLogger();
-		R.loadLangFile(FrontendEntryPoint.this);
+		R.loadLangFile(SoPeCoUI.this);
 	}
 
 	/**
@@ -103,6 +108,23 @@ public class FrontendEntryPoint implements EntryPoint, SimpleNotify {
 		Logger rootLogger = Logger.getLogger("");
 		rootLogger.setLevel(Level.FINE);
 		rootLogger.addHandler(LogHandler.get());
+
+		GWT.setUncaughtExceptionHandler(this);
+	}
+
+	@Override
+	public void onUncaughtException(Throwable e) {
+		e = e.getCause();
+
+		String st = e.getClass().getName() + ": " + e.getMessage();
+		for (StackTraceElement ste : e.getStackTrace()) {
+			st += "\n" + ste.toString();
+		}
+
+		LOGGER.severe(st);
+		GWT.log(e.getClass().getName() + ": " + e.getMessage(), e);
+		
+		ExceptionDialog.show(e);
 	}
 
 	/**
@@ -125,8 +147,7 @@ public class FrontendEntryPoint implements EntryPoint, SimpleNotify {
 			@Override
 			protected void onFailure(List<Throwable> exceptionList) {
 				for (Throwable t : exceptionList) {
-					LOGGER.severe(t.getLocalizedMessage());
-					Message.error(t.getMessage());
+					onUncaughtException(t);
 				}
 			}
 
@@ -189,5 +210,4 @@ public class FrontendEntryPoint implements EntryPoint, SimpleNotify {
 		RootLayoutPanel rootLayoutPanel = RootLayoutPanel.get();
 		rootLayoutPanel.clear();
 	}
-
 }

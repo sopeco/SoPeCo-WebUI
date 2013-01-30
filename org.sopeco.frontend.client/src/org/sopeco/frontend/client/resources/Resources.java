@@ -77,7 +77,10 @@ public interface Resources extends ClientBundle {
 
 	@Source("images/background_noise.png")
 	DataResource imgBackgroundNoise();
-
+	
+	@Source("images/background_noise_2.png")
+	DataResource imgBackgroundNoise2();
+	
 	@Source("images/db_add.png")
 	ImageResource imgIconDatabaseAdd();
 

@@ -1,66 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-
-    Copyright (c) 2013 SAP
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-        * Redistributions of source code must retain the above copyright
-          notice, this list of conditions and the following disclaimer.
-        * Redistributions in binary form must reproduce the above copyright
-          notice, this list of conditions and the following disclaimer in the
-          documentation and/or other materials provided with the distribution.
-        * Neither the name of the SAP nor the
-          names of its contributors may be used to endorse or promote products
-          derived from this software without specific prior written permission.
-
-    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-    ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-    WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-    DISCLAIMED. IN NO EVENT SHALL SAP BE LIABLE FOR ANY
-    DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-    (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-    LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-    ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-    (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
--->
+<!-- Copyright (c) 2013 SAP All rights reserved. Redistribution and use in 
+	source and binary forms, with or without modification, are permitted provided 
+	that the following conditions are met: * Redistributions of source code must 
+	retain the above copyright notice, this list of conditions and the following 
+	disclaimer. * Redistributions in binary form must reproduce the above copyright 
+	notice, this list of conditions and the following disclaimer in the documentation 
+	and/or other materials provided with the distribution. * Neither the name 
+	of the SAP nor the names of its contributors may be used to endorse or promote 
+	products derived from this software without specific prior written permission. 
+	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+	AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+	IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+	ARE DISCLAIMED. IN NO EVENT SHALL SAP BE LIABLE FOR ANY DIRECT, INDIRECT, 
+	INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT 
+	NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
+	DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY 
+	OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
+	OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
+	ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. -->
 <module rename-to='sopeco_frontend'>
-	<!-- Inherit the core Web Toolkit stuff. -->
 	<inherits name='com.google.gwt.user.User' />
+	<inherits name="com.google.gwt.i18n.I18N" />
 
-	<!-- Inherit the default GWT style sheet. You can change -->
-	<!-- the theme of your GWT application by uncommenting -->
-	<!-- any one of the following lines. -->
+	<extend-property name="locale" values="de" /> 
+
 	<inherits name='com.google.gwt.user.theme.clean.Clean' />
-	<!-- <inherits name='com.google.gwt.user.theme.standard.Standard'/> -->
-	<!-- <inherits name='com.google.gwt.user.theme.chrome.Chrome'/> -->
-	<!--<inherits name='com.google.gwt.user.theme.dark.Dark'/> -->
 
 	<stylesheet src="../frontend_style.css" />
 
 	<!-- Other module inherits -->
-	<!-- <inherits name='org.sopeco.config.Configuration' /> <inherits name='org.sopeco.config.exception.ConfigurationException' 
-		/> -->
 	<inherits name='org.sopeco.persistence' />
 	<inherits name='org.sopeco.gwt' />
 	<inherits name="com.google.gwt.resources.Resources" />
-	<inherits name='com.google.gwt.visualization.Visualization'/>
+	<inherits name='com.google.gwt.visualization.Visualization' />
 
 	<inherits name="com.google.gwt.logging.Logging" />
 	<set-property name="gwt.logging.enabled" value="TRUE" />
 	<set-property name="gwt.logging.popupHandler" value="DISABLED" />
 
 	<!-- Specify the app entry point class. -->
-	<entry-point class='org.sopeco.frontend.client.FrontendEntryPoint' />
+	<entry-point class='org.sopeco.frontend.client.SoPeCoUI' />
 
 	<!-- Specify the paths for translatable code -->
 	<source path='client' />
 	<source path='shared' />
-
-
 
 
 	<!-- TEMP FIX UNTIL GOING TO GWT 2.5 -->

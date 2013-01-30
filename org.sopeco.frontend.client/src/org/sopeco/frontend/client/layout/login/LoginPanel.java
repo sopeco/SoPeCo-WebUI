@@ -3,7 +3,7 @@ package org.sopeco.frontend.client.layout.login;
 import java.util.Date;
 import java.util.List;
 
-import org.sopeco.frontend.client.FrontendEntryPoint;
+import org.sopeco.frontend.client.SoPeCoUI;
 import org.sopeco.frontend.client.layout.popups.Message;
 import org.sopeco.frontend.client.manager.Manager;
 import org.sopeco.frontend.client.resources.R;
@@ -60,7 +60,7 @@ public class LoginPanel extends FlowPanel implements ClickHandler {
 		R.resc.cssLoginBox().ensureInjected();
 		addStyleName("loginPanel");
 
-		htmlFEVersionInfo = new HTML(FrontendEntryPoint.getBuildInfo());
+		htmlFEVersionInfo = new HTML(SoPeCoUI.getBuildInfo());
 		htmlFEVersionInfo.addStyleName("htmlFEVersionInfo");
 
 		Image imgSapResearch = new Image(R.resc.imgSapResearchGrayOrange());
@@ -299,7 +299,7 @@ public class LoginPanel extends FlowPanel implements ClickHandler {
 			public void onSuccess(AccountDetails result) {
 
 				Manager.get().setAccountDetails(result);
-				FrontendEntryPoint.get().initializeMainView(instance);
+				SoPeCoUI.get().initializeMainView(instance);
 			}
 		});
 	}

@@ -28,7 +28,7 @@ package org.sopeco.frontend.client.layout;
 
 import java.util.logging.Logger;
 
-import org.sopeco.frontend.client.FrontendEntryPoint;
+import org.sopeco.frontend.client.SoPeCoUI;
 import org.sopeco.frontend.client.layout.dialog.AddScenarioDialog;
 import org.sopeco.frontend.client.layout.dialog.LogDialog;
 import org.sopeco.frontend.client.layout.popups.Confirmation;
@@ -118,7 +118,7 @@ public class NorthPanel extends FlowPanel implements ClickHandler, InputDialogHa
 		} else if (event.getSource() == imageScenarioRemove && isEnabled(imageScenarioRemove)) {
 			removeScenario();
 		} else if (event.getSource() == imageChangeAccount) {
-			FrontendEntryPoint.get().changeDatabase();
+			SoPeCoUI.get().changeDatabase();
 		} else if (event.getSource() == imageLog) {
 			LogDialog.show();
 		}
@@ -289,8 +289,8 @@ public class NorthPanel extends FlowPanel implements ClickHandler, InputDialogHa
 
 		add(navigationPanel);
 
-		connectedToText.setHTML(R.get("connected_to") + ": <b>"
-				+ FrontendEntryPoint.get().getConnectedDatabase().getDbName() + "</b>");
+		connectedToText.setHTML(R.get("connected_to") + ": <b>" + SoPeCoUI.get().getConnectedDatabase().getDbName()
+				+ "</b>");
 
 		updateScenarioList();
 	}

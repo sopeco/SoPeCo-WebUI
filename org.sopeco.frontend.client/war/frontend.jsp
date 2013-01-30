@@ -14,10 +14,6 @@
    
     <link type="text/css" rel="stylesheet" href="Org_sopeco_frontend.css">
 
-    <!--[if IE]>
-	<link rel="stylesheet" type="text/css" href="frontend_style_ie.css" />
-	<![endif]-->
-
     
     <title>SoftwarePerformanceCockpit FrontEnd</title>
    
@@ -40,8 +36,6 @@
       </div>
     </noscript>
 
-   
-   <img src="images/loader_circle.gif" id="loadingIndicator" />
    
   </body>
 </html>

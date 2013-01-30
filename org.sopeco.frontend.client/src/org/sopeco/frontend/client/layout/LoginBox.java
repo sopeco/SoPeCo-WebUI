@@ -29,7 +29,7 @@ package org.sopeco.frontend.client.layout;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.sopeco.frontend.client.FrontendEntryPoint;
+import org.sopeco.frontend.client.SoPeCoUI;
 import org.sopeco.frontend.client.layout.dialog.AddDBDialog;
 import org.sopeco.frontend.client.layout.popups.Confirmation;
 import org.sopeco.frontend.client.layout.popups.InputDialog;
@@ -354,7 +354,7 @@ public class LoginBox extends DialogBox implements ClickHandler, AsyncCallback<L
 				hide();
 				Manager.get().setAccountDetails(result);
 
-				FrontendEntryPoint.get().initializeMainView(instance);
+				SoPeCoUI.get().initializeMainView(instance);
 			}
 		});
 	}

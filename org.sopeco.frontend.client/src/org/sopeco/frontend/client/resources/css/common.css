@@ -1,12 +1,71 @@
+@url noise2 imgBackgroundNoise2;
+.rootPanel {
+	min-width: 1000px;
+	min-height: 400px;
+}
+
 .dialogBox {
 	border: 1px solid #ccc;
 	border-radius: 8px;
 	box-shadow: 0 0 13px 0 #bcd;
 	background-color: #fff;
+	z-index: 9999;
 }
 
 .dialogBox-padding {
 	padding: 1em;
+}
+
+.sopeco-Dialog {
+	border: 1px solid #ccc;
+	border-radius: 8px;
+	box-shadow: 0 0 13px 0 #bcd;
+	background-color: #fff;
+	z-index: 9999;
+	padding: 0;
+}
+
+.sopeco-Dialog>div {
+	padding: .8em;
+}
+
+.sopeco-Dialog h3 {
+	margin: 0;
+}
+
+.sopeco-Dialog .dragPanel {
+	position: absolute;
+	width: 100%;
+	height: 1em;
+	top: 0;
+	left: 0;
+	cursor: move;
+}
+
+.sopeco-Dialog-Glass {
+	background-image: noise2;
+	z-index: 9999;
+	opacity: 0.1;
+}
+
+.sopeco-Dialog-ButtonPanel {
+	padding-top: .5em;
+	border-top: 1px solid #ccc;
+}
+
+.sopeco-Dialog-ButtonPanel>button {
+	float: right;
+	margin-left: 10px;
+	min-width: 4em;
+}
+
+.sopeco-ExceptionDialog-Exception {
+	color: rgb(255, 0, 0);
+	font-size: 0.9em;
+	margin: .5em 0;
+	border-left: 2px solid;
+	padding: .5em 0em .5em 1em;
+	background-color: rgb(255, 247, 247);
 }
 
 .horizontalLine {

@@ -35,76 +35,51 @@ import com.google.gwt.i18n.client.Constants;
  */
 public interface LanguageConstants extends Constants {
 
-	@DefaultStringValue("Execute Experiment")
 	String executeExperiment();
 
-	@DefaultStringValue("Schedule Experiment")
 	String scheduleExperiment();
 
-	@DefaultStringValue("Select Account for SoPeCo Web-FrontEnd")
 	String loginSelectAccount();
 
-	@DefaultStringValue("connect")
 	String connect();
 
-	@DefaultStringValue("No Accounts available")
 	String noAccountsAvailable();
 
-	@DefaultStringValue("Code download failed. Please refresh your browser window.")
 	String codeDownloadFailed();
 
-	@DefaultStringValue("Add new account")
 	String addNewAccount();
 
-	@DefaultStringValue("Add account")
 	String addAccount();
 
-	@DefaultStringValue("Cancel")
 	String cancel();
 
-	@DefaultStringValue("Accountname")
 	String accountname();
 
-	@DefaultStringValue("Password")
 	String password();
 
-	@DefaultStringValue("Confirm password")
 	String confirmPassword();
 
-	@DefaultStringValue("optional")
 	String optional();
 
-	@DefaultStringValue("Database")
 	String database();
 
-	@DefaultStringValue("Host")
 	String host();
 
-	@DefaultStringValue("Port")
 	String port();
 
-	@DefaultStringValue("Show")
 	String show();
 
-	@DefaultStringValue("Hide")
 	String hide();
 
-	@DefaultStringValue("Settings")
 	String settings();
 
-	@DefaultStringValue("Delete")
 	String delete();
 
-	@DefaultStringValue("Account")
 	String account();
 
-	@DefaultStringValue("The password you entered is incorrect.")
 	String wrongPassword();
-	
-	@DefaultStringValue("Continue")
+
 	String continueString();
-	
-	@DefaultStringValue("Add ExperimentSeries")
+
 	String addExperimentSeries();
-	
 }
