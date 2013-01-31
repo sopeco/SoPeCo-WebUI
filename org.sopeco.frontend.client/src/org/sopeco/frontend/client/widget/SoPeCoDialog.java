@@ -71,10 +71,12 @@ public class SoPeCoDialog extends PopupPanel implements ResizeHandler, MouseDown
 	private boolean isDraggable = false;
 
 	private boolean isDragging = false;
+
 	private Point mouseOffset;
 	private HandlerRegistration moveGlassRegistration;
 	private HandlerRegistration moveRegistration;
 	private HandlerRegistration resizeRegistration;
+	private double windowMargin = -1;
 	private FlowPanel wrapper;
 
 	/**
@@ -133,6 +135,15 @@ public class SoPeCoDialog extends PopupPanel implements ResizeHandler, MouseDown
 		return button;
 	}
 
+	@Override
+	public void center() {
+		if (windowMargin != -1 && contentWidget != null) {
+			String maxHeight = Window.getClientHeight() - windowMargin + "px";
+			contentWidget.getElement().getStyle().setProperty("maxHeight", maxHeight);
+		}
+		super.center();
+	}
+
 	/**
 	 * Returns the {@link Widget} that is set as the content widget.
 	 * 
@@ -143,9 +154,12 @@ public class SoPeCoDialog extends PopupPanel implements ResizeHandler, MouseDown
 	}
 
 	@Override
-	public void hide() {
+	public synchronized void hide() {
+		if (resizeRegistration != null) {
+			resizeRegistration.removeHandler();
+			resizeRegistration = null;
+		}
 		super.hide();
-		resizeRegistration.removeHandler();
 	}
 
 	/**
@@ -280,6 +294,20 @@ public class SoPeCoDialog extends PopupPanel implements ResizeHandler, MouseDown
 	}
 
 	/**
+	 * If this value is not set to <code>-1</code> the content widget will be
+	 * resized respectively the maxHeight will be set to
+	 * <code>windowHeight - VALUE</code> on the window resize event. Thereby,
+	 * the distance between the window frame and dialog is about
+	 * <code>VALUE / 2</code>.
+	 * 
+	 * @param pMargin
+	 *            value of the distance to the window frame
+	 */
+	public void setWindowMargin(double pMargin) {
+		windowMargin = pMargin;
+	}
+
+	/**
 	 * Refreshes the wrapper panel, which contains all elements of the popup.
 	 * This method is called, if elements are added or removed.
 	 */
@@ -321,5 +349,4 @@ public class SoPeCoDialog extends PopupPanel implements ResizeHandler, MouseDown
 		}
 		rebuild();
 	}
-
 }

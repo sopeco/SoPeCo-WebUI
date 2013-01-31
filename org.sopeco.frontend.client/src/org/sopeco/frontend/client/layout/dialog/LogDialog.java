@@ -33,18 +33,14 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
 import org.sopeco.frontend.client.resources.R;
-import org.sopeco.gwt.widgets.Headline;
+import org.sopeco.frontend.client.widget.SoPeCoDialog;
 import org.sopeco.gwt.widgets.Preformatted;
 
 import com.google.gwt.dom.client.Style.BorderStyle;
-import com.google.gwt.dom.client.Style.Float;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
  * 
@@ -53,7 +49,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  */
 public final class LogDialog {
 
-	private static DialogBox dialog;
+	private static SoPeCoDialog dialog;
 	private static Preformatted preLog;
 	private static final int WIDTH = 500, HEIGHT = 300;
 	private static ScrollPanel scrollPanel;
@@ -73,35 +69,25 @@ public final class LogDialog {
 
 		scrollPanel = new ScrollPanel();
 		scrollPanel.add(preLog);
-		scrollPanel.setSize(WIDTH + "px", HEIGHT + "px");
 		scrollPanel.getElement().getStyle().setBorderColor("#CCC");
 		scrollPanel.getElement().getStyle().setBorderStyle(BorderStyle.SOLID);
 		scrollPanel.getElement().getStyle().setBorderWidth(1, Unit.PX);
+		scrollPanel.getElement().getStyle().setMarginTop(0.5, Unit.EM);
+		scrollPanel.getElement().getStyle().setMarginBottom(0.5, Unit.EM);
+		preLog.getElement().getStyle().setFontSize(11, Unit.PX);
 
-		VerticalPanel panel = new VerticalPanel();
-		panel.getElement().getStyle().setMargin(0.5, Unit.EM);
-
-		Headline headline = new Headline(R.get("logDialog"));
-		headline.getElement().getStyle().setMargin(0, Unit.PX);
-		headline.getElement().getStyle().setMarginBottom(10, Unit.PX);
-
-		Button btnClose = new Button(R.get("Close"));
-		btnClose.getElement().getStyle().setMarginTop(0.5, Unit.EM);
-		btnClose.getElement().getStyle().setFloat(Float.RIGHT);
-		btnClose.addClickHandler(new ClickHandler() {
+		dialog = new SoPeCoDialog(false);
+		dialog.setHeadline(R.get("logDialog"));
+		dialog.setContentWidget(scrollPanel);
+		dialog.setDraggable(true);
+		dialog.setWindowMargin(200);
+		dialog.setWidth("600px");
+		dialog.addButton("Close", new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				LogDialog.hide();
+				dialog.hide();
 			}
 		});
-
-		panel.add(headline);
-		panel.add(scrollPanel);
-		panel.add(btnClose);
-
-		dialog = new DialogBox(false, false);
-		dialog.setGlassEnabled(false);
-		dialog.add(panel);
 	}
 
 	public static void pushLogRecord(LogRecord log) {

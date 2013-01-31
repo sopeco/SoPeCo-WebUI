@@ -18,11 +18,13 @@
 	OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
 	OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
 	ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. -->
+<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.5.0//EN"
+  "http://google-web-toolkit.googlecode.com/svn/tags/2.5.0/distro-source/core/src/gwt-module.dtd">
 <module rename-to='sopeco_frontend'>
 	<inherits name='com.google.gwt.user.User' />
 	<inherits name="com.google.gwt.i18n.I18N" />
 
-	<extend-property name="locale" values="de" /> 
+	<extend-property name="locale" values="de" />
 
 	<inherits name='com.google.gwt.user.theme.clean.Clean' />
 

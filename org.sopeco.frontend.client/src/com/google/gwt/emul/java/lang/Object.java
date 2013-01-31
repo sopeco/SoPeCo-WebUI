@@ -20,79 +20,88 @@ import com.google.gwt.core.client.impl.Impl;
 
 /**
  * The superclass of all other types. The GWT emulation library supports a
- * limited subset of methods on <code>Object</code> due to browser limitations.
- * The methods documented here are the only ones available.
+ * limited subset of methods on <code>Object</code> due to browser
+ * limitations. The methods documented here are the only ones available.
  */
 public class Object {
 
-	/**
-	 * Used by {@link com.google.gwt.core.client.impl.WeakMapping} in web mode
-	 * to store an expando containing a String -> Object mapping.
-	 * 
-	 * @skip
-	 */
-	@SuppressWarnings("unused")
-	private transient JavaScriptObject expando;
+  /**
+   * Holds class literal for subtypes of Object.
+   */
+  // BUG: If this field name conflicts with a method param name, JDT will complain
+  // CHECKSTYLE_OFF
+  private transient Class<?> ___clazz;
+  // CHECKSTYLE_ON
 
-	/**
-	 * A JavaScript Json map for looking up castability between types.
-	 * 
-	 * @skip
-	 */
-	@SuppressWarnings("unused")
-	private transient JavaScriptObject castableTypeMap;
+  /**
+   * Used by {@link com.google.gwt.core.client.impl.WeakMapping} in web mode
+   * to store an expando containing a String -> Object mapping.
+   * 
+   * @skip
+   */
+  @SuppressWarnings("unused")
+  private transient JavaScriptObject expando;
 
-	/**
-	 * A special marker field used internally to the GWT compiler. For example,
-	 * it is used for distinguishing whether an object is a Java object or a
-	 * JavaScriptObject. It is also used to differentiate our own Java objects
-	 * from foreign objects in a different module on the same page.
-	 * 
-	 * @see com.google.gwt.lang.Cast
-	 * 
-	 * @skip
-	 */
-	@SuppressWarnings("unused")
-	private transient JavaScriptObject typeMarker;
+  /**
+   * A JavaScript Json map for looking up castability between types.
+   * 
+   * @skip
+   */
+  @SuppressWarnings("unused")
+  private transient JavaScriptObject castableTypeMap;
 
-	public boolean equals(Object other) {
-		return this == other;
-	}
+  /**
+   * A special marker field used internally to the GWT compiler. For example, it
+   * is used for distinguishing whether an object is a Java object or a
+   * JavaScriptObject. It is also used to differentiate our own Java objects
+   * from foreign objects in a different module on the same page.
+   * 
+   * @see com.google.gwt.lang.Cast
+   * 
+   * @skip
+   */
+  @SuppressWarnings("unused")
+  private transient JavaScriptObject typeMarker;
 
-	/*
-	 * Note: Unlike the real JRE, we don't spec this method as final because the
-	 * compiler generates a polymorphic override on every other class which will
-	 * return the correct class object.
-	 * 
-	 * TODO(scottb, compiler magician): declare this final, but have the
-	 * compiler fix it up.
-	 */
-	public Class<? extends Object> getClass() {
-		return Object.class;
-	}
+  public boolean equals(Object other) {
+    return this == other;
+  }
 
-	public int hashCode() {
-		return Impl.getHashCode(this);
-	}
+  /*
+   * magic; Actual assignment to this field is done by Class.createFor() methods by injecting it
+   * into the prototype.
+   */
+  public Class<? extends Object> getClass() {
+    return ___clazz;
+  }
 
-	public String toString() {
-		return getClass().getName() + '@' + Integer.toHexString(hashCode());
-	}
+  public int hashCode() {
+    return Impl.getHashCode(this);
+  }
 
-	protected void finalize() throws Throwable {
-	}
+  public String toString() {
+    return getClass().getName() + '@' + Integer.toHexString(hashCode());
+  }
 
-	protected native Object clone() throws CloneNotSupportedException /*-{
-		var cloned = {};
+  /**
+   * Never called; here for JRE compatibility.
+   * 
+   * @skip
+   */
+  protected void finalize() throws Throwable {
+  }
+  
+  protected native Object clone() throws CloneNotSupportedException /*-{
+	var cloned = {};
 
-		@com.google.gwt.core.client.impl.Impl::getHashCode(Ljava/lang/Object;)(cloned);
+	@com.google.gwt.core.client.impl.Impl::getHashCode(Ljava/lang/Object;)(cloned);
 
-		var obj = this;
-		for ( var i in obj) {
-			if (!(i in cloned)) {
-				cloned[i] = obj[i];
-			}
+	var obj = this;
+	for ( var i in obj) {
+		if (!(i in cloned)) {
+			cloned[i] = obj[i];
 		}
-		return cloned;
-	}-*/;
+	}
+	return cloned;
+}-*/;
 }
