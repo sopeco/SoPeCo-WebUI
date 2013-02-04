@@ -14,15 +14,15 @@ public class ChartData implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	private Map<String, List<Double>> data;
+	private Map<Double, List<Double>> data;
 	private List<String> dataSetNames = new ArrayList<String>();
 	
 	public ChartData() {
-		data = new HashMap<String, List<Double>>();
+		data = new HashMap<Double, List<Double>>();
 	}
 
-	public List<String> getxAxis() {
-		return new ArrayList<String>(data.keySet());
+	public List<Double> getxAxis() {
+		return new ArrayList<Double>(data.keySet());
 	}
 
 	public List<List<Double>> getDatarows() {
@@ -33,7 +33,7 @@ public class ChartData implements Serializable {
 		this.addDatarows(name, data);
 	}
 	
-	public void setData(Map<String, List<Double>> data){
+	public void setData(Map<Double, List<Double>> data){
 		this.data = data;
 	}
 
@@ -42,7 +42,12 @@ public class ChartData implements Serializable {
 		StringBuilder builder = new StringBuilder();
 		builder.append(getClass().getName());
 		builder.append("\n");
-		for (Entry<String, List<Double>> d : data.entrySet()){
+		builder.append("names: ");
+		for (String s : dataSetNames){
+			builder.append(s);
+		}
+		builder.append("\n");
+		for (Entry<Double, List<Double>> d : data.entrySet()){
 			builder.append(d.getKey());
 			builder.append(": ");
 			for (Double doub : d.getValue()){

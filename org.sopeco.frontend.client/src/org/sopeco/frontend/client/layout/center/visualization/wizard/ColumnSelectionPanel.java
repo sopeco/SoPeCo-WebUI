@@ -35,100 +35,65 @@ import java.util.Map;
 import org.sopeco.frontend.shared.entities.ChartParameter;
 import org.sopeco.frontend.shared.helper.AggregationInputType;
 import org.sopeco.frontend.shared.helper.AggregationOutputType;
+import org.sopeco.frontend.shared.helper.Utilities;
 
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class ColumnSelector extends HorizontalPanel {
-	private int maxColumns = 1;
-	private FlowPanel verticalPanel1;
-	private FlowPanel verticalPanel2;
-	private Map<ChartParameter, ListBox> selectors = new HashMap<ChartParameter, ListBox>();
+public class ColumnSelectionPanel extends Grid {
+	private ListBox input;
 	private ListBox output;
-	private ListBox outputAggregation;
 	private List<ChartParameter> inputParameter;
 	private List<ChartParameter> outputParameter;
 
-	public ColumnSelector() {
+	public ColumnSelectionPanel() {
+		super(2, 2);
+		this.getElement().getStyle().setWidth(100, Unit.PCT);
 		inputParameter = new ArrayList<ChartParameter>();
 		outputParameter = new ArrayList<ChartParameter>();
-		verticalPanel1 = new FlowPanel();
-		this.add(verticalPanel1);
-		verticalPanel2 = new FlowPanel();
-		this.add(verticalPanel2);
+		showColumnSelection();
 	}
 
 	public void setChartParameter(List<ChartParameter> inputParameter, List<ChartParameter> outputParameter) {
 		this.inputParameter = inputParameter;
 		this.outputParameter = outputParameter;
+		showColumnSelection();
 	}
 
 
 	public void showColumnSelection() {
-		verticalPanel1.clear();
-		verticalPanel2.clear();
-		final HorizontalPanel horizontalPanel = new HorizontalPanel();
-		final ListBox nrPicker = new ListBox();
-		for (int i = 0; i < outputParameter.size(); i++){
-			nrPicker.addItem(""+(i+1));
-		}
-		nrPicker.setSelectedIndex(maxColumns-1);
-		nrPicker.addChangeHandler(new ChangeHandler() {
-			
-			@Override
-			public void onChange(ChangeEvent event) {
-				maxColumns = nrPicker.getSelectedIndex()+1;
-				verticalPanel2.clear();
-				verticalPanel2.add(horizontalPanel);
-				createChartOutputWidgets();
-			}
-		});
-		horizontalPanel.setSpacing(4);
-		horizontalPanel.add(new Label("No. of datasets"));
-		horizontalPanel.add(nrPicker);
-		verticalPanel2.add(horizontalPanel);
-		createChartInputWidgets();
-		createChartOutputWidgets();
+		this.clear();
+		createChartInputWidget();
+		createChartOutputWidget();
 	}
 	
-	private void createChartInputWidgets(){
-		for (int i = 0; i < inputParameter.size(); i++) {
-			HorizontalPanel hp = new HorizontalPanel();
-			hp.setSpacing(4);
-			hp.add(new Label(inputParameter.get(i).getParameterName()));
-			final ListBox lb = new ListBox();
-			selectors.put(inputParameter.get(i), lb);
-			hp.add(lb);
-			for (AggregationInputType t : AggregationInputType.values()) {
-				lb.addItem(t.name());
-			}
-			verticalPanel1.add(hp);
+	private void createChartInputWidget(){
+		Collections.sort(inputParameter);
+		this.setWidget(0, 0, new Label("Input "));
+		input = new ListBox();
+		for (ChartParameter p : inputParameter){
+			input.addItem(Utilities.trimParameter(p.getParameterName()));
 		}
-		
+		this.setWidget(0, 1, input); 
 		return;
 	}
 	
-	private void createChartOutputWidgets(){
+	private void createChartOutputWidget(){
 		Collections.sort(outputParameter);
-		HorizontalPanel hp = new HorizontalPanel();
-		hp.setSpacing(4);
-		hp.add(new Label("Dataset "));
+		this.setWidget(1, 0, new Label("Observation Value "));
 		output = new ListBox();
 		for (ChartParameter p : outputParameter){
-			output.addItem(p.getParameterName());
+			output.addItem(Utilities.trimParameter(p.getParameterName()));
 		}
-		hp.add(output);
-		outputAggregation = new ListBox();
-		hp.add(outputAggregation);
-		for (AggregationOutputType t : AggregationOutputType.values()) {
-			outputAggregation.addItem(t.name());
-		}
-		verticalPanel2.add(hp);
+		this.setWidget(1, 1, output);
 		
 		return;
 	}
@@ -136,13 +101,16 @@ public class ColumnSelector extends HorizontalPanel {
 	public List<ChartParameter> getSelectedColumns() {
 		List<ChartParameter> sel = new ArrayList<ChartParameter>();
 		for (int i = 0; i < inputParameter.size(); i++){
-			ListBox lb = selectors.get(inputParameter.get(i));
-			inputParameter.get(i).setAggregationInputType(AggregationInputType.valueOf(AggregationInputType.class, lb.getItemText(lb.getSelectedIndex())));
+			if (Utilities.trimParameter(inputParameter.get(i).getParameterName()).equals(input.getValue(input.getSelectedIndex()))){
+				inputParameter.get(i).setAggregationInputType(AggregationInputType.SHOW);
+			} else {
+				inputParameter.get(i).setAggregationInputType(AggregationInputType.AGGREGATE);
+			}
+			
 			sel.add(inputParameter.get(i));
 		}
 		for (ChartParameter cp : outputParameter){
-			if (cp.getParameterName().equals(output.getItemText(output.getSelectedIndex()))){
-				cp.setAggregationOutputType(AggregationOutputType.valueOf(AggregationOutputType.class, outputAggregation.getItemText(outputAggregation.getSelectedIndex())));
+			if (Utilities.trimParameter(cp.getParameterName()).equals(output.getItemText(output.getSelectedIndex()))){
 				sel.add(cp);
 			}
 		}

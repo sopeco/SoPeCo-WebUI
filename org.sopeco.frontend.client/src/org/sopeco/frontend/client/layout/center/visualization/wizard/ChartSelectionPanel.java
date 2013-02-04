@@ -41,28 +41,33 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class ChartSelectionPanel extends FlowPanel{
 	
 	private ChartType selectedType = ChartType.LINECHART;
 	private List<ClickHandler> clickHandler;
-	private ListBox extensionSelection;
+	private List<ChartIconPanel> chartIconPanels;
 
 	public ChartSelectionPanel() {
 		FrontEndResources.loadVisualizationWizardCSS();
 		clickHandler = new ArrayList<ClickHandler>();
+		chartIconPanels = new ArrayList<ChartSelectionPanel.ChartIconPanel>();
 		ChartType[] types = ChartType.values();
 		for (int i = 0; i < types.length; i++){
 			final ChartType type = types[i];
-			ChartIconPanel chartIconPanel = new ChartIconPanel(type.name(), new Image("images/" + type.name().toLowerCase() + ".png"));
+			final ChartIconPanel chartIconPanel = new ChartIconPanel(type.name(), new Image("images/" + type.name().toLowerCase() + ".png"));
+			chartIconPanels.add(chartIconPanel);
 			chartIconPanel.addStyleName("chartIconBox");
 			chartIconPanel.addClickHandler(new ClickHandler() {
 				
 				@Override
 				public void onClick(ClickEvent event) {
 					selectedType = type;
+					for (ChartIconPanel cip : chartIconPanels){
+						cip.setSelected(false);
+					}
+					chartIconPanel.setSelected(true);
 					for (ClickHandler handler : clickHandler){
 						handler.onClick(event);
 					}
@@ -70,18 +75,6 @@ public class ChartSelectionPanel extends FlowPanel{
 			});
 			this.add(chartIconPanel);
 		}
-		extensionSelection = new ListBox();
-		this.add(extensionSelection);
-	}
-	
-	public void setExtensions(List<String> extensions){
-		for (String ext : extensions){
-			extensionSelection.addItem(ext);
-		}
-	}
-	
-	public String getExtension(){
-		return extensionSelection.getItemText(extensionSelection.getSelectedIndex());
 	}
 	
 	public void addClickHandler(ClickHandler clickHandler){
@@ -116,6 +109,14 @@ public class ChartSelectionPanel extends FlowPanel{
 			
 			this.add(rootWidget);
 			this.getElement().getStyle().setMargin(1, Unit.EM);
+		}
+		
+		public void setSelected(boolean selected){
+			if (selected){
+				this.getElement().getStyle().setBorderColor("red");
+			} else {
+				this.getElement().getStyle().setBorderColor("grey");
+			}
 		}
 	}
 }

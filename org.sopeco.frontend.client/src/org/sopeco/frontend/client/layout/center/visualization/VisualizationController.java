@@ -67,6 +67,7 @@ import com.google.gwt.visualization.client.DataTable;
 import com.google.gwt.visualization.client.VisualizationUtils;
 import com.google.gwt.visualization.client.visualizations.corechart.ColumnChart;
 import com.google.gwt.visualization.client.visualizations.corechart.CoreChart;
+import com.google.gwt.visualization.client.visualizations.corechart.HorizontalAxisOptions;
 import com.google.gwt.visualization.client.visualizations.corechart.LineChart;
 import com.google.gwt.visualization.client.visualizations.corechart.Options;
 import com.google.gwt.visualization.client.visualizations.corechart.PieChart;
@@ -80,8 +81,7 @@ public class VisualizationController implements ICenterController {
 	private FlowPanel controlWidget;
 	private CellList<Visualization> visualizationList;
 	private Anchor chartLink;
-	private FlowPanel centerPanel;
-	private Widget chartWidget;
+	private ChartWidget chartWidget;
 
 	public static ChartsDataProvider visualizationDataProvider = new ChartsDataProvider();
 	public static final ProvidesKey<Visualization> KEY_PROVIDER = new ProvidesKey<Visualization>() {
@@ -93,7 +93,6 @@ public class VisualizationController implements ICenterController {
 
 	public VisualizationController() {
 		FrontEndResources.loadVisualizationViewCSS();
-		centerPanel = new FlowPanel();
 		rootWidget = new DockLayoutPanel(Unit.EM);
 		controlWidget = new FlowPanel();
 		final SingleSelectionModel<Visualization> ssm = new SingleSelectionModel<Visualization>(KEY_PROVIDER);
@@ -154,7 +153,7 @@ public class VisualizationController implements ICenterController {
 
 			@Override
 			public void onSelectionChange(SelectionChangeEvent event) {
-				createChart(ssm.getSelectedObject());
+				chartWidget.switchChart(ssm.getSelectedObject());
 				chartLink.setHref(ssm.getSelectedObject().getLink());
 				chartLink.setText(ssm.getSelectedObject().getLink());
 
@@ -175,7 +174,8 @@ public class VisualizationController implements ICenterController {
 		pager.setDisplay(visualizationList);
 		listPanel.add(visualizationList);
 		rootWidget.addWest(listPanel, 25);
-		rootWidget.add(centerPanel);
+		chartWidget = new ChartWidget();
+		rootWidget.add(chartWidget);
 	}
 
 	@Override
@@ -192,106 +192,7 @@ public class VisualizationController implements ICenterController {
 		refreshVisualizations();
 	}
 
-	public Widget createChart(final Visualization visualization) {
-		if (visualization == null) {
-			return null;
-		}
-		switch (visualization.getType()) {
-		case GCHART:
-			Runnable onLoadCallback = new Runnable() {
-				public void run() {
-					chartWidget = new FlowPanel();
-					
-					CoreChart chart = null;
-					switch (visualization.getOptions().getType()){
-					case BARCHART:
-						chart = new ColumnChart(createTable(
-								visualization.getData(),
-								visualization.getChartParameters(), ChartType.BARCHART),
-								createOptions(visualization.getOptions(),
-										visualization.getName()));
-						break;
-					case PIECHART:
-						chart = new PieChart(createTable(
-								visualization.getData(),
-								visualization.getChartParameters(), ChartType.PIECHART),
-								createOptions(visualization.getOptions(),
-										visualization.getName()));
-						break;
-					default:
-					chart = new LineChart(createTable(
-							visualization.getData(),
-							visualization.getChartParameters(), ChartType.LINECHART),
-							createOptions(visualization.getOptions(),
-									visualization.getName()));
-					}
-					((FlowPanel) chartWidget).add(chart);
-					centerPanel.clear();
-					centerPanel.add(chartWidget);
-				}
-			};
-
-			// Load the visualization api, passing the onLoadCallback to be
-			// called
-			// when loading is done.
-			VisualizationUtils.loadVisualizationApi(onLoadCallback,
-					CoreChart.PACKAGE);
-
-			break;
-		default:
-			chartWidget = new Frame(visualization.getLink());
-			chartWidget.getElement().getStyle().setWidth(100, Unit.PCT);
-			chartWidget.getElement().getStyle().setHeight(100, Unit.PCT);
-			chartWidget.getElement().getStyle().setBorderWidth(0, Unit.EM);
-			centerPanel.clear();
-			centerPanel.add(chartWidget);
-		}
-		return chartWidget;
-	}
-
-	private Options createOptions(ChartOptions chartOptions, String name) {
-		Options options = Options.create();
-		switch(chartOptions.getType()){
-		case BARCHART:
-			options.set("bar.groupWidth", "50");
-			break;
-		case PIECHART:
-			options.set("is3D", true);
-			break;
-		case LINECHART:
-			options.setLineWidth(2);
-			options.setPointSize(3);
-			break;
-		}
-		options.setWidth(900);
-		options.setHeight(500);
-		options.setTitle(name);
-		return options;
-	}
-
-	private AbstractDataTable createTable(ChartData data,
-			List<ChartParameter> chartParameters, ChartType type) {
-		DataTable dataTable = DataTable.create();
-		List<List<Double>> dataList = data.getDatarows();
-		List<String> names = data.getxAxis();
-		if (names.size() <= 0 || dataList.size() <= 0){
-			return dataTable;
-		}
-		dataTable.addColumn(ColumnType.STRING, "Input");
-		for (int i = 0; i < data.getDataSetNames().size(); i++){
-			dataTable.addColumn(ColumnType.NUMBER, data.getDataSetNames().get(i));
-		}
-		dataTable.addRows(names.size());
-		for (int row = 0; row < names.size(); row++){
-			dataTable.setValue(row, 0, names.get(row));
-		}
-		for (int row = 0; row < dataList.size(); row++){
-			for (int column = 0; column < dataList.get(row).size(); column++){
-				dataTable.setValue(row, column+1,dataList.get(row).get(column));
-			}
-		}
-		return dataTable;
-	}
+	
 	
 	public void refreshVisualizations(){
 		RPC.getVisualizationRPC().getVisualizations(visualizationList.getPageStart(), visualizationList.getPageSize(), new AsyncCallback<List<Visualization>>() {
@@ -332,7 +233,7 @@ public class VisualizationController implements ICenterController {
 			sb.appendHtmlConstant("<td style='font-size:95%;'>");
 			sb.appendHtmlConstant("<div>" + value.getName() + "</div>");
 			sb.appendHtmlConstant("</td></tr><tr><td>");
-			sb.appendHtmlConstant("<div>" + value.getType() + "/" + value.getOptions().getType().toString() + "/" + value.getChartParameters().get(value.getChartParameters().size()-1).getAggregationOutputType());
+			sb.appendHtmlConstant("<div>" + value.getType() + "/" + value.getOptions().getType().toString());
 			sb.appendHtmlConstant("</div>");
 			sb.appendHtmlConstant("</td></tr></table>");
 

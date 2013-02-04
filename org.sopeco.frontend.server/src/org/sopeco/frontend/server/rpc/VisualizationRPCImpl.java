@@ -27,8 +27,6 @@
 package org.sopeco.frontend.server.rpc;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,8 +48,6 @@ import org.sopeco.frontend.shared.entities.ChartOptions;
 import org.sopeco.frontend.shared.entities.ChartParameter;
 import org.sopeco.frontend.shared.entities.Visualization;
 import org.sopeco.frontend.shared.helper.AggregationInputType;
-import org.sopeco.frontend.shared.helper.AggregationOutputType;
-import org.sopeco.frontend.shared.helper.ChartXLabelComparator;
 import org.sopeco.persistence.dataset.DataSetAggregated;
 import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.dataset.SimpleDataSet;
@@ -90,7 +86,7 @@ public class VisualizationRPCImpl extends SuperRemoteServlet implements
 		String accountName = getUser().getCurrentAccount().getId();
 		ExperimentSeriesRun run = getRun(scenarioName,
 				measurementEnvironmentUrl, experimentName, timestamp);
-		data = loadData(run, chartParameter);
+		data = loadData(run, chartParameter, options);
 		Visualization visualization = chartCreator.createVisualization(
 				run.getLabel(), data, chartParameter, options);
 		visualization.setScenarioName(scenarioName);
@@ -128,7 +124,7 @@ public class VisualizationRPCImpl extends SuperRemoteServlet implements
 					visualizationsToRemove.add(visualization);
 				} else {
 					visualization.setData(loadData(run,
-							visualization.getChartParameters()));
+							visualization.getChartParameters(), visualization.getOptions()));
 				}
 				
 			}
@@ -138,41 +134,49 @@ public class VisualizationRPCImpl extends SuperRemoteServlet implements
 	}
 
 	private ChartData loadData(ExperimentSeriesRun run,
-			List<ChartParameter> chartParameter) {
+			List<ChartParameter> chartParameter, ChartOptions chartOptions) {
 		ChartData data;
 		data = new ChartData();
 		DataSetAggregated dataset = run.getSuccessfulResultDataSet();
 		SimpleDataSet simpledata = dataset.convertToSimpleDataSet();
 		Map<String, AggregationInputType> inParams = new HashMap<String, AggregationInputType>();
-		Map<String, AggregationOutputType> outParams = new HashMap<String, AggregationOutputType>();
+		String outputParam = "";
 		for (ChartParameter cp : chartParameter){
 			switch (cp.getType()) {
 			case ChartParameter.INPUT:
 				inParams.put(cp.getParameterName(), cp.getAggregationInputType());
 				break;
-			default:
-				outParams.put(cp.getParameterName(), cp.getAggregationOutputType());
+			case ChartParameter.OBSERVATION:
+				outputParam = cp.getParameterName();
 				break;
 			}
 		}
-		String name;
+		StringBuilder xAxisLabel = new StringBuilder();
+		for (ParameterDefinition pd : simpledata.getParameters()){
+			if (pd.getRole() == ParameterRole.INPUT){
+				if (inParams.get(pd.getFullName()) == AggregationInputType.SHOW){
+					if (xAxisLabel.length() != 0){
+						xAxisLabel.append(".");
+					}
+					xAxisLabel.append(pd.getFullName());
+				}
+			}
+		}
+		chartOptions.setxAxisLabel(xAxisLabel.toString());
+		
+		Double xVal = 0.0;
 		String dataSetName;
-		Map<String, List<Double>> datamap = new TreeMap<String, List<Double>>(new ChartXLabelComparator());
+		
+		Map<Double, List<Double>> datamap = new TreeMap<Double, List<Double>>();
 		Set<String> dataSetNames = new TreeSet<String>();
 		for (SimpleDataSetRow row : simpledata) {
-			name = "";
 			dataSetName = "D ";
 			for (ParameterValue<?> value : row.getRowValues()){
 				if(value.getParameter().getRole() == ParameterRole.INPUT){
 					if (inParams.get(value.getParameter().getFullName()) != null){
 						switch (inParams.get(value.getParameter().getFullName())){
 						case SHOW:
-							if (name.equals("")){
-								name += value.getValueAsString();
-							} else {
-								name += "."+value.getValueAsString();
-							}
-							
+							xVal = value.getValueAsDouble();
 							break;
 						case AGGREGATE:
 							if (dataSetName.equals("")){
@@ -186,27 +190,14 @@ public class VisualizationRPCImpl extends SuperRemoteServlet implements
 				}
 			}
 			for (ParameterValue<?> value : row.getRowValues()){
-				if(value.getParameter().getRole() == ParameterRole.OBSERVATION && outParams.get(value.getParameter().getFullName()) != null){
-					List<Double> list = datamap.get(name);
+				if(value.getParameter().getRole() == ParameterRole.OBSERVATION && value.getParameter().getFullName().equals(outputParam)){
+					List<Double> list = datamap.get(xVal);
 					if (list == null){
 						list = new ArrayList<Double>();
-						datamap.put(name, list);
+						datamap.put(xVal, list);
 					}
-					switch (outParams.get(value.getParameter().getFullName())){
-					case SCATTER:
-						dataSetNames.add(dataSetName);
-						list.add(value.getValueAsDouble());
-						break;
-					case SUM:
-						if(dataSetNames.size() < 1){
-							dataSetNames.add("SUM");
-						}
-						if (list.size() <= 0){
-							list.add(0.0);
-						}
-						list.set(0, list.get(0)+value.getValueAsDouble());
-						break;
-					}
+					dataSetNames.add(dataSetName);
+					list.add(value.getValueAsDouble());
 				}
 			}
 			

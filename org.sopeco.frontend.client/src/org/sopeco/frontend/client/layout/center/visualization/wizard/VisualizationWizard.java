@@ -47,22 +47,19 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class VisualizationWizard extends DialogBox {
-	private static final String LOADING_INDICATOR = "images/loading_indicator.gif";
 	
 	private VerticalPanel rootWidget;
-	private Button next;
-	private Screen currentScreen = Screen.CHART_SELECTION;
+	private Button create;
 	private SharedExperimentRuns experimentRun;
 	private HorizontalPanel buttonPanel;
 	private List<ChartParameter> inputParameter;
 	private List<ChartParameter> outputParameter;
-	private Image loadingIndicator;
 	private final ChartSelectionPanel chartSelectionPanel = new ChartSelectionPanel();
-	final ColumnSelector columnSelector = new ColumnSelector();
+	private final ExtensionPanel extensionPanel = new ExtensionPanel();
+	final ColumnSelectionPanel columnSelectionPanel = new ColumnSelectionPanel();
 
 	public VisualizationWizard(final SharedExperimentRuns experimentRun) {
 		FrontEndResources.loadVisualizationWizardCSS();
@@ -70,7 +67,12 @@ public class VisualizationWizard extends DialogBox {
 		inputParameter = new ArrayList<ChartParameter>();
 		outputParameter = new ArrayList<ChartParameter>();
 		rootWidget = new VerticalPanel();
-		loadingIndicator = new Image(LOADING_INDICATOR);
+		rootWidget.add(new Headline(R.get("new_chart")));
+		rootWidget.add(extensionPanel);
+		rootWidget.setCellHorizontalAlignment(extensionPanel, HasHorizontalAlignment.ALIGN_RIGHT);
+		rootWidget.add(chartSelectionPanel);
+		rootWidget.add(columnSelectionPanel);
+		columnSelectionPanel.setVisible(false);
 		buttonPanel = new HorizontalPanel();
 		Button close = new Button(R.get("close"));
 		close.addClickHandler(new ClickHandler() {
@@ -81,23 +83,30 @@ public class VisualizationWizard extends DialogBox {
 			}
 		});
 		buttonPanel.add(close);
-		next = new Button(R.get("next"));
-		next.addClickHandler(new ClickHandler() {
+		create = new Button(R.get("create"));
+		create.addClickHandler(new ClickHandler() {
 
 			@Override
 			public void onClick(ClickEvent event) {
-				nextScreen();
+				createChart();
 			}
 		});
-		buttonPanel.add(next);
+		buttonPanel.add(create);
+		create.setEnabled(false);
+		rootWidget.add(buttonPanel);
 		this.setWidget(rootWidget);
 		chartSelectionPanel.addClickHandler(new ClickHandler() {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				nextScreen();
+				columnSelectionPanel.setVisible(true);
+				create.setEnabled(true);
 			}
 		});
+		loadInfos();
+	}
+	
+	private void loadInfos(){
 		RPC.getVisualizationRPC().getExtensions(new AsyncCallback<List<String>>() {
 
 			@Override
@@ -106,7 +115,7 @@ public class VisualizationWizard extends DialogBox {
 
 			@Override
 			public void onSuccess(List<String> result) {
-				chartSelectionPanel.setExtensions(result);
+				extensionPanel.setExtensions(result);
 			}
 		});
 		RPC.getVisualizationRPC().getChartParameter(experimentRun, new AsyncCallback<ChartParameter[]>() {
@@ -126,91 +135,29 @@ public class VisualizationWizard extends DialogBox {
 						outputParameter.add(param);
 					}
 				}
+				columnSelectionPanel.setChartParameter(inputParameter, outputParameter);
 			}
 		});
 	}
 
-	public void setScreen(Screen screen) {
-		rootWidget.clear();
-		currentScreen = screen;
-		switch(screen){
-		case CHART_SELECTION:
-			rootWidget.add(new Headline("Choose chart type"));
-			rootWidget.add(chartSelectionPanel);
-			chartSelectionPanel.setPixelSize(400, 200);
-			break;
-		case COLUMN_SELECTION:
-			rootWidget.add(new Headline("Choose columns"));
-			columnSelector.setChartParameter(inputParameter, outputParameter);
-			columnSelector.showColumnSelection();
-			rootWidget.add(columnSelector);
-			columnSelector.setPixelSize(400, 200);
-			break;
-		case LOADING_COLUMNS:
-			rootWidget.add(new Headline("Loading..."));
-			rootWidget.add(loadingIndicator);
-			loadingIndicator.setPixelSize(400, 200);
-			break;
-		}
-		rootWidget.add(buttonPanel);
-		rootWidget.setCellHorizontalAlignment(buttonPanel, HasHorizontalAlignment.ALIGN_RIGHT);
-		this.center();
-	}
+	private void createChart() {
+		MainLayoutPanel.get().switchView(VisualizationController.class);
+		VisualizationWizard.this.hide();
+		ChartOptions options = new ChartOptions();
+		options.setType(chartSelectionPanel.getSelectedType());
+		RPC.getVisualizationRPC().createChart(experimentRun, columnSelectionPanel.getSelectedColumns(), options, extensionPanel.getExtension(), new AsyncCallback<Visualization>() {
 
-	private void nextScreen() {
-		switch (currentScreen) {
-		case CHART_SELECTION:
-			if (inputParameter == null){
-				setScreen(Screen.LOADING_COLUMNS);
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				
 			}
-			else {
-				showColumnSelector();
+
+			@Override
+			public void onSuccess(Visualization result) {
+				// TODO Auto-generated method stub
+				
 			}
-			break;
-		case COLUMN_SELECTION:
-			MainLayoutPanel.get().switchView(VisualizationController.class);
-			VisualizationWizard.this.hide();
-			ChartOptions options = new ChartOptions();
-			options.setType(chartSelectionPanel.getSelectedType());
-			for (ChartParameter p : columnSelector.getSelectedColumns()){
-				System.out.println("cparam: " + p.getParameterName());
-			}
-			RPC.getVisualizationRPC().createChart(experimentRun, columnSelector.getSelectedColumns(), options, chartSelectionPanel.getExtension(), new AsyncCallback<Visualization>() {
-
-				@Override
-				public void onFailure(Throwable caught) {
-					// TODO Auto-generated method stub
-					
-				}
-
-				@Override
-				public void onSuccess(Visualization result) {
-					// TODO Auto-generated method stub
-					
-				}
-			});
-			break;
-		case LOADING_COLUMNS:
-			if (inputParameter != null){
-				showColumnSelector();
-			}
-			break;
-		}
-	}
-	
-	private void showColumnSelector(){
-		setScreen(Screen.COLUMN_SELECTION);
-		next.setText(R.get("finish"));
-	}
-
-	@Override
-	public void show() {
-		super.show();
-		setScreen(Screen.CHART_SELECTION);
-		next.setText(R.get("next"));
-	}
-
-	private enum Screen {
-		CHART_SELECTION, COLUMN_SELECTION, LOADING_COLUMNS;
+		});
 	}
 }

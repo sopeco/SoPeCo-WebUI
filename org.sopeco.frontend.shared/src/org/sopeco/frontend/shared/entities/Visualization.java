@@ -101,6 +101,8 @@ public class Visualization implements Serializable {
 	}
 
 	public String getName() {
+		if (name == null || name.equals(""))
+			return experimentName;
 		return name;
 	}
 

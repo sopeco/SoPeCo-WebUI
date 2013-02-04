@@ -86,12 +86,17 @@ public class PAPChartConnection implements IChartConnection {
 
 	private String createProcessScript(ChartData data, String[] chartParameter){
 		StringBuffer rValue = new StringBuffer();
-
-		
-		
+		rValue.append("names <- c(");
+		for (int i = 0; i < data.getxAxis().size(); i++){
+			rValue.append("\""+data.getxAxis().get(i)+"\"");
+			if (i < data.getxAxis().size() - 1) {
+				rValue.append(", ");
+			}
+		}
+		rValue.append(")\n");
+		rValue.append("x <- c(1:"+data.getxAxis().size()+")\n");
 		for (int i = 0; i < data.getDatarows().get(0).size(); i++) {
-			rValue.append(data.getxAxis().get(i));
-			rValue.append(i);
+			rValue.append("c"+i);
 			rValue.append(" <- c(");
 			for (int j = 0; j < data.getDatarows().size(); j++) {
 				rValue.append(data.getDatarows().get(j).get(i));
@@ -101,44 +106,60 @@ public class PAPChartConnection implements IChartConnection {
 			}
 			rValue.append(")\n");
 		}
+		rValue.append("ca <- c(");
+		for (int i = 0; i < data.getDatarows().get(0).size(); i++){
+			rValue.append("c"+i);
+			if ( i < data.getDatarows().get(0).size()-1){
+				rValue.append(",");
+			}
+		}
+		rValue.append(")\n");
 		return rValue.toString();
 	}
 	
-	private String creatOutputScript(ChartOptions options, ChartData data){
+	private String creatOutputScript(ChartOptions options, ChartData data, String name){
 		StringBuffer outputScript = new StringBuffer();
 		switch (options.getType()){
 		case BARCHART:
 			outputScript.append("data <- do.call(rbind, list(");
-			for (int i = 1; i < data.getxAxis().size(); i++){
-				outputScript.append(data.getxAxis().get(i));
-				if (i < data.getxAxis().size()-1){
+			for (int i = 0; i < data.getDataSetNames().size(); i++){
+				outputScript.append("c"+i);
+				if (i < data.getDataSetNames().size()-1){
 					outputScript.append(",");
 				}
 			}
 			outputScript.append("))\n");
-			outputScript.append("matr <- as.matrix(data,nrow=" + (data.getxAxis().size()-1) +")\n");
+			outputScript.append("matr <- as.matrix(data,nrow=" + (data.getDataSetNames().size()-1) +")\n");
 			outputScript.append("barplot(matr,");
 			
-			outputScript.append("names.arg="+data.getxAxis().get(0));
+			outputScript.append("names.arg=names");
 			outputScript.append(",beside=TRUE,col=rainbow("+(data.getxAxis().size()-1)+"))");
 			break;
 		case PIECHART:
 			outputScript.append("pie3D(");
-			outputScript.append(data.getxAxis().get(1)+","+data.getxAxis().get(0));
-			outputScript.append(",explode=0.1,col=rainbow(length("+data.getxAxis().get(0)+")))");
+			outputScript.append("c0"+",names");
+			outputScript.append(",explode=0.1,col=rainbow("+data.getDatarows().get(0).size()+"))");
 			break;
 		default:
 			outputScript.append("plot(");
-			outputScript.append(data.getxAxis().get(0));
-			outputScript.append(","+data.getxAxis().get(1));
-			outputScript.append(",type=\"l\",col=rainbow("+(data.getxAxis().size()-1)+")[1])");
-			for (int i = 2; i < data.getxAxis().size(); i++){
+			outputScript.append("x");
+			outputScript.append(",c0");
+			outputScript.append(",type=\"l\",col=rainbow("+(data.getxAxis().size())+")[1]");
+			outputScript.append(",bty=\"n\"");
+			outputScript.append(",main=\"");
+			outputScript.append(name);
+			outputScript.append("\",xlab=\"");
+			outputScript.append(options.getxAxisLabel());
+			outputScript.append("\",ylab=\"y\"");
+			outputScript.append(",xlim=c(1,"+data.getxAxis().size()*1.1+")");
+			outputScript.append(",ylim=range(ca))");
+			for (int i = 1; i < data.getDataSetNames().size(); i++){
 				outputScript.append("\nlines(");
-				outputScript.append(data.getxAxis().get(i));
-				outputScript.append(",type=\"l\",col=rainbow("+(data.getxAxis().size()-1)+")["+i+"])");
+				outputScript.append("c"+i);
+				outputScript.append(",type=\"l\",col=rainbow("+(data.getDataSetNames().size())+")["+(i+1)+"])");
 			}
-			RBuilder.createLegend(outputScript, data.getxAxis());
 		}
+		RBuilder.createLegend(outputScript, data.getDataSetNames());
 //		legend("topleft", c("outNs.out1","inputNs.input2"), col=rainbow(2), 
 //				   lwd=2, bty="n");
 		return outputScript.toString();
@@ -176,7 +197,7 @@ public class PAPChartConnection implements IChartConnection {
 			columnNames[i] = chartParameter.get(i).getParameterName();
 		}
 		String processScript = createProcessScript(data, columnNames);
-		String outputScript = creatOutputScript(options, data);
+		String outputScript = creatOutputScript(options, data, experimentName);
 		String pid = getOrCreateProject(experimentName);
 		String qid = papConnector.addQuery(pid, "testquery" + generateID(),
 				SQL_DUMMY, "empty");

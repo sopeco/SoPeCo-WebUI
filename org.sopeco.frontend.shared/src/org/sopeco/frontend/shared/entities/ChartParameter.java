@@ -42,7 +42,6 @@ public class ChartParameter implements Serializable, Comparable<ChartParameter> 
 	private String parameterName;
 	private int type = INPUT;	
 	private AggregationInputType aggregationInputType;
-	private AggregationOutputType aggregationOutputType;
 
 	public ChartParameter() {
 	}
@@ -69,14 +68,6 @@ public class ChartParameter implements Serializable, Comparable<ChartParameter> 
 
 	public void setAggregationInputType(AggregationInputType aggregationInputType) {
 		this.aggregationInputType = aggregationInputType;
-	}
-
-	public AggregationOutputType getAggregationOutputType() {
-		return aggregationOutputType;
-	}
-
-	public void setAggregationOutputType(AggregationOutputType aggregationOutputType) {
-		this.aggregationOutputType = aggregationOutputType;
 	}
 
 	@Override

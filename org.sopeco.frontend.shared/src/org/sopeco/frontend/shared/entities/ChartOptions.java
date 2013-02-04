@@ -29,7 +29,9 @@ package org.sopeco.frontend.shared.entities;
 import java.io.Serializable;
 
 public class ChartOptions implements Serializable {
+	
 	private ChartType type = ChartType.LINECHART;
+	private String xAxisLabel;
 	
 	public ChartOptions(){
 		
@@ -45,5 +47,13 @@ public class ChartOptions implements Serializable {
 
 	public static enum ChartType {
 		LINECHART, BARCHART, PIECHART;
+	}
+
+	public String getxAxisLabel() {
+		return xAxisLabel;
+	}
+
+	public void setxAxisLabel(String xAxisLabel) {
+		this.xAxisLabel = xAxisLabel;
 	}
 }
