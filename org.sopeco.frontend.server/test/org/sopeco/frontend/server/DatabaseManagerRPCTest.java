@@ -26,38 +26,37 @@
  */
 package org.sopeco.frontend.server;
 
-import java.util.logging.Logger;
+import static org.junit.Assert.assertTrue;
 
-import org.sopeco.config.Configuration;
-import org.sopeco.config.IConfiguration;
-import org.sopeco.frontend.server.user.User;
-import org.sopeco.frontend.server.user.UserManager;
+import org.junit.Test;
+import org.sopeco.frontend.server.rpc.database.DatabaseManagerRPCImpl;
+import org.sopeco.persistence.metadata.entities.DatabaseInstance;
 
 /**
+ * Unittests for the DatabaseRPCalls.
  * 
  * @author Marius Oehler
  * 
  */
-public final class TimeoutChecker {
+public class DatabaseManagerRPCTest {
 
-	private static final Logger LOGGER = Logger.getLogger(TimeoutChecker.class.getName());
-	private static final int DEFAULT_USER_TIMEOUT = 1000 * 3600;
-	private static int userTimeout = -1;
+	@Test
+	public void testInstanceEqual() {
+		DatabaseManagerRPCImpl db = new DatabaseManagerRPCImpl();
 
-	private TimeoutChecker() {
-	}
+		DatabaseInstance i1 = new DatabaseInstance();
+		DatabaseInstance i2 = new DatabaseInstance();
 
-	public static void checkTimeout() {
-		if (userTimeout == -1) {
-			IConfiguration config = Configuration.getSessionSingleton(Configuration.getGlobalSessionId());
-			userTimeout = config.getPropertyAsInteger(UiConfiguration.USER_TIMEOUT, DEFAULT_USER_TIMEOUT);
-		}
+		i1.setDbName("dbName");
+		i1.setHost("dbHost");
+		i1.setPort("1234");
+		i1.setProtectedByPassword(true);
 
-		for (User u : UserManager.getAllUsers().values()) {
-			if (System.currentTimeMillis() - u.getLastRequestTime() > userTimeout) {
-				LOGGER.fine("Removing user: " + u.getSessionId());
-				UserManager.removeUser(u);
-			}
-		}
+		i2.setDbName("dbName");
+		i2.setHost("dbHost");
+		i2.setPort("1234");
+		i2.setProtectedByPassword(true);
+
+		assertTrue(db.instanceEqual(i1, i2));
 	}
 }

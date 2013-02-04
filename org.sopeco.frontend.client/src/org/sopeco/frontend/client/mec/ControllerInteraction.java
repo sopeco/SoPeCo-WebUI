@@ -66,8 +66,7 @@ public final class ControllerInteraction {
 	 * @param handler
 	 *            event that is called after the result was determined
 	 */
-	public static void isPortReachable(String host, int port,
-			final INotifyHandler<Boolean> handler) {
+	public static void isPortReachable(String host, int port, final INotifyHandler<Boolean> handler) {
 		final double myId = Math.random();
 		checkId = myId;
 

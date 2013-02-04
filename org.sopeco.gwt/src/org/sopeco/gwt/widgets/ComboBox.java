@@ -73,7 +73,6 @@ public class ComboBox extends FlowPanel implements
 	private static final String CCS_DROPDOWN_VIEW_NAME = "spc-ComboBox-DropDownView";
 	private static final String CSS_FOCUSPANEL_NAME = "spc-ComboBox-FocusPanel";
 
-	private static final int DD_ICON_WIDTH = 54;
 	private static final int DEFAULT_WIDTH = 200;
 	private static final int OUT_OF_SCREEN = -1000;
 	private static final int BORDER_SPACE = 5;
@@ -279,10 +278,14 @@ public class ComboBox extends FlowPanel implements
 	 * 
 	 * @param pixel
 	 */
+	@Deprecated
 	public void setWidth(int pixel) {
 		setWidth(pixel + "px");
-		dropdownView.setWidth(pixel + "px");
-		inputField.setWidth((pixel - DD_ICON_WIDTH) + "px");
+	}
+
+	@Override
+	public void setWidth(String width) {
+		super.setWidth(width);
 	}
 
 	/**
@@ -313,8 +316,11 @@ public class ComboBox extends FlowPanel implements
 	/**
 	 * Hides the dropdown list.
 	 */
-	private void hideDropdownList() {
-		resizeHandlerRegistration.removeHandler();
+	private synchronized void hideDropdownList() {
+		if (resizeHandlerRegistration != null) {
+			resizeHandlerRegistration.removeHandler();
+			resizeHandlerRegistration = null;
+		}
 		dropdownWrapper.removeFromParent();
 	}
 
@@ -364,7 +370,7 @@ public class ComboBox extends FlowPanel implements
 		getElement().appendChild(clearDiv);
 		add(dummyPanel);
 
-		setWidth(DEFAULT_WIDTH);
+		setWidth(DEFAULT_WIDTH + "px");
 	}
 
 	/**
@@ -392,6 +398,8 @@ public class ComboBox extends FlowPanel implements
 		resizeHandlerRegistration = Window.addResizeHandler(this);
 
 		RootPanel.get().add(dropdownWrapper);
+
+		dropdownView.setWidth((getOffsetWidth() - 2) + "px");
 
 		updatePositionOfDropDown();
 
@@ -446,8 +454,8 @@ public class ComboBox extends FlowPanel implements
 		@Override
 		public void onClick(ClickEvent event) {
 			int index = itemList.indexOf(event.getSource());
-			setSelectedIndex(index, true);
 			hideDropdownList();
+			setSelectedIndex(index, true);
 		}
 
 		@Override

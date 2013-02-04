@@ -8,7 +8,8 @@
 	<name>SoPeCo FrontEnd</name>
 
 	<properties>
-		<sopeco.dependency>5.0.1-SNAPSHOT</sopeco.dependency>
+		<sopeco.dependency>5.0.2-SNAPSHOT</sopeco.dependency>
+		<gwt.version>2.5.0</gwt.version>
 	</properties>
 
 	<modules>
@@ -22,25 +23,28 @@
 
 	<repositories>
 		<repository>
-			<id>LPE Repository</id>
-			<name>LPE Repository-releases</name>
-			<url>http://deqkal276.qkal.sap.corp:8080/artifactory/ext-release-local</url>
+			<id>LPE Releases</id>
+			<name>LPE-releases</name>
+			<url>http://i43vm-saas.ipd.uka.de:8081/artifactory/sopeco-release-local</url>
 		</repository>
 
 		<repository>
-			<id>LPE</id>
-			<name>LPE-releases</name>
-			<url>http://deqkal276.qkal.sap.corp:8080/artifactory/sopeco-snapshot-local</url>
+			<id>LPE Snapshots</id>
+			<name>LPE-snapshots</name>
+			<url>http://i43vm-saas.ipd.uka.de:8081/artifactory/sopeco-snapshot-local</url>
 		</repository>
 
 		<repository>
 			<id>remote-repos</id>
 			<name>Remote Repositories</name>
-			<url>http://deqkal276.qkal.sap.corp:8080/artifactory/remote-repos</url>
+			<url>http://i43vm-saas.ipd.uka.de:8081/artifactory/remote-repos</url>
 		</repository>
 
-		<!-- <repository> <id>apache repo</id> <name>apache repository</name> <url>https://repository.apache.org/content/repositories/snapshots/</url> 
-			</repository> -->
+		<repository>
+			<id>LPE Repository</id>
+			<name>LPE Repository-releases</name>
+			<url>http://i43vm-saas.ipd.uka.de:8081/artifactory/ext-release-local</url>
+		</repository>
 	</repositories>
 
 
@@ -48,12 +52,12 @@
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-user</artifactId>
-			<version>2.5.0</version>
+			<version>${gwt.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-servlet</artifactId>
-			<version>2.5.0</version>
+			<version>${gwt.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.sopeco.core</groupId>
@@ -211,7 +215,7 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>gwt-maven-plugin</artifactId>
-				<version>2.5.0</version>
+				<version>${gwt.version}</version>
 				<executions>
 					<execution>
 						<goals>

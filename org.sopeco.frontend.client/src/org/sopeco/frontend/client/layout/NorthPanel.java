@@ -36,6 +36,7 @@ import org.sopeco.frontend.client.layout.popups.InputDialog;
 import org.sopeco.frontend.client.layout.popups.InputDialogHandler;
 import org.sopeco.frontend.client.manager.Manager;
 import org.sopeco.frontend.client.manager.ScenarioManager;
+import org.sopeco.frontend.client.mec.MEControllerBox;
 import org.sopeco.frontend.client.resources.R;
 import org.sopeco.gwt.widgets.ComboBox;
 

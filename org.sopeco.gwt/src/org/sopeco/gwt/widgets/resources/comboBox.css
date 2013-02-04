@@ -40,7 +40,11 @@
 	padding: 2px;
 	background: transparent;
 	color: #333 !important;
-	float: left;
+	/*float: left;*/
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 30px;
 }
 
 .spc-ComboBox>input.disabled {
@@ -70,7 +74,7 @@
 
 .spc-ComboBox-DropDownView {
 	position: fixed;
-	z-index: 1099;
+	z-index: 10000;
 	background-color: white;
 	margin-top: 2px;
 	border: 1px solid #AAA;

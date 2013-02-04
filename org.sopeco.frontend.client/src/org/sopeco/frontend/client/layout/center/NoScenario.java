@@ -30,13 +30,13 @@ import org.sopeco.frontend.client.event.EventControl;
 import org.sopeco.frontend.client.event.MEControllerEvent;
 import org.sopeco.frontend.client.event.MEControllerEvent.EventType;
 import org.sopeco.frontend.client.helper.SimpleNotify;
-import org.sopeco.frontend.client.layout.MECController;
 import org.sopeco.frontend.client.layout.MainLayoutPanel;
 import org.sopeco.frontend.client.layout.ScenarioAddController;
 import org.sopeco.frontend.client.manager.Manager;
 import org.sopeco.frontend.client.manager.Manager.ControllerStatus;
 import org.sopeco.frontend.client.manager.ScenarioManager;
 import org.sopeco.frontend.client.mec.ControllerView;
+import org.sopeco.frontend.client.mec.MECController;
 import org.sopeco.frontend.client.resources.R;
 import org.sopeco.gwt.widgets.SlidePanel;
 

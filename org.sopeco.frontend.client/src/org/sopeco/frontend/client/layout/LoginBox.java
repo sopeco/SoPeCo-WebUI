@@ -415,7 +415,7 @@ public class LoginBox extends DialogBox implements ClickHandler, AsyncCallback<L
 	 */
 	private void switchDatabaseRequest(final DatabaseInstance instance, final String password) {
 		Loader.showLoader();
-		RPC.getDatabaseManagerRPC().selectDatabase(instance, password, new AsyncCallback<Boolean>() {
+		RPC.getDatabaseManagerRPC().login(instance, password, new AsyncCallback<Boolean>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				Loader.hideLoader();

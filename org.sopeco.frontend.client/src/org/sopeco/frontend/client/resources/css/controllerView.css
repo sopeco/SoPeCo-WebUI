@@ -25,7 +25,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 .controllerView {
-	padding: 1em;
 }
 
 .controllerView>h3 {
@@ -41,6 +40,12 @@
 
 .controllerView>table {
 	border-spacing: 0;
+	width: 100%;
+}
+
+.controllerView .gwt-TextBox{
+	padding-top: 2px;
+	padding-bottom: 2px;
 }
 
 .controllerView .tbHost {

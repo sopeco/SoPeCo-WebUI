@@ -46,7 +46,7 @@ public interface DatabaseManagerRPCAsync {
 
 	void addDatabase(DatabaseInstance databaseInstance, String passwd, AsyncCallback<Boolean> callback);
 
-	void selectDatabase(DatabaseInstance databaseInstance, String passwd, AsyncCallback<Boolean> callback);
+	void login(DatabaseInstance databaseInstance, String passwd, AsyncCallback<Boolean> callback);
 
 	void checkPassword(DatabaseInstance databaseInstance, String passwd, AsyncCallback<Boolean> callback);
 

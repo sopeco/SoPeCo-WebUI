@@ -75,7 +75,7 @@ public interface DatabaseManagerRPC extends RemoteService {
 	 *            which will be selected
 	 * @return true if succeeded
 	 */
-	boolean selectDatabase(DatabaseInstance databaseInstance, String passwd);
+	boolean login(DatabaseInstance databaseInstance, String passwd);
 
 	boolean checkPassword(DatabaseInstance databaseInstance, String passwd);
 

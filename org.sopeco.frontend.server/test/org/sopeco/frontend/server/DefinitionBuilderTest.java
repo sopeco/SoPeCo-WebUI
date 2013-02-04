@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sopeco.frontend;
+package org.sopeco.frontend.server;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

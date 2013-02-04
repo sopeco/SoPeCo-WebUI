@@ -107,7 +107,10 @@ public class User {
 	// *******************************************************************************************************
 
 	public void kill() {
-		// TODO - close connections..
+		if (currentPersistenceProvider != null) {
+			currentPersistenceProvider.closeProvider();
+			currentPersistenceProvider = null;
+		}
 	}
 
 	public String getWorkingSpecification() {

@@ -37,6 +37,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.logging.Logger;
 
+import org.sopeco.config.Configuration;
 import org.sopeco.config.IConfiguration;
 import org.sopeco.engine.status.ErrorInfo;
 import org.sopeco.engine.status.EventType;
@@ -77,6 +78,8 @@ public class ControllerQueue implements IStatusListener {
 	private Future<?> executeStatus;
 
 	private String controllerURL;
+
+	private String generatedSessionId;
 
 	/**
 	 * Creates an ThreadPool, which is responsible for the SoPeCo Runners.
@@ -189,23 +192,15 @@ public class ControllerQueue implements IStatusListener {
 		} catch (URISyntaxException e) {
 			throw new RuntimeException(e);
 		}
-		// IConfiguration config = Configuration.getSessionSingleton(randomId);
-		// config.overwrite((Configuration)
-		// runningExperiment.getScheduledExperiment().getConfiguration());
-		// config.setMeasurementControllerURI(runningExperiment.getScheduledExperiment().getControllerUrl());
-		// config.setScenarioDescription(runningExperiment.getScheduledExperiment().getScenarioDefinition());
-		// config.setProperty(IConfiguration.EXECUTION_EXPERIMENT_FILTER,
-		// runningExperiment.getScheduledExperiment()
-		// .getFilterMap());
-		String randomId = "RANDOMID" + (long) (Long.MAX_VALUE * Math.random());
-		SoPeCoRunner runner = new SoPeCoRunner(randomId, executionProperties);
+
+		generatedSessionId = "RANDOMID" + (long) (Long.MAX_VALUE * Math.random());
+		SoPeCoRunner runner = new SoPeCoRunner(generatedSessionId, executionProperties);
 		executeStatus = getThreadPool().submit(runner);
 
 		runningExperiment.setTimeStarted(System.currentTimeMillis());
 
 		notifyAccount();
 		// notifyStatusChange(EStatus.START_MEASUREMENT.toString());
-
 	}
 
 	/**
@@ -325,6 +320,8 @@ public class ControllerQueue implements IStatusListener {
 		saveLogInHistory();
 
 		notifyAccount();
+
+		Configuration.removeConfiguration(generatedSessionId);
 
 		executeStatus = null;
 		runningExperiment = null;

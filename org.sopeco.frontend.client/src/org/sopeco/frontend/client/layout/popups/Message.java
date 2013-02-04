@@ -29,6 +29,10 @@ package org.sopeco.frontend.client.layout.popups;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.sopeco.frontend.client.SoPeCoUI;
+import org.sopeco.frontend.client.widget.ExceptionDialog;
+import org.sopeco.frontend.client.widget.SoPeCoDialog;
+
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.ui.DialogBox;
@@ -87,6 +91,13 @@ public class Message extends DialogBox implements CloseHandler {
 		new Message("Warning: " + message, WARNING);
 	}
 
+	/**
+	 * @deprecated Give the throwable element to
+	 *             {@link ExceptionDialog#show(Throwable)} for detailed error
+	 *             messages.
+	 * @param message
+	 */
+	@Deprecated
 	public static void error(String message) {
 		new Message("Error: " + message, ERROR);
 	}

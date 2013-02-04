@@ -24,39 +24,52 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sopeco.frontend;
+package org.sopeco.frontend.server;
 
-import static org.junit.Assert.assertTrue;
+import java.util.logging.Logger;
 
-import org.junit.Test;
-import org.sopeco.frontend.server.rpc.database.DatabaseManagerRPCImpl;
-import org.sopeco.persistence.metadata.entities.DatabaseInstance;
+import org.sopeco.config.Configuration;
+import org.sopeco.config.IConfiguration;
+import org.sopeco.engine.measurementenvironment.socket.SocketAppWrapper;
+import org.sopeco.engine.measurementenvironment.socket.SocketManager;
+import org.sopeco.frontend.server.user.User;
+import org.sopeco.frontend.server.user.UserManager;
 
 /**
- * Unittests for the DatabaseRPCalls.
  * 
  * @author Marius Oehler
  * 
  */
-public class DatabaseManagerRPCTest {
+public final class ContiniousChecker {
 
-	@Test
-	public void testInstanceEqual() {
-		DatabaseManagerRPCImpl db = new DatabaseManagerRPCImpl();
+	private static final Logger LOGGER = Logger.getLogger(ContiniousChecker.class.getName());
+	private static final int DEFAULT_USER_TIMEOUT = 1000 * 120;
+	private static int userTimeout = -1;
 
-		DatabaseInstance i1 = new DatabaseInstance();
-		DatabaseInstance i2 = new DatabaseInstance();
+	private ContiniousChecker() {
+	}
 
-		i1.setDbName("dbName");
-		i1.setHost("dbHost");
-		i1.setPort("1234");
-		i1.setProtectedByPassword(true);
+	public static void checkUserTimeout() {
+		if (userTimeout == -1) {
+			IConfiguration config = Configuration.getSessionSingleton(Configuration.getGlobalSessionId());
+			userTimeout = config.getPropertyAsInteger(UiConfiguration.USER_TIMEOUT, DEFAULT_USER_TIMEOUT);
+		}
 
-		i2.setDbName("dbName");
-		i2.setHost("dbHost");
-		i2.setPort("1234");
-		i2.setProtectedByPassword(true);
+		for (User u : UserManager.getAllUsers().values()) {
+			if (System.currentTimeMillis() - u.getLastRequestTime() > userTimeout) {
+				LOGGER.fine("Removing user: " + u.getSessionId());
+				UserManager.removeUser(u);
+			}
+		}
+	}
 
-		assertTrue(db.instanceEqual(i1, i2));
+	public static void checkSocketMEController() {
+		LOGGER.fine("Connected SocketMEController: " + SocketManager.getAllSocketApps().size());
+		for (SocketAppWrapper saw : SocketManager.getAllSocketApps()) {
+			if (!saw.isAlive()) {
+				LOGGER.fine("Removing dead controller " + saw.getSocket().getInetAddress().getHostAddress());
+				SocketManager.removeSocketApp(saw);
+			}
+		}
 	}
 }

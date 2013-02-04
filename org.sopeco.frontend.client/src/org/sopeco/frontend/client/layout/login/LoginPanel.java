@@ -286,7 +286,7 @@ public class LoginPanel extends FlowPanel implements ClickHandler {
 
 			@Override
 			public void onSuccess() {
-				RPC.getDatabaseManagerRPC().selectDatabase(account, password, new AsyncCallback<Boolean>() {
+				RPC.getDatabaseManagerRPC().login(account, password, new AsyncCallback<Boolean>() {
 					@Override
 					public void onFailure(Throwable caught) {
 						Message.error(caught.getMessage());

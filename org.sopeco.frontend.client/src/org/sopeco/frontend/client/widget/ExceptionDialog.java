@@ -66,6 +66,9 @@ public final class ExceptionDialog extends SoPeCoDialog implements ClickHandler 
 
 		setContentWidget(content);
 
+		getElement().getStyle().setProperty("minWidth", "400px");
+		setWidth("");
+
 		setDraggable(true);
 	}
 

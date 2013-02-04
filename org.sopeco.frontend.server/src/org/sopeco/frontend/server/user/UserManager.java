@@ -53,9 +53,9 @@ public final class UserManager {
 	 * @param sessionId
 	 * @param user
 	 */
-	public static void setUser(String sessionId, User user) {
-		LOGGER.debug("stored new user under the id '{}'", sessionId);
-		userMap.put(sessionId, user);
+	public static void setUser(User user) {
+		LOGGER.debug("stored new user under the id '{}'", user.getSessionId());
+		userMap.put(user.getSessionId(), user);
 	}
 
 	/**
@@ -68,7 +68,7 @@ public final class UserManager {
 		synchronized (userMap) {
 			if (!userMap.containsKey(sessionId)) {
 				User newUser = new User(sessionId);
-				userMap.put(sessionId, newUser);
+				setUser(newUser);
 			}
 		}
 

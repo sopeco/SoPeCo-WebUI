@@ -28,6 +28,7 @@ package org.sopeco.frontend.client.manager;
 
 import java.util.logging.Logger;
 
+import org.sopeco.frontend.client.SoPeCoUI;
 import org.sopeco.frontend.client.helper.SimpleNotify;
 import org.sopeco.frontend.client.layout.MainLayoutPanel;
 import org.sopeco.frontend.client.layout.center.experiment.ExperimentController;
@@ -161,8 +162,7 @@ public final class ScenarioManager {
 				new AsyncCallback<Boolean>() {
 					@Override
 					public void onFailure(Throwable caught) {
-						LOGGER.severe(caught.getLocalizedMessage());
-						Message.error("Failed adding new scenario.");
+						SoPeCoUI.get().onUncaughtException(caught);
 					}
 
 					@Override
@@ -254,8 +254,7 @@ public final class ScenarioManager {
 		RPC.getScenarioManager().getCurrentScenarioDefinition(new AsyncCallback<ScenarioDefinition>() {
 			@Override
 			public void onFailure(Throwable caught) {
-				LOGGER.severe(caught.getLocalizedMessage());
-				Message.error(caught.getMessage());
+				SoPeCoUI.get().onUncaughtException(caught);
 			}
 
 			@Override
@@ -290,8 +289,7 @@ public final class ScenarioManager {
 				new AsyncCallback<MeasurementEnvironmentDefinition>() {
 					@Override
 					public void onFailure(Throwable caught) {
-						LOGGER.severe(caught.getLocalizedMessage());
-						Message.error(caught.getMessage());
+						SoPeCoUI.get().onUncaughtException(caught);
 					}
 
 					@Override
@@ -310,8 +308,7 @@ public final class ScenarioManager {
 		RPC.getScenarioManager().removeScenario(scenarioName, new AsyncCallback<Boolean>() {
 			@Override
 			public void onFailure(Throwable caught) {
-				LOGGER.severe(caught.getLocalizedMessage());
-				Message.error(caught.getMessage());
+				SoPeCoUI.get().onUncaughtException(caught);
 			}
 
 			@Override
@@ -375,7 +372,7 @@ public final class ScenarioManager {
 			@Override
 			public void onFailure(Throwable caught) {
 				LOGGER.severe(caught.getLocalizedMessage());
-				Message.error(caught.getMessage());
+				SoPeCoUI.get().onUncaughtException(caught);
 			}
 
 			@Override
@@ -402,7 +399,7 @@ public final class ScenarioManager {
 			@Override
 			public void onFailure(Throwable caught) {
 				LOGGER.severe(caught.getLocalizedMessage());
-				Message.error(caught.getMessage());
+				SoPeCoUI.get().onUncaughtException(caught);
 			}
 
 			@Override

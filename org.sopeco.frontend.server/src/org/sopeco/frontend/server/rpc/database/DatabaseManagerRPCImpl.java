@@ -191,7 +191,7 @@ public class DatabaseManagerRPCImpl extends SuperRemoteServlet implements Databa
 	 * 
 	 */
 	@Override
-	public boolean selectDatabase(DatabaseInstance databaseInstance, String passwd) {
+	public boolean login(DatabaseInstance databaseInstance, String passwd) {
 		double metering = Metering.start();
 
 		DatabaseInstance dbInstance = getRealInstance(databaseInstance);
@@ -218,7 +218,7 @@ public class DatabaseManagerRPCImpl extends SuperRemoteServlet implements Databa
 			LOGGER.warn(e.getMessage());
 			return false;
 		}
-
+		
 		if (dbConnection == null) {
 			LOGGER.warn("Can't connect to database..");
 			return false;

@@ -67,6 +67,9 @@ public class ControllerView extends FlowPanel {
 	private TextBox tbHostname, tbPort;
 	private Button btnOk, btnCancel;
 	private Image imgStatus, imgReCheck;
+	private FlexTable table;
+
+	private ComboBox cbSocketController;
 
 	/** */
 	public enum ViewStatus {
@@ -90,12 +93,13 @@ public class ControllerView extends FlowPanel {
 		addStyleName(VIEW_CSS_CLASS);
 
 		Headline headline = new Headline(R.get("meController"));
-		FlexTable table = new FlexTable();
+		table = new FlexTable();
 		FlowPanel panelButtons = new FlowPanel();
 
 		panelStatus = new FlowPanel();
 		cbProtocol = new ComboBox();
 		cbController = new ComboBox();
+		cbSocketController = new ComboBox();
 		tbHostname = new TextBox();
 		tbPort = new TextBox();
 		btnOk = new Button(R.get("Ok"));
@@ -105,11 +109,15 @@ public class ControllerView extends FlowPanel {
 
 		infoText = new Paragraph(R.get("mecInformation"));
 
-		cbProtocol.setWidth(100);
+		cbProtocol.setWidth(100 + "px");
 		cbProtocol.addStyleName(CB_PROTOCOL_CSS);
 		cbProtocol.setEditable(false);
 		cbProtocol.addItem("rmi://");
 		cbProtocol.addItem("http://");
+		cbProtocol.addItem("socket://");
+
+		cbSocketController.setWidth("");
+		cbSocketController.setEditable(false);
 
 		tbHostname.setText("localhost");
 		tbHostname.addStyleName(TB_HOST_CSS);
@@ -117,8 +125,8 @@ public class ControllerView extends FlowPanel {
 		tbPort.setText("1099");
 		tbPort.addStyleName(TB_PORT_CSS);
 
-		cbController.setWidth(380);
 		cbController.setEditable(false);
+		cbController.setWidth("");
 
 		HTML htmlStatus = new HTML(R.get("Status") + ":");
 		htmlStatus.addStyleName(HTML_STATUS_CSS);
@@ -155,7 +163,8 @@ public class ControllerView extends FlowPanel {
 		table.getFlexCellFormatter().setColSpan(3, 0, 3);
 		table.getFlexCellFormatter().setColSpan(4, 1, 2);
 
-		table.getFlexCellFormatter().setWidth(1, 2, "1px");
+		table.getFlexCellFormatter().setWidth(1, 0, "125px");
+		// table.getFlexCellFormatter().setWidth(1, 2, "1px");
 
 		add(headline);
 		if (hasInfoText) {
@@ -164,6 +173,34 @@ public class ControllerView extends FlowPanel {
 		add(table);
 
 		setViewStatus(ViewStatus.UNKNOWN);
+	}
+
+	boolean scVisible = false;
+
+	public void switchToSocketCotnroller(boolean bool) {
+		if (bool == scVisible) {
+			return;
+		}
+		scVisible = bool;
+		if (bool) {
+			table.clearCell(0, 1);
+			table.removeCell(0, 2);
+			table.clearCell(1, 1);
+			table.removeCell(1, 2);
+			table.setWidget(0, 1, new SmallTableLabel("Connected MECApplications"));
+			table.getFlexCellFormatter().setColSpan(0, 1, 2);
+			table.getFlexCellFormatter().setColSpan(1, 1, 2);
+			table.setWidget(1, 1, cbSocketController);
+		} else {
+			table.clearCell(0, 1);
+			table.clearCell(1, 1);
+			table.getFlexCellFormatter().setColSpan(0, 1, 1);
+			table.getFlexCellFormatter().setColSpan(1, 1, 1);
+			table.setWidget(0, 1, new SmallTableLabel("Host"));
+			table.setWidget(0, 2, new SmallTableLabel("Port"));
+			table.setWidget(1, 1, tbHostname);
+			table.setWidget(1, 2, tbPort);
+		}
 	}
 
 	/**
@@ -183,6 +220,7 @@ public class ControllerView extends FlowPanel {
 		tbHostname.addValueChangeHandler(valueHandler);
 		tbPort.addValueChangeHandler(valueHandler);
 		cbProtocol.addValueChangeHandler(valueHandler);
+		cbSocketController.addValueChangeHandler(valueHandler);
 	}
 
 	/**
@@ -249,6 +287,10 @@ public class ControllerView extends FlowPanel {
 	 */
 	public ComboBox getCbProtocol() {
 		return cbProtocol;
+	}
+
+	public ComboBox getCbSocketController() {
+		return cbSocketController;
 	}
 
 	/**

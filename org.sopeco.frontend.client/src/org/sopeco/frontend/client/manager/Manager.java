@@ -164,9 +164,14 @@ public final class Manager {
 			return "";
 		}
 
-		return getCurrentScenarioDetails().getControllerProtocol() + getCurrentScenarioDetails().getControllerHost()
-				+ ":" + getCurrentScenarioDetails().getControllerPort() + "/"
-				+ getCurrentScenarioDetails().getControllerName();
+		String url = getCurrentScenarioDetails().getControllerProtocol()
+				+ getCurrentScenarioDetails().getControllerHost();
+		//TODO
+		if (true || getCurrentScenarioDetails().getControllerPort() != 0) {
+			url += ":" + getCurrentScenarioDetails().getControllerPort();
+		}
+		url += "/" + getCurrentScenarioDetails().getControllerName();
+		return url;
 	}
 
 	/**
