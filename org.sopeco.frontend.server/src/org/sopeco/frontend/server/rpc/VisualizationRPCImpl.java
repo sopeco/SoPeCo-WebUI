@@ -27,12 +27,9 @@
 package org.sopeco.frontend.server.rpc;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
-import java.util.TreeSet;
 
 import org.sopeco.engine.registry.ExtensionRegistry;
 import org.sopeco.frontend.client.rpc.VisualizationRPC;
@@ -46,8 +43,8 @@ import org.sopeco.frontend.shared.definitions.result.SharedExperimentRuns;
 import org.sopeco.frontend.shared.entities.ChartData;
 import org.sopeco.frontend.shared.entities.ChartOptions;
 import org.sopeco.frontend.shared.entities.ChartParameter;
+import org.sopeco.frontend.shared.entities.ChartRowKey;
 import org.sopeco.frontend.shared.entities.Visualization;
-import org.sopeco.frontend.shared.helper.AggregationInputType;
 import org.sopeco.persistence.dataset.DataSetAggregated;
 import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.dataset.SimpleDataSet;
@@ -73,7 +70,7 @@ public class VisualizationRPCImpl extends SuperRemoteServlet implements
 
 	@Override
 	public Visualization createChart(SharedExperimentRuns experiementRun,
-			List<ChartParameter> chartParameter, ChartOptions options, String extension) {
+			ChartParameter inputParameter, ChartParameter outputParameterd, ChartOptions options, String extension) {
 		ChartData data;
 		loadExtension(extension);
 		String scenarioName = experiementRun.getParentSeries()
@@ -86,9 +83,9 @@ public class VisualizationRPCImpl extends SuperRemoteServlet implements
 		String accountName = getUser().getCurrentAccount().getId();
 		ExperimentSeriesRun run = getRun(scenarioName,
 				measurementEnvironmentUrl, experimentName, timestamp);
-		data = loadData(run, chartParameter, options);
+		data = loadData(run, inputParameter, outputParameterd, options);
 		Visualization visualization = chartCreator.createVisualization(
-				run.getLabel(), data, chartParameter, options);
+				run.getLabel(), data, inputParameter, outputParameterd, options);
 		visualization.setScenarioName(scenarioName);
 		visualization.setMeasurementEnvironmentUrl(measurementEnvironmentUrl);
 		visualization.setExperimentName(experimentName);
@@ -124,7 +121,7 @@ public class VisualizationRPCImpl extends SuperRemoteServlet implements
 					visualizationsToRemove.add(visualization);
 				} else {
 					visualization.setData(loadData(run,
-							visualization.getChartParameters(), visualization.getOptions()));
+							visualization.getInputParameter(), visualization.getOutputParameter(), visualization.getOptions()));
 				}
 				
 			}
@@ -134,75 +131,36 @@ public class VisualizationRPCImpl extends SuperRemoteServlet implements
 	}
 
 	private ChartData loadData(ExperimentSeriesRun run,
-			List<ChartParameter> chartParameter, ChartOptions chartOptions) {
+			ChartParameter inputParameter, ChartParameter outputParameter, ChartOptions chartOptions) {
 		ChartData data;
 		data = new ChartData();
+		data.setInputParameter(inputParameter);
 		DataSetAggregated dataset = run.getSuccessfulResultDataSet();
 		SimpleDataSet simpledata = dataset.convertToSimpleDataSet();
-		Map<String, AggregationInputType> inParams = new HashMap<String, AggregationInputType>();
-		String outputParam = "";
-		for (ChartParameter cp : chartParameter){
-			switch (cp.getType()) {
-			case ChartParameter.INPUT:
-				inParams.put(cp.getParameterName(), cp.getAggregationInputType());
-				break;
-			case ChartParameter.OBSERVATION:
-				outputParam = cp.getParameterName();
-				break;
-			}
-		}
-		StringBuilder xAxisLabel = new StringBuilder();
-		for (ParameterDefinition pd : simpledata.getParameters()){
-			if (pd.getRole() == ParameterRole.INPUT){
-				if (inParams.get(pd.getFullName()) == AggregationInputType.SHOW){
-					if (xAxisLabel.length() != 0){
-						xAxisLabel.append(".");
-					}
-					xAxisLabel.append(pd.getFullName());
-				}
-			}
-		}
-		chartOptions.setxAxisLabel(xAxisLabel.toString());
+		chartOptions.setxAxisLabel(inputParameter.getParameterName());
 		
-		Double xVal = 0.0;
-		String dataSetName;
-		
-		Map<Double, List<Double>> datamap = new TreeMap<Double, List<Double>>();
-		Set<String> dataSetNames = new TreeSet<String>();
+		Map<ChartRowKey, List<Double>> datamap = new TreeMap<ChartRowKey, List<Double>>();
 		for (SimpleDataSetRow row : simpledata) {
-			dataSetName = "D ";
+			ChartRowKey key = new ChartRowKey();
 			for (ParameterValue<?> value : row.getRowValues()){
 				if(value.getParameter().getRole() == ParameterRole.INPUT){
-					if (inParams.get(value.getParameter().getFullName()) != null){
-						switch (inParams.get(value.getParameter().getFullName())){
-						case SHOW:
-							xVal = value.getValueAsDouble();
-							break;
-						case AGGREGATE:
-							if (dataSetName.equals("")){
-								dataSetName += value.getParameter().getFullName() + ": " + value.getValueAsString();
-							} else {
-								dataSetName += ", " + value.getParameter().getFullName() + ": " + value.getValueAsString();
-							}
-							break;
-						}
-					}
+					ChartParameter cp = new ChartParameter();
+					cp.setParameterName(value.getParameter().getFullName());
+					key.set(cp, value.getValueAsDouble());
 				}
 			}
 			for (ParameterValue<?> value : row.getRowValues()){
-				if(value.getParameter().getRole() == ParameterRole.OBSERVATION && value.getParameter().getFullName().equals(outputParam)){
-					List<Double> list = datamap.get(xVal);
+				if(value.getParameter().getRole() == ParameterRole.OBSERVATION && value.getParameter().getFullName().equals(outputParameter.getParameterName())){
+					List<Double> list = datamap.get(key);
 					if (list == null){
 						list = new ArrayList<Double>();
-						datamap.put(xVal, list);
+						datamap.put(key, list);
 					}
-					dataSetNames.add(dataSetName);
 					list.add(value.getValueAsDouble());
 				}
 			}
 			
 		}
-		data.setDataSetNames(new ArrayList<String>(dataSetNames));
 		data.setData(datamap);
 		return data;
 	}

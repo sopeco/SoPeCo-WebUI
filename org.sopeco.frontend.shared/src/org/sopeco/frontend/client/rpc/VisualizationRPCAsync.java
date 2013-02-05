@@ -37,7 +37,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public interface VisualizationRPCAsync {
 	
-	void createChart(SharedExperimentRuns experiementRun, List<ChartParameter> chartParameter, ChartOptions options, String extension, AsyncCallback<Visualization> callback);
+	void createChart(SharedExperimentRuns experiementRun, ChartParameter inputParameter, ChartParameter outputParameter, ChartOptions options, String extension, AsyncCallback<Visualization> callback);
 	
 	void getChartParameter(SharedExperimentRuns experiementRun, AsyncCallback<ChartParameter[]> callback);
 	

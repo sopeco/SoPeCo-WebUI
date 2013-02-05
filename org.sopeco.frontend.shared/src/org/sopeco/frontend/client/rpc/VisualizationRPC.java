@@ -41,7 +41,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 @RemoteServiceRelativePath("visualizationRPC")
 public interface VisualizationRPC extends RemoteService {
 
-	Visualization createChart(SharedExperimentRuns experiementRun, List<ChartParameter> chartParameter, ChartOptions options, String extension);
+	Visualization createChart(SharedExperimentRuns experiementRun, ChartParameter inputParameter, ChartParameter outputParameter, ChartOptions options, String extension);
 	
 	ChartParameter[] getChartParameter(SharedExperimentRuns experiementRun);
 	

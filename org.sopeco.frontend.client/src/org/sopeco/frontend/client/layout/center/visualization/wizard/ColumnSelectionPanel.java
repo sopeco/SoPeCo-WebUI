@@ -28,25 +28,15 @@ package org.sopeco.frontend.client.layout.center.visualization.wizard;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.sopeco.frontend.shared.entities.ChartParameter;
-import org.sopeco.frontend.shared.helper.AggregationInputType;
-import org.sopeco.frontend.shared.helper.AggregationOutputType;
 import org.sopeco.frontend.shared.helper.Utilities;
 
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Grid;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
 
 public class ColumnSelectionPanel extends Grid {
 	private ListBox input;
@@ -97,23 +87,22 @@ public class ColumnSelectionPanel extends Grid {
 		
 		return;
 	}
-
-	public List<ChartParameter> getSelectedColumns() {
-		List<ChartParameter> sel = new ArrayList<ChartParameter>();
-		for (int i = 0; i < inputParameter.size(); i++){
-			if (Utilities.trimParameter(inputParameter.get(i).getParameterName()).equals(input.getValue(input.getSelectedIndex()))){
-				inputParameter.get(i).setAggregationInputType(AggregationInputType.SHOW);
-			} else {
-				inputParameter.get(i).setAggregationInputType(AggregationInputType.AGGREGATE);
-			}
-			
-			sel.add(inputParameter.get(i));
-		}
+	
+	public ChartParameter getSelectedOutput(){
 		for (ChartParameter cp : outputParameter){
 			if (Utilities.trimParameter(cp.getParameterName()).equals(output.getItemText(output.getSelectedIndex()))){
-				sel.add(cp);
+				return cp;
 			}
 		}
-		return sel;
+		return null;
+	}
+	
+	public ChartParameter getSelectedInput(){
+		for (int i = 0; i < inputParameter.size(); i++){
+			if (Utilities.trimParameter(inputParameter.get(i).getParameterName()).equals(input.getValue(input.getSelectedIndex()))){
+				return inputParameter.get(i);
+			}
+		}
+		return null;
 	}
 }

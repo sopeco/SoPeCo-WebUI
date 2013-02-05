@@ -14,15 +14,15 @@ public class ChartData implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	private Map<Double, List<Double>> data;
-	private List<String> dataSetNames = new ArrayList<String>();
+	private Map<ChartRowKey, List<Double>> data;
+	private ChartParameter inputParameter;
 	
 	public ChartData() {
-		data = new HashMap<Double, List<Double>>();
+		data = new HashMap<ChartRowKey, List<Double>>();
 	}
 
-	public List<Double> getxAxis() {
-		return new ArrayList<Double>(data.keySet());
+	public List<ChartRowKey> getxAxis() {
+		return new ArrayList<ChartRowKey>(data.keySet());
 	}
 
 	public List<List<Double>> getDatarows() {
@@ -33,7 +33,7 @@ public class ChartData implements Serializable {
 		this.addDatarows(name, data);
 	}
 	
-	public void setData(Map<Double, List<Double>> data){
+	public void setData(Map<ChartRowKey, List<Double>> data){
 		this.data = data;
 	}
 
@@ -42,12 +42,7 @@ public class ChartData implements Serializable {
 		StringBuilder builder = new StringBuilder();
 		builder.append(getClass().getName());
 		builder.append("\n");
-		builder.append("names: ");
-		for (String s : dataSetNames){
-			builder.append(s);
-		}
-		builder.append("\n");
-		for (Entry<Double, List<Double>> d : data.entrySet()){
+		for (Entry<ChartRowKey, List<Double>> d : data.entrySet()){
 			builder.append(d.getKey());
 			builder.append(": ");
 			for (Double doub : d.getValue()){
@@ -59,12 +54,12 @@ public class ChartData implements Serializable {
 		return builder.toString();
 	}
 
-	public List<String> getDataSetNames() {
-		return dataSetNames;
+	public ChartParameter getInputParameter() {
+		return inputParameter;
 	}
 
-	public void setDataSetNames(List<String> dataSetNames) {
-		this.dataSetNames = dataSetNames;
+	public void setInputParameter(ChartParameter inputParameter) {
+		this.inputParameter = inputParameter;
 	}
 
 	

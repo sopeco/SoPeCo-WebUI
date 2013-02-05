@@ -26,18 +26,10 @@
  */
 package org.sopeco.frontend.client.layout.center.visualization;
 
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-
 import org.sopeco.frontend.client.layout.center.ICenterController;
 import org.sopeco.frontend.client.resources.FrontEndResources;
 import org.sopeco.frontend.client.resources.R;
 import org.sopeco.frontend.client.rpc.RPC;
-import org.sopeco.frontend.shared.entities.ChartData;
-import org.sopeco.frontend.shared.entities.ChartOptions;
-import org.sopeco.frontend.shared.entities.ChartOptions.ChartType;
-import org.sopeco.frontend.shared.entities.ChartParameter;
 import org.sopeco.frontend.shared.entities.Visualization;
 
 import com.google.gwt.cell.client.AbstractCell;
@@ -49,41 +41,36 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.cellview.client.SimplePager.TextLocation;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ProvidesKey;
+import com.google.gwt.view.client.Range;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
-import com.google.gwt.visualization.client.AbstractDataTable;
-import com.google.gwt.visualization.client.AbstractDataTable.ColumnType;
-import com.google.gwt.visualization.client.DataTable;
-import com.google.gwt.visualization.client.VisualizationUtils;
-import com.google.gwt.visualization.client.visualizations.corechart.ColumnChart;
-import com.google.gwt.visualization.client.visualizations.corechart.CoreChart;
-import com.google.gwt.visualization.client.visualizations.corechart.HorizontalAxisOptions;
-import com.google.gwt.visualization.client.visualizations.corechart.LineChart;
-import com.google.gwt.visualization.client.visualizations.corechart.Options;
-import com.google.gwt.visualization.client.visualizations.corechart.PieChart;
 
 public class VisualizationController implements ICenterController {
 	private static final String ADD_IMAGE = "images/add.png";
 	private static final String REMOVE_IMAGE = "images/remove_cross.png";
 	private static final String REFRESH_IMAGE = "images/refresh_small.png";
+	private static final String STATUS_READY_IMAGE = "images/status-green.png";
+	private static final String STATUS_LOADING_IMAGE = "images/status-yellow.png";
+	private static final String STATUS_BUSY_IMAGE = "images/status-red.png";
+	private static final String STATUS_UNKOWN_IMAGE = "images/status-gray.png";
 	
 	private DockLayoutPanel rootWidget;
 	private FlowPanel controlWidget;
 	private CellList<Visualization> visualizationList;
 	private Anchor chartLink;
 	private ChartWidget chartWidget;
+	private Image statusImage;
+	private Status status = Status.UNKNOWN;
 
-	public static ChartsDataProvider visualizationDataProvider = new ChartsDataProvider();
+	public static ChartsDataProvider visualizationDataProvider;
 	public static final ProvidesKey<Visualization> KEY_PROVIDER = new ProvidesKey<Visualization>() {
 		@Override
 		public Object getKey(Visualization item) {
@@ -96,7 +83,13 @@ public class VisualizationController implements ICenterController {
 		rootWidget = new DockLayoutPanel(Unit.EM);
 		controlWidget = new FlowPanel();
 		final SingleSelectionModel<Visualization> ssm = new SingleSelectionModel<Visualization>(KEY_PROVIDER);
+		visualizationDataProvider = new ChartsDataProvider(this);
 		controlWidget.addStyleName("visualizationControl");
+		statusImage = new Image(STATUS_UNKOWN_IMAGE);
+		statusImage.setUrl(STATUS_READY_IMAGE);
+		statusImage.getElement().getStyle().setMarginLeft(1, Unit.EM);
+		statusImage.getElement().getStyle().setMarginTop(1, Unit.EM);
+		controlWidget.add(statusImage);
 		Image addVisualization = new Image(ADD_IMAGE);
 		addVisualization.setTitle(R.get("addchart"));
 		addVisualization.getElement().getStyle().setMarginLeft(1, Unit.EM);
@@ -121,7 +114,7 @@ public class VisualizationController implements ICenterController {
 
 					@Override
 					public void onSuccess(Void result) {
-						visualizationDataProvider.updateRowCount(visualizationList.getRowCount(), false);
+						refreshVisualizations();
 					}
 				});
 			}
@@ -177,6 +170,27 @@ public class VisualizationController implements ICenterController {
 		chartWidget = new ChartWidget();
 		rootWidget.add(chartWidget);
 	}
+	
+	public void setStatus(Status status){
+		this.status = status;
+		switch (status){
+		case READY:
+			statusImage.setUrl(STATUS_READY_IMAGE);
+			break;
+		case BUSY:
+			statusImage.setUrl(STATUS_BUSY_IMAGE);
+			break;
+		case LOADING:
+			statusImage.setUrl(STATUS_LOADING_IMAGE);
+			break;
+		default:
+			statusImage.setUrl(STATUS_UNKOWN_IMAGE);
+		}
+	}
+	
+	public Status getStatus(){
+		return status;
+	}
 
 	@Override
 	public Widget getView() {
@@ -195,17 +209,11 @@ public class VisualizationController implements ICenterController {
 	
 	
 	public void refreshVisualizations(){
-		RPC.getVisualizationRPC().getVisualizations(visualizationList.getPageStart(), visualizationList.getPageSize(), new AsyncCallback<List<Visualization>>() {
-
-			@Override
-			public void onFailure(Throwable caught) {
-			}
-
-			@Override
-			public void onSuccess(List<Visualization> result) {
-				visualizationDataProvider.updateRowData(visualizationList.getPageStart(), result);
-			}
-		});
+		if (getStatus() != Status.BUSY){
+			setStatus(Status.LOADING);
+		}
+		Range range = visualizationList.getVisibleRange();
+		visualizationList.setVisibleRangeAndClearData(range, true);
 	}
 
 	private static class VisualizationCell extends AbstractCell<Visualization> {
@@ -235,9 +243,16 @@ public class VisualizationController implements ICenterController {
 			sb.appendHtmlConstant("</td></tr><tr><td>");
 			sb.appendHtmlConstant("<div>" + value.getType() + "/" + value.getOptions().getType().toString());
 			sb.appendHtmlConstant("</div>");
+			sb.appendHtmlConstant("</td></tr><tr><td>");
+			sb.appendHtmlConstant("<div>" + value.getId());
+			sb.appendHtmlConstant("</div>");
 			sb.appendHtmlConstant("</td></tr></table>");
 
 		}
 
+	}
+	
+	public static enum Status {
+		READY, BUSY, LOADING, UNKNOWN;
 	}
 }

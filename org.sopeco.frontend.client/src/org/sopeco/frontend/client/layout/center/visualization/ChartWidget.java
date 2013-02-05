@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.sopeco.frontend.shared.entities.ChartData;
 import org.sopeco.frontend.shared.entities.ChartOptions;
+import org.sopeco.frontend.shared.entities.ChartRowKey;
 import org.sopeco.frontend.shared.entities.Visualization;
 import org.sopeco.frontend.shared.helper.AggregationOutputType;
 
@@ -55,8 +56,10 @@ public class ChartWidget extends FlowPanel {
 	}
 	
 	public void switchChart(Visualization visualization){
-		if (visualization == null)
+		if (visualization == null){
+			chartWidget = null;
 			return;
+		}
 		this.visualization = visualization;
 		showChart();
 	}
@@ -140,7 +143,7 @@ public class ChartWidget extends FlowPanel {
 		ChartData data = visualization.getData();
 		DataTable dataTable = DataTable.create();
 		List<List<Double>> dataList = data.getDatarows();
-		List<Double> names = data.getxAxis();
+		List<ChartRowKey> names = data.getxAxis();
 		if (names.size() <= 0 || dataList.size() <= 0){
 			return dataTable;
 		}
@@ -164,10 +167,10 @@ public class ChartWidget extends FlowPanel {
 				switch (visualization.getOptions().getType()) {
 				case PIECHART:
 				case BARCHART:
-					dataTable.setValue(row, 0, ""+names.get(row));
+					dataTable.setValue(row, 0, ""+names.get(row).getKeyValue(data.getInputParameter()));
 					break;
 				default:
-					dataTable.setValue(row, 0, names.get(row));
+					dataTable.setValue(row, 0, names.get(row).getKeyValue(data.getInputParameter()));
 				}
 				dataTable.setValue(row, 1, d/dataList.get(row).size());
 			}
@@ -183,10 +186,10 @@ public class ChartWidget extends FlowPanel {
 				switch (visualization.getOptions().getType()) {
 				case PIECHART:
 				case BARCHART:
-					dataTable.setValue(row, 0, ""+names.get(row));
+					dataTable.setValue(row, 0, ""+names.get(row).getKeyValue(data.getInputParameter()));
 					break;
 				default:
-					dataTable.setValue(row, 0, names.get(row));
+					dataTable.setValue(row, 0, names.get(row).getKeyValue(data.getInputParameter()));
 				}
 				dataTable.setValue(row, 1, d);
 			}
@@ -199,10 +202,10 @@ public class ChartWidget extends FlowPanel {
 					switch (visualization.getOptions().getType()) {
 					case PIECHART:
 					case BARCHART:
-						dataTable.setValue(column+row*dataList.get(row).size(), 0, ""+names.get(row));
+						dataTable.setValue(column+row*dataList.get(row).size(), 0, ""+names.get(row).getKeyValue(data.getInputParameter()));
 						break;
 					default:
-						dataTable.setValue(column+row*dataList.get(row).size(), 0, names.get(row));
+						dataTable.setValue(column+row*dataList.get(row).size(), 0, names.get(row).getKeyValue(data.getInputParameter()));
 					}
 					dataTable.setValue(column+row*dataList.get(row).size(), 1,dataList.get(row).get(column));
 				}

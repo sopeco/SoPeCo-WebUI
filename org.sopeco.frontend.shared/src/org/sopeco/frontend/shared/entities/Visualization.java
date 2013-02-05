@@ -81,8 +81,12 @@ public class Visualization implements Serializable {
 	private ChartOptions options;
 	
 	@Lob
-	@Column(name = "chartParameters")
-	private List<ChartParameter> chartParameters;
+	@Column(name = "inputParameter")
+	private ChartParameter inputParameter;
+	
+	@Lob
+	@Column(name = "outputParameter")
+	private ChartParameter outputParameter;
 	
 	@Column(name = "scenarioName")
 	private String scenarioName;
@@ -146,14 +150,6 @@ public class Visualization implements Serializable {
 		this.options = options;
 	}
 
-	public List<ChartParameter> getChartParameters() {
-		return chartParameters;
-	}
-
-	public void setChartParameters(List<ChartParameter> chartParameters) {
-		this.chartParameters = chartParameters;
-	}
-
 	public long getId() {
 		return id;
 	}
@@ -208,6 +204,22 @@ public class Visualization implements Serializable {
 			return false;
 		}
 		return this.getId() == ((Visualization) obj).getId();
+	}
+
+	public ChartParameter getInputParameter() {
+		return inputParameter;
+	}
+
+	public void setInputParameter(ChartParameter inputParameter) {
+		this.inputParameter = inputParameter;
+	}
+
+	public ChartParameter getOutputParameter() {
+		return outputParameter;
+	}
+
+	public void setOutputParameter(ChartParameter outputParameter) {
+		this.outputParameter = outputParameter;
 	}
 	
 }

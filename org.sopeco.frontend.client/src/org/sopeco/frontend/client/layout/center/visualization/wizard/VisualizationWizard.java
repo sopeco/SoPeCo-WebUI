@@ -31,6 +31,7 @@ import java.util.List;
 
 import org.sopeco.frontend.client.layout.MainLayoutPanel;
 import org.sopeco.frontend.client.layout.center.visualization.VisualizationController;
+import org.sopeco.frontend.client.layout.center.visualization.VisualizationController.Status;
 import org.sopeco.frontend.client.resources.FrontEndResources;
 import org.sopeco.frontend.client.resources.R;
 import org.sopeco.frontend.client.rpc.RPC;
@@ -142,10 +143,11 @@ public class VisualizationWizard extends DialogBox {
 
 	private void createChart() {
 		MainLayoutPanel.get().switchView(VisualizationController.class);
+		MainLayoutPanel.get().getController(VisualizationController.class).setStatus(Status.BUSY);
 		VisualizationWizard.this.hide();
 		ChartOptions options = new ChartOptions();
 		options.setType(chartSelectionPanel.getSelectedType());
-		RPC.getVisualizationRPC().createChart(experimentRun, columnSelectionPanel.getSelectedColumns(), options, extensionPanel.getExtension(), new AsyncCallback<Visualization>() {
+		RPC.getVisualizationRPC().createChart(experimentRun, columnSelectionPanel.getSelectedInput(), columnSelectionPanel.getSelectedOutput(), options, extensionPanel.getExtension(), new AsyncCallback<Visualization>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
@@ -155,8 +157,7 @@ public class VisualizationWizard extends DialogBox {
 
 			@Override
 			public void onSuccess(Visualization result) {
-				// TODO Auto-generated method stub
-				
+				MainLayoutPanel.get().getController(VisualizationController.class).refreshVisualizations();
 			}
 		});
 	}

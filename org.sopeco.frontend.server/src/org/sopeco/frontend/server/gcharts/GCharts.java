@@ -22,14 +22,15 @@ public class GCharts implements IChartConnection {
 
 	@Override
 	public synchronized Visualization createVisualization(String experimentName,
-			ChartData data, List<ChartParameter> chartParameter,
+			ChartData data, ChartParameter inputParameter, ChartParameter outputParameter,
 			ChartOptions options) {
 		Visualization visualization = new Visualization();
 		visualization.setLink("");
 		visualization.setName(experimentName);
 		visualization.setData(data);
 		visualization.setType(Type.GCHART);
-		visualization.setChartParameters(chartParameter);
+		visualization.setInputParameter(inputParameter);
+		visualization.setOutputParameter(outputParameter);
 		visualization.setOptions(options);
 		return visualization;
 	}

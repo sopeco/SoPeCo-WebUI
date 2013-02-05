@@ -28,9 +28,6 @@ package org.sopeco.frontend.shared.entities;
 
 import java.io.Serializable;
 
-import org.sopeco.frontend.shared.helper.AggregationInputType;
-import org.sopeco.frontend.shared.helper.AggregationOutputType;
-
 public class ChartParameter implements Serializable, Comparable<ChartParameter> {
 	/**
 	 * 
@@ -41,7 +38,6 @@ public class ChartParameter implements Serializable, Comparable<ChartParameter> 
 	public static final int OBSERVATION = 1;
 	private String parameterName;
 	private int type = INPUT;	
-	private AggregationInputType aggregationInputType;
 
 	public ChartParameter() {
 	}
@@ -62,19 +58,26 @@ public class ChartParameter implements Serializable, Comparable<ChartParameter> 
 		this.type = type;
 	}
 
-	public AggregationInputType getAggregationInputType() {
-		return aggregationInputType;
-	}
-
-	public void setAggregationInputType(AggregationInputType aggregationInputType) {
-		this.aggregationInputType = aggregationInputType;
-	}
-
 	@Override
 	public int compareTo(ChartParameter o) {
 		if (o == null)
 			return -1;
 		return this.getParameterName().compareTo(o.getParameterName());
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null)
+			return false;
+		if (!(obj instanceof ChartParameter))
+			return false;
+		return this.parameterName.equals(((ChartParameter) obj).getParameterName());
+	}
+
+	@Override
+	public int hashCode() {
+		return getParameterName().hashCode();
+	}
+	
 	
 }

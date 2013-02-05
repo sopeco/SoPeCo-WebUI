@@ -36,5 +36,5 @@ import org.sopeco.frontend.shared.entities.Visualization;
 
 public interface IChartConnection extends ISoPeCoExtensionArtifact {
 	
-	public Visualization createVisualization(String experimentName, ChartData data, List<ChartParameter> chartParameter, ChartOptions options);
+	public Visualization createVisualization(String experimentName, ChartData data, ChartParameter inputParameter, ChartParameter outputParameterd, ChartOptions options);
 }
