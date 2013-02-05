@@ -22,17 +22,5 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/D059149/Downloads/gwt-2.5.0/gwt-2.5.0/gwt-user.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="file:/C:/Users/D059149/Downloads/gwt-2.5.0/gwt-2.5.0/doc/javadoc/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/D059149/Downloads/gwt-2.5.0/gwt-2.5.0/gwt-dev.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="file:/C:/Users/D059149/Downloads/gwt-2.5.0/gwt-2.5.0/doc/javadoc/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/D059149/Downloads/gwt-2.5.0/gwt-2.5.0/validation-api-1.0.0.GA-sources.jar"/>
-	<classpathentry kind="lib" path="C:/Users/D059149/Downloads/gwt-2.5.0/gwt-2.5.0/validation-api-1.0.0.GA.jar" sourcepath="C:/Users/D059149/Downloads/gwt-2.5.0/gwt-2.5.0/validation-api-1.0.0.GA-sources.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

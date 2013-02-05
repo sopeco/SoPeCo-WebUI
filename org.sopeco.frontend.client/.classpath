@@ -16,19 +16,7 @@
 	<classpathentry including="**/*.java" kind="src" path="rsc"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.sopeco.frontend.server"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.sopeco.frontend.shared"/>
-	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
-	<classpathentry kind="lib" path="C:/Users/D059149/eclipse/plugins/com.google.gwt.eclipse.sdkbundle_2.5.0.v201212122042-rel-r42/gwt-2.5.0/gwt-user.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="file:/C:/Users/D059149/eclipse/plugins/com.google.gwt.eclipse.sdkbundle_2.5.0.v201212122042-rel-r42/gwt-2.5.0/doc/javadoc/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/D059149/eclipse/plugins/com.google.gwt.eclipse.sdkbundle_2.5.0.v201212122042-rel-r42/gwt-2.5.0/gwt-dev.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="file:/C:/Users/D059149/eclipse/plugins/com.google.gwt.eclipse.sdkbundle_2.5.0.v201212122042-rel-r42/gwt-2.5.0/doc/javadoc/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/D059149/eclipse/plugins/com.google.gwt.eclipse.sdkbundle_2.5.0.v201212122042-rel-r42/gwt-2.5.0/validation-api-1.0.0.GA-sources.jar"/>
-	<classpathentry kind="lib" path="C:/Users/D059149/eclipse/plugins/com.google.gwt.eclipse.sdkbundle_2.5.0.v201212122042-rel-r42/gwt-2.5.0/validation-api-1.0.0.GA.jar" sourcepath="C:/Users/D059149/eclipse/plugins/com.google.gwt.eclipse.sdkbundle_2.5.0.v201212122042-rel-r42/gwt-2.5.0/validation-api-1.0.0.GA-sources.jar"/>
+	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER/com.google.gwt.eclipse.sdkbundle_2.5.0.v201212122042-rel-r42"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>
