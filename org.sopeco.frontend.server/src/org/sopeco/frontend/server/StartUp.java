@@ -69,8 +69,12 @@ public final class StartUp implements ServletContextListener {
 			new DatabaseManagerRPCImpl().getAllDatabases();
 
 			Scheduler.startScheduler();
-			
-			SocketAcception.open();
+
+			int port = Configuration.getSessionSingleton(Configuration.getGlobalSessionId()).getPropertyAsInteger(
+					UiConfiguration.SOPECO_CONFIG_MEC_LISTENER_PORT, 11300);
+			if (port > 0) {
+				SocketAcception.open(port);
+			}
 		} catch (ConfigurationException e) {
 			throw new RuntimeException(e);
 		}
