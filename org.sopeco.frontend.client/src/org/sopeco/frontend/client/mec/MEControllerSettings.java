@@ -163,7 +163,7 @@ public class MEControllerSettings implements HasValueChangeHandlers<Boolean>, Va
 		loadController();
 	}
 
-	public Widget getView() {
+	public MEControllerSettingsView getView() {
 		return view;
 	}
 

@@ -33,9 +33,10 @@ import org.sopeco.frontend.client.helper.SimpleNotify;
 import org.sopeco.frontend.client.manager.Manager;
 import org.sopeco.frontend.client.manager.Manager.ControllerStatus;
 import org.sopeco.frontend.client.manager.ScenarioManager;
-import org.sopeco.frontend.client.mec.ControllerView;
 import org.sopeco.frontend.client.mec.MEControllerSettings;
+import org.sopeco.frontend.client.mec.MEControllerSettingsView;
 import org.sopeco.frontend.client.resources.R;
+import org.sopeco.frontend.shared.helper.MEControllerProtocol;
 import org.sopeco.gwt.widgets.Headline;
 import org.sopeco.gwt.widgets.SlidePanel;
 
@@ -167,24 +168,7 @@ public class CreateScenarioWizzard extends FlowPanel implements ClickHandler, Bl
 	 * 
 	 */
 	private void addMEController() {
-		ControllerView cv = (ControllerView) mecController.getView();
-		if (cv.getCbProtocol().getSelectedIndex() == 2) {
-			Manager.get().getCurrentScenarioDetails()
-					.setControllerHost(cv.getCbSocketController().getText().split(":")[0]);
-			Manager.get().getCurrentScenarioDetails().setControllerPort(0);
-		} else {
-			Manager.get().getCurrentScenarioDetails().setControllerHost(cv.getTbHostname().getText());
-			Manager.get().getCurrentScenarioDetails().setControllerPort(Integer.parseInt(cv.getTbPort().getText()));
-		}
-		Manager.get().getCurrentScenarioDetails().setControllerProtocol(cv.getCbProtocol().getText());
-		Manager.get().getCurrentScenarioDetails().setControllerName(cv.getCbController().getText());
-
-		EventControl.get().fireEvent(new MEControllerEvent(EventType.CONTROLLER_CHANGED));
-
-		ScenarioManager.get().loadDefinitionFromCurrentController();
-
-		Manager.get().setControllerLastStatus(ControllerStatus.ONLINE);
-		Manager.get().storeAccountDetails();
+		mecController.saveControllerSettings();
 	}
 
 	/**

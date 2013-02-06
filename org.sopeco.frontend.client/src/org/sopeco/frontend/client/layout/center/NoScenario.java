@@ -35,12 +35,13 @@ import org.sopeco.frontend.client.layout.ScenarioAddController;
 import org.sopeco.frontend.client.manager.Manager;
 import org.sopeco.frontend.client.manager.Manager.ControllerStatus;
 import org.sopeco.frontend.client.manager.ScenarioManager;
-import org.sopeco.frontend.client.mec.ControllerView;
-import org.sopeco.frontend.client.mec.MECController;
+import org.sopeco.frontend.client.mec.MEControllerSettings;
 import org.sopeco.frontend.client.resources.R;
+import org.sopeco.gwt.widgets.Headline;
 import org.sopeco.gwt.widgets.SlidePanel;
 
 import com.google.gwt.dom.client.Style.Float;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -50,6 +51,7 @@ import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.FlowPanel;
 
 /**
  * 
@@ -67,7 +69,8 @@ public class NoScenario extends CenterPanel implements ClickHandler, BlurHandler
 	private SlidePanel slidePanel;
 	private Button btnNext, btnPrevious;
 	private ScenarioAddController sac;
-	private MECController mecController;
+	private MEControllerSettings mecController;
+	private FlowPanel mecPanel;
 
 	public NoScenario() {
 		slidePanel = new SlidePanel(SLIDER_WIDTH, SLIDER_HEIGHT);
@@ -89,11 +92,18 @@ public class NoScenario extends CenterPanel implements ClickHandler, BlurHandler
 		sac.addBlurHandlerSName(this);
 		sac.addKeyUpHandlerSName(this);
 
-		mecController = new MECController(true, false);
+		mecController = new MEControllerSettings();
 		mecController.addValueChangeHandler(this);
 
+		mecPanel = new FlowPanel();
+		Headline headline = new Headline(R.lang.measurementEnvironmentController());
+		headline.getElement().getStyle().setMarginTop(0, Unit.PX);
+		mecPanel.add(headline);
+		mecPanel.add(mecController.getView());
+		mecPanel.getElement().getStyle().setPadding(1, Unit.EM);
+
 		slidePanel.addWidget(sac.getView());
-		slidePanel.addWidget(mecController.getView());
+		slidePanel.addWidget(mecPanel);
 
 		add(slidePanel);
 
@@ -142,19 +152,7 @@ public class NoScenario extends CenterPanel implements ClickHandler, BlurHandler
 	 * 
 	 */
 	private void addMEController() {
-		ControllerView cv = (ControllerView) mecController.getView();
-		Manager.get().getCurrentScenarioDetails().setControllerHost(cv.getTbHostname().getText());
-		Manager.get().getCurrentScenarioDetails().setControllerProtocol(cv.getCbProtocol().getText());
-		Manager.get().getCurrentScenarioDetails().setControllerPort(Integer.parseInt(cv.getTbPort().getText()));
-		Manager.get().getCurrentScenarioDetails().setControllerName(cv.getCbController().getText());
-
-		EventControl.get().fireEvent(new MEControllerEvent(EventType.CONTROLLER_CHANGED));
-
-		ScenarioManager.get().loadDefinitionFromCurrentController();
-
-		// Manager.get().setControllerLastCheck(latestCheckRun);
-		Manager.get().setControllerLastStatus(ControllerStatus.ONLINE);
-		Manager.get().storeAccountDetails();
+		mecController.saveControllerSettings();
 	}
 
 	/**
@@ -165,7 +163,7 @@ public class NoScenario extends CenterPanel implements ClickHandler, BlurHandler
 
 		if (!slidePanel.hasNext()) {
 			btnNext.setText(R.get("AddScenario"));
-			btnNext.setEnabled(mecController.isMecOnline());
+			btnNext.setEnabled(mecController.getLastValue());
 		} else {
 			btnNext.setText(R.get("Next"));
 			btnNext.setEnabled(true);
