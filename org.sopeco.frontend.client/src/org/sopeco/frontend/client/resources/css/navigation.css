@@ -74,6 +74,22 @@
 	z-index: 500;
 }
 
+.navigation .logoPanel {
+	position: absolute;
+	width: 100%;
+	text-align: center;
+	bottom: 0;
+	opacity: 0.6;
+	font-size: 10px;
+	color: #495574;
+	font-weight: bold;
+	height: 85px;
+}
+
+.navigation .logoPanel>img {
+	margin-top: 5px;
+}
+
 .naviItem .changeSpecIcon {
 	display: none;
 }

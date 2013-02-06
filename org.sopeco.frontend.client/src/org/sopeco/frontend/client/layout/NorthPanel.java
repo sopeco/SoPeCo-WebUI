@@ -79,7 +79,7 @@ public class NorthPanel extends FlowPanel implements ClickHandler, InputDialogHa
 	private static final String IMG_BUTTON_CSS_CLASS = "imgButton";
 	private static final String NAVI_PANEL_HEIGHT = "2.8em";
 
-	private static final String SAP_RESEARCH_LOGO = "images/sap_research.png";
+	private static final String SAP_RESEARCH_LOGO = "images/sopeco-logo-gray.png";
 
 	private static final String SAP_RESEARCH_LOGO_ID = "sapResearchLogo";
 
@@ -285,7 +285,10 @@ public class NorthPanel extends FlowPanel implements ClickHandler, InputDialogHa
 
 		navigationPanel.add(createSeparator());
 
-		researchLogo = new Image(SAP_RESEARCH_LOGO);
+		researchLogo = new Image(R.resc.imgSopecoLogoGray());
+		researchLogo.setWidth("91px");
+		researchLogo.setHeight("18px");
+		researchLogo.getElement().getStyle().setProperty("backgroundSize", "91px 18px");
 		researchLogo.getElement().setId(SAP_RESEARCH_LOGO_ID);
 		getElement().appendChild(researchLogo.getElement());
 

@@ -8,6 +8,7 @@ import org.sopeco.gwt.widgets.ClearDiv;
 import org.sopeco.gwt.widgets.ComboBox;
 import org.sopeco.persistence.metadata.entities.DatabaseInstance;
 
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Button;
@@ -70,7 +71,14 @@ public class SelectAccountPanel extends VerticalPanel {
 		setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
 
-		add(new Image(R.resc.imgDatabase()));
+		Image sopecoLogo = new Image(R.resc.imgSoPeCoLogo());
+		sopecoLogo.setWidth("250px");
+		sopecoLogo.setHeight("50px");
+		sopecoLogo.getElement().getStyle().setProperty("backgroundSize", "250px 50px");
+		sopecoLogo.getElement().getStyle().setMarginTop(25, Unit.PX);
+		sopecoLogo.getElement().getStyle().setMarginBottom(25, Unit.PX);
+
+		add(sopecoLogo);
 		add(infoText);
 		add(panelSelection);
 		add(btnConnect);

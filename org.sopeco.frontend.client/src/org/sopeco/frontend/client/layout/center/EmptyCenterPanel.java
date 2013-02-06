@@ -36,14 +36,14 @@ import com.google.gwt.user.client.ui.Image;
  * 
  */
 public class EmptyCenterPanel extends CenterPanel {
-	private static final int IMG_SIZE_X = 640, IMG_SIZE_Y = 323;
+	private static final int IMG_SIZE_X = 640, IMG_SIZE_Y = 126;
 	private static final int FIFTY = 50;
 	private static final double OPACITY = 0.1;
 	private static Image logo;
 
 	public EmptyCenterPanel() {
 		if (logo == null) {
-			logo = new Image("images/sap-logo.jpg");
+			logo = new Image("images/sopeco-logo.png");
 			logo.setSize(IMG_SIZE_X + "px", IMG_SIZE_Y + "px");
 			logo.getElement().getStyle().setPosition(Position.ABSOLUTE);
 			logo.getElement().getStyle().setTop(FIFTY, Unit.PCT);

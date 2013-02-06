@@ -47,7 +47,8 @@ public class LoginPanel extends FlowPanel implements ClickHandler {
 	private HTML htmlFEVersionInfo;
 
 	private FlowPanel selectLanguagePanel;
-
+	private FlowPanel logoPanel ;
+	
 	/**
 	 * Cosntructor.
 	 */
@@ -67,9 +68,13 @@ public class LoginPanel extends FlowPanel implements ClickHandler {
 		htmlFEVersionInfo = new HTML(SoPeCoUI.getBuildInfo());
 		htmlFEVersionInfo.addStyleName("htmlFEVersionInfo");
 
-		Image imgSapResearch = new Image(R.resc.imgSapResearchGrayOrange());
-		imgSapResearch.addStyleName("imgSapResearch");
+		Image imgLogo = new Image(R.resc.imgSDQLogo());
 
+		logoPanel = new FlowPanel();
+		logoPanel.addStyleName("imgSapResearch");
+		logoPanel.add(new HTML("powered by"));
+		logoPanel.add(imgLogo);
+		
 		createLanguagePanel();
 
 		verticalCell = new SimplePanel();
@@ -94,7 +99,7 @@ public class LoginPanel extends FlowPanel implements ClickHandler {
 		verticalCell.add(selectAccountPanel);
 		add(verticalCell);
 		add(htmlFEVersionInfo);
-		add(imgSapResearch);
+		add(logoPanel);
 		add(selectLanguagePanel);
 	}
 

@@ -132,4 +132,10 @@ public interface Resources extends ClientBundle {
 	
 	@Source("images/status-gray.png")
 	ImageResource imgStatusGray();
+	
+	@Source("images/sopeco-logo-gray.png")
+	ImageResource imgSopecoLogoGray();
+	
+	@Source("images/SDQ-Logo.png")
+	ImageResource imgSDQLogo();
 }
