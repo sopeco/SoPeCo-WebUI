@@ -16,7 +16,6 @@
 	<classpathentry including="**/*.java" kind="src" path="rsc"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.sopeco.frontend.server"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.sopeco.frontend.shared"/>
-	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER/com.google.gwt.eclipse.sdkbundle_2.5.0.v201212122042-rel-r42"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>
