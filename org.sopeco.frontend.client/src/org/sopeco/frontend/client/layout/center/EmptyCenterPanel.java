@@ -26,6 +26,8 @@
  */
 package org.sopeco.frontend.client.layout.center;
 
+import org.sopeco.frontend.client.resources.R;
+
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.Image;
@@ -43,7 +45,7 @@ public class EmptyCenterPanel extends CenterPanel {
 
 	public EmptyCenterPanel() {
 		if (logo == null) {
-			logo = new Image("images/sopeco-logo.png");
+			logo = new Image(R.resc.imgSoPeCoLogo().getSafeUri());
 			logo.setSize(IMG_SIZE_X + "px", IMG_SIZE_Y + "px");
 			logo.getElement().getStyle().setPosition(Position.ABSOLUTE);
 			logo.getElement().getStyle().setTop(FIFTY, Unit.PCT);

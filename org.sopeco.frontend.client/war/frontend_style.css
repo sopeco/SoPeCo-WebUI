@@ -143,6 +143,8 @@ p {
 #sapResearchLogo {
 	float: right;
 	margin: 9px 12px;
+	width: 91px;
+	height: 18px;
 }
 
 .north_hPanel .tabStyle {

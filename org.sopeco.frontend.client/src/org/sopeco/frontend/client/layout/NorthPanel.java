@@ -285,10 +285,7 @@ public class NorthPanel extends FlowPanel implements ClickHandler, InputDialogHa
 
 		navigationPanel.add(createSeparator());
 
-		researchLogo = new Image(R.resc.imgSopecoLogoGray());
-		researchLogo.setWidth("91px");
-		researchLogo.setHeight("18px");
-		researchLogo.getElement().getStyle().setProperty("backgroundSize", "91px 18px");
+		researchLogo = new Image(R.resc.imgSopecoLogoGray().getSafeUri());
 		researchLogo.getElement().setId(SAP_RESEARCH_LOGO_ID);
 		getElement().appendChild(researchLogo.getElement());
 

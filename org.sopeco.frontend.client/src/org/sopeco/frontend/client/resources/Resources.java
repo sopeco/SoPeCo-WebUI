@@ -116,7 +116,7 @@ public interface Resources extends ClientBundle {
 	ImageResource imgFlagEn();
 
 	@Source("images/sopeco-logo.png")
-	ImageResource imgSoPeCoLogo();
+	DataResource imgSoPeCoLogo();
 
 	@Source("images/reload.png")
 	ImageResource imgReload();
@@ -134,8 +134,8 @@ public interface Resources extends ClientBundle {
 	ImageResource imgStatusGray();
 	
 	@Source("images/sopeco-logo-gray.png")
-	ImageResource imgSopecoLogoGray();
+	DataResource imgSopecoLogoGray();
 	
 	@Source("images/SDQ-Logo.png")
-	ImageResource imgSDQLogo();
+	DataResource imgSDQLogo();
 }

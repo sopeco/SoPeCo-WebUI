@@ -71,10 +71,9 @@ public class SelectAccountPanel extends VerticalPanel {
 		setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
 
-		Image sopecoLogo = new Image(R.resc.imgSoPeCoLogo());
+		Image sopecoLogo = new Image(R.resc.imgSoPeCoLogo().getSafeUri());
 		sopecoLogo.setWidth("250px");
 		sopecoLogo.setHeight("50px");
-		sopecoLogo.getElement().getStyle().setProperty("backgroundSize", "250px 50px");
 		sopecoLogo.getElement().getStyle().setMarginTop(25, Unit.PX);
 		sopecoLogo.getElement().getStyle().setMarginBottom(25, Unit.PX);
 

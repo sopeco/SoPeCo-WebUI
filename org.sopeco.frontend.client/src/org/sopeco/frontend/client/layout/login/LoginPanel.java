@@ -68,7 +68,7 @@ public class LoginPanel extends FlowPanel implements ClickHandler {
 		htmlFEVersionInfo = new HTML(SoPeCoUI.getBuildInfo());
 		htmlFEVersionInfo.addStyleName("htmlFEVersionInfo");
 
-		Image imgLogo = new Image(R.resc.imgSDQLogo());
+		Image imgLogo = new Image(R.resc.imgSDQLogo().getSafeUri());
 
 		logoPanel = new FlowPanel();
 		logoPanel.addStyleName("imgSapResearch");

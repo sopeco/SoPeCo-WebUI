@@ -27,7 +27,7 @@ public class NaviView extends FlowPanel {
 	private void init() {
 		addStyleName(CSS_CLASS);
 
-		logo = new Image(R.resc.imgSDQLogo());
+		logo = new Image(R.resc.imgSDQLogo().getSafeUri());
 		logoPanel = new FlowPanel();
 
 		logoPanel.addStyleName(CSS_CLASS_LOGO_PANEL);
