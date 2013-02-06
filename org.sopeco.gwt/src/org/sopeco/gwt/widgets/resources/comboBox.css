@@ -33,21 +33,30 @@
 	background-color: white;
 }
 
-.spc-ComboBox>input {
-	border: none;
-	outline: none;
-	margin: 0px 2px;
-	padding: 2px;
-	background: transparent;
-	color: #333 !important;
-	/*float: left;*/
+.spc-ComboBox .sopeco-WrappedTextBox {
 	position: absolute;
 	top: 0;
 	left: 0;
 	right: 30px;
+	margin: 0px 2px;
+	padding: 2px;
+	border: none;
+	outline: none;
+	background: transparent;
 }
 
-.spc-ComboBox>input.disabled {
+.spc-ComboBox input {
+	border: none;
+	outline: none;
+	background: transparent;
+	color: #333 !important;
+	/*float: left;*/
+	text-overflow: ellipsis;
+	margin: 0;
+	width: 100%;
+}
+
+.spc-ComboBox input.disabled {
 	color: #aaa !important;
 	font-style: italic;
 }

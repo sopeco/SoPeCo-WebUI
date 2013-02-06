@@ -104,8 +104,6 @@ public class SoPeCoDialog extends PopupPanel implements ResizeHandler, MouseDown
 
 		setWidth(DEFAULT_WIDTH_PX + "px");
 
-		resizeRegistration = Window.addResizeHandler(this);
-
 		wrapper = new FlowPanel();
 		add(wrapper);
 	}
@@ -137,6 +135,8 @@ public class SoPeCoDialog extends PopupPanel implements ResizeHandler, MouseDown
 
 	@Override
 	public void center() {
+		resizeRegistration = Window.addResizeHandler(this);
+		
 		if (windowMargin != -1 && contentWidget != null) {
 			String maxHeight = Window.getClientHeight() - windowMargin + "px";
 			contentWidget.getElement().getStyle().setProperty("maxHeight", maxHeight);

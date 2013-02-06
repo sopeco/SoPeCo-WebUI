@@ -81,7 +81,7 @@ public class ComboBox extends FlowPanel implements
 	private InputFieldHandler inputfieldHandler;
 	private HandlerRegistration resizeHandlerRegistration;
 
-	private TextBox inputField;
+	private WrappedTextBox inputField;
 	private FocusPanel dropdownIcon;
 	private VerticalPanel dropdownView;
 	private SimplePanel dropdownWrapper;
@@ -162,7 +162,7 @@ public class ComboBox extends FlowPanel implements
 	 * Set the given text to the combobox.
 	 */
 	public void setText(String text) {
-		inputField.setText(text);
+		inputField.getTextbox().setText(text);
 	}
 
 	/**
@@ -191,9 +191,9 @@ public class ComboBox extends FlowPanel implements
 	public void setEnabled(boolean pEnabled) {
 		this.enabled = pEnabled;
 		if (!pEnabled) {
-			inputField.addStyleName("disabled");
+			inputField.getTextbox().addStyleName("disabled");
 		} else {
-			inputField.removeStyleName("disabled");
+			inputField.getTextbox().removeStyleName("disabled");
 		}
 	}
 
@@ -203,7 +203,7 @@ public class ComboBox extends FlowPanel implements
 	 * @return current text
 	 */
 	public String getText() {
-		return inputField.getText();
+		return inputField.getTextbox().getText();
 	}
 
 	/**
@@ -222,10 +222,22 @@ public class ComboBox extends FlowPanel implements
 	 * @param text
 	 */
 	public void setSelectedText(String text) {
+		setSelectedText(text, false);
+	}
+
+	/**
+	 * Selects the item, that equals the given text. If no item equals the given
+	 * text, nothing happens. If the item is set, an event is fired, if
+	 * <code>fireEvent</code> is <code>true</code>.
+	 * 
+	 * @param text
+	 * @param fireEvent
+	 */
+	public void setSelectedText(String text, boolean fireEvent) {
 		int count = 0;
 		for (FocusPanel panel : itemList) {
 			if (((Label) panel.getWidget()).getText().equals(text)) {
-				setSelectedIndex(count);
+				setSelectedIndex(count, fireEvent);
 				return;
 			}
 			count++;
@@ -265,7 +277,7 @@ public class ComboBox extends FlowPanel implements
 
 		selectedIndex = i;
 		Label label = (Label) itemList.get(i).getWidget();
-		inputField.setText(label.getText());
+		inputField.getTextbox().setText(label.getText());
 		userEditedText = false;
 
 		if (fireEvent) {
@@ -328,7 +340,7 @@ public class ComboBox extends FlowPanel implements
 	 * Initialize the necessary objects.
 	 */
 	private void initialize() {
-		inputField = new TextBox();
+		inputField = new WrappedTextBox();
 		dropdownView = new VerticalPanel();
 		itemList = new ArrayList<FocusPanel>();
 		userEditedText = false;
@@ -361,8 +373,8 @@ public class ComboBox extends FlowPanel implements
 			}
 		});
 
-		inputField.addValueChangeHandler(getInputFieldHandler());
-		inputField.addFocusHandler(getInputFieldHandler());
+		inputField.getTextbox().addValueChangeHandler(getInputFieldHandler());
+		inputField.getTextbox().addFocusHandler(getInputFieldHandler());
 		dummyPanel.addBlurHandler(getComboBoxItemHandler());
 
 		add(inputField);
@@ -485,11 +497,11 @@ public class ComboBox extends FlowPanel implements
 		@Override
 		public void onFocus(FocusEvent event) {
 			if (!enabled) {
-				inputField.setFocus(false);
+				inputField.getTextbox().setFocus(false);
 				return;
 			}
 			if (!editable) {
-				inputField.setFocus(false);
+				inputField.getTextbox().setFocus(false);
 				showDropdownList();
 			}
 		}

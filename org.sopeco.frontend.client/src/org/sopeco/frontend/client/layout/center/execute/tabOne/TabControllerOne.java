@@ -31,6 +31,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.sopeco.frontend.client.event.EventControl;
+import org.sopeco.frontend.client.event.MEControllerEvent;
+import org.sopeco.frontend.client.event.handler.MEControllerEventHandler;
 import org.sopeco.frontend.client.layout.center.execute.ExecuteController;
 import org.sopeco.frontend.client.layout.center.execute.ExecuteTabPanel;
 import org.sopeco.frontend.client.layout.center.execute.TabController;
@@ -51,13 +54,13 @@ import com.google.gwt.user.client.ui.FlowPanel;
  * @author Marius Oehler
  * 
  */
-public class TabControllerOne extends TabController implements ClickHandler {
+public class TabControllerOne extends TabController implements ClickHandler, MEControllerEventHandler {
 
 	private static final Logger LOGGER = Logger.getLogger(TabControllerOne.class.getName());
 
 	private ExecuteTab view;
 	private DateTimeFormat dtf;
-	
+
 	/**
 	 * Constructor.
 	 * 
@@ -74,6 +77,8 @@ public class TabControllerOne extends TabController implements ClickHandler {
 	private void initialize() {
 		view = new ExecuteTab();
 		view.getBtnExecute().addClickHandler(this);
+
+		EventControl.get().addHandler(MEControllerEvent.TYPE, this);
 	}
 
 	@Override
@@ -81,16 +86,24 @@ public class TabControllerOne extends TabController implements ClickHandler {
 		return view;
 	}
 
+	public void onNewMEControllerEvent(org.sopeco.frontend.client.event.MEControllerEvent event) {
+		updateControllerURL();
+	};
+
 	@Override
 	public void onSelection() {
-		view.getEditController().setValue(Manager.get().getControllerUrl());
-		
+		updateControllerURL();
+
 		if (dtf == null) {
 			dtf = DateTimeFormat.getFormat("yyyy-MM-dd hh:mm aa");
 		}
 		view.getEditLabel().setValue("ExperimentRun " + dtf.format(new Date()));
 	}
 
+	public void updateControllerURL () {
+		view.getEditController().setValue(Manager.get().getControllerUrl());
+	}
+	
 	@Override
 	public void onClick(ClickEvent event) {
 		scheduleExperiment();
@@ -126,7 +139,7 @@ public class TabControllerOne extends TabController implements ClickHandler {
 		}
 	}
 
-	private  List<String> createExperimentSelection() {
+	private List<String> createExperimentSelection() {
 		List<String> selectedExperimentSeries = new ArrayList<String>();
 
 		for (String spec : view.getSelectionPanel().getTreeItems().keySet()) {
@@ -150,7 +163,7 @@ public class TabControllerOne extends TabController implements ClickHandler {
 		scheduledExperiment.setScenarioDefinition(ScenarioManager.get().getCurrentScenarioDefinition());
 		scheduledExperiment.setSelectedExperiments(createExperimentSelection());
 
-		if ( !view.isExecutingImmediately() && isRepeating()) {
+		if (!view.isExecutingImmediately() && isRepeating()) {
 			scheduledExperiment.setRepeating(true);
 			scheduledExperiment.setRepeatDays(view.getRepeatTable().getScheduleDays());
 			scheduledExperiment.setRepeatHours(view.getRepeatTable().getScheduleHours());

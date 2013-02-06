@@ -36,6 +36,7 @@ import org.sopeco.frontend.client.layout.popups.InputDialog;
 import org.sopeco.frontend.client.layout.popups.InputDialogHandler;
 import org.sopeco.frontend.client.manager.Manager;
 import org.sopeco.frontend.client.manager.ScenarioManager;
+import org.sopeco.frontend.client.mec.MECSettingsDialog;
 import org.sopeco.frontend.client.mec.MEControllerBox;
 import org.sopeco.frontend.client.resources.R;
 import org.sopeco.gwt.widgets.ComboBox;
@@ -108,7 +109,8 @@ public class NorthPanel extends FlowPanel implements ClickHandler, InputDialogHa
 	@Override
 	public void onClick(ClickEvent event) {
 		if (event.getSource() == imageSatellite && isEnabled(imageSatellite)) {
-			MEControllerBox.showBox();
+//			MEControllerBox.showBox();
+			MECSettingsDialog.showDialog();
 		} else if (event.getSource() == imageExport && isEnabled(imageExport)) {
 			ExportBox.showExportBox();
 		} else if (event.getSource() == imageScenarioAdd && isEnabled(imageScenarioAdd)) {

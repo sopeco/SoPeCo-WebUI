@@ -28,9 +28,9 @@ package org.sopeco.frontend.client.mec;
 
 import java.util.List;
 
+import org.sopeco.frontend.client.SoPeCoUI;
 import org.sopeco.frontend.client.helper.INotifyHandler;
 import org.sopeco.frontend.client.helper.INotifyHandler.Result;
-import org.sopeco.frontend.client.layout.popups.Message;
 import org.sopeco.frontend.client.rpc.RPC;
 import org.sopeco.frontend.shared.helper.MEControllerProtocol;
 
@@ -100,7 +100,8 @@ public final class ControllerInteraction {
 
 			@Override
 			public void onFailure(Throwable caught) {
-				Message.error(caught.getMessage());
+				SoPeCoUI.get().onUncaughtException(caught);
+
 				Result<String[]> callResult = new Result<String[]>(false, null);
 				handler.call(callResult);
 			}

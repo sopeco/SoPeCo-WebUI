@@ -65,7 +65,7 @@ public class ExecuteTab extends FlowPanel implements ValueChangeHandler<Boolean>
 	private SelectionPanel selectionPanel;
 
 	private LanguageConstants r = GWT.create(LanguageConstants.class);
-	
+
 	public ExecuteTab() {
 		init();
 	}
@@ -83,9 +83,13 @@ public class ExecuteTab extends FlowPanel implements ValueChangeHandler<Boolean>
 		htmlRdioSchedule = new HTML(R.get("execSchedule"));
 
 		editLabel = new EditableText("My Scheduling");
+		btnExecute = new Button(R.lang.executeExperiment());
+
 		editController = new EditableText(Manager.get().getControllerUrl());
 		editController.setEditable(false);
-		btnExecute = new Button(R.lang.executeExperiment());
+		// Temporary
+		editController.getElement().getFirstChildElement().getNextSiblingElement().getStyle().setBackgroundColor("white");
+		editController.getElement().getFirstChildElement().getNextSiblingElement().getStyle().setBorderColor("white");
 
 		rdioOnReady = new RadioButton("execution");
 		rdioSchedule = new RadioButton("execution");

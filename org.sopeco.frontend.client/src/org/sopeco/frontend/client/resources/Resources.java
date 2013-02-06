@@ -64,6 +64,10 @@ public interface Resources extends ClientBundle {
 	@CssResource.NotStrict
 	CssResource cssNavigation();
 
+	@Source("css/mecSettingsView.css")
+	@CssResource.NotStrict
+	CssResource cssMECSettingsView();
+
 	/** IMAGES. */
 
 	@Source("images/error.png")
@@ -110,4 +114,22 @@ public interface Resources extends ClientBundle {
 
 	@Source("images/flag_en.png")
 	ImageResource imgFlagEn();
+
+	@Source("images/sopeco-logo.png")
+	ImageResource imgSoPeCoLogo();
+
+	@Source("images/reload.png")
+	ImageResource imgReload();
+
+	@Source("images/status-red.png")
+	ImageResource imgStatusRed();
+
+	@Source("images/status-green.png")
+	ImageResource imgStatusGreen();
+
+	@Source("images/status-yellow.png")
+	ImageResource imgStatusYellow();
+	
+	@Source("images/status-gray.png")
+	ImageResource imgStatusGray();
 }

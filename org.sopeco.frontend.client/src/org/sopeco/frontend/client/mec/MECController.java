@@ -99,11 +99,15 @@ public class MECController extends FlowPanel implements ValueChangeHandler<Strin
 	}
 
 	private void updateSocketCB() {
+		view.setViewStatus(ViewStatus.CHECKING);
+		mecIsOnline = false;
+
 		RPC.getGetRPC().getConnectedSocketController(new AsyncCallback<Map<String, String[]>>() {
 			@Override
 			public void onSuccess(Map<String, String[]> result) {
 				socketController = result;
 				view.getCbSocketController().clear();
+
 				if (result.size() == 0) {
 					view.getCbSocketController().setEnabled(false);
 					view.getCbSocketController().addItem("No MEController connected");
@@ -115,9 +119,14 @@ public class MECController extends FlowPanel implements ValueChangeHandler<Strin
 
 				}
 
+				Result r;
 				if (!socketController.isEmpty()) {
-					view.setAvailableController(socketController.get(view.getCbSocketController().getText()));
+					r = new Result<String[]>(true, socketController.get(view.getCbSocketController().getText()),
+							ControllerInteraction.KEY_RETRIEVE_MEC);
+				} else {
+					r = new Result<String[]>(true, new String[0], ControllerInteraction.KEY_RETRIEVE_MEC);
 				}
+				call(r);
 			}
 
 			@Override
@@ -131,13 +140,23 @@ public class MECController extends FlowPanel implements ValueChangeHandler<Strin
 	private void checkEnteredHost() {
 		// TODO - temporary workaround
 		if (view.getCbProtocol().getSelectedIndex() == 2) {
-			view.setViewStatus(ViewStatus.ONLINE);
-			ValueChangeEvent.fire(this, true);
-			mecIsOnline = true;
+			if (socketController.isEmpty()) {
+				view.setViewStatus(ViewStatus.OFFLINE);
+				mecIsOnline = false;
+			} else {
+				if (socketController.get(view.getCbSocketController().getText()).length == 0) {
+					view.setViewStatus(ViewStatus.UNKNOWN);
+					mecIsOnline = false;
+				} else {
+					view.setViewStatus(ViewStatus.ONLINE);
+					mecIsOnline = true;
+				}
+			}
+			ValueChangeEvent.fire(this, mecIsOnline);
 			return;
 		}
 		// *****
-		
+
 		String host = view.getTbHostname().getText();
 		int port = Integer.parseInt(view.getTbPort().getText());
 
@@ -184,6 +203,8 @@ public class MECController extends FlowPanel implements ValueChangeHandler<Strin
 				mecIsOnline = false;
 				view.setViewStatus(ViewStatus.OFFLINE);
 				view.getCbController().clear();
+				view.getCbController().setText("No MEC-Application online");
+				view.getCbController().setEnabled(false);
 				ValueChangeEvent.fire(this, false);
 			}
 		} else if (result.getKey().equals(ControllerInteraction.KEY_RETRIEVE_MEC)) {
@@ -197,7 +218,7 @@ public class MECController extends FlowPanel implements ValueChangeHandler<Strin
 			} else {
 				mecIsOnline = false;
 				view.setViewStatus(ViewStatus.UNKNOWN);
-				view.getCbController().addItem("No controller avaialble");
+				view.getCbController().setText("No controller avaialble");
 				view.getCbController().setEnabled(false);
 			}
 			ValueChangeEvent.fire(this, mecIsOnline);
@@ -238,7 +259,7 @@ public class MECController extends FlowPanel implements ValueChangeHandler<Strin
 			view.getCbProtocol().setSelectedIndex(1);
 		} else if (protocol.equals("socket://")) {
 			view.switchToSocketCotnroller(true);
-			view.getCbProtocol().setSelectedIndex(2);	
+			view.getCbProtocol().setSelectedIndex(2);
 			view.getCbSocketController().addItem(Manager.get().getCurrentScenarioDetails().getControllerHost());
 		}
 

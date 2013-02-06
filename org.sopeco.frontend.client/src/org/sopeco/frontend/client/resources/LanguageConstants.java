@@ -84,4 +84,26 @@ public interface LanguageConstants extends Constants {
 	String addExperimentSeries();
 
 	String selectLanguage();
+	
+	String ok();
+	
+	String measurementEnvironmentController();
+	
+	String controller();
+	
+	String protocol();
+	
+	String mecApplication();
+	
+	String ipAddress();
+	
+	String mecSettingDescription();
+	
+	String mecAppToken();
+	
+	String status();
+	
+	String noMecStarted();
+	
+	String noMecOnline();
 }

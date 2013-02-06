@@ -380,6 +380,10 @@ public class MEControllerRPCImpl extends SuperRemoteServlet implements MEControl
 
 	@Override
 	public List<String> getController(MEControllerProtocol protocol, String host, int port) {
-		return ServerCheck.getController(protocol, host, port);
+		if (isPortReachable(host, port)) {
+			return ServerCheck.getController(protocol, host, port);
+		} else {
+			return null;
+		}
 	}
 }

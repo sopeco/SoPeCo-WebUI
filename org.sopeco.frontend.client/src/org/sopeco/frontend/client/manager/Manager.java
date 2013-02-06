@@ -166,8 +166,7 @@ public final class Manager {
 
 		String url = getCurrentScenarioDetails().getControllerProtocol()
 				+ getCurrentScenarioDetails().getControllerHost();
-		//TODO
-		if (true || getCurrentScenarioDetails().getControllerPort() != 0) {
+		if (getCurrentScenarioDetails().getControllerPort() > 0) {
 			url += ":" + getCurrentScenarioDetails().getControllerPort();
 		}
 		url += "/" + getCurrentScenarioDetails().getControllerName();

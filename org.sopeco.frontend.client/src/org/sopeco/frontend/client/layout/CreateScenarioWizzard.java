@@ -34,13 +34,15 @@ import org.sopeco.frontend.client.manager.Manager;
 import org.sopeco.frontend.client.manager.Manager.ControllerStatus;
 import org.sopeco.frontend.client.manager.ScenarioManager;
 import org.sopeco.frontend.client.mec.ControllerView;
-import org.sopeco.frontend.client.mec.MECController;
+import org.sopeco.frontend.client.mec.MEControllerSettings;
 import org.sopeco.frontend.client.resources.R;
+import org.sopeco.gwt.widgets.Headline;
 import org.sopeco.gwt.widgets.SlidePanel;
 
 import com.google.gwt.dom.client.Style.Float;
 import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.dom.client.Style.Position;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -65,8 +67,10 @@ public class CreateScenarioWizzard extends FlowPanel implements ClickHandler, Bl
 	private SlidePanel slidePanel;
 	private Button btnNext, btnPrevious;
 	private ScenarioAddController sac;
-	private MECController mecController;
+	private MEControllerSettings mecController;
 	private SimpleNotify simpleNotifier;
+
+	private FlowPanel mecPanel;
 
 	private int width, height;
 
@@ -94,11 +98,18 @@ public class CreateScenarioWizzard extends FlowPanel implements ClickHandler, Bl
 		sac.addBlurHandlerSName(this);
 		sac.addKeyUpHandlerSName(this);
 
-		mecController = new MECController(true, false);
+		mecController = new MEControllerSettings();
 		mecController.addValueChangeHandler(this);
 
+		mecPanel = new FlowPanel();
+		Headline headline = new Headline(R.lang.measurementEnvironmentController());
+		headline.getElement().getStyle().setMarginTop(0, Unit.PX);
+		mecPanel.add(headline);
+		mecPanel.add(mecController.getView());
+		mecPanel.getElement().getStyle().setPadding(1, Unit.EM);
+
 		slidePanel.addWidget(sac.getView());
-		slidePanel.addWidget(mecController.getView());
+		slidePanel.addWidget(mecPanel);
 
 		add(slidePanel);
 
@@ -184,7 +195,7 @@ public class CreateScenarioWizzard extends FlowPanel implements ClickHandler, Bl
 
 		if (!slidePanel.hasNext()) {
 			btnNext.setText(R.get("AddScenario"));
-			btnNext.setEnabled(mecController.isMecOnline());
+			btnNext.setEnabled(mecController.getLastValue());
 		} else {
 			btnNext.setText(R.get("Next"));
 			btnNext.setEnabled(true);

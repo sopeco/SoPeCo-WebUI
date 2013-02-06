@@ -88,10 +88,15 @@ public class AccountDetails implements Serializable {
 			return null;
 		}
 
-		return getScenarioDetail(selectedScenario).getControllerProtocol()
-				+ getScenarioDetail(selectedScenario).getControllerHost() + ":"
-				+ getScenarioDetail(selectedScenario).getControllerPort() + "/"
-				+ getScenarioDetail(selectedScenario).getControllerName();
+		String url = getScenarioDetail(selectedScenario).getControllerProtocol()
+				+ getScenarioDetail(selectedScenario).getControllerHost();
+
+		if (getScenarioDetail(selectedScenario).getControllerPort() > 0) {
+			url += ":" + getScenarioDetail(selectedScenario).getControllerPort();
+		}
+		url += "/" + getScenarioDetail(selectedScenario).getControllerName();
+
+		return url;
 	}
 
 	/**
