@@ -1,6 +1,10 @@
 package org.sopeco.frontend.client.layout.center.visualization;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import org.sopeco.frontend.shared.entities.ChartData;
 import org.sopeco.frontend.shared.entities.ChartOptions;
@@ -158,40 +162,61 @@ public class ChartWidget extends FlowPanel {
 		switch (AggregationOutputType.valueOf(aggregation.getItemText(aggregation.getSelectedIndex()))) {
 		case AVERAGE:
 			dataTable.addColumn(ColumnType.NUMBER,AggregationOutputType.AVERAGE.toString());
+			Map<Double, Double> average = new TreeMap<Double, Double>();
+			Map<Double, Integer> total = new HashMap<Double, Integer>();
 			for (int row = 0; row < dataList.size(); row++){
-				dataTable.addRow();
-				Double d = 0.0;
-				for (int column = 0; column < dataList.get(row).size(); column++){
-					d += dataList.get(row).get(column);
+				Double key = names.get(row).getKeyValue(data.getInputParameter());
+				if (average.get(key) == null){
+					average.put(key, 0.0);
 				}
+				if (total.get(key) == null){
+					total.put(key, 0);
+				}
+				for (int column = 0; column < dataList.get(row).size(); column++){
+					average.put(key,  dataList.get(row).get(column) + average.get(key));
+					total.put(key, total.get(key)+1);
+				}
+			}
+			int j = 0;
+			for (Entry<Double, Double> entry : average.entrySet()){
+				dataTable.addRow();
 				switch (visualization.getOptions().getType()) {
 				case PIECHART:
 				case BARCHART:
-					dataTable.setValue(row, 0, ""+names.get(row).getKeyValue(data.getInputParameter()));
+					dataTable.setValue(j, 0, ""+entry.getKey());
 					break;
 				default:
-					dataTable.setValue(row, 0, names.get(row).getKeyValue(data.getInputParameter()));
+					dataTable.setValue(j, 0, entry.getKey());
 				}
-				dataTable.setValue(row, 1, d/dataList.get(row).size());
+				dataTable.setValue(j, 1, entry.getValue()/total.get(entry.getKey()));
+				j++;
 			}
 			break;
 		case SUM:
-			dataTable.addColumn(ColumnType.NUMBER,AggregationOutputType.SUM.toString());
+			dataTable.addColumn(ColumnType.NUMBER,AggregationOutputType.AVERAGE.toString());
+			Map<Double, Double> average2 = new TreeMap<Double, Double>();
 			for (int row = 0; row < dataList.size(); row++){
-				dataTable.addRow();
-				Double d = 0.0;
-				for (int column = 0; column < dataList.get(row).size(); column++){
-					d += dataList.get(row).get(column);
+				Double key = names.get(row).getKeyValue(data.getInputParameter());
+				if (average2.get(key) == null){
+					average2.put(key, 0.0);
 				}
+				for (int column = 0; column < dataList.get(row).size(); column++){
+					average2.put(key,  dataList.get(row).get(column) + average2.get(key));
+				}
+			}
+			int j2 = 0;
+			for (Entry<Double, Double> entry : average2.entrySet()){
+				dataTable.addRow();
 				switch (visualization.getOptions().getType()) {
 				case PIECHART:
 				case BARCHART:
-					dataTable.setValue(row, 0, ""+names.get(row).getKeyValue(data.getInputParameter()));
+					dataTable.setValue(j2, 0, ""+entry.getKey());
 					break;
 				default:
-					dataTable.setValue(row, 0, names.get(row).getKeyValue(data.getInputParameter()));
+					dataTable.setValue(j2, 0, entry.getKey());
 				}
-				dataTable.setValue(row, 1, d);
+				dataTable.setValue(j2, 1, entry.getValue());
+				j2++;
 			}
 			break;
 		default:
