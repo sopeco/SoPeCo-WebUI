@@ -1,0 +1,175 @@
+/**
+ * Copyright (c) 2013 SAP
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *     * Redistributions of source code must retain the above copyright
+ *       notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above copyright
+ *       notice, this list of conditions and the following disclaimer in the
+ *       documentation and/or other materials provided with the distribution.
+ *     * Neither the name of the SAP nor the
+ *       names of its contributors may be used to endorse or promote products
+ *       derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL SAP BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+@url gear imgGear;
+@url addBlue imgAddBlue;
+.naviItem {
+	padding: 0.8em 0.5em 0.8em 1.5em;
+	cursor: pointer;
+	margin: 2px 0 2px 5px;
+	border: 0;
+	opacity: 0.6;
+}
+
+.naviItem>.gwt-HTML {
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.naviItem>.gwt-HTML:first\-child {
+	font-weight: bold;
+	color: #222;
+}
+
+.naviItem>.gwt-HTML:nth\-child\(2\) {
+	font-size: 0.8em;
+	color: #a3a3a3;
+	font-weight: bold;
+}
+
+.naviItem:hover {
+	border-left: 5px solid #bbb;
+	margin-left: 0px;
+	opacity: 1;
+}
+
+.naviItem.selected {
+	border-left: 5px solid #06C;
+	margin-left: 0px;
+	opacity: 1;
+}
+
+.naviItem.selected>.gwt-HTML:first\-child {
+	color: #06C;
+}
+
+.naviItem.subItem {
+	margin-left: 12px;
+	padding-left: 2.5em;
+}
+
+.naviItem.subItem:hover,.naviItem.subItem.selected {
+	border-left-style: double;
+	border-left-width: 12px;
+	margin-left: 0;
+}
+
+.naviItem.subItem.experiment {
+	background: gear no-repeat 12px 12px;
+}
+
+.naviItem.subItem.addItem {
+	margin-left: 12px;
+	border: 0;
+	background: addBlue no-repeat 12px 11px;
+}
+
+.naviItem.subItem.addItem>.gwt-HTML:first\-child {
+	font-weight: normal;
+}
+
+.navigation {
+	border-right: 1px solid #CCC;
+	background-color: #fafafa;
+	overflow: visible !important;
+	box-shadow: #9AB 0px 3px 8px 0px;
+	z-index: 500;
+}
+
+.navigation .logoPanel {
+	position: absolute;
+	width: 100%;
+	text-align: center;
+	bottom: 0;
+	opacity: 0.6;
+	font-size: 10px;
+	color: #495574;
+	font-weight: bold;
+	height: 85px;
+}
+
+.navigation .logoPanel>img {
+	margin-top: 5px;
+}
+
+.naviItem .changeSpecIcon {
+	display: none;
+}
+
+.naviItem.selected .changeSpecIcon {
+	display: block;
+	position: absolute;
+	top: 14px;
+	right: .5em;
+	border: 1px solid #ccc;
+	padding: 1px;
+	background-position: 50% !important;
+	border-radius: 2px;
+	background-color: rgb(240, 241, 243) !important;
+}
+
+.naviItem.selected .changeSpecIcon:hover {
+	background-color: #fff !important;
+}
+
+.naviItem .changeSpecPanel {
+	background-color: #FAFAFA;
+	position: absolute;
+	left: 15em;
+	top: .5em;
+	border: 1px solid #CCC;
+	border-left: 1px dotted #E1E1E1;
+	z-index: 2;
+	box-shadow: 3px 5px 11px -5px #CCC;
+	margin-left: -1px;
+}
+
+.naviItem .changeSpecPanel .gwt-HTML {
+	padding: .2em 1em;
+	margin: .4em 0;
+	color: #222;
+	font-weight: bold;
+	opacity: 0.6;
+}
+
+.naviItem .changeSpecPanel .gwt-HTML:hover {
+	opacity: 1;
+}
+
+.naviItem .changeSpecPanel .gwt-HTML.selected {
+	color: #06C;
+	opacity: 1;
+	border-left: 4px solid;
+}
+
+.naviItem .changeSpecPanel .gwt-HTML.addItem {
+	background-image: addBlue;
+	background-repeat: no-repeat;
+	background-position: 10px;
+	padding-left: 2.5em;
+	font-weight: normal;
+}

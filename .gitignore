@@ -10,3 +10,6 @@
 /*/war/WEB-INF/deploy
 
 *.class
+/*/.project
+/*/.classpath
+/*/.checkstyle
