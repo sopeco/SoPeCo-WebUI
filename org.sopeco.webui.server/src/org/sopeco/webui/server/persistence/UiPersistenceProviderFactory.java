@@ -46,7 +46,7 @@ import org.sopeco.webui.server.UiConfiguration;
 public final class UiPersistenceProviderFactory {
 
 	private static final Logger LOGGER = Logger.getLogger(UiPersistenceProviderFactory.class.getName());
-	
+
 	private static final String DB_URL = "javax.persistence.jdbc.url";
 	private static final String SERVER_URL_PREFIX = "jdbc:derby://";
 	private static final String SERVER_URL_SUFFIX = ";create=true";
@@ -65,8 +65,7 @@ public final class UiPersistenceProviderFactory {
 	 */
 	public static UiPersistenceProvider createUiPersistenceProvider() {
 		try {
-			EntityManagerFactory factory = Persistence.createEntityManagerFactory("sopeco-frontend",
-					getConfigOverrides());
+			EntityManagerFactory factory = Persistence.createEntityManagerFactory("sopeco-ui", getConfigOverrides());
 			return new UiPersistenceProvider(factory);
 		} catch (Exception e) {
 			LOGGER.severe(e.getLocalizedMessage());
