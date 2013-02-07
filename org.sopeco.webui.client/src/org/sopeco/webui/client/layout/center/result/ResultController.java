@@ -79,18 +79,25 @@ public class ResultController implements ICenterController, ClickHandler {
 
 			StringBuffer param = new StringBuffer();
 			
-			param.append(run.getTimestamp());
-			param.append("|");
-			param.append(run.getParentSeries().getExperimentName());
-			param.append("|");
-			param.append(run.getParentSeries().getParentInstance().getControllerUrl());
-			param.append("|");
-			param.append(run.getParentSeries().getParentInstance().getScenarioName());
+			String timestamp = ""+run.getTimestamp();
+			 String experimentName = run.getParentSeries().getExperimentName();
+			 String controllerURL = run.getParentSeries().getParentInstance().getControllerUrl();
+			 String scenarioName = run.getParentSeries().getParentInstance().getScenarioName();
+			
+//			param.append(run.getTimestamp());
+//			param.append("|");
+//			param.append(run.getParentSeries().getExperimentName());
+//			param.append("|");
+//			param.append(run.getParentSeries().getParentInstance().getControllerUrl());
+//			param.append("|");
+//			param.append(run.getParentSeries().getParentInstance().getScenarioName());
 			
 			//downloadUrl += "?param=" + Base64.encodeString(param.toString());
 
 			//Window.open(downloadUrl, "_blank", "");
-			ExportCsvDialog.show(param.toString());
+//			ExportCsvDialog.show(param.toString());
+			 
+			 ExportCsvDialog.show(timestamp, experimentName, controllerURL, scenarioName);
 		}
 	}
 
