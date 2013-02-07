@@ -1,0 +1,311 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.sopeco.webui</groupId>
+	<artifactId>org.sopeco.webui.parent</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<name>SoPeCo Web-UI</name>
+
+	<properties>
+		<sopeco.dependency>5.0.2-SNAPSHOT</sopeco.dependency>
+		<gwt.version>2.5.0</gwt.version>
+	</properties>
+
+	<modules>
+		<module>../org.sopeco.webui.shared</module>
+		<module>../org.sopeco.webui.server</module>
+		<module>../org.sopeco.gwt</module>
+		<module>../org.sopeco.webui.client</module>
+	</modules>
+
+
+	<repositories>
+
+		<repository>
+			<id>Harvard</id>
+			<name>Harvard</name>
+			<url>http://repo.open.med.harvard.edu/nexus/content/repositories/thirdparty</url>
+		</repository>
+		<repository>
+			<id>LPE Releases</id>
+			<name>LPE-releases</name>
+			<url>http://i43vm-saas.ipd.uka.de:8081/artifactory/sopeco-release-local</url>
+		</repository>
+
+		<repository>
+			<id>LPE Snapshots</id>
+			<name>LPE-snapshots</name>
+			<url>http://i43vm-saas.ipd.uka.de:8081/artifactory/sopeco-snapshot-local</url>
+		</repository>
+
+		<repository>
+			<id>remote-repos</id>
+			<name>Remote Repositories</name>
+			<url>http://i43vm-saas.ipd.uka.de:8081/artifactory/remote-repos</url>
+		</repository>
+
+		<repository>
+			<id>LPE Repository</id>
+			<name>LPE Repository-releases</name>
+			<url>http://i43vm-saas.ipd.uka.de:8081/artifactory/ext-release-local</url>
+		</repository>
+	</repositories>
+
+
+	<dependencies>
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-user</artifactId>
+			<version>${gwt.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-servlet</artifactId>
+			<version>${gwt.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.sopeco.core</groupId>
+			<artifactId>org.sopeco.core</artifactId>
+			<version>${sopeco.dependency}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.sopeco.core</groupId>
+			<artifactId>org.sopeco.persistence</artifactId>
+			<version>${sopeco.dependency}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.sopeco.core</groupId>
+			<artifactId>org.sopeco.persistence</artifactId>
+			<version>${sopeco.dependency}</version>
+			<classifier>sources</classifier>
+		</dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.10</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.derby</groupId>
+			<artifactId>derbyclient</artifactId>
+			<version>10.8.2.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.derby</groupId>
+			<artifactId>derby</artifactId>
+			<version>10.8.2.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-core</artifactId>
+			<version>0.9.28</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>0.9.28</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.6.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.sopeco.core</groupId>
+			<artifactId>org.sopeco.plugin.std.analysis</artifactId>
+			<version>${sopeco.dependency}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.sopeco.core</groupId>
+			<artifactId>
+				org.sopeco.plugin.std.constantassignment
+			</artifactId>
+			<version>${sopeco.dependency}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.sopeco.core</groupId>
+			<artifactId>org.sopeco.plugin.std.exploration</artifactId>
+			<version>${sopeco.dependency}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.sopeco.core</groupId>
+			<artifactId>
+				org.sopeco.plugin.std.parametervariation
+			</artifactId>
+			<version>${sopeco.dependency}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.sopeco.core</groupId>
+			<artifactId>org.sopeco.plugin.std.processing</artifactId>
+			<version>${sopeco.dependency}</version>
+		</dependency>
+		<!-- <dependency> <groupId>org.sopeco.core</groupId> <artifactId>org.sopeco.plugin.std.termination</artifactId> 
+			<version>3.2.0-SNAPSHOT</version> </dependency> -->
+
+		<dependency>
+			<groupId>org.sopeco.core</groupId>
+			<artifactId>org.sopeco.runner</artifactId>
+			<version>${sopeco.dependency}</version>
+		</dependency>
+		<dependency>
+			<groupId>gwt-visualization</groupId>
+			<artifactId>gwt-visualization</artifactId>
+			<version>1.1.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.4</version>
+		</dependency>
+	</dependencies>
+
+
+	<build>
+		<outputDirectory>war/WEB-INF/classes</outputDirectory>
+
+		<sourceDirectory>src</sourceDirectory>
+		<testSourceDirectory>test</testSourceDirectory>
+		<resources>
+			<resource>
+				<directory>rsc</directory>
+			</resource>
+			<resource>
+				<directory>persistence</directory>
+			</resource>
+		</resources>
+		<testResources>
+			<testResource>
+				<directory>rsc</directory>
+			</testResource>
+		</testResources>
+
+		<plugins>
+
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+
+
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.2</version>
+				<configuration>
+					<webXml>war/WEB-INF/web.xml</webXml>
+					<webResources>
+						<resource>
+							<directory>war</directory>
+
+							<includes>
+								<include>**/images/*</include>
+								<include>**/*.css</include>
+								<include>**/*.html</include>
+								<include>**/*.jsp</include>
+								<include>**/*.ico</include>
+								<include>**/rsc/lang/*</include>
+
+							</includes>
+						</resource>
+						<resource>
+							<directory>persistence</directory>
+							<targetPath>WEB-INF/classes</targetPath>
+							<includes>
+								<include>**/META-INF/*</include>
+							</includes>
+						</resource>
+					</webResources>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>gwt-maven-plugin</artifactId>
+				<version>${gwt.version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>compile</goal>
+							<!-- <goal>generateAsync</goal> -->
+							<goal>test</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<webXml>war/WEB-INF/web.xml</webXml>
+					<htmlunit>FF3</htmlunit>
+					<mode>htmlunit</mode>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>tomcat-maven-plugin</artifactId>
+				<version>1.1</version>
+				<configuration>
+					<url>${tomcat.server.url}</url>
+					<server>${tomcat.server.name}</server>
+					<path>${sopeco.path}</path>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>2.9.1</version>
+				<configuration>
+					<configLocation>checkstyle-sopeco.config.xml</configLocation>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>cobertura-maven-plugin</artifactId>
+				<version>2.5.1</version>
+				<configuration>
+					<formats>
+						<format>xml</format>
+					</formats>
+				</configuration>
+			</plugin>
+			
+			<plugin>
+				<groupId>com.mycila.maven-license-plugin</groupId>
+				<artifactId>maven-license-plugin</artifactId>
+
+				<configuration>
+					<header>${basedir}/license-header.txt</header>
+					<mapping>
+						<conf>SCRIPT_STYLE</conf>
+						<xml>XML_STYLE</xml>
+					</mapping>
+					<properties>
+						<year>2013</year>
+						<organization>SAP</organization>
+						<copyrightHolder>SAP</copyrightHolder>
+					</properties>
+
+					<useDefaultExcludes>true</useDefaultExcludes>
+
+					<excludes>
+						<exclude>**/com/google/**</exclude>
+					</excludes>
+
+				</configuration>
+			</plugin>
+
+		</plugins>
+	</build>
+
+
+
+</project>

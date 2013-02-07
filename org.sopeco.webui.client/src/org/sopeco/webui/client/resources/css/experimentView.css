@@ -1,0 +1,348 @@
+/**
+ * Copyright (c) 2013 SAP
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *     * Redistributions of source code must retain the above copyright
+ *       notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above copyright
+ *       notice, this list of conditions and the following disclaimer in the
+ *       documentation and/or other materials provided with the distribution.
+ *     * Neither the name of the SAP nor the
+ *       names of its contributors may be used to endorse or promote products
+ *       derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL SAP BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+/* ############################# */
+/* ############################# */
+#expSettingsPanel {
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	/* border-right: 2px solid #CCC; */
+	overflow-x: hidden;
+	overflow-y: auto;
+	width: 100%;
+}
+
+#expSettingsPanel h3 {
+	margin: 1em;
+}
+
+/* ############################# */
+/* ############################# */
+/** expSettingsNamePanel */
+#expSettingsNamePanel {
+	width: 100%;
+	border-bottom: 1px solid #CCC;
+}
+
+#expSettingsNamePanel td {
+	padding: 0.5em 1em;
+	position: relative;
+}
+
+#expSettingsNamePanel .gwt-HTML {
+	color: #333;
+	/*font-weight: bold;*/
+}
+
+#expSettingsNamePanel .gwt-TextBox {
+	width: 200px;
+	padding: 3px 4px;
+}
+/* ############################# */
+/* ############################# */
+.selectionTreeItemLeaf>span.text {
+	position: absolute;
+	left: 10px;
+	right: 60px;
+	overflow: hidden;
+}
+
+#expSettingsTerminationPanel table .gwt-HTML {
+	color: #333;
+	font-weight: bold;
+}
+
+#expSettingsTerminationPanel table .gwt-TextBox {
+	width: 90%;
+	padding: 4px;
+	float: right;
+}
+
+/** explorationPanel */
+#expSettingsExplroationPanel {
+	border-bottom: 2px solid #ccc;
+}
+
+/** terminationGrid */
+#expSettingsTerminationPanel table {
+	padding: 0 1em;
+	width: 100%;
+}
+
+#expSettingsTerminationPanel table td {
+	position: relative;
+}
+
+/** ExtensionViews */
+.experimentExtensionView table {
+	width: 100%;
+	border-spacing: 1.5em 2px;
+}
+
+.experimentExtensionView table .label {
+	white-space: nowrap;
+}
+/*
+.experimentExtensionView table .gwt-HTML {
+	margin-left: 20px;
+	line-height: 28px;
+	width: 235px;
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+.experimentExtensionView table .gwt-TextBox {
+	float: right;
+	margin-right: 1.5em;
+	padding: 4px;
+	width: 100px;
+	color: #aaa;
+}
+
+.experimentExtensionView table .gwt-TextBox.valueChanged {
+	color: #333;
+	font-weight: bold;
+}
+
+.experimentExtensionView table .gwt-TextBox:focus {
+	color: #333;
+	font-weight: normal;
+}*/
+/** parameterPanel */
+#expParameterPanel {
+	position: absolute;
+	top: 0;
+	right: 0px;
+	bottom: 0;
+	margin-left: 2px;
+	overflow-x: auto;
+	overflow-y: auto;
+}
+
+#expParameterPanel h3 {
+	margin: 0em;
+}
+
+/** preperationPanel */
+#expPreperationPanel {
+	padding: 1em;
+	position: relative;
+}
+
+/** ExperimentAssignmentsPanel */
+#expAssignmentsPanel {
+	border-top: 2px solid #ccc;
+	padding: 1em;
+}
+
+/** parameterAssignmentItem */
+.parameterAssignmentItem {
+	border-bottom: 1px dashed #DDD;
+	padding: 2px;
+	white-space: nowrap;
+}
+
+.parameterAssignmentItem>div {
+	display: inline-block;
+	line-height: 28px;
+	vertical-align: middle;
+}
+
+.parameterAssignmentItem .namespace {
+	color: #333;
+	margin-right: 20px;
+}
+
+.parameterAssignmentItem .name {
+	color: #333;
+	font-weight: bold;
+	margin-right: 10px;
+}
+
+.parameterAssignmentItem .type {
+	color: #999;
+	margin-right: 25px;
+}
+
+.parameterAssignmentItem .value {
+	border-bottom: 1px dotted #ddd;
+}
+
+.parameterAssignmentItem .gwt-TextBox {
+	padding: 2px 4px;
+}
+
+.parameterAssignmentItem .spc-ComboBox .gwt-TextBox {
+	padding: 1px 4px;
+}
+
+.parameterAssignmentItem .spc-ComboBox img {
+	padding: 0px 8px;
+}
+
+/** expParameterTree */
+#expParameterTree {
+	position: absolute;
+	left: 0;
+	top: 0;
+	bottom: 0;
+	width: 380px;
+	padding: 10px;
+	background-color: white;
+	margin-left: 1px;
+	border-right: 1px solid #ccc;
+	overflow-y: auto;
+}
+
+#expParameterTree h3 {
+	margin: 0;
+}
+
+/** EditArea */
+.editArea-configMap {
+	display: block;
+	padding: 2px 10px;
+	margin: 2px 0 2px 16px;
+	border-left: 4px solid #CCC;
+}
+
+.editArea-configMap td .gwt-HTML {
+	margin-right: 32px;
+}
+
+/** terminationView */
+#terminationView {
+	border-top: 2px solid #CCC;
+	margin-top: 1em;
+	padding: 1em;
+}
+
+#terminationView h3 {
+	margin: 0
+}
+
+#terminationView>div {
+	border-bottom: 1px dashed #ccc;
+	padding: 6px 0;
+}
+
+#terminationView .gwt-HTML {
+	display: inline-block;
+	color: #333;
+}
+
+#terminationView table {
+	width: 100%;
+}
+
+#terminationView .gwt-TextBox {
+	float: right;
+	padding: 2px 4px;
+}
+
+.editableText {
+	background-color: #F3F4F5;
+	padding: 0px 3px;
+}
+
+.editableText:hover {
+	background-color: #E0EAFF;
+}
+
+.expEnvTree {
+	position: absolute;
+	left: 0;
+	top: 0;
+	bottom: 0;
+	border-right: 1px solid #CCC;
+	width: 400px;
+}
+
+.expTopWrapper {
+	border-bottom: 1px solid #ccc;
+	padding: 10px 1em;
+}
+
+.expTopWrapper>div {
+	float: left;
+	line-height: 18px;
+}
+
+.expTopWrapper>div.name {
+	margin: 0 2em 0 1em;
+	font-weight: bold;
+	color: #333;
+}
+
+.expTopWrapper>.gwt-Image {
+	float: left;
+	height: 18px;
+	cursor: pointer;
+	margin-right: 10px;
+}
+
+.assignmentItemTable .gwt-TextBox {
+	padding: 2px 4px;
+}
+
+.assignmentItemTable .spc-ComboBox .gwt-TextBox {
+	padding: 1px 4px;
+}
+
+.assignmentItemTable .spc-ComboBox img {
+	padding: 0px 8px;
+}
+
+.assignmentItemTable .valueRow td {
+	padding-top: 0;
+	padding-bottom: 0;
+}
+
+.assignmentItemTable .value {
+	border-bottom: 1px dotted #ddd;
+}
+
+#expPreperationPanel .assignmentItemTable tr:hover {
+	background-color: transparent;
+}
+
+.assignmentItemTable .parameterPanel {
+	border-left: 2px solid #CCC;
+	margin-left: 1em;
+	padding: 0.5em 0em;
+	margin-bottom: 3px;
+}
+
+.assignmentItemTable .parameterPanel td {
+	padding: 0;
+	padding-left: 1em;
+}
+
+.assignmentItemTable .parameterPanel .gwt-Image {
+	vertical-align: middle;
+}
