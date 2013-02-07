@@ -27,6 +27,7 @@
 package org.sopeco.frontend.server;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
@@ -47,9 +48,13 @@ public class UserTest {
 		User user = new User(id);
 
 		UserManager.setUser(user);
+		
 		assertEquals(UserManager.getUser(id), user);
 		assertTrue(UserManager.existSession(id));
+		
 		UserManager.removeUser(user);
+		
 		assertTrue(UserManager.getAllUsers().isEmpty());
+		assertFalse(UserManager.existSession(id));
 	}
 }

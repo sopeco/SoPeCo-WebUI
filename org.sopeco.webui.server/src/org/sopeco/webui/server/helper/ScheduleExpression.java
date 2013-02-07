@@ -128,7 +128,9 @@ public final class ScheduleExpression {
 
 				if (s.matches("\\d+")) {
 					int i = Integer.parseInt(s);
-					set.add(i);
+					if (i <= limit) {
+						set.add(i);
+					}
 				} else if (s.matches("\\d+-\\d+")) {
 					int start = Integer.parseInt(s.substring(0, s.indexOf("-")));
 					int end = Integer.parseInt(s.substring(s.indexOf("-") + 1));
