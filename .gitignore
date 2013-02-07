@@ -1,1 +1,12 @@
-target/
+/*/target
+
+/*/.settings
+/*/gwt-unitCache
+
+/*/war/sopeco_frontend
+
+/*/war/WEB-INF/lib
+
+/*/war/WEB-INF/deploy
+
+*.class
