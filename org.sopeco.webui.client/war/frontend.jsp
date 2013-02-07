@@ -48,7 +48,7 @@
     <script type="text/javascript">
       var buildInfo = "<%= MavenInfos.getInfoString(application) %>";
     </script>
-    <script type="text/javascript" language="javascript" src="sopeco_frontend/sopeco_frontend.nocache.js"></script>
+    <script type="text/javascript" language="javascript" src="sopeco_webui/sopeco_webui.nocache.js"></script>
     
   </head>
 
