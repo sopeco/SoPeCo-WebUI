@@ -27,6 +27,7 @@
 package org.sopeco.frontend.client.rpc;
 
 import java.util.List;
+import java.util.Map;
 
 import org.sopeco.frontend.shared.definitions.result.SharedExperimentRuns;
 import org.sopeco.frontend.shared.entities.ChartOptions;
@@ -46,4 +47,6 @@ public interface VisualizationRPCAsync {
 	void deleteVisualization(Visualization visualization, AsyncCallback<Void> callback);
 	
 	void getExtensions(AsyncCallback<List<String>> callback);
+	
+	void applySplineInterpolation(Map<Double, List<Double>> values, double min, double max, double step, AsyncCallback<Map<Double, List<Double>>> callback);
 }

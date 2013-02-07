@@ -28,6 +28,7 @@ package org.sopeco.frontend.client.rpc;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.sopeco.frontend.shared.definitions.result.SharedExperimentRuns;
 import org.sopeco.frontend.shared.entities.ChartOptions;
@@ -50,4 +51,6 @@ public interface VisualizationRPC extends RemoteService {
 	Void deleteVisualization(Visualization visualization);
 	
 	List<String> getExtensions();
+	
+	Map<Double, List<Double>> applySplineInterpolation(Map<Double, List<Double>> values, double min, double max, double step);
 }

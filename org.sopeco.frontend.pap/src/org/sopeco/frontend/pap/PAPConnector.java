@@ -33,7 +33,6 @@ import java.util.Arrays;
 
 public class PAPConnector {
 
-	public static final String UID = "Ben";
 	public static final String PAP_URL = "http://deqkal279.qkal.sap.corp:8080/pap/j/";
 
 	public static final String VERIFY_USER_WITHOUT_PASSWORD = "verifyuserwithoutpassword";

@@ -1,11 +1,13 @@
 package org.sopeco.frontend.client.layout.center.visualization;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
+import org.sopeco.frontend.client.rpc.RPC;
 import org.sopeco.frontend.shared.entities.ChartData;
 import org.sopeco.frontend.shared.entities.ChartOptions;
 import org.sopeco.frontend.shared.entities.ChartRowKey;
@@ -15,6 +17,7 @@ import org.sopeco.frontend.shared.helper.AggregationOutputType;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.Label;
@@ -35,6 +38,7 @@ public class ChartWidget extends FlowPanel {
 	
 	private FlowPanel control;
 	private ListBox aggregation;
+	private ListBox interpolation;
 	private Visualization visualization;
 	private Widget chartWidget;
 	private CoreChart chart = null;
@@ -53,10 +57,31 @@ public class ChartWidget extends FlowPanel {
 			
 			@Override
 			public void onChange(ChangeEvent event) {
+				if (aggregation.getItemText(aggregation.getSelectedIndex()).equals(AggregationOutputType.SCATTER.toString())){
+					interpolation.setSelectedIndex(0);
+					interpolation.setEnabled(false);
+				} else {
+					interpolation.setEnabled(true);
+				}
 				updateChart();
 			}
 		});
 		control.add(aggregation);
+		
+		control.add(new Label("Interpolation: "));
+		interpolation = new ListBox();
+		for (Interpolation i: Interpolation.values()){
+			interpolation.addItem(i.toString());
+		}
+		interpolation.addChangeHandler(new ChangeHandler() {
+			
+			@Override
+			public void onChange(ChangeEvent event) {
+				updateChart();
+			}
+		});
+		interpolation.setEnabled(false);
+		control.add(interpolation);
 	}
 	
 	public void switchChart(Visualization visualization){
@@ -83,8 +108,15 @@ public class ChartWidget extends FlowPanel {
 			options.set("is3D", true);
 			break;
 		case LINECHART:
-			options.setLineWidth(0);
-			options.setPointSize(3);
+			switch(Interpolation.valueOf(interpolation.getItemText(interpolation.getSelectedIndex()))){
+			case SPLINE:
+				options.setLineWidth(2);
+				options.setPointSize(0);
+				break;
+			default:
+				options.setLineWidth(0);
+				options.setPointSize(3);
+			}
 			break;
 		}
 		options.setWidth(900);
@@ -95,7 +127,42 @@ public class ChartWidget extends FlowPanel {
 	
 	public void updateChart(){
 		if (chart != null){
-			chart.draw(createTable(), createOptions());
+			ChartData data = visualization.getData();
+			final DataTable dataTable = DataTable.create();
+			switch (visualization.getOptions().getType()) {
+			case PIECHART:
+			case BARCHART:
+				dataTable.addColumn(ColumnType.STRING, "Input");
+				break;
+			default:
+				dataTable.addColumn(ColumnType.NUMBER, "Input");
+			}
+			dataTable.addColumn(ColumnType.NUMBER,visualization.getOptions().getxAxisLabel());
+			Map<Double, List<Double>> values = new TreeMap<Double, List<Double>>();
+			final Map<Double, Integer> total = new HashMap<Double, Integer>();
+			calculateData(data, values, total);
+			switch(Interpolation.valueOf(interpolation.getItemText(interpolation.getSelectedIndex()))){
+			case SPLINE:
+				RPC.getVisualizationRPC().applySplineInterpolation(values, 0, 10, 100, new AsyncCallback<Map<Double,List<Double>>>() {
+					
+					@Override
+					public void onSuccess(Map<Double, List<Double>> result) {
+						setData(dataTable, result, total);
+						chart.draw(dataTable, createOptions());
+					}
+					
+					@Override
+					public void onFailure(Throwable caught) {
+						// TODO Auto-generated method stub
+						
+					}
+				});
+				break;
+			default:
+				setData(dataTable, values, total);
+				chart.draw(dataTable, createOptions());
+				break;
+			}
 		}
 	}
 	
@@ -145,12 +212,7 @@ public class ChartWidget extends FlowPanel {
 
 	private AbstractDataTable createTable() {
 		ChartData data = visualization.getData();
-		DataTable dataTable = DataTable.create();
-		List<List<Double>> dataList = data.getDatarows();
-		List<ChartRowKey> names = data.getxAxis();
-		if (names.size() <= 0 || dataList.size() <= 0){
-			return dataTable;
-		}
+		final DataTable dataTable = DataTable.create();
 		switch (visualization.getOptions().getType()) {
 		case PIECHART:
 		case BARCHART:
@@ -159,85 +221,96 @@ public class ChartWidget extends FlowPanel {
 		default:
 			dataTable.addColumn(ColumnType.NUMBER, "Input");
 		}
-		switch (AggregationOutputType.valueOf(aggregation.getItemText(aggregation.getSelectedIndex()))) {
-		case AVERAGE:
-			dataTable.addColumn(ColumnType.NUMBER,AggregationOutputType.AVERAGE.toString());
-			Map<Double, Double> average = new TreeMap<Double, Double>();
-			Map<Double, Integer> total = new HashMap<Double, Integer>();
-			for (int row = 0; row < dataList.size(); row++){
-				Double key = names.get(row).getKeyValue(data.getInputParameter());
-				if (average.get(key) == null){
-					average.put(key, 0.0);
+		dataTable.addColumn(ColumnType.NUMBER,visualization.getOptions().getxAxisLabel());
+		Map<Double, List<Double>> values = new TreeMap<Double, List<Double>>();
+		final Map<Double, Integer> total = new HashMap<Double, Integer>();
+		calculateData(data, values, total);
+		switch(Interpolation.valueOf(interpolation.getItemText(interpolation.getSelectedIndex()))){
+		case SPLINE:
+			RPC.getVisualizationRPC().applySplineInterpolation(values, 0, 10, 100, new AsyncCallback<Map<Double,List<Double>>>() {
+				
+				@Override
+				public void onSuccess(Map<Double, List<Double>> result) {
+					setData(dataTable, result, total);
 				}
-				if (total.get(key) == null){
-					total.put(key, 0);
+				
+				@Override
+				public void onFailure(Throwable caught) {
+					// TODO Auto-generated method stub
+					
 				}
-				for (int column = 0; column < dataList.get(row).size(); column++){
-					average.put(key,  dataList.get(row).get(column) + average.get(key));
-					total.put(key, total.get(key)+1);
-				}
-			}
-			int j = 0;
-			for (Entry<Double, Double> entry : average.entrySet()){
-				dataTable.addRow();
-				switch (visualization.getOptions().getType()) {
-				case PIECHART:
-				case BARCHART:
-					dataTable.setValue(j, 0, ""+entry.getKey());
-					break;
-				default:
-					dataTable.setValue(j, 0, entry.getKey());
-				}
-				dataTable.setValue(j, 1, entry.getValue()/total.get(entry.getKey()));
-				j++;
-			}
-			break;
-		case SUM:
-			dataTable.addColumn(ColumnType.NUMBER,AggregationOutputType.AVERAGE.toString());
-			Map<Double, Double> average2 = new TreeMap<Double, Double>();
-			for (int row = 0; row < dataList.size(); row++){
-				Double key = names.get(row).getKeyValue(data.getInputParameter());
-				if (average2.get(key) == null){
-					average2.put(key, 0.0);
-				}
-				for (int column = 0; column < dataList.get(row).size(); column++){
-					average2.put(key,  dataList.get(row).get(column) + average2.get(key));
-				}
-			}
-			int j2 = 0;
-			for (Entry<Double, Double> entry : average2.entrySet()){
-				dataTable.addRow();
-				switch (visualization.getOptions().getType()) {
-				case PIECHART:
-				case BARCHART:
-					dataTable.setValue(j2, 0, ""+entry.getKey());
-					break;
-				default:
-					dataTable.setValue(j2, 0, entry.getKey());
-				}
-				dataTable.setValue(j2, 1, entry.getValue());
-				j2++;
-			}
+			});
 			break;
 		default:
-			dataTable.addColumn(ColumnType.NUMBER,visualization.getOptions().getxAxisLabel());
-			for (int row = 0; row < dataList.size(); row++){
-				for (int column = 0; column < dataList.get(row).size(); column++){
-					dataTable.addRow();
-					switch (visualization.getOptions().getType()) {
-					case PIECHART:
-					case BARCHART:
-						dataTable.setValue(column+row*dataList.get(row).size(), 0, ""+names.get(row).getKeyValue(data.getInputParameter()));
-						break;
-					default:
-						dataTable.setValue(column+row*dataList.get(row).size(), 0, names.get(row).getKeyValue(data.getInputParameter()));
-					}
-					dataTable.setValue(column+row*dataList.get(row).size(), 1,dataList.get(row).get(column));
-				}
-			}
+			setData(dataTable, values, total);
 			break;
 		}
 		return dataTable;
 	}
 
+	private void setData(DataTable dataTable, Map<Double, List<Double>> values,
+			Map<Double, Integer> total) {
+		int row = 0;
+		for (Entry<Double, List<Double>> entry : values.entrySet()){
+			int col = 0;
+			for (Double d : entry.getValue()){
+				dataTable.addRow();
+				int index = col+row*entry.getValue().size();
+				switch (visualization.getOptions().getType()) {
+				case PIECHART:
+				case BARCHART:
+					dataTable.setValue(index, 0, ""+entry.getKey());
+					break;
+				default:
+					dataTable.setValue(index, 0, entry.getKey());
+				}
+				switch (AggregationOutputType.valueOf(aggregation.getItemText(aggregation.getSelectedIndex()))){
+				case AVERAGE:
+					dataTable.setValue(index, 1, d/total.get(entry.getKey()));
+					break;
+				default:
+					dataTable.setValue(index, 1, d);
+				}
+				col++;
+			}
+			
+			row++;
+		}
+	}
+
+	private void calculateData(ChartData data, Map<Double, List<Double>> values,
+			Map<Double, Integer> total) {
+		List<List<Double>> dataList = data.getDatarows();
+		List<ChartRowKey> names = data.getxAxis();
+		for (int row = 0; row < dataList.size(); row++){
+			Double key = names.get(row).getKeyValue(data.getInputParameter());
+			if (values.get(key) == null){
+				values.put(key, new ArrayList<Double>());
+			}
+			if (total.get(key) == null){
+				total.put(key, 0);
+			}
+			switch (AggregationOutputType.valueOf(aggregation.getItemText(aggregation.getSelectedIndex()))){
+			case AVERAGE:
+			case SUM:
+				if (values.get(key).size() <= 0){
+					values.get(key).add(0.0);
+				}
+				for (int column = 0; column < dataList.get(row).size(); column++){
+					values.get(key).set(0, dataList.get(row).get(column) + values.get(key).get(0));
+					total.put(key, total.get(key)+1);
+				}
+				break;
+			default:
+				for (int column = 0; column < dataList.get(row).size(); column++){
+					values.get(key).add(dataList.get(row).get(column));
+				}
+			}
+			
+		}
+	}
+	
+	public static enum Interpolation {
+		NONE, SPLINE;
+	}
 }

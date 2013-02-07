@@ -50,7 +50,7 @@ import com.google.gson.JsonParser;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 
 public class PAPChartConnection implements IChartConnection {
-	private static final String BASE_URL = "http://deqkal279.qkal.sap.corp:8080/pap/j/result/s/";
+	private static final String BASE_URL = "http://deqkal279.qkal.sap.corp:8080/pap/j/result/";
 	private static PAPConnector papConnector = new PAPConnector();
 	private static final String SQL_DUMMY = "SELECT * FROM perf_pap.pvexperiment";
 	private static HashMap<String, String> savedProjects = new HashMap<String, String>();// projectname, pid
