@@ -33,14 +33,15 @@ import org.sopeco.webui.client.manager.Manager;
 import org.sopeco.webui.client.resources.R;
 import org.sopeco.webui.client.widget.SmallTableLabel;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.server.Base64Utils;
 
 /**
  * 
@@ -49,7 +50,7 @@ import com.google.gwt.user.server.Base64Utils;
  */
 public final class ExportCsvDialog extends DialogBox implements ClickHandler {
 
-	private static final String DOWNLOAD_DATASET_URL = "sopeco_frontend/dataset";
+	private static final String DOWNLOAD_DATASET_URL = "dataset";
 	private static ExportCsvDialog dialog;
 
 	private FlowPanel contentWrapper;
@@ -159,27 +160,50 @@ public final class ExportCsvDialog extends DialogBox implements ClickHandler {
 			separator.append(tbCommentSeparator.getText());
 			separator.append(tbDecimalDeimiter.getText());
 
-			parameter += "|" + Base64Utils.toBase64(separator.toString().getBytes());
+			String url = GWT.getModuleBaseURL() + DOWNLOAD_DATASET_URL;
 
-			String downloadUrl = DOWNLOAD_DATASET_URL + "?param="
-					+ Base64Utils.toBase64(parameter.getBytes());
+			StringBuilder sb = new StringBuilder();
+			sb.append("seperator").append("=").append(URL.encodeQueryString(separator.toString())).append("&");
+			sb.append("timestamp").append("=").append(URL.encodeQueryString(timestamp)).append("&");
+			sb.append("experimentName").append("=").append(URL.encodeQueryString(experimentName)).append("&");
+			sb.append("controllerURL").append("=").append(URL.encodeQueryString(controllerURL)).append("&");
+			sb.append("scenarioName").append("=").append(URL.encodeQueryString(scenarioName));
 
-			Window.open(downloadUrl, "_blank", "");
+			Window.open(url + "?" + sb.toString(), "_blank", "");
+
 			hide();
 
 			saveSeparator();
 		}
 	}
 
+	private String timestamp;
+	private String experimentName;
+	private String controllerURL;
+	private String scenarioName;
+
+	public static void show(String pTimestamp, String pExperimentName, String pControllerUrl, String pScenarioName) {
+		if (dialog == null) {
+			dialog = new ExportCsvDialog();
+		}
+
+		dialog.timestamp = pTimestamp;
+		dialog.experimentName = pExperimentName;
+		dialog.controllerURL = pControllerUrl;
+		dialog.scenarioName = pScenarioName;
+
+		dialog.center();
+	}
+
 	/**
 	 * 
 	 * @param downloadParameter
 	 */
-	public static void show(String downloadParameter) {
-		if (dialog == null) {
-			dialog = new ExportCsvDialog();
-		}
-		dialog.setParameter(downloadParameter);
-		dialog.center();
-	}
+	// public static void show(String downloadParameter) {
+	// if (dialog == null) {
+	// dialog = new ExportCsvDialog();
+	// }
+	// dialog.setParameter(downloadParameter);
+	// dialog.center();
+	// }
 }

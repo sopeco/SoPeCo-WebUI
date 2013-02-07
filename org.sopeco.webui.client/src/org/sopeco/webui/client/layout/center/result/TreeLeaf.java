@@ -114,10 +114,6 @@ public class TreeLeaf extends TreeItem implements /* HasClickHandlers, */ClickHa
 		return experimentRun;
 	}
 
-	// @Override
-	// public HandlerRegistration addClickHandler(ClickHandler handler) {
-	// return addHandler(handler, ClickEvent.getType());
-	// }
 
 	@Override
 	public void onClick(ClickEvent event) {
@@ -125,18 +121,14 @@ public class TreeLeaf extends TreeItem implements /* HasClickHandlers, */ClickHa
 
 			StringBuffer param = new StringBuffer();
 
-			param.append(experimentRun.getTimestamp());
-			param.append("|");
-			param.append(experimentRun.getParentSeries().getExperimentName());
-			param.append("|");
-			param.append(experimentRun.getParentSeries().getParentInstance().getControllerUrl());
-			param.append("|");
-			param.append(experimentRun.getParentSeries().getParentInstance().getScenarioName());
+			 String timestamp = ""+experimentRun.getTimestamp();
+			 String experimentName = experimentRun.getParentSeries().getExperimentName();
+			 String controllerURL = experimentRun.getParentSeries().getParentInstance().getControllerUrl();
+			 String scenarioName = experimentRun.getParentSeries().getParentInstance().getScenarioName();
 
-			// downloadUrl += "?param=" + Base64.encodeString(param.toString());
-
-			// Window.open(downloadUrl, "_blank", "");
-			ExportCsvDialog.show(param.toString());
+//			
+			ExportCsvDialog.show(timestamp, experimentName, controllerURL, scenarioName);
+			
 		} else if(event.getSource() == chartImage){
 			chartPopup.center();
 		} else {
