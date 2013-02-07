@@ -1,0 +1,297 @@
+/**
+ * Copyright (c) 2013 SAP
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *     * Redistributions of source code must retain the above copyright
+ *       notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above copyright
+ *       notice, this list of conditions and the following disclaimer in the
+ *       documentation and/or other materials provided with the distribution.
+ *     * Neither the name of the SAP nor the
+ *       names of its contributors may be used to endorse or promote products
+ *       derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL SAP BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+.executeConfigTable {
+	width: 100%;
+	border-spacing: 1em 0.5em;
+}
+
+.scheduleConfigTable {
+	width: 100%;
+	border-top: 1px dotted #CCC;
+}
+
+.scheduleConfigTable table {
+	border-spacing: 1em 0.5em;
+}
+
+.executeSelectionPanel {
+	width: 100%;
+	border-top: 1px solid #CCC;
+}
+
+.executeTabPanel h3 {
+	margin: 0.5em 1em 0;
+}
+
+.textCenter .gwt-HTML,.textCenter .gwt-TextBox {
+	text-align: center;
+}
+
+.repeatPanel {
+	width: 100%;
+	border-top: 1px dotted #CCC;
+}
+
+.repeatTable {
+	border-spacing: 1em 0.5em;
+}
+
+.repeatTable .weekdays .gwt-HTML {
+	margin-right: 1em;
+}
+
+.repeatTable .checkBoxWidget {
+	float: left;
+	margin-right: 1em;
+}
+
+.repeatTable .checkBoxWidget.notChecked {
+	color: #AAA;
+}
+
+.tableRepeat {
+	border-spacing: 0 !important;
+}
+
+.tableRepeat .gwt-HTML {
+	padding-left: 2em;
+	color: gray;
+	white-space: nowrap;
+}
+
+.treeItem-Specification {
+	padding: 0.5em 1em;
+}
+
+.treeItem-Specification>.content {
+	font-weight: bold;
+	color: #333;
+}
+
+.treeItem-Experiment {
+	margin-left: 1em;
+	line-height: 26px;
+}
+
+.treeItem-Experiment .gwt-CheckBox,.treeItem-Specification .gwt-CheckBox
+	{
+	vertical-align: middle;
+	margin-right: 6px;
+}
+
+.activeQueueItem {
+	background-color: red;
+	width: 100%;
+	padding: 1em;
+	/*box-shadow: 0 0px 5px 0px gray inset;*/
+	background-color: #FFFCFA;
+	border-spacing: 12px 2px;
+	border: 2px solid #ccc;
+	border-left: 0;
+	border-right: 0;
+}
+
+.activeQueueItem .gwt-HTML {
+	white-space: nowrap;
+}
+
+.activeQueueItem tr:first-child {
+	font-weight: bold;
+	color: #333;
+}
+
+.statusPanel {
+	width: 100%;
+	background-color: #FFFCFA;
+	border: 2px solid #ccc;
+	border-left: 0;
+	border-right: 0;
+}
+
+.statusPanel>div {
+	margin: 1em;
+}
+
+.statusPanel .gwt-HTML {
+	white-space: nowrap;
+}
+
+.statusPanel .logPanel {
+	border: 1px solid #CCC;
+	background-color: white;
+	overflow-y: scroll;
+	height: 11em;
+	margin-bottom: 0.3em;
+}
+
+.statusPanel .logPanel .gwt-HTML:nth-child\(2n\+1\) {
+	background-color: #FCF9F2;
+}
+
+.statusPanel .logPanel .gwt-HTML {
+	padding: 1px 4px;
+}
+
+.statusPanel .logPanel .gwt-HTML.errorMessage {
+	color: red;
+}
+
+.controllerQueueItem {
+	width: 100%;
+	background-color: #F3F3F3;
+	border-spacing: 12px 2px;
+	padding: .50em 1em;
+	border-bottom: 1px solid #CCC;
+}
+
+.scheduleItem {
+	width: 100%;
+	padding: .5em 1em;
+	border-spacing: 12px 2px;
+	border-bottom: 1px solid #CCC;
+	border-top: 1px solid #CCC;
+	background-color: #FAFAFF;
+}
+
+.scheduleItem:hover {
+	background-color: #F0F4F8;
+}
+
+.scheduleItem  tr td:nth-child\(2n\+1\) {
+	color: #777;
+}
+
+.scheduleItem  tr:first-child td {
+	font-weight: bold;
+	color: #333;
+}
+
+/** ************************************************************* **/
+.scheduleItemPanel {
+	background-color: #FAFCFF;
+	padding: .5em 1em;
+	border-bottom: 1px solid #EEE;
+	border-top: 1px solid #BBB;
+}
+
+.scheduleItemPanel:hover {
+	background-color: #FAFAFF;
+}
+
+.scheduleItemPanel.disabled {
+	background-color: #ffe;
+}
+
+.scheduleItemPanel .headPanel * {
+	float: left;
+}
+
+.scheduleItemPanel .headPanel>div:first-child {
+	margin-right: 1.5em;
+	font-weight: bold;
+	color: #333;
+}
+
+.scheduleItemPanel .headPanel .gwt-Image {
+	margin-right: .5em;
+	cursor: pointer;
+}
+
+.scheduleItemPanel>table td {
+	padding-right: 2em;
+}
+
+.scheduleItemPanel>table td .gwt-HTML {
+	white-space: nowrap;
+}
+
+/*
+.historyItem:first-child {
+	margin-top: 1em;
+}
+
+.historyItem {
+	margin: 0 1em;
+}
+.historyItem.error {
+	background-color: red;
+}
+
+.historyItem>.gwt-HTML {
+	float: left;
+	min-width: 80px;
+	padding: 0 10px;
+}*/
+/*
+.historyGrid {
+	width: 100%;
+	border-spacing: 0;
+}
+
+.historyGrid tr:nth-child\(2n\+1\) {
+	background-color: rgb(250, 250, 250);
+}
+
+.historyGrid tr:first-child {
+	background-color: rgb(218, 218, 218);
+	font-weight: bold;
+}
+
+.historyGrid tr:first-child td {
+	border-bottom: 1px solid gray;
+}
+
+.historyGrid tr.error {
+	background-color: rgb(255, 209, 197);
+}
+
+.historyGrid td {
+	padding: 2px 5px;
+}*/
+.historyList {
+	height: 200px;
+}
+
+.historyList .noBorder {
+	outline: 0 !important;
+}
+
+.historyDetails {
+	overflow-y: scroll;
+}
+
+.historyDetails .gwt-HTML:nth-child\(2n\+1\) {
+	background-color: #FCF9F2;
+}
+
+.historyDetails .gwt-HTML {
+	padding: 2px 6px;
+}
+
+.historyDetails .gwt-HTML.errorMessage {
+	color: red;
+}
