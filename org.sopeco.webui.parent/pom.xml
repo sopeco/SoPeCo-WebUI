@@ -159,7 +159,7 @@
 		<dependency>
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
-			<version>2.2</version>
+			<version>2.4</version>
 		</dependency>
 	</dependencies>
 
@@ -242,6 +242,8 @@
 				</executions>
 				<configuration>
 					<webXml>war/WEB-INF/web.xml</webXml>
+					<htmlunit>FF3</htmlunit>
+					<mode>htmlunit</mode>
 				</configuration>
 			</plugin>
 

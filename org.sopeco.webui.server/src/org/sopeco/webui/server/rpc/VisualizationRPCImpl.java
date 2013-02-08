@@ -66,7 +66,7 @@ public class VisualizationRPCImpl extends SuperRemoteServlet implements
 		VisualizationRPC {
 	private IChartConnection chartCreator;
 	private List<IChartConnectionExtension> extensions;
-	private static final String G_CHARTS = "Google Charts";
+	public static final String G_CHARTS = "Google Charts";
 
 	public VisualizationRPCImpl() {
 		chartCreator = new GCharts();
@@ -98,7 +98,6 @@ public class VisualizationRPCImpl extends SuperRemoteServlet implements
 		visualization.setTimestamp(timestamp);
 		visualization.setAccountId(accountName);
 		visualization.setId(System.currentTimeMillis());
-		System.out.println("saving chart...");
 		UiPersistence.getUiProvider().storeVisualization(visualization);
 		return visualization;
 
@@ -237,7 +236,6 @@ public class VisualizationRPCImpl extends SuperRemoteServlet implements
 
 	@Override
 	public Void deleteVisualization(Visualization visualization) {
-		System.out.println("deleting chart...");
 		UiPersistence.getUiProvider().removeVisualization(visualization);
 		return null;
 	}
