@@ -37,6 +37,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
 import org.apache.commons.math3.analysis.interpolation.UnivariateInterpolator;
+import org.apache.commons.math3.stat.regression.SimpleRegression;
 import org.sopeco.engine.registry.ExtensionRegistry;
 import org.sopeco.persistence.dataset.DataSetAggregated;
 import org.sopeco.persistence.dataset.ParameterValue;
@@ -75,7 +76,7 @@ public class VisualizationRPCImpl extends SuperRemoteServlet implements
 	}
 
 	@Override
-	public Visualization createChart(SharedExperimentRuns experiementRun,
+	public Visualization createVisualization(SharedExperimentRuns experiementRun,
 			ChartParameter inputParameter, ChartParameter outputParameterd, ChartOptions options, String extension) {
 		ChartData data;
 		loadExtension(extension);
@@ -282,9 +283,32 @@ public class VisualizationRPCImpl extends SuperRemoteServlet implements
 		UnivariateInterpolator interpolator = new SplineInterpolator();
 		UnivariateFunction function = interpolator.interpolate(ArrayUtils.toPrimitive(xValues.toArray(new Double[xValues.size()])), ArrayUtils.toPrimitive(yValues.toArray(new Double[yValues.size()])));
 		values.clear();
-		for (double d = min; d < max; d += (max-min)/step){
+		for (double d = min; d <= max; d += (max-min)/step){
 			values.put(d, new ArrayList<Double>());
 			values.get(d).add(function.value(d));
+		}
+		return values;
+	}
+
+	@Override
+	public Map<Double, List<Double>> applySimpleRegression(
+			Map<Double, List<Double>> values, double min, double max,
+			double step) {
+		min = values.entrySet().iterator().next().getKey();
+		max = min;
+		step = (step < 2) ? 2 : step;
+		SimpleRegression regression = new SimpleRegression();
+		for (Entry<Double, List<Double>> entry : values.entrySet()){
+			min = (entry.getKey() < min) ? entry.getKey() : min;
+			max = (entry.getKey() > max) ? entry.getKey() : max;
+			for (int i = 0; i < entry.getValue().size(); i++){
+				regression.addData(entry.getKey(), entry.getValue().get(i));
+			}
+		}
+		values.clear();
+		for (double d = min; d <= max; d += (max-min)/step){
+			values.put(d, new ArrayList<Double>());
+			values.get(d).add(regression.predict(d));
 		}
 		return values;
 	}

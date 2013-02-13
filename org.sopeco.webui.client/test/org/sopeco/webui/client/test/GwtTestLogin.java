@@ -22,7 +22,7 @@ import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 
-public class GwtTestVisualization extends GWTTestCase {
+public class GwtTestLogin extends GWTTestCase {
 	private SoPeCoUI soPeCoUI;
 	private DatabaseInstance db = null;
 	String moduleName = "org.sopeco.webui.SoPeCo_Frontend";
@@ -57,7 +57,7 @@ public class GwtTestVisualization extends GWTTestCase {
 			
 			@Override
 			public void onFailure(Throwable caught) {
-				fail("Loading databases failed");
+				fail(caught.getMessage());
 			}
 		});
 	}
@@ -67,7 +67,7 @@ public class GwtTestVisualization extends GWTTestCase {
 
 			@Override
 			public void onFailure(Throwable caught) {
-				fail("An error occured while logging in!");
+				fail(caught.getMessage());
 			}
 
 			@Override
@@ -88,7 +88,6 @@ public class GwtTestVisualization extends GWTTestCase {
 
 			@Override
 			public void onSuccess(AccountDetails result) {
-
 				Manager.get().setAccountDetails(result);
 				SoPeCoUI.get().initializeMainView(db);
 				GWT.log("Initialized main view -----------------------------------------------------------------------------------------------------");

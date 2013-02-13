@@ -106,4 +106,12 @@ public interface LanguageConstants extends Constants {
 	String noMecStarted();
 	
 	String noMecOnline();
+	
+	String create();
+	
+	String newChart();
+	
+	String dataProcessing();
+	
+	String numberOfPoints();
 }
