@@ -39,18 +39,70 @@ import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
+/** Server side interface of {@link VisualizationRPCAsync}
+ * 
+ * @author Benjamin Ebling
+ *
+ */
 @RemoteServiceRelativePath("visualizationRPC")
 public interface VisualizationRPC extends RemoteService {
 
-	Visualization createChart(SharedExperimentRuns experiementRun, ChartParameter inputParameter, ChartParameter outputParameter, ChartOptions options, String extension);
+	/** {@link VisualizationRPCAsync#createVisualization(SharedExperimentRuns, ChartParameter, ChartParameter, ChartOptions, String, com.google.gwt.user.client.rpc.AsyncCallback)}
+	 * 
+	 * @param experiementRun
+	 * @param inputParameter
+	 * @param outputParameter
+	 * @param options
+	 * @param extension
+	 * @return
+	 */
+	Visualization createVisualization(SharedExperimentRuns experiementRun, ChartParameter inputParameter, ChartParameter outputParameter, ChartOptions options, String extension);
 	
+	/** {@link VisualizationRPCAsync#getChartParameter(SharedExperimentRuns, com.google.gwt.user.client.rpc.AsyncCallback)}
+	 * 
+	 * @param experiementRun
+	 * @return
+	 */
 	ChartParameter[] getChartParameter(SharedExperimentRuns experiementRun);
 	
+	/** {@link VisualizationRPCAsync#getVisualizations(int, int, com.google.gwt.user.client.rpc.AsyncCallback)}
+	 * 
+	 * @param start
+	 * @param length
+	 * @return
+	 */
 	List<Visualization> getVisualizations(int start, int length);
 	
+	/** {@link VisualizationRPCAsync#deleteVisualization(Visualization, com.google.gwt.user.client.rpc.AsyncCallback)}
+	 * 
+	 * @param visualization
+	 * @return
+	 */
 	Void deleteVisualization(Visualization visualization);
 	
+	/** {@link VisualizationRPCAsync#getExtensions(com.google.gwt.user.client.rpc.AsyncCallback)}
+	 * 
+	 * @return
+	 */
 	List<String> getExtensions();
 	
+	/** {@link VisualizationRPCAsync#applySplineInterpolation(Map, double, double, double, com.google.gwt.user.client.rpc.AsyncCallback)}
+	 * 
+	 * @param values
+	 * @param min
+	 * @param max
+	 * @param step
+	 * @return
+	 */
 	Map<Double, List<Double>> applySplineInterpolation(Map<Double, List<Double>> values, double min, double max, double step);
+	
+	/** {@link VisualizationRPCAsync#applySimpleRegression(Map, double, double, double, com.google.gwt.user.client.rpc.AsyncCallback)}
+	 * 
+	 * @param values
+	 * @param min
+	 * @param max
+	 * @param step
+	 * @return
+	 */
+	Map<Double, List<Double>> applySimpleRegression(Map<Double, List<Double>> values, double min, double max, double step);
 }
