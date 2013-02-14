@@ -75,7 +75,7 @@ public class VisualizationRPCImpl extends SuperRemoteServlet implements
 	}
 
 	@Override
-	public Visualization createChart(SharedExperimentRuns experiementRun,
+	public Visualization createVisualization(SharedExperimentRuns experiementRun,
 			ChartParameter inputParameter, ChartParameter outputParameterd, ChartOptions options, String extension) {
 		ChartData data;
 		loadExtension(extension);
