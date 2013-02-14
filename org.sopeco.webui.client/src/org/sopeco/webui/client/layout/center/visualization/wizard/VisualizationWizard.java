@@ -41,6 +41,7 @@ import org.sopeco.webui.shared.entities.ChartOptions;
 import org.sopeco.webui.shared.entities.ChartParameter;
 import org.sopeco.webui.shared.entities.Visualization;
 
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -63,19 +64,22 @@ public class VisualizationWizard extends DialogBox {
 	final ColumnSelectionPanel columnSelectionPanel = new ColumnSelectionPanel();
 
 	public VisualizationWizard(final SharedExperimentRuns experimentRun) {
+		super(true);
 		FrontEndResources.loadVisualizationWizardCSS();
 		this.experimentRun = experimentRun;
 		inputParameter = new ArrayList<ChartParameter>();
 		outputParameter = new ArrayList<ChartParameter>();
 		rootWidget = new VerticalPanel();
-		rootWidget.add(new Headline(R.get("new_chart")));
+		rootWidget.add(new Headline(R.lang.newChart()));
 		rootWidget.add(extensionPanel);
 		rootWidget.setCellHorizontalAlignment(extensionPanel, HasHorizontalAlignment.ALIGN_RIGHT);
 		rootWidget.add(chartSelectionPanel);
 		rootWidget.add(columnSelectionPanel);
 		columnSelectionPanel.setVisible(false);
 		buttonPanel = new HorizontalPanel();
-		Button close = new Button(R.get("close"));
+		Button close = new Button(R.lang.cancel());
+		close.getElement().getStyle().setMarginRight(1, Unit.EM);
+		close.getElement().getStyle().setMarginBottom(1, Unit.EM);
 		close.addClickHandler(new ClickHandler() {
 
 			@Override
@@ -84,7 +88,9 @@ public class VisualizationWizard extends DialogBox {
 			}
 		});
 		buttonPanel.add(close);
-		create = new Button(R.get("create"));
+		create = new Button(R.lang.create());
+		create.getElement().getStyle().setMarginRight(1, Unit.EM);
+		create.getElement().getStyle().setMarginBottom(1, Unit.EM);
 		create.addClickHandler(new ClickHandler() {
 
 			@Override
@@ -95,6 +101,7 @@ public class VisualizationWizard extends DialogBox {
 		buttonPanel.add(create);
 		create.setEnabled(false);
 		rootWidget.add(buttonPanel);
+		rootWidget.setCellHorizontalAlignment(buttonPanel, HasHorizontalAlignment.ALIGN_RIGHT);
 		this.setWidget(rootWidget);
 		chartSelectionPanel.addClickHandler(new ClickHandler() {
 			
@@ -147,7 +154,7 @@ public class VisualizationWizard extends DialogBox {
 		VisualizationWizard.this.hide();
 		ChartOptions options = new ChartOptions();
 		options.setType(chartSelectionPanel.getSelectedType());
-		RPC.getVisualizationRPC().createChart(experimentRun, columnSelectionPanel.getSelectedInput(), columnSelectionPanel.getSelectedOutput(), options, extensionPanel.getExtension(), new AsyncCallback<Visualization>() {
+		RPC.getVisualizationRPC().createVisualization(experimentRun, columnSelectionPanel.getSelectedInput(), columnSelectionPanel.getSelectedOutput(), options, extensionPanel.getExtension(), new AsyncCallback<Visualization>() {
 
 			@Override
 			public void onFailure(Throwable caught) {

@@ -47,7 +47,14 @@
 	<source path='client' />
 	<source path='shared' />
 
-
+	<servlet path='/visualizationRPC' class='org.sopeco.webui.server.rpc.VisualizationRPCImpl'></servlet>
+	<servlet path='/databaseManagerRPC' class='org.sopeco.webui.server.rpc.database.DatabaseManagerRPCImpl'></servlet>
+	<servlet path='/systemDetailsRPC' class='org.sopeco.webui.server.rpc.SystemDetailsRPCImpl'></servlet>
+	<servlet path='/scenarioManagerRPC' class='org.sopeco.webui.server.rpc.scenario.ScenarioManagerRPCImpl'></servlet>
+	<servlet path='/getRPC' class='org.sopeco.webui.server.rpc.GetRPCImpl'></servlet>
+	<servlet path='/extensionRPC' class='org.sopeco.webui.server.rpc.ExtensionRPCImpl'></servlet>
+	<servlet path='/pushRPC' class='org.sopeco.webui.server.rpc.PushRPCImpl'></servlet>
+	
 	<!-- TEMP FIX UNTIL GOING TO GWT 2.5 -->
 	<!-- Fallback implementation, based on a timer -->
 	<replace-with
