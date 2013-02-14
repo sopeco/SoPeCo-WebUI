@@ -54,7 +54,6 @@
 }
 
 .mecSettingsView .panelStatus>.reloadImage {
-	background-size: 14px 14px !important;
 	margin: 0px;
 	cursor: pointer;
 	opacity: 0.8;
@@ -62,8 +61,9 @@
 	border: 1px solid #999;
 	border-radius: 3px;
 	background-color: #eee !important;
-	padding: 0px 14px;
+	padding: 1px 8px;
 	float: right;
+	background-position: -112px -148px !important;
 }
 
 .mecSettingsView .panelStatus>.reloadImage:hover {
@@ -71,7 +71,6 @@
 	opacity: 0.9;
 }
 
-.mecSettingsView .panelStatus>img {
-	background-position: center !important;
-	height: 18px !important;
+.mecSettingsView .panelStatus>img.status {
+	margin: 4px 10px 0px 0px;
 }

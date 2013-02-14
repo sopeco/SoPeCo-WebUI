@@ -79,7 +79,12 @@ public class SoPeCoUI implements EntryPoint, SimpleNotify, UncaughtExceptionHand
 	/*-{
 		return $wnd.buildInfo;
 	}-*/;
-	
+
+	public static native boolean hasBranding()
+	/*-{
+		return $wnd.hasBranding;
+	}-*/;
+
 	private DatabaseInstance connectedDatabase;
 
 	private CallbackBatch loadingBatch;
@@ -123,7 +128,7 @@ public class SoPeCoUI implements EntryPoint, SimpleNotify, UncaughtExceptionHand
 
 		LOGGER.severe(st);
 		GWT.log(e.getClass().getName() + ": " + e.getMessage(), e);
-		
+
 		ExceptionDialog.show(e);
 	}
 

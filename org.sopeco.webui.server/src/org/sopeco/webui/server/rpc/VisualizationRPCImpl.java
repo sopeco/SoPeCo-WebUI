@@ -27,7 +27,6 @@
 package org.sopeco.webui.server.rpc;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -290,7 +289,6 @@ public class VisualizationRPCImpl extends SuperRemoteServlet implements
 		return values;
 	}
 
-	@Override
 	public Map<Double, List<Double>> applySimpleRegression(
 			Map<Double, List<Double>> values) {
 		double min = values.entrySet().iterator().next().getKey();
@@ -311,4 +309,5 @@ public class VisualizationRPCImpl extends SuperRemoteServlet implements
 		}
 		return values;
 	}
+
 }

@@ -739,15 +739,14 @@ p {
 
 .envTreeView>.envTreeHeadline>.gwt-ToggleButton {
 	float: right;
-	width: 14px;
+	width: 16px;
 	height: 14px;
-	padding: 1px;
+	padding: 1px 0;
 	margin-left: 5px;
 }
 
 .envTreeView>.envTreeHeadline>.gwt-ToggleButton>.gwt-Image {
-	width: 14px;
-	height: 14px;
+	height: 11px !important;
 }
 
 .envTreeView .sopeco-Tree {

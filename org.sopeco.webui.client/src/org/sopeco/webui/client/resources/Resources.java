@@ -96,25 +96,16 @@ public interface Resources extends ClientBundle {
 
 	/** IMAGES. */
 
-	@Source("images/error.png")
-	ImageResource imgError();
-
-	@Source("images/success.png")
-	ImageResource imgSuccess();
-
-	@Source("images/database.png")
-	ImageResource imgDatabase();
-
 	@Source("images/background_noise.png")
 	DataResource imgBackgroundNoise();
 
 	@Source("images/background_noise_2.png")
 	DataResource imgBackgroundNoise2();
 
-	@Source("images/db_add.png")
+	@Source("images/database_add.png")
 	ImageResource imgIconDatabaseAdd();
 
-	@Source("images/db_remove.png")
+	@Source("images/database_remove.png")
 	ImageResource imgIconDatabaseRemove();
 
 	@Source("images/sap_research_gray_orange.png")
@@ -126,15 +117,6 @@ public interface Resources extends ClientBundle {
 	@Source("images/loading_indicator.gif")
 	ImageResource imgLoadingIndicatorCircle();
 
-	@Source("images/gear.png")
-	DataResource imgGear();
-
-	@Source("images/add_blue.png")
-	DataResource imgAddBlue();
-
-	@Source("images/switch.png")
-	ImageResource imgSwitch();
-
 	@Source("images/flag_de.png")
 	ImageResource imgFlagDe();
 
@@ -144,24 +126,10 @@ public interface Resources extends ClientBundle {
 	@Source("images/sopeco-logo.png")
 	DataResource imgSoPeCoLogo();
 
-	@Source("images/reload.png")
-	ImageResource imgReload();
-
-	@Source("images/status-red.png")
-	ImageResource imgStatusRed();
-
-	@Source("images/status-green.png")
-	ImageResource imgStatusGreen();
-
-	@Source("images/status-yellow.png")
-	ImageResource imgStatusYellow();
-	
-	@Source("images/status-gray.png")
-	ImageResource imgStatusGray();
-	
 	@Source("images/sopeco-logo-gray.png")
 	DataResource imgSopecoLogoGray();
-	
-	@Source("images/SDQ-Logo.png")
-	DataResource imgSDQLogo();
+
+	@Source("images/sopeco-icon-set.png")
+	DataResource imgIconSet();
+
 }

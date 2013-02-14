@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sopeco.gwt.widgets.tree;
+package org.sopeco.webui.client.widget;
 
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;

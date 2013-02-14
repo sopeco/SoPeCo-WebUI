@@ -28,13 +28,14 @@ package org.sopeco.webui.client.layout.center.result;
 
 import java.util.logging.Logger;
 
-import org.sopeco.gwt.widgets.tree.TreeItem;
+import org.sopeco.gwt.widgets.ImageHover;
 import org.sopeco.webui.client.layout.center.visualization.wizard.VisualizationWizard;
 import org.sopeco.webui.client.layout.dialog.ExportCsvDialog;
 import org.sopeco.webui.client.layout.dialog.ExportToRDialog;
 import org.sopeco.webui.client.layout.popups.Message;
 import org.sopeco.webui.client.resources.R;
 import org.sopeco.webui.client.rpc.RPC;
+import org.sopeco.webui.client.widget.TreeItem;
 import org.sopeco.webui.shared.definitions.result.SharedExperimentRuns;
 
 import com.google.gwt.dom.client.Style.Cursor;
@@ -58,7 +59,7 @@ public class TreeLeaf extends TreeItem implements /* HasClickHandlers, */ClickHa
 	private static final String DOWNLOAD_IMAGE = "images/download.png";
 	private static final String R_IMAGE = "images/r_logo.png";
 	private static final String CHART_IMAGE = "images/line_chart.png";
-	
+
 	private Image downloadImage, rImage, chartImage;
 	private PopupPanel chartPopup;
 
@@ -72,7 +73,7 @@ public class TreeLeaf extends TreeItem implements /* HasClickHandlers, */ClickHa
 		this(run.getLabel());
 
 		experimentRun = run;
-		
+
 		chartPopup = new VisualizationWizard(experimentRun);
 	}
 
@@ -84,20 +85,24 @@ public class TreeLeaf extends TreeItem implements /* HasClickHandlers, */ClickHa
 		removeIcon();
 		getContentWrapper().getElement().getStyle().setMarginLeft(1, Unit.EM);
 
-		downloadImage = new Image(DOWNLOAD_IMAGE);
+		downloadImage = new ImageHover(R.resc.imgIconSet().getSafeUri(), 90, 120, 16, 16, R.resc.imgIconSet()
+				.getSafeUri(), 120, 120, 16, 16);
 		downloadImage.setTitle(R.get("download"));
 		downloadImage.getElement().getStyle().setMarginLeft(1, Unit.EM);
 		downloadImage.getElement().getStyle().setCursor(Cursor.POINTER);
 		downloadImage.addClickHandler(this);
 
-		rImage = new Image(R_IMAGE);
+		rImage = new ImageHover(R.resc.imgIconSet().getSafeUri(), 150, 120, 13, 16, R.resc.imgIconSet().getSafeUri(),
+				180, 120, 13, 16);
 		rImage.setTitle(R.get("Get R-Command"));
 		rImage.getElement().getStyle().setMarginLeft(1, Unit.EM);
 		rImage.getElement().getStyle().setCursor(Cursor.POINTER);
 		rImage.addClickHandler(this);
-		
-		chartImage = new Image(CHART_IMAGE);
+
+		chartImage = new ImageHover(R.resc.imgIconSet().getSafeUri(), 210, 90, 16, 16,
+				R.resc.imgIconSet().getSafeUri(), 210, 120, 16, 16);
 		chartImage.setTitle(R.lang.newChart());
+
 		chartImage.getElement().getStyle().setMarginLeft(1, Unit.EM);
 		chartImage.getElement().getStyle().setCursor(Cursor.POINTER);
 		chartImage.addClickHandler(this);
@@ -114,22 +119,21 @@ public class TreeLeaf extends TreeItem implements /* HasClickHandlers, */ClickHa
 		return experimentRun;
 	}
 
-
 	@Override
 	public void onClick(ClickEvent event) {
 		if (event.getSource() == downloadImage) {
 
 			StringBuffer param = new StringBuffer();
 
-			 String timestamp = ""+experimentRun.getTimestamp();
-			 String experimentName = experimentRun.getParentSeries().getExperimentName();
-			 String controllerURL = experimentRun.getParentSeries().getParentInstance().getControllerUrl();
-			 String scenarioName = experimentRun.getParentSeries().getParentInstance().getScenarioName();
+			String timestamp = "" + experimentRun.getTimestamp();
+			String experimentName = experimentRun.getParentSeries().getExperimentName();
+			String controllerURL = experimentRun.getParentSeries().getParentInstance().getControllerUrl();
+			String scenarioName = experimentRun.getParentSeries().getParentInstance().getScenarioName();
 
-//			
+			//
 			ExportCsvDialog.show(timestamp, experimentName, controllerURL, scenarioName);
-			
-		} else if(event.getSource() == chartImage){
+
+		} else if (event.getSource() == chartImage) {
 			chartPopup.center();
 		} else {
 			RPC.getResultRPC().getResultAsR(experimentRun.getParentSeries().getParentInstance().getScenarioName(),

@@ -26,6 +26,7 @@
  */
 @url gear imgGear;
 @url addBlue imgAddBlue;
+@url iconSet imgIconSet;
 .naviItem {
 	padding: 0.8em 0.5em 0.8em 1.5em;
 	cursor: pointer;
@@ -79,17 +80,29 @@
 }
 
 .naviItem.subItem.experiment {
-	background: gear no-repeat 12px 12px;
+	position: relative;
+}
+
+.naviItem.subItem.experiment img {
+	position: absolute;
+	top: 11px;
+	left: 11px;
 }
 
 .naviItem.subItem.addItem {
 	margin-left: 12px;
 	border: 0;
-	background: addBlue no-repeat 12px 11px;
+	position: relative;
 }
 
 .naviItem.subItem.addItem>.gwt-HTML:first\-child {
 	font-weight: normal;
+}
+
+.naviItem.subItem.addItem img {
+	position: absolute;
+	top: 12px;
+	left: 12px;
 }
 
 .navigation {
@@ -127,9 +140,10 @@
 	right: .5em;
 	border: 1px solid #ccc;
 	padding: 1px;
-	background-position: 50% !important;
+	background-position: -179px -147px !important;
 	border-radius: 2px;
 	background-color: rgb(240, 241, 243) !important;
+	height: 16px !important;
 }
 
 .naviItem.selected .changeSpecIcon:hover {
@@ -166,10 +180,23 @@
 	border-left: 4px solid;
 }
 
-.naviItem .changeSpecPanel .gwt-HTML.addItem {
-	background-image: addBlue;
-	background-repeat: no-repeat;
-	background-position: 10px;
+.naviItem .changeSpecPanel .addItem {
+	position: relative;
+}
+
+.naviItem .changeSpecPanel .addItem img {
+	position: absolute;
+	top: 5px;
+	left: 11px;
+	opacity: 0.7;
+}
+
+.naviItem .changeSpecPanel .addItem:hover img {
+	opacity: 1;
+}
+
+.naviItem .changeSpecPanel .addItem>.gwt-HTML {
 	padding-left: 2.5em;
 	font-weight: normal;
+	white-space: nowrap;
 }

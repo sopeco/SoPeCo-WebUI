@@ -24,10 +24,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sopeco.gwt.widgets.tree;
+package org.sopeco.webui.client.widget;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.sopeco.webui.client.resources.R;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Cursor;
@@ -145,10 +147,11 @@ public class TreeItem extends FlowPanel implements ClickHandler {
 		} else {
 			image.getElement().getStyle().setCursor(Cursor.POINTER);
 			image.removeStyleName(CSS_TRANSPARENT);
+			
 			if (expanded) {
-				image.setUrl(IMG_COLLAPSE);
+				image.setUrlAndVisibleRect(R.resc.imgIconSet().getSafeUri(), 120, 60, 16, 16);
 			} else {
-				image.setUrl(IMG_EXPAND);
+				image.setUrlAndVisibleRect(R.resc.imgIconSet().getSafeUri(), 90, 60, 16, 16);
 			}
 		}
 	}

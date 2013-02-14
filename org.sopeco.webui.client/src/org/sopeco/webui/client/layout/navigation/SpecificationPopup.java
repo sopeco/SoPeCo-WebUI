@@ -33,7 +33,9 @@ import org.sopeco.webui.client.resources.R;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
@@ -50,6 +52,7 @@ public class SpecificationPopup extends VerticalPanel implements ClickHandler {
 
 	private HashMap<String, HTML> itemMap;
 	private HTML addSpecificationHTML;
+	private FlowPanel addPanel;
 
 	private HTML selectedItem;
 
@@ -59,8 +62,12 @@ public class SpecificationPopup extends VerticalPanel implements ClickHandler {
 		itemMap = new HashMap<String, HTML>();
 
 		addSpecificationHTML = new HTML(R.get("addSpecification"));
-		addSpecificationHTML.addStyleName(CSS_CLASS_ADD);
-		add(addSpecificationHTML);
+
+		addPanel = new FlowPanel();
+		addPanel.addStyleName(CSS_CLASS_ADD);
+		addPanel.add(addSpecificationHTML);
+		addPanel.add(new Image(R.resc.imgIconSet().getSafeUri(), 0, 120, 13, 13));
+		add(addPanel);
 	}
 
 	public HashMap<String, HTML> getItemMap() {
@@ -82,10 +89,10 @@ public class SpecificationPopup extends VerticalPanel implements ClickHandler {
 	}
 
 	public void addAddItem() {
-		if (addSpecificationHTML.isAttached()) {
-			addSpecificationHTML.removeFromParent();
+		if (addPanel.isAttached()) {
+			addPanel.removeFromParent();
 		}
-		add(addSpecificationHTML);
+		add(addPanel);
 	}
 
 	@Override
