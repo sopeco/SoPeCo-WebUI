@@ -97,7 +97,7 @@ public class TreeLeaf extends TreeItem implements /* HasClickHandlers, */ClickHa
 		rImage.addClickHandler(this);
 		
 		chartImage = new Image(CHART_IMAGE);
-		chartImage.setTitle(R.get("Show chart"));
+		chartImage.setTitle(R.lang.newChart());
 		chartImage.getElement().getStyle().setMarginLeft(1, Unit.EM);
 		chartImage.getElement().getStyle().setCursor(Cursor.POINTER);
 		chartImage.addClickHandler(this);

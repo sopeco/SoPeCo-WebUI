@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
+import org.sopeco.webui.client.resources.R;
 import org.sopeco.webui.client.rpc.RPC;
 import org.sopeco.webui.shared.entities.ChartData;
 import org.sopeco.webui.shared.entities.ChartOptions;
@@ -43,13 +44,19 @@ import org.sopeco.webui.shared.helper.AggregationOutputType;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Frame;
+import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.visualization.client.AbstractDataTable;
 import com.google.gwt.visualization.client.AbstractDataTable.ColumnType;
 import com.google.gwt.visualization.client.DataTable;
 import com.google.gwt.visualization.client.VisualizationUtils;
@@ -60,54 +67,125 @@ import com.google.gwt.visualization.client.visualizations.corechart.LineChart;
 import com.google.gwt.visualization.client.visualizations.corechart.Options;
 import com.google.gwt.visualization.client.visualizations.corechart.PieChart;
 
+/** A gwt widget displaying a {@link Visualization}.
+ * <br/>If the {@link Visualization} is of the type {@link Visualization.Type#GCHART} a google chart widget will be created.
+ * <br/>If the {@link Visualization} is of the type {@link Visualization.Type#LINK} an &lt;iframe&gt; with the link will be created
+ * 
+ * @author Benjamin Ebling
+ *
+ */
 public class ChartWidget extends FlowPanel {
 	
-	private FlowPanel control;
+	private Grid control;
 	private ListBox aggregation;
-	private ListBox interpolation;
+	private ListBox dataProcessing;
+	private ListBox processingType;
 	private Visualization visualization;
 	private Widget chartWidget;
 	private CoreChart chart = null;
+	private Options options = null;
+	private DataTable dataTable = null;
+	private Label numberOfSplinesLabel;
+	private TextBox numberOfSplines;
+	private CheckBox showRegression;
 	
 	public ChartWidget (){
 		this.getElement().getStyle().setPadding(1, Unit.EM);
 		chartWidget = new FlowPanel();
 		this.add(chartWidget);
-		control = new FlowPanel();
-		control.add(new Label("Aggregation: "));
+		control = new Grid(2, 10);
+		control.setWidget(0, 0, new Label("Aggregation: "));
 		aggregation = new ListBox();
 		for (AggregationOutputType t: AggregationOutputType.values()){
-			aggregation.addItem(t.toString());
+			aggregation.addItem(t.name());
 		}
 		aggregation.addChangeHandler(new ChangeHandler() {
 			
 			@Override
 			public void onChange(ChangeEvent event) {
+				dataProcessing.clear();
 				if (aggregation.getItemText(aggregation.getSelectedIndex()).equals(AggregationOutputType.SCATTER.toString())){
-					interpolation.setSelectedIndex(0);
-					interpolation.setEnabled(false);
+					for (DataProcessing i: DataProcessing.values()){
+						if (i != DataProcessing.INTERPOLATION){
+							dataProcessing.addItem(i.toString());
+						}
+					}
 				} else {
-					interpolation.setEnabled(true);
+					for (DataProcessing i: DataProcessing.values()){
+						dataProcessing.addItem(i.toString());
+					}
 				}
-				updateChart();
+				refreshChart();
 			}
 		});
-		control.add(aggregation);
-		
-		control.add(new Label("Interpolation: "));
-		interpolation = new ListBox();
-		for (Interpolation i: Interpolation.values()){
-			interpolation.addItem(i.toString());
+		control.setWidget(1, 0, aggregation);
+		control.setWidget(0, 1, new Label(R.get("Regression")));
+		showRegression = new CheckBox();
+		showRegression.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				refreshChart();
+			}
+		});
+		control.setWidget(1, 1, showRegression);
+		control.setWidget(0, 2, new Label(R.lang.dataProcessing()));
+		dataProcessing = new ListBox();
+		for (DataProcessing i: DataProcessing.values()){
+			if (i != DataProcessing.INTERPOLATION){
+				dataProcessing.addItem(i.toString());
+			}
 		}
-		interpolation.addChangeHandler(new ChangeHandler() {
+		dataProcessing.addChangeHandler(new ChangeHandler() {
 			
 			@Override
 			public void onChange(ChangeEvent event) {
-				updateChart();
+				switch (DataProcessing.valueOf(dataProcessing.getItemText(dataProcessing.getSelectedIndex()))) {
+				case INTERPOLATION:
+					processingType.clear();
+					for (Interpolation i : Interpolation.values()){
+						processingType.addItem(i.name());
+					}
+					processingType.setEnabled(true);
+					break;
+				default:
+					processingType.clear();
+					processingType.setEnabled(false);
+					break;
+				}
+				refreshChart();
 			}
 		});
-		interpolation.setEnabled(false);
-		control.add(interpolation);
+		HorizontalPanel hpProcessing = new HorizontalPanel();
+		hpProcessing.add(dataProcessing);
+		processingType = new ListBox();
+		processingType.addChangeHandler(new ChangeHandler() {
+			
+			@Override
+			public void onChange(ChangeEvent event) {
+				refreshChart();
+			}
+		});
+		processingType.setEnabled(false);
+		hpProcessing.add(processingType);
+		control.setWidget(1, 2, hpProcessing);
+		numberOfSplinesLabel = new Label(R.lang.numberOfPoints());
+		control.setWidget(0, 3, numberOfSplinesLabel);
+		numberOfSplines = new TextBox();
+		numberOfSplines.setText("100");
+		numberOfSplines.addChangeHandler(new ChangeHandler() {
+			
+			@Override
+			public void onChange(ChangeEvent event) {
+				try {
+					Integer.parseInt(numberOfSplines.getText());
+				} catch (NumberFormatException ex){
+					numberOfSplines.setText("100");
+				}
+				refreshChart();
+			}
+		});
+		control.setWidget(1,3,numberOfSplines);
 	}
 	
 	public void switchChart(Visualization visualization){
@@ -119,13 +197,12 @@ public class ChartWidget extends FlowPanel {
 		showChart();
 	}
 	
-	private Options createOptions() {
+	private void refreshOptions() {
 		ChartOptions chartOptions = visualization.getOptions();
 		String name = visualization.getName();
-		Options options = Options.create();
 		HorizontalAxisOptions hOptions = HorizontalAxisOptions.create();
 		hOptions.setTitle(chartOptions.getxAxisLabel());
-		options.setHAxisOptions(hOptions);
+		options = Options.create();
 		switch(chartOptions.getType()){
 		case BARCHART:
 			options.set("bar.groupWidth", "50");
@@ -134,62 +211,81 @@ public class ChartWidget extends FlowPanel {
 			options.set("is3D", true);
 			break;
 		case LINECHART:
-			switch(Interpolation.valueOf(interpolation.getItemText(interpolation.getSelectedIndex()))){
-			case SPLINE:
-				options.setLineWidth(2);
-				options.setPointSize(0);
+			//All series' default type is 'line'
+			options.setLineWidth(2);
+			options.setPointSize(3);
+			switch(DataProcessing.valueOf(dataProcessing.getItemText(dataProcessing.getSelectedIndex()))){
+			case NONE:
+				//change type of first series to point
+				Options seriesOptions = Options.create();
+				Options series1Options = Options.create();
+				series1Options.setLineWidth(0);
+				series1Options.setPointSize(3);
+				seriesOptions.set("0", series1Options);
+				options.set("series", seriesOptions);
 				break;
 			default:
-				options.setLineWidth(0);
-				options.setPointSize(3);
+				
 			}
 			break;
 		}
+		options.setHAxisOptions(hOptions);
 		options.setWidth(900);
 		options.setHeight(500);
 		options.setTitle(name);
-		return options;
 	}
 	
-	public void updateChart(){
-		if (chart != null){
-			ChartData data = visualization.getData();
-			final DataTable dataTable = DataTable.create();
-			switch (visualization.getOptions().getType()) {
-			case PIECHART:
-			case BARCHART:
-				dataTable.addColumn(ColumnType.STRING, "Input");
-				break;
-			default:
-				dataTable.addColumn(ColumnType.NUMBER, "Input");
-			}
-			dataTable.addColumn(ColumnType.NUMBER,visualization.getOptions().getxAxisLabel());
-			Map<Double, List<Double>> values = new TreeMap<Double, List<Double>>();
-			final Map<Double, Integer> total = new HashMap<Double, Integer>();
-			calculateData(data, values, total);
-			switch(Interpolation.valueOf(interpolation.getItemText(interpolation.getSelectedIndex()))){
+	public void refreshDataTable(){
+		ChartData data = visualization.getData();
+		dataTable = DataTable.create();
+		switch (visualization.getOptions().getType()) {
+		case PIECHART:
+		case BARCHART:
+			dataTable.addColumn(ColumnType.STRING, "Input");
+			break;
+		default:
+			dataTable.addColumn(ColumnType.NUMBER, "Input");
+		}
+		dataTable.addColumn(ColumnType.NUMBER,visualization.getOptions().getxAxisLabel());
+		Map<Double, List<Double>> values = new TreeMap<Double, List<Double>>();
+		final Map<Double, Integer> total = new HashMap<Double, Integer>();
+		calculateData(data, values, total);
+		switch(DataProcessing.valueOf(dataProcessing.getItemText(dataProcessing.getSelectedIndex()))){
+		case INTERPOLATION:
+			switch(Interpolation.valueOf(processingType.getItemText(processingType.getSelectedIndex()))){
 			case SPLINE:
-				RPC.getVisualizationRPC().applySplineInterpolation(values, 0, 10, 100, new AsyncCallback<Map<Double,List<Double>>>() {
+				RPC.getVisualizationRPC().applySplineInterpolation(values, 0, 10, Integer.parseInt(numberOfSplines.getText()), new AsyncCallback<Map<Double,List<Double>>>() {
 					
 					@Override
 					public void onSuccess(Map<Double, List<Double>> result) {
-						setData(dataTable, result, total);
-						chart.draw(dataTable, createOptions());
+						setData(result);
+						if (chart != null){
+							chart.draw(dataTable, options);
+						}
 					}
 					
 					@Override
 					public void onFailure(Throwable caught) {
-						// TODO Auto-generated method stub
-						
+						Window.alert(caught.getMessage());
 					}
 				});
 				break;
-			default:
-				setData(dataTable, values, total);
-				chart.draw(dataTable, createOptions());
-				break;
 			}
+			
+			break;
+		default:
+			setData(values);
+			break;
 		}
+	}
+	
+	private void refreshChart(){
+		if (visualization == null) {
+			return;
+		}
+		refreshOptions();
+		refreshDataTable();
+		chart.draw(dataTable, options);
 	}
 	
 	public void showChart() {
@@ -200,17 +296,19 @@ public class ChartWidget extends FlowPanel {
 		case GCHART:
 			Runnable onLoadCallback = new Runnable() {
 				public void run() {
+					refreshOptions();
+					refreshDataTable();
 					ChartWidget.this.remove(chartWidget);
 					chartWidget = new FlowPanel();
 					switch (visualization.getOptions().getType()){
 					case BARCHART:
-						chart = new ColumnChart(createTable(),createOptions());
+						chart = new ColumnChart(dataTable,options);
 						break;
 					case PIECHART:
-						chart = new PieChart(createTable(),createOptions());
+						chart = new PieChart(dataTable,options);
 						break;
 					default:
-					chart = new LineChart(createTable(),createOptions());
+					chart = new LineChart(dataTable,options);
 					}
 					((FlowPanel) chartWidget).add(chart);
 					ChartWidget.this.add(chartWidget);
@@ -236,46 +334,7 @@ public class ChartWidget extends FlowPanel {
 		return;
 	}
 
-	private AbstractDataTable createTable() {
-		ChartData data = visualization.getData();
-		final DataTable dataTable = DataTable.create();
-		switch (visualization.getOptions().getType()) {
-		case PIECHART:
-		case BARCHART:
-			dataTable.addColumn(ColumnType.STRING, "Input");
-			break;
-		default:
-			dataTable.addColumn(ColumnType.NUMBER, "Input");
-		}
-		dataTable.addColumn(ColumnType.NUMBER,visualization.getOptions().getxAxisLabel());
-		Map<Double, List<Double>> values = new TreeMap<Double, List<Double>>();
-		final Map<Double, Integer> total = new HashMap<Double, Integer>();
-		calculateData(data, values, total);
-		switch(Interpolation.valueOf(interpolation.getItemText(interpolation.getSelectedIndex()))){
-		case SPLINE:
-			RPC.getVisualizationRPC().applySplineInterpolation(values, 0, 10, 100, new AsyncCallback<Map<Double,List<Double>>>() {
-				
-				@Override
-				public void onSuccess(Map<Double, List<Double>> result) {
-					setData(dataTable, result, total);
-				}
-				
-				@Override
-				public void onFailure(Throwable caught) {
-					// TODO Auto-generated method stub
-					
-				}
-			});
-			break;
-		default:
-			setData(dataTable, values, total);
-			break;
-		}
-		return dataTable;
-	}
-
-	private void setData(DataTable dataTable, Map<Double, List<Double>> values,
-			Map<Double, Integer> total) {
+	private void setData(Map<Double, List<Double>> values) {
 		int row = 0;
 		for (Entry<Double, List<Double>> entry : values.entrySet()){
 			int col = 0;
@@ -290,22 +349,43 @@ public class ChartWidget extends FlowPanel {
 				default:
 					dataTable.setValue(index, 0, entry.getKey());
 				}
-				switch (AggregationOutputType.valueOf(aggregation.getItemText(aggregation.getSelectedIndex()))){
-				case AVERAGE:
-					dataTable.setValue(index, 1, d/total.get(entry.getKey()));
-					break;
-				default:
-					dataTable.setValue(index, 1, d);
-				}
+				dataTable.setValue(index, 1, d);
 				col++;
 			}
 			
 			row++;
 		}
 	}
+	
+	private void addRegression(Map<Double, List<Double>> values, String name) {
+		dataTable.addColumn(ColumnType.NUMBER, name);
+		int nr = dataTable.getNumberOfColumns()-1;
+//		dataTable.setValue(0, nr, values.get(1.0).get(0));
+//		dataTable.setValue(dataTable.getNumberOfRows()-1, nr, values.get(3.0).get(0));
+		int k = 0;
+		int n = dataTable.getNumberOfRows()/values.size();
+		for (Entry<Double, List<Double>> entry : values.entrySet()){
+			for (int i = 0; i < n; i++){
+				dataTable.setValue(k*n+i, nr, entry.getValue().get(0));
+			}
+			k++;
+		}
+//		for (Entry<Double, List<Double>> entry : values.entrySet()){
+//			int col = 0;
+//			for (Double d : entry.getValue()){
+//				if (index >= dataTable.getNumberOfRows()){
+//					dataTable.addRow();
+//				}
+//				dataTable.setValue(index, nr, d);
+//				col++;
+//			}
+//			
+//			row++;
+//		}
+	}
 
 	private void calculateData(ChartData data, Map<Double, List<Double>> values,
-			Map<Double, Integer> total) {
+			final Map<Double, Integer> total) {
 		List<List<Double>> dataList = data.getDatarows();
 		List<ChartRowKey> names = data.getxAxis();
 		for (int row = 0; row < dataList.size(); row++){
@@ -334,9 +414,42 @@ public class ChartWidget extends FlowPanel {
 			}
 			
 		}
+		switch (AggregationOutputType.valueOf(aggregation.getItemText(aggregation.getSelectedIndex()))){
+		case AVERAGE:
+			for (Entry<Double, List<Double>> entry : values.entrySet()){
+				entry.getValue().set(0, entry.getValue().get(0)/total.get(entry.getKey()));
+			}
+			break;
+		default:
+		}
+		if (showRegression.getValue()){
+			RPC.getVisualizationRPC().applySimpleRegression(values, new AsyncCallback<Map<Double,List<Double>>>() {
+
+				@Override
+				public void onSuccess(Map<Double, List<Double>> result) {
+					addRegression(result, "Regression");
+					if (chart != null){
+						chart.draw(dataTable, options);
+					}
+				}
+				
+				@Override
+				public void onFailure(Throwable caught) {
+					Window.alert(caught.getMessage());
+				}
+			});
+		}
+	}
+	
+	public static enum DataProcessing {
+		NONE, INTERPOLATION;
 	}
 	
 	public static enum Interpolation {
-		NONE, SPLINE;
+		SPLINE;
+	}
+	
+	public static enum Regression {
+		SIMPLE_REGRESSION;
 	}
 }
