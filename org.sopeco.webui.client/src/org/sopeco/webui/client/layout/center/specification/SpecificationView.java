@@ -27,6 +27,7 @@
 package org.sopeco.webui.client.layout.center.specification;
 
 import org.sopeco.gwt.widgets.ClearDiv;
+import org.sopeco.gwt.widgets.ImageHover;
 import org.sopeco.webui.client.resources.R;
 
 import com.google.gwt.dom.client.Style.Position;
@@ -77,9 +78,12 @@ public class SpecificationView extends FlowPanel {
 		htmlName = new HTML("1234567890");
 		htmlName.addStyleName("name");
 
-		imgRename = new Image(IMAGE_RENAME);
-		imgDuplicate = new Image(IMAGE_DUPLICATE);
-		imgRemove = new Image(IMAGE_REMOVE);
+		imgRename = new ImageHover(R.resc.imgIconSet().getSafeUri(), 30, 60, 24, 18, R.resc.imgIconSet().getSafeUri(),
+				30, 90, 24, 18);
+		imgDuplicate = new ImageHover(R.resc.imgIconSet().getSafeUri(), 60, 60, 13, 18, R.resc.imgIconSet().getSafeUri(),
+				60, 90, 13, 18);
+		imgRemove = new ImageHover(R.resc.imgIconSet().getSafeUri(), 0, 60, 16, 18, R.resc.imgIconSet().getSafeUri(),
+				0, 90, 16, 18);
 
 		imgRename.setTitle(R.get("Rename"));
 		imgDuplicate.setTitle(R.get("Duplicate"));

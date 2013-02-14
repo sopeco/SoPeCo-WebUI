@@ -73,8 +73,8 @@ public class LoginPanel extends FlowPanel implements ClickHandler {
 	private HTML htmlFEVersionInfo;
 
 	private FlowPanel selectLanguagePanel;
-	private FlowPanel logoPanel ;
-	
+	private FlowPanel logoPanel;
+
 	/**
 	 * Cosntructor.
 	 */
@@ -94,13 +94,15 @@ public class LoginPanel extends FlowPanel implements ClickHandler {
 		htmlFEVersionInfo = new HTML(SoPeCoUI.getBuildInfo());
 		htmlFEVersionInfo.addStyleName("htmlFEVersionInfo");
 
-		Image imgLogo = new Image(R.resc.imgSDQLogo().getSafeUri());
+		Image imgLogo = new Image("/branding.png");
 
-		logoPanel = new FlowPanel();
-		logoPanel.addStyleName("imgSapResearch");
-		logoPanel.add(new HTML("powered by"));
-		logoPanel.add(imgLogo);
-		
+		if (SoPeCoUI.hasBranding()) {
+			logoPanel = new FlowPanel();
+			logoPanel.addStyleName("imgSapResearch");
+			logoPanel.add(new HTML("powered by"));
+			logoPanel.add(imgLogo);
+		}
+
 		createLanguagePanel();
 
 		verticalCell = new SimplePanel();
@@ -125,7 +127,9 @@ public class LoginPanel extends FlowPanel implements ClickHandler {
 		verticalCell.add(selectAccountPanel);
 		add(verticalCell);
 		add(htmlFEVersionInfo);
-		add(logoPanel);
+		if (logoPanel != null) {
+			add(logoPanel);
+		}
 		add(selectLanguagePanel);
 	}
 
@@ -228,7 +232,7 @@ public class LoginPanel extends FlowPanel implements ClickHandler {
 					new AsyncCallback<Boolean>() {
 						@Override
 						public void onFailure(Throwable caught) {
-							Message.error(caught.getMessage());
+							SoPeCoUI.get().onUncaughtException(caught);
 						}
 
 						@Override
@@ -250,7 +254,7 @@ public class LoginPanel extends FlowPanel implements ClickHandler {
 		RPC.getDatabaseManagerRPC().removeDatabase(account, new AsyncCallback<Boolean>() {
 			@Override
 			public void onFailure(Throwable caught) {
-				Message.error(R.get("cant_delete_db"));
+				SoPeCoUI.get().onUncaughtException(caught);
 			}
 
 			@Override
@@ -289,7 +293,7 @@ public class LoginPanel extends FlowPanel implements ClickHandler {
 		RPC.getDatabaseManagerRPC().checkPassword(account, password, new AsyncCallback<Boolean>() {
 			@Override
 			public void onFailure(Throwable caught) {
-				Message.error(caught.getMessage());
+				SoPeCoUI.get().onUncaughtException(caught);
 			}
 
 			@Override

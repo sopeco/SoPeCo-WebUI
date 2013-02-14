@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sopeco.webui.client.helper;
+package org.sopeco.webui.server.helper;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -134,7 +134,7 @@ public final class MavenInfos {
 		if (pomFound) {
 			return version + " - " + buildDate;
 		} else {
-			return "";
+			return "asd";
 		}
 	}
 }

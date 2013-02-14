@@ -26,8 +26,8 @@
  */
 package org.sopeco.webui.client.layout.center.result;
 
-import org.sopeco.gwt.widgets.tree.Tree;
 import org.sopeco.webui.client.layout.center.CenterPanel;
+import org.sopeco.webui.client.widget.Tree;
 
 import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.dom.client.Style.Unit;

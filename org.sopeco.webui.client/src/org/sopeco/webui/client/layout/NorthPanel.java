@@ -29,6 +29,7 @@ package org.sopeco.webui.client.layout;
 import java.util.logging.Logger;
 
 import org.sopeco.gwt.widgets.ComboBox;
+import org.sopeco.gwt.widgets.ImageHover;
 import org.sopeco.webui.client.SoPeCoUI;
 import org.sopeco.webui.client.layout.dialog.AddScenarioDialog;
 import org.sopeco.webui.client.layout.dialog.LogDialog;
@@ -108,7 +109,7 @@ public class NorthPanel extends FlowPanel implements ClickHandler, InputDialogHa
 	@Override
 	public void onClick(ClickEvent event) {
 		if (event.getSource() == imageSatellite && isEnabled(imageSatellite)) {
-//			MEControllerBox.showBox();
+			// MEControllerBox.showBox();
 			MECSettingsDialog.showDialog();
 		} else if (event.getSource() == imageExport && isEnabled(imageExport)) {
 			ExportBox.showExportBox();
@@ -225,7 +226,8 @@ public class NorthPanel extends FlowPanel implements ClickHandler, InputDialogHa
 		connectedToText = new HTML();
 		navigationPanel.add(connectedToText);
 
-		imageChangeAccount = new Image(IMAGE_CHANGE_ACCOUNT);
+		imageChangeAccount = new ImageHover(R.resc.imgIconSet().getSafeUri(), 60, 0, 22, 24, R.resc.imgIconSet()
+				.getSafeUri(), 60, 30, 22, 24);
 		imageChangeAccount.addStyleName(IMG_BUTTON_CSS_CLASS);
 		imageChangeAccount.setTitle(R.get("Logout"));
 		imageChangeAccount.addClickHandler(this);
@@ -241,19 +243,22 @@ public class NorthPanel extends FlowPanel implements ClickHandler, InputDialogHa
 		cbScenarios.addValueChangeHandler(this);
 		navigationPanel.add(cbScenarios);
 
-		imageScenarioAdd = new Image(IMAGE_SCENARIO_ADD);
+		imageScenarioAdd = new ImageHover(R.resc.imgIconSet().getSafeUri(), 90, 0, 21, 26, R.resc.imgIconSet()
+				.getSafeUri(), 90, 30, 21, 26);
 		imageScenarioAdd.addStyleName(IMG_BUTTON_CSS_CLASS);
 		imageScenarioAdd.setTitle(R.get("scenario_add"));
 		imageScenarioAdd.addClickHandler(this);
 		navigationPanel.add(imageScenarioAdd);
 
-		imageScenarioClone = new Image(IMAGE_SCENARIO_CLONE);
+		imageScenarioClone = new ImageHover(R.resc.imgIconSet().getSafeUri(), 150, 0, 21, 26, R.resc.imgIconSet()
+				.getSafeUri(), 150, 30, 21, 26);
 		imageScenarioClone.addStyleName(IMG_BUTTON_CSS_CLASS);
 		imageScenarioClone.setTitle(R.get("scenario_clone"));
 		imageScenarioClone.addClickHandler(this);
 		navigationPanel.add(imageScenarioClone);
 
-		imageScenarioRemove = new Image(IMAGE_SCENARIO_REMOVE);
+		imageScenarioRemove = new ImageHover(R.resc.imgIconSet().getSafeUri(), 210, 0, 21, 26, R.resc.imgIconSet()
+				.getSafeUri(), 210, 30, 21, 26);
 		imageScenarioRemove.addStyleName(IMG_BUTTON_CSS_CLASS);
 		imageScenarioRemove.setTitle(R.get("scenario_remove"));
 		imageScenarioRemove.addClickHandler(this);
@@ -261,7 +266,8 @@ public class NorthPanel extends FlowPanel implements ClickHandler, InputDialogHa
 
 		navigationPanel.add(createSeparator());
 
-		imageExport = new Image(IMAGE_EXPORT);
+		imageExport = new ImageHover(R.resc.imgIconSet().getSafeUri(), 30, 0, 28, 22, R.resc.imgIconSet()
+				.getSafeUri(), 30, 30, 28, 22);
 		imageExport.addClickHandler(this);
 		imageExport.addStyleName(IMG_BUTTON_CSS_CLASS);
 		imageExport.setTitle(R.get("exportModel"));
@@ -269,7 +275,8 @@ public class NorthPanel extends FlowPanel implements ClickHandler, InputDialogHa
 
 		navigationPanel.add(createSeparator());
 
-		imageSatellite = new Image(IMAGE_SATELLITE);
+		imageSatellite = new ImageHover(R.resc.imgIconSet().getSafeUri(), 0, 0, 28, 28, R.resc.imgIconSet()
+				.getSafeUri(), 0, 30, 28, 28);
 		imageSatellite.addClickHandler(this);
 		imageSatellite.addStyleName(IMG_BUTTON_CSS_CLASS);
 		imageSatellite.setTitle(R.get("mecSettings"));
@@ -277,7 +284,8 @@ public class NorthPanel extends FlowPanel implements ClickHandler, InputDialogHa
 
 		navigationPanel.add(createSeparator());
 
-		imageLog = new Image(IMAGE_LOG);
+		imageLog = new ImageHover(R.resc.imgIconSet().getSafeUri(), 120, 0, 21, 28, R.resc.imgIconSet()
+				.getSafeUri(), 120, 30, 21, 28);
 		imageLog.addClickHandler(this);
 		imageLog.addStyleName(IMG_BUTTON_CSS_CLASS);
 		imageLog.setTitle(R.get("showLog"));

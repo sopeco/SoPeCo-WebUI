@@ -28,13 +28,13 @@ package org.sopeco.webui.client.layout.center.result;
 
 import java.util.List;
 
-import org.sopeco.gwt.widgets.tree.TreeItem;
 import org.sopeco.webui.client.layout.center.CenterPanel;
 import org.sopeco.webui.client.layout.center.ICenterController;
 import org.sopeco.webui.client.layout.dialog.ExportCsvDialog;
 import org.sopeco.webui.client.layout.popups.Message;
 import org.sopeco.webui.client.manager.ScenarioManager;
 import org.sopeco.webui.client.rpc.RPC;
+import org.sopeco.webui.client.widget.TreeItem;
 import org.sopeco.webui.shared.definitions.result.SharedExperimentRuns;
 import org.sopeco.webui.shared.definitions.result.SharedExperimentSeries;
 import org.sopeco.webui.shared.definitions.result.SharedScenarioInstance;

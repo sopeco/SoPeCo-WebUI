@@ -32,7 +32,6 @@ package org.sopeco.webui.client.layout.environment;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.sopeco.gwt.widgets.tree.TreeItem;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.entities.definition.ParameterNamespace;
 import org.sopeco.persistence.entities.definition.ParameterRole;
@@ -40,6 +39,7 @@ import org.sopeco.webui.client.event.EventControl;
 import org.sopeco.webui.client.event.InitialAssignmentChangedEvent;
 import org.sopeco.webui.client.event.InitialAssignmentChangedEvent.ChangeType;
 import org.sopeco.webui.client.manager.ScenarioManager;
+import org.sopeco.webui.client.widget.TreeItem;
 import org.sopeco.webui.shared.helper.Metering;
 
 import com.google.gwt.core.client.GWT;

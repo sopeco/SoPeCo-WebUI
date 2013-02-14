@@ -26,7 +26,7 @@
  */
 package org.sopeco.webui.client.layout.center.execute.tabOne;
 
-import org.sopeco.gwt.widgets.tree.TreeItem;
+import org.sopeco.webui.client.widget.TreeItem;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;

@@ -35,15 +35,18 @@ import com.google.gwt.user.client.ui.FlowPanel;
  * @author Marius Oehler
  * 
  */
-public class FrontendTree extends FlowPanel {
+public class Tree extends FlowPanel {
 
-	private FrontendTreeItem rootItem;
+	private static final String CSS_TREE_CLASS = "sopeco-Tree";
+	private TreeItem rootItem;
 
-	public FrontendTree() {
-		addStyleName("frontendTree");
+	public Tree() {
+		addStyleName(CSS_TREE_CLASS);
 	}
 
-	public void setRoot(FrontendTreeItem item) {
+	public void setRoot(TreeItem item) {
+		clear();
+
 		rootItem = item;
 
 		add(rootItem);

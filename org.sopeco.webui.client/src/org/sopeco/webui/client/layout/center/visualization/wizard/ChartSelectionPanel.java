@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.sopeco.webui.client.resources.FrontEndResources;
+import org.sopeco.webui.client.resources.R;
 import org.sopeco.webui.shared.entities.ChartOptions.ChartType;
 
 import com.google.gwt.dom.client.Style.Unit;
@@ -43,8 +44,8 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-public class ChartSelectionPanel extends FlowPanel{
-	
+public class ChartSelectionPanel extends FlowPanel {
+
 	private ChartType selectedType = ChartType.LINECHART;
 	private List<ClickHandler> clickHandler;
 	private List<ChartIconPanel> chartIconPanels;
@@ -54,21 +55,40 @@ public class ChartSelectionPanel extends FlowPanel{
 		clickHandler = new ArrayList<ClickHandler>();
 		chartIconPanels = new ArrayList<ChartSelectionPanel.ChartIconPanel>();
 		ChartType[] types = ChartType.values();
-		for (int i = 0; i < types.length; i++){
+		for (int i = 0; i < types.length; i++) {
 			final ChartType type = types[i];
-			final ChartIconPanel chartIconPanel = new ChartIconPanel(type.name(), new Image("images/" + type.name().toLowerCase() + ".png"));
+			final ChartIconPanel chartIconPanel;
+
+			// TODO
+			switch (type) {
+			case BARCHART:
+				chartIconPanel = new ChartIconPanel(type.name(), new Image(R.resc.imgIconSet().getSafeUri(), 60, 180,
+						60, 60));
+				break;
+			case LINECHART:
+				chartIconPanel = new ChartIconPanel(type.name(), new Image(R.resc.imgIconSet().getSafeUri(), 0, 180,
+						60, 60));
+				break;
+			case PIECHART:
+				chartIconPanel = new ChartIconPanel(type.name(), new Image(R.resc.imgIconSet().getSafeUri(), 120, 180,
+						60, 60));
+				break;
+			default:
+				chartIconPanel = null;
+			}
+
 			chartIconPanels.add(chartIconPanel);
 			chartIconPanel.addStyleName("chartIconBox");
 			chartIconPanel.addClickHandler(new ClickHandler() {
-				
+
 				@Override
 				public void onClick(ClickEvent event) {
 					selectedType = type;
-					for (ChartIconPanel cip : chartIconPanels){
+					for (ChartIconPanel cip : chartIconPanels) {
 						cip.setSelected(false);
 					}
 					chartIconPanel.setSelected(true);
-					for (ClickHandler handler : clickHandler){
+					for (ClickHandler handler : clickHandler) {
 						handler.onClick(event);
 					}
 				}
@@ -76,12 +96,12 @@ public class ChartSelectionPanel extends FlowPanel{
 			this.add(chartIconPanel);
 		}
 	}
-	
-	public void addClickHandler(ClickHandler clickHandler){
+
+	public void addClickHandler(ClickHandler clickHandler) {
 		this.clickHandler.add(clickHandler);
 	}
-	
-	public void removeClickHandler(ClickHandler clickHandler){
+
+	public void removeClickHandler(ClickHandler clickHandler) {
 		this.clickHandler.remove(clickHandler);
 	}
 
@@ -97,7 +117,7 @@ public class ChartSelectionPanel extends FlowPanel{
 			this.setPixelSize(100, 100);
 			rootWidget.setPixelSize(100, 100);
 			rootWidget.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
-			if(image != null){
+			if (image != null) {
 				rootWidget.add(image);
 				rootWidget.setCellHorizontalAlignment(image, HasHorizontalAlignment.ALIGN_CENTER);
 				rootWidget.setCellVerticalAlignment(image, HasVerticalAlignment.ALIGN_MIDDLE);
@@ -106,13 +126,13 @@ public class ChartSelectionPanel extends FlowPanel{
 			rootWidget.add(label);
 			rootWidget.setCellHorizontalAlignment(label, HasHorizontalAlignment.ALIGN_CENTER);
 			rootWidget.setCellVerticalAlignment(label, HasVerticalAlignment.ALIGN_MIDDLE);
-			
+
 			this.add(rootWidget);
 			this.getElement().getStyle().setMargin(1, Unit.EM);
 		}
-		
-		public void setSelected(boolean selected){
-			if (selected){
+
+		public void setSelected(boolean selected) {
+			if (selected) {
 				this.getElement().getStyle().setBorderColor("red");
 			} else {
 				this.getElement().getStyle().setBorderColor("grey");

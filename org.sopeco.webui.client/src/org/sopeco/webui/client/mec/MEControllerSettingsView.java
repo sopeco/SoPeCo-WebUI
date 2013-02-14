@@ -33,8 +33,6 @@ import org.sopeco.webui.client.resources.R;
 import org.sopeco.webui.client.widget.SmallTableLabel;
 import org.sopeco.webui.shared.helper.MEControllerProtocol;
 
-import com.google.gwt.user.client.ui.AbstractImagePrototype;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -101,10 +99,11 @@ public class MEControllerSettingsView extends FlexTable {
 
 		htmlStatus = new HTML("unknown");
 
-		imgReload = new Image(R.resc.imgReload());
+		imgReload =  new Image(R.resc.imgIconSet().getSafeUri(), 120, 150, 16, 15);
 		imgReload.addStyleName("reloadImage");
 
-		imgStatus = new Image(R.resc.imgStatusGray());
+		imgStatus = new Image(R.resc.imgIconSet().getSafeUri(), 0, 150, 10, 10);
+		imgStatus.addStyleName("status");
 
 		panelStatus = new FlowPanel();
 		panelStatus.addStyleName("panelStatus");
@@ -190,16 +189,16 @@ public class MEControllerSettingsView extends FlexTable {
 	public void setStatusImage(StatusImage status) {
 		switch (status) {
 		case GRAY:
-			imgStatus.setResource(R.resc.imgStatusGray());
+			imgStatus.setUrlAndVisibleRect(R.resc.imgIconSet().getSafeUri(), 0, 150, 10, 10);
 			break;
 		case GREEN:
-			imgStatus.setResource(R.resc.imgStatusGreen());
+			imgStatus.setUrlAndVisibleRect(R.resc.imgIconSet().getSafeUri(), 60, 150, 10, 10);
 			break;
 		case RED:
-			imgStatus.setResource(R.resc.imgStatusRed());
+			imgStatus.setUrlAndVisibleRect(R.resc.imgIconSet().getSafeUri(), 30, 150, 10, 10);
 			break;
 		case YELLOW:
-			imgStatus.setResource(R.resc.imgStatusYellow());
+			imgStatus.setUrlAndVisibleRect(R.resc.imgIconSet().getSafeUri(), 90, 150, 10, 10);
 			break;
 		case LOADING:
 			imgStatus.setResource(R.resc.imgLoadingIndicatorCircle());

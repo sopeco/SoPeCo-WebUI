@@ -26,9 +26,9 @@
  */
 package org.sopeco.webui.client.layout.environment;
 
-import org.sopeco.gwt.widgets.tree.TreeItem;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.webui.client.layout.environment.EnvironmentTree.ECheckBox;
+import org.sopeco.webui.client.widget.TreeItem;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;

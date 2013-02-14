@@ -41,14 +41,13 @@ import org.sopeco.webui.shared.entities.ExecutedExperimentDetails;
 import org.sopeco.webui.shared.entities.MECLog;
 import org.sopeco.webui.shared.helper.MECLogEntry;
 
-import com.google.gwt.cell.client.ImageResourceCell;
 import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.DataGrid;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
@@ -109,14 +108,14 @@ public class TabControllerFour extends TabController {
 			}
 		};
 
-		Column<ExecutedExperimentDetails, ImageResource> imageColumn = new Column<ExecutedExperimentDetails, ImageResource>(
-				new ImageResourceCell()) {
+		Column<ExecutedExperimentDetails, Image> imageColumn = new Column<ExecutedExperimentDetails, Image>(
+				new MyImageCell()) {
 			@Override
-			public ImageResource getValue(ExecutedExperimentDetails object) {
+			public Image getValue(ExecutedExperimentDetails object) {
 				if (object.isSuccessful()) {
-					return R.resc.imgSuccess();
+					return new Image(R.resc.imgIconSet().getSafeUri(), 60, 120, 16, 13);
 				} else {
-					return R.resc.imgError();
+					return new Image(R.resc.imgIconSet().getSafeUri(), 30, 120, 13, 13);
 				}
 			}
 		};

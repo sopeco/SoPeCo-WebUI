@@ -26,6 +26,7 @@
  */
 package org.sopeco.webui.client.layout.center.visualization;
 
+import org.sopeco.gwt.widgets.ImageHover;
 import org.sopeco.webui.client.layout.center.ICenterController;
 import org.sopeco.webui.client.resources.FrontEndResources;
 import org.sopeco.webui.client.resources.R;
@@ -61,7 +62,7 @@ public class VisualizationController implements ICenterController {
 	private static final String STATUS_LOADING_IMAGE = "images/status-yellow.png";
 	private static final String STATUS_BUSY_IMAGE = "images/status-red.png";
 	private static final String STATUS_UNKOWN_IMAGE = "images/status-gray.png";
-	
+
 	private DockLayoutPanel rootWidget;
 	private FlowPanel controlWidget;
 	private CellList<Visualization> visualizationList;
@@ -90,20 +91,22 @@ public class VisualizationController implements ICenterController {
 		statusImage.getElement().getStyle().setMarginLeft(1, Unit.EM);
 		statusImage.getElement().getStyle().setMarginTop(1, Unit.EM);
 		controlWidget.add(statusImage);
-		Image addVisualization = new Image(ADD_IMAGE);
+		Image addVisualization = new ImageHover(R.resc.imgIconSet().getSafeUri(), 0, 120, 13, 13, R.resc.imgIconSet()
+				.getSafeUri(), 210, 150, 13, 13);
 		addVisualization.setTitle(R.get("addchart"));
 		addVisualization.getElement().getStyle().setMarginLeft(1, Unit.EM);
 		addVisualization.getElement().getStyle().setMarginTop(1, Unit.EM);
 		addVisualization.getElement().getStyle().setCursor(Cursor.POINTER);
 		controlWidget.add(addVisualization);
-		
-		Image remove = new Image(REMOVE_IMAGE);
+
+		Image remove = new ImageHover(R.resc.imgIconSet().getSafeUri(), 0, 60, 16, 18,
+				R.resc.imgIconSet().getSafeUri(), 0, 90, 16, 18);
 		remove.setTitle(R.get("removechart"));
 		remove.getElement().getStyle().setMarginLeft(1, Unit.EM);
 		remove.getElement().getStyle().setMarginTop(1, Unit.EM);
 		remove.getElement().getStyle().setCursor(Cursor.POINTER);
 		remove.addClickHandler(new ClickHandler() {
-			
+
 			@Override
 			public void onClick(ClickEvent event) {
 				RPC.getVisualizationRPC().deleteVisualization(ssm.getSelectedObject(), new AsyncCallback<Void>() {
@@ -120,28 +123,27 @@ public class VisualizationController implements ICenterController {
 			}
 		});
 		controlWidget.add(remove);
-		
-		Image refresh = new Image(REFRESH_IMAGE);
+
+		Image refresh = new Image(R.resc.imgIconSet().getSafeUri(), 120, 150, 16, 15);
 		refresh.setTitle(R.get("refreshcharts"));
 		refresh.getElement().getStyle().setMarginLeft(1, Unit.EM);
 		refresh.getElement().getStyle().setMarginTop(1, Unit.EM);
 		refresh.getElement().getStyle().setCursor(Cursor.POINTER);
 		refresh.addClickHandler(new ClickHandler() {
-			
+
 			@Override
 			public void onClick(ClickEvent event) {
 				refreshVisualizations();
 			}
 		});
 		controlWidget.add(refresh);
-		
+
 		chartLink = new Anchor("");
 		controlWidget.add(chartLink);
-		visualizationList = new CellList<Visualization>(new VisualizationCell(),KEY_PROVIDER);
+		visualizationList = new CellList<Visualization>(new VisualizationCell(), KEY_PROVIDER);
 		visualizationList.setPageSize(8);
-		visualizationList
-				.setEmptyListWidget(new Label(
-						"Either the visualizations are still loading or there are no visualizations yet."));
+		visualizationList.setEmptyListWidget(new Label(
+				"Either the visualizations are still loading or there are no visualizations yet."));
 		ssm.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
 
 			@Override
@@ -170,25 +172,25 @@ public class VisualizationController implements ICenterController {
 		chartWidget = new ChartWidget();
 		rootWidget.add(chartWidget);
 	}
-	
-	public void setStatus(Status status){
+
+	public void setStatus(Status status) {
 		this.status = status;
-		switch (status){
+		switch (status) {
 		case READY:
-			statusImage.setUrl(STATUS_READY_IMAGE);
+			statusImage.setUrlAndVisibleRect(R.resc.imgIconSet().getSafeUri(), 60, 150, 10, 10);
 			break;
 		case BUSY:
-			statusImage.setUrl(STATUS_BUSY_IMAGE);
+			statusImage.setUrlAndVisibleRect(R.resc.imgIconSet().getSafeUri(), 30, 150, 10, 10);
 			break;
 		case LOADING:
-			statusImage.setUrl(STATUS_LOADING_IMAGE);
+			statusImage.setUrlAndVisibleRect(R.resc.imgIconSet().getSafeUri(), 90, 150, 10, 10);
 			break;
 		default:
-			statusImage.setUrl(STATUS_UNKOWN_IMAGE);
+			statusImage.setUrlAndVisibleRect(R.resc.imgIconSet().getSafeUri(), 0, 150, 10, 10);
 		}
 	}
-	
-	public Status getStatus(){
+
+	public Status getStatus() {
 		return status;
 	}
 
@@ -206,10 +208,8 @@ public class VisualizationController implements ICenterController {
 		refreshVisualizations();
 	}
 
-	
-	
-	public void refreshVisualizations(){
-		if (getStatus() != Status.BUSY){
+	public void refreshVisualizations() {
+		if (getStatus() != Status.BUSY) {
 			setStatus(Status.LOADING);
 		}
 		Range range = visualizationList.getVisibleRange();
@@ -226,8 +226,7 @@ public class VisualizationController implements ICenterController {
 		}
 
 		@Override
-		public void render(Context context, Visualization value,
-				SafeHtmlBuilder sb) {
+		public void render(Context context, Visualization value, SafeHtmlBuilder sb) {
 			if (value == null) {
 				return;
 			}
@@ -251,7 +250,7 @@ public class VisualizationController implements ICenterController {
 		}
 
 	}
-	
+
 	public static enum Status {
 		READY, BUSY, LOADING, UNKNOWN;
 	}

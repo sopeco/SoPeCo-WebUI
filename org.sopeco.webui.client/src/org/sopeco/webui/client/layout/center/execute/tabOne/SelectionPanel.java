@@ -30,11 +30,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.sopeco.gwt.widgets.Headline;
-import org.sopeco.gwt.widgets.tree.Tree;
-import org.sopeco.gwt.widgets.tree.TreeItem;
 import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
 import org.sopeco.persistence.entities.definition.MeasurementSpecification;
 import org.sopeco.webui.client.manager.ScenarioManager;
+import org.sopeco.webui.client.widget.Tree;
+import org.sopeco.webui.client.widget.TreeItem;
 import org.sopeco.webui.shared.helper.Metering;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;

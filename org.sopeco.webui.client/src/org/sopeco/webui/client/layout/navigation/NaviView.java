@@ -26,6 +26,7 @@
  */
 package org.sopeco.webui.client.layout.navigation;
 
+import org.sopeco.webui.client.SoPeCoUI;
 import org.sopeco.webui.client.resources.R;
 
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -53,19 +54,22 @@ public class NaviView extends FlowPanel {
 	private void init() {
 		addStyleName(CSS_CLASS);
 
-		logo = new Image(R.resc.imgSDQLogo().getSafeUri());
-		logoPanel = new FlowPanel();
+		if (SoPeCoUI.hasBranding()) {
+			logo = new Image("/branding.png");
+			logoPanel = new FlowPanel();
 
-		logoPanel.addStyleName(CSS_CLASS_LOGO_PANEL);
-		logoPanel.add(new HTML("powered by"));
-		logoPanel.add(logo);
-
-		add(logoPanel);
+			logoPanel.addStyleName(CSS_CLASS_LOGO_PANEL);
+			logoPanel.add(new HTML("powered by"));
+			logoPanel.add(logo);
+			add(logoPanel);
+		}
 	}
 
 	@Override
 	public void clear() {
 		super.clear();
-		add(logoPanel);
+		if (logoPanel != null) {
+			add(logoPanel);
+		}
 	}
 }

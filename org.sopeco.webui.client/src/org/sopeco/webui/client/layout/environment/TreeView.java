@@ -27,8 +27,8 @@
 package org.sopeco.webui.client.layout.environment;
 
 import org.sopeco.gwt.widgets.ClearDiv;
-import org.sopeco.gwt.widgets.tree.Tree;
 import org.sopeco.webui.client.resources.R;
+import org.sopeco.webui.client.widget.Tree;
 
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -65,11 +65,11 @@ public class TreeView extends FlowPanel {
 		headline = new FlowPanel();
 		HTML headlineText = new HTML(R.get("envParameter"));
 
-		Image imgObserve = new Image(IMG_OBSERVATION);
+		Image imgObserve = new Image(R.resc.imgIconSet().getSafeUri(), 180, 60, 16, 8);
 		tbtnObservation = new ToggleButton(imgObserve);
 		tbtnObservation.setTitle(R.get("showObservation"));
 
-		Image imgInitAssignment = new Image(IMG_INIT_ASSIGNED);
+		Image imgInitAssignment = new Image(R.resc.imgIconSet().getSafeUri(), 210, 60, 16, 8);
 		tbtnInitialAssignments = new ToggleButton(imgInitAssignment);
 		tbtnInitialAssignments.setDown(true);
 		tbtnInitialAssignments.setTitle(R.get("showInitAssignments"));
@@ -96,7 +96,7 @@ public class TreeView extends FlowPanel {
 	private FlowPanel createMarkerBox(boolean first) {
 		FlowPanel testMarker = new FlowPanel();
 		testMarker.addStyleName("rMarker");
-		Image infoImg = new Image("images/information.png");
+		Image infoImg = new Image(R.resc.imgIconSet().getSafeUri(), 150, 60, 14, 14);
 		infoImg.setTitle("test");
 		testMarker.add(infoImg);
 		if (first) {
