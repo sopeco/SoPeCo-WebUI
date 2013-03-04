@@ -41,6 +41,7 @@ import org.sopeco.webui.shared.entities.ChartOptions;
 import org.sopeco.webui.shared.entities.ChartParameter;
 import org.sopeco.webui.shared.entities.Visualization;
 
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -61,7 +62,7 @@ public class VisualizationWizard extends DialogBox {
 	private List<ChartParameter> outputParameter;
 	private final ChartSelectionPanel chartSelectionPanel = new ChartSelectionPanel();
 	private final ExtensionPanel extensionPanel = new ExtensionPanel();
-	final ColumnSelectionPanel columnSelectionPanel = new ColumnSelectionPanel();
+	final ColumnSelectionPanel columnSelectionPanel = new ColumnSelectionPanel(this);
 
 	public VisualizationWizard(final SharedExperimentRuns experimentRun) {
 		super(true);
@@ -71,6 +72,7 @@ public class VisualizationWizard extends DialogBox {
 		outputParameter = new ArrayList<ChartParameter>();
 		rootWidget = new VerticalPanel();
 		rootWidget.add(new Headline(R.lang.newChart()));
+		extensionPanel.addEventPartner(this);
 		rootWidget.add(extensionPanel);
 		rootWidget.setCellHorizontalAlignment(extensionPanel, HasHorizontalAlignment.ALIGN_RIGHT);
 		rootWidget.add(chartSelectionPanel);
@@ -112,6 +114,7 @@ public class VisualizationWizard extends DialogBox {
 			}
 		});
 		loadInfos();
+		center();
 	}
 	
 	private void loadInfos(){
@@ -119,6 +122,7 @@ public class VisualizationWizard extends DialogBox {
 
 			@Override
 			public void onFailure(Throwable caught) {
+				GWT.log("Could not load extensions.",caught);
 			}
 
 			@Override
@@ -130,7 +134,7 @@ public class VisualizationWizard extends DialogBox {
 
 			@Override
 			public void onFailure(Throwable caught) {
-				
+				GWT.log("Could not load chart parameter.",caught);
 			}
 
 			@Override
@@ -143,7 +147,7 @@ public class VisualizationWizard extends DialogBox {
 						outputParameter.add(param);
 					}
 				}
-				columnSelectionPanel.setChartParameter(inputParameter, outputParameter);
+				columnSelectionPanel.setChartParameter(inputParameter, outputParameter, VisualizationWizard.this);
 			}
 		});
 	}
@@ -158,13 +162,13 @@ public class VisualizationWizard extends DialogBox {
 
 			@Override
 			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
-				
+				GWT.log("Chart could not be created.",caught);
 			}
 
 			@Override
 			public void onSuccess(Visualization result) {
-				MainLayoutPanel.get().getController(VisualizationController.class).refreshVisualizations();
+				MainLayoutPanel.get().getController(VisualizationController.class).setStatus(Status.LOADING);
+				MainLayoutPanel.get().getController(VisualizationController.class).refreshVisualizationsAndSelect(result);
 			}
 		});
 	}

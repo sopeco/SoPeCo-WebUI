@@ -27,5 +27,5 @@
 package org.sopeco.webui.shared.helper;
 
 public enum AggregationOutputType {
-	SCATTER, SUM, AVERAGE;
+	SCATTER, SUM, AVERAGE, MEDIAN;
 }

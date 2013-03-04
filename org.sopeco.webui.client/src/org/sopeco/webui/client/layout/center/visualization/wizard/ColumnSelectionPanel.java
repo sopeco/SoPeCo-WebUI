@@ -30,45 +30,48 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.sopeco.gwt.widgets.ComboBox;
 import org.sopeco.webui.shared.entities.ChartParameter;
 import org.sopeco.webui.shared.helper.Utilities;
 
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ListBox;
 
 public class ColumnSelectionPanel extends Grid {
-	private ListBox input;
-	private ListBox output;
+	private ComboBox input;
+	private ComboBox output;
 	private List<ChartParameter> inputParameter;
 	private List<ChartParameter> outputParameter;
 
-	public ColumnSelectionPanel() {
+	public ColumnSelectionPanel(DialogBox dialog) {
 		super(2, 2);
 		this.getElement().getStyle().setWidth(100, Unit.PCT);
 		inputParameter = new ArrayList<ChartParameter>();
 		outputParameter = new ArrayList<ChartParameter>();
-		showColumnSelection();
+		showColumnSelection(dialog);
 	}
 
-	public void setChartParameter(List<ChartParameter> inputParameter, List<ChartParameter> outputParameter) {
+	public void setChartParameter(List<ChartParameter> inputParameter, List<ChartParameter> outputParameter, DialogBox dialog) {
 		this.inputParameter = inputParameter;
 		this.outputParameter = outputParameter;
-		showColumnSelection();
+		showColumnSelection(dialog);
 	}
 
 
-	public void showColumnSelection() {
+	public void showColumnSelection(DialogBox dialog) {
 		this.clear();
-		createChartInputWidget();
-		createChartOutputWidget();
+		createChartInputWidget(dialog);
+		createChartOutputWidget(dialog);
 	}
 	
-	private void createChartInputWidget(){
+	private void createChartInputWidget(DialogBox dialog){
 		Collections.sort(inputParameter);
 		this.setWidget(0, 0, new Label("Input "));
-		input = new ListBox();
+		input = new ComboBox();
+		input.addEventPartner(dialog);
+		input.setEditable(false);
 		for (ChartParameter p : inputParameter){
 			input.addItem(Utilities.trimParameter(p.getParameterName()));
 		}
@@ -76,10 +79,12 @@ public class ColumnSelectionPanel extends Grid {
 		return;
 	}
 	
-	private void createChartOutputWidget(){
+	private void createChartOutputWidget(DialogBox dialog){
 		Collections.sort(outputParameter);
 		this.setWidget(1, 0, new Label("Observation Value "));
-		output = new ListBox();
+		output = new ComboBox();
+		output.addEventPartner(dialog);
+		output.setEditable(false);
 		for (ChartParameter p : outputParameter){
 			output.addItem(Utilities.trimParameter(p.getParameterName()));
 		}
@@ -90,7 +95,7 @@ public class ColumnSelectionPanel extends Grid {
 	
 	public ChartParameter getSelectedOutput(){
 		for (ChartParameter cp : outputParameter){
-			if (Utilities.trimParameter(cp.getParameterName()).equals(output.getItemText(output.getSelectedIndex()))){
+			if (Utilities.trimParameter(cp.getParameterName()).equals(output.getText())){
 				return cp;
 			}
 		}
@@ -99,10 +104,26 @@ public class ColumnSelectionPanel extends Grid {
 	
 	public ChartParameter getSelectedInput(){
 		for (int i = 0; i < inputParameter.size(); i++){
-			if (Utilities.trimParameter(inputParameter.get(i).getParameterName()).equals(input.getValue(input.getSelectedIndex()))){
+			if (Utilities.trimParameter(inputParameter.get(i).getParameterName()).equals(input.getText())){
 				return inputParameter.get(i);
 			}
 		}
 		return null;
+	}
+
+	public ComboBox getInput() {
+		return input;
+	}
+
+	public void setInput(ComboBox input) {
+		this.input = input;
+	}
+
+	public ComboBox getOutput() {
+		return output;
+	}
+
+	public void setOutput(ComboBox output) {
+		this.output = output;
 	}
 }

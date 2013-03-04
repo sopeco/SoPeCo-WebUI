@@ -26,8 +26,6 @@
  */
 package org.sopeco.webui.server.gcharts;
 
-import java.util.List;
-
 import org.sopeco.engine.registry.ISoPeCoExtension;
 import org.sopeco.webui.server.chartconnector.IChartConnection;
 import org.sopeco.webui.shared.entities.ChartData;

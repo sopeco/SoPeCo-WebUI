@@ -33,7 +33,9 @@ import java.util.Map;
 import org.sopeco.webui.shared.definitions.result.SharedExperimentRuns;
 import org.sopeco.webui.shared.entities.ChartOptions;
 import org.sopeco.webui.shared.entities.ChartParameter;
+import org.sopeco.webui.shared.entities.RegressionInfo;
 import org.sopeco.webui.shared.entities.Visualization;
+import org.sopeco.webui.shared.entities.VisualizationBundle;
 
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.rpc.RemoteService;
@@ -71,7 +73,7 @@ public interface VisualizationRPC extends RemoteService {
 	 * @param length
 	 * @return
 	 */
-	List<Visualization> getVisualizations(int start, int length);
+	VisualizationBundle getVisualizations(int start, int length);
 	
 	/** {@link VisualizationRPCAsync#deleteVisualization(Visualization, com.google.gwt.user.client.rpc.AsyncCallback)}
 	 * 
@@ -101,5 +103,5 @@ public interface VisualizationRPC extends RemoteService {
 	 * @param values
 	 * @return
 	 */
-	Map<Double, List<Double>> applySimpleRegression(Map<Double, List<Double>> values);
+	RegressionInfo applySimpleRegression(Map<Double, List<Double>> values);
 }

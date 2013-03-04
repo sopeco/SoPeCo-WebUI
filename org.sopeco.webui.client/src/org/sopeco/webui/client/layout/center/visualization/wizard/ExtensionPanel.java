@@ -28,13 +28,16 @@ package org.sopeco.webui.client.layout.center.visualization.wizard;
 
 import java.util.List;
 
+import org.sopeco.gwt.widgets.ComboBox;
+
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.ListBox;
 
-public class ExtensionPanel extends ListBox {
+public class ExtensionPanel extends ComboBox {
 
 	public ExtensionPanel() {
 		this.getElement().getStyle().setBorderWidth(0, Unit.EM);
+		setEditable(false);
 	}
 	
 	public void setExtensions(List<String> extensions){
@@ -44,7 +47,7 @@ public class ExtensionPanel extends ListBox {
 	}
 	
 	public String getExtension(){
-		return this.getValue(this.getSelectedIndex());
+		return this.getText();
 	}
 	
 	

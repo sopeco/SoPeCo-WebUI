@@ -27,25 +27,31 @@
 package org.sopeco.webui.client.layout.center.visualization;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
+import org.sopeco.gwt.widgets.ComboBox;
 import org.sopeco.webui.client.resources.R;
 import org.sopeco.webui.client.rpc.RPC;
 import org.sopeco.webui.shared.entities.ChartData;
 import org.sopeco.webui.shared.entities.ChartOptions;
 import org.sopeco.webui.shared.entities.ChartRowKey;
+import org.sopeco.webui.shared.entities.RegressionInfo;
 import org.sopeco.webui.shared.entities.Visualization;
 import org.sopeco.webui.shared.helper.AggregationOutputType;
 
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.CheckBox;
@@ -54,12 +60,12 @@ import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.visualization.client.AbstractDataTable.ColumnType;
 import com.google.gwt.visualization.client.DataTable;
 import com.google.gwt.visualization.client.VisualizationUtils;
+import com.google.gwt.visualization.client.visualizations.corechart.AxisOptions;
 import com.google.gwt.visualization.client.visualizations.corechart.ColumnChart;
 import com.google.gwt.visualization.client.visualizations.corechart.CoreChart;
 import com.google.gwt.visualization.client.visualizations.corechart.HorizontalAxisOptions;
@@ -77,9 +83,9 @@ import com.google.gwt.visualization.client.visualizations.corechart.PieChart;
 public class ChartWidget extends FlowPanel {
 	
 	private Grid control;
-	private ListBox aggregation;
-	private ListBox dataProcessing;
-	private ListBox processingType;
+	private ComboBox aggregation;
+	private ComboBox dataProcessing;
+	private ComboBox processingType;
 	private Visualization visualization;
 	private Widget chartWidget;
 	private CoreChart chart = null;
@@ -87,24 +93,35 @@ public class ChartWidget extends FlowPanel {
 	private DataTable dataTable = null;
 	private Label numberOfSplinesLabel;
 	private TextBox numberOfSplines;
+	private String initialNumberOfSplines = "100";
 	private CheckBox showRegression;
 	
 	public ChartWidget (){
 		this.getElement().getStyle().setPadding(1, Unit.EM);
 		chartWidget = new FlowPanel();
 		this.add(chartWidget);
-		control = new Grid(2, 10);
-		control.setWidget(0, 0, new Label("Aggregation: "));
-		aggregation = new ListBox();
+		initControl();
+	}
+
+	private void initControl() {
+		control = new Grid(2, 4);
+		control.getElement().setAttribute("frame", "void");
+		control.getElement().setAttribute("rules", "all");
+		control.setBorderWidth(1);
+		control.setCellPadding(3);
+		control.setCellSpacing(0);
+		control.setWidget(0, 0, new Label(R.lang.aggregation()));
+		aggregation = new ComboBox();
+		aggregation.setEditable(false);
 		for (AggregationOutputType t: AggregationOutputType.values()){
 			aggregation.addItem(t.name());
 		}
-		aggregation.addChangeHandler(new ChangeHandler() {
-			
+		aggregation.addValueChangeHandler(new ValueChangeHandler<String>() {
+
 			@Override
-			public void onChange(ChangeEvent event) {
+			public void onValueChange(ValueChangeEvent<String> event) {
 				dataProcessing.clear();
-				if (aggregation.getItemText(aggregation.getSelectedIndex()).equals(AggregationOutputType.SCATTER.toString())){
+				if (aggregation.getText().equals(AggregationOutputType.SCATTER.toString())){
 					for (DataProcessing i: DataProcessing.values()){
 						if (i != DataProcessing.INTERPOLATION){
 							dataProcessing.addItem(i.toString());
@@ -119,7 +136,7 @@ public class ChartWidget extends FlowPanel {
 			}
 		});
 		control.setWidget(1, 0, aggregation);
-		control.setWidget(0, 1, new Label(R.get("Regression")));
+		control.setWidget(0, 1, new Label(R.lang.regression()));
 		showRegression = new CheckBox();
 		showRegression.addClickHandler(new ClickHandler() {
 			
@@ -130,17 +147,18 @@ public class ChartWidget extends FlowPanel {
 		});
 		control.setWidget(1, 1, showRegression);
 		control.setWidget(0, 2, new Label(R.lang.dataProcessing()));
-		dataProcessing = new ListBox();
+		dataProcessing = new ComboBox();
+		dataProcessing.setEditable(false);
 		for (DataProcessing i: DataProcessing.values()){
 			if (i != DataProcessing.INTERPOLATION){
 				dataProcessing.addItem(i.toString());
 			}
 		}
-		dataProcessing.addChangeHandler(new ChangeHandler() {
+		dataProcessing.addValueChangeHandler(new ValueChangeHandler<String>() {
 			
 			@Override
-			public void onChange(ChangeEvent event) {
-				switch (DataProcessing.valueOf(dataProcessing.getItemText(dataProcessing.getSelectedIndex()))) {
+			public void onValueChange(ValueChangeEvent<String> event) {
+				switch (DataProcessing.valueOf(dataProcessing.getText())) {
 				case INTERPOLATION:
 					processingType.clear();
 					for (Interpolation i : Interpolation.values()){
@@ -158,11 +176,12 @@ public class ChartWidget extends FlowPanel {
 		});
 		HorizontalPanel hpProcessing = new HorizontalPanel();
 		hpProcessing.add(dataProcessing);
-		processingType = new ListBox();
-		processingType.addChangeHandler(new ChangeHandler() {
+		processingType = new ComboBox();
+		processingType.setEditable(false);
+		processingType.addValueChangeHandler(new ValueChangeHandler<String>() {
 			
 			@Override
-			public void onChange(ChangeEvent event) {
+			public void onValueChange(ValueChangeEvent<String> event) {
 				refreshChart();
 			}
 		});
@@ -172,7 +191,7 @@ public class ChartWidget extends FlowPanel {
 		numberOfSplinesLabel = new Label(R.lang.numberOfPoints());
 		control.setWidget(0, 3, numberOfSplinesLabel);
 		numberOfSplines = new TextBox();
-		numberOfSplines.setText("100");
+		numberOfSplines.setText(initialNumberOfSplines);
 		numberOfSplines.addChangeHandler(new ChangeHandler() {
 			
 			@Override
@@ -180,7 +199,7 @@ public class ChartWidget extends FlowPanel {
 				try {
 					Integer.parseInt(numberOfSplines.getText());
 				} catch (NumberFormatException ex){
-					numberOfSplines.setText("100");
+					numberOfSplines.setText(initialNumberOfSplines);
 				}
 				refreshChart();
 			}
@@ -202,6 +221,8 @@ public class ChartWidget extends FlowPanel {
 		String name = visualization.getName();
 		HorizontalAxisOptions hOptions = HorizontalAxisOptions.create();
 		hOptions.setTitle(chartOptions.getxAxisLabel());
+		AxisOptions vOptions = AxisOptions.create();
+		vOptions.setMinValue(0);
 		options = Options.create();
 		switch(chartOptions.getType()){
 		case BARCHART:
@@ -213,8 +234,8 @@ public class ChartWidget extends FlowPanel {
 		case LINECHART:
 			//All series' default type is 'line'
 			options.setLineWidth(2);
-			options.setPointSize(3);
-			switch(DataProcessing.valueOf(dataProcessing.getItemText(dataProcessing.getSelectedIndex()))){
+			options.setPointSize(0);
+			switch(DataProcessing.valueOf(dataProcessing.getText())){
 			case NONE:
 				//change type of first series to point
 				Options seriesOptions = Options.create();
@@ -230,6 +251,7 @@ public class ChartWidget extends FlowPanel {
 			break;
 		}
 		options.setHAxisOptions(hOptions);
+		options.setVAxisOptions(vOptions);
 		options.setWidth(900);
 		options.setHeight(500);
 		options.setTitle(name);
@@ -246,13 +268,13 @@ public class ChartWidget extends FlowPanel {
 		default:
 			dataTable.addColumn(ColumnType.NUMBER, "Input");
 		}
-		dataTable.addColumn(ColumnType.NUMBER,visualization.getOptions().getxAxisLabel());
+		dataTable.addColumn(ColumnType.NUMBER,visualization.getOutputParameter().getParameterName());
 		Map<Double, List<Double>> values = new TreeMap<Double, List<Double>>();
 		final Map<Double, Integer> total = new HashMap<Double, Integer>();
 		calculateData(data, values, total);
-		switch(DataProcessing.valueOf(dataProcessing.getItemText(dataProcessing.getSelectedIndex()))){
+		switch(DataProcessing.valueOf(dataProcessing.getText())){
 		case INTERPOLATION:
-			switch(Interpolation.valueOf(processingType.getItemText(processingType.getSelectedIndex()))){
+			switch(Interpolation.valueOf(processingType.getText())){
 			case SPLINE:
 				RPC.getVisualizationRPC().applySplineInterpolation(values, 0, 10, Integer.parseInt(numberOfSplines.getText()), new AsyncCallback<Map<Double,List<Double>>>() {
 					
@@ -266,7 +288,7 @@ public class ChartWidget extends FlowPanel {
 					
 					@Override
 					public void onFailure(Throwable caught) {
-						Window.alert(caught.getMessage());
+						GWT.log("Could not apply spline interpolation.",caught);
 					}
 				});
 				break;
@@ -360,8 +382,6 @@ public class ChartWidget extends FlowPanel {
 	private void addRegression(Map<Double, List<Double>> values, String name) {
 		dataTable.addColumn(ColumnType.NUMBER, name);
 		int nr = dataTable.getNumberOfColumns()-1;
-//		dataTable.setValue(0, nr, values.get(1.0).get(0));
-//		dataTable.setValue(dataTable.getNumberOfRows()-1, nr, values.get(3.0).get(0));
 		int k = 0;
 		int n = dataTable.getNumberOfRows()/values.size();
 		for (Entry<Double, List<Double>> entry : values.entrySet()){
@@ -370,18 +390,6 @@ public class ChartWidget extends FlowPanel {
 			}
 			k++;
 		}
-//		for (Entry<Double, List<Double>> entry : values.entrySet()){
-//			int col = 0;
-//			for (Double d : entry.getValue()){
-//				if (index >= dataTable.getNumberOfRows()){
-//					dataTable.addRow();
-//				}
-//				dataTable.setValue(index, nr, d);
-//				col++;
-//			}
-//			
-//			row++;
-//		}
 	}
 
 	private void calculateData(ChartData data, Map<Double, List<Double>> values,
@@ -396,7 +404,7 @@ public class ChartWidget extends FlowPanel {
 			if (total.get(key) == null){
 				total.put(key, 0);
 			}
-			switch (AggregationOutputType.valueOf(aggregation.getItemText(aggregation.getSelectedIndex()))){
+			switch (AggregationOutputType.valueOf(aggregation.getText())){
 			case AVERAGE:
 			case SUM:
 				if (values.get(key).size() <= 0){
@@ -414,20 +422,34 @@ public class ChartWidget extends FlowPanel {
 			}
 			
 		}
-		switch (AggregationOutputType.valueOf(aggregation.getItemText(aggregation.getSelectedIndex()))){
+		switch (AggregationOutputType.valueOf(aggregation.getText())){
 		case AVERAGE:
 			for (Entry<Double, List<Double>> entry : values.entrySet()){
 				entry.getValue().set(0, entry.getValue().get(0)/total.get(entry.getKey()));
 			}
 			break;
+		case MEDIAN:
+			for (Entry<Double, List<Double>> entry : values.entrySet()){
+				int n = entry.getValue().size();
+				Collections.sort(entry.getValue());
+				double d = 0.0;
+				if (n%2 == 0){
+					d = (entry.getValue().get(n/2-1)+entry.getValue().get(n/2))/2;
+				} else {
+					d = entry.getValue().get((n+1)/2-1);
+				}
+				entry.getValue().clear();
+				entry.getValue().add(d);
+			}
+			break;
 		default:
 		}
 		if (showRegression.getValue()){
-			RPC.getVisualizationRPC().applySimpleRegression(values, new AsyncCallback<Map<Double,List<Double>>>() {
+			RPC.getVisualizationRPC().applySimpleRegression(values, new AsyncCallback<RegressionInfo>() {
 
 				@Override
-				public void onSuccess(Map<Double, List<Double>> result) {
-					addRegression(result, "Regression");
+				public void onSuccess(RegressionInfo result) {
+					addRegression(result.getData(), R.lang.regression());
 					if (chart != null){
 						chart.draw(dataTable, options);
 					}
@@ -435,7 +457,7 @@ public class ChartWidget extends FlowPanel {
 				
 				@Override
 				public void onFailure(Throwable caught) {
-					Window.alert(caught.getMessage());
+					GWT.log("Could not apply simple regression.",caught);
 				}
 			});
 		}
