@@ -27,14 +27,14 @@
 package org.sopeco.webui.server.gcharts;
 
 import org.sopeco.engine.registry.ISoPeCoExtension;
-import org.sopeco.webui.server.chartconnector.IChartConnection;
+import org.sopeco.webui.server.chartconnector.IChartCreator;
 import org.sopeco.webui.shared.entities.ChartData;
 import org.sopeco.webui.shared.entities.ChartOptions;
 import org.sopeco.webui.shared.entities.ChartParameter;
 import org.sopeco.webui.shared.entities.Visualization;
 import org.sopeco.webui.shared.entities.Visualization.Type;
 
-public class GCharts implements IChartConnection {
+public class GCharts implements IChartCreator {
 	
 	public GCharts() {
 	}

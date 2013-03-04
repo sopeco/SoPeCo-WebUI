@@ -49,8 +49,8 @@ import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.entities.definition.ParameterRole;
 import org.sopeco.persistence.exceptions.DataNotFoundException;
 import org.sopeco.webui.client.rpc.VisualizationRPC;
-import org.sopeco.webui.server.chartconnector.IChartConnection;
-import org.sopeco.webui.server.chartconnector.IChartConnectionExtension;
+import org.sopeco.webui.server.chartconnector.IChartCreator;
+import org.sopeco.webui.server.chartconnector.IChartCreatorExtension;
 import org.sopeco.webui.server.gcharts.GCharts;
 import org.sopeco.webui.server.persistence.UiPersistence;
 import org.sopeco.webui.server.user.User;
@@ -66,14 +66,14 @@ import org.sopeco.webui.shared.entities.VisualizationBundle;
 
 public class VisualizationRPCImpl extends SuperRemoteServlet implements
 		VisualizationRPC {
-	private IChartConnection chartCreator;
-	private List<IChartConnectionExtension> extensions;
+	private IChartCreator chartCreator;
+	private List<IChartCreatorExtension> extensions;
 	public static final String G_CHARTS = "Google Charts";
 
 	public VisualizationRPCImpl() {
 		chartCreator = new GCharts();
 		extensions = (ExtensionRegistry.getSingleton()
-				.getExtensions(IChartConnectionExtension.class)).getList();
+				.getExtensions(IChartCreatorExtension.class)).getList();
 	}
 
 	@Override
@@ -250,7 +250,7 @@ public class VisualizationRPCImpl extends SuperRemoteServlet implements
 			chartCreator = new GCharts();
 			return;
 		}
-		for (IChartConnectionExtension ex : extensions){
+		for (IChartCreatorExtension ex : extensions){
 			if (ex.getName().equals(name)){
 				chartCreator = ex.createExtensionArtifact();
 				return;
@@ -262,7 +262,7 @@ public class VisualizationRPCImpl extends SuperRemoteServlet implements
 	public List<String> getExtensions() {
 		List<String> extensionNames = new ArrayList<String>();
 		extensionNames.add(G_CHARTS);
-		for (IChartConnectionExtension ex : extensions){
+		for (IChartCreatorExtension ex : extensions){
 			extensionNames.add(ex.getName());
 		}
 		return extensionNames;
