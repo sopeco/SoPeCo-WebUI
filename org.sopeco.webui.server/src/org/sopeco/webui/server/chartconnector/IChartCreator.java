@@ -24,25 +24,17 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sopeco.webui.shared.helper;
+package org.sopeco.webui.server.chartconnector;
 
-import java.io.Serializable;
-import java.util.Comparator;
+import java.util.List;
 
-public class ChartXLabelComparator implements Comparator<String>, Serializable {
+import org.sopeco.engine.registry.ISoPeCoExtensionArtifact;
+import org.sopeco.webui.shared.entities.ChartData;
+import org.sopeco.webui.shared.entities.ChartOptions;
+import org.sopeco.webui.shared.entities.ChartParameter;
+import org.sopeco.webui.shared.entities.Visualization;
 
-	@Override
-	public int compare(String o1, String o2) {
-		String[] s1 = o1.split("\\.");
-		String[] s2 = o2.split("\\.");
-		for (int i = 0; i< s1.length; i++){
-			Integer i1 = Integer.parseInt(s1[i]);
-			Integer i2 = Integer.parseInt(s2[i]);
-			if (i1 != i2){
-				return i1.compareTo(i2);
-			}
-		}
-		return 0;
-	}
-
+public interface IChartCreator extends ISoPeCoExtensionArtifact {
+	
+	public Visualization createVisualization(String experimentName, ChartData data, ChartParameter inputParameter, ChartParameter outputParameterd, ChartOptions options);
 }

@@ -27,13 +27,18 @@
 package org.sopeco.webui.client.layout.center.visualization;
 
 import org.sopeco.gwt.widgets.ImageHover;
+import org.sopeco.webui.client.layout.MainLayoutPanel;
 import org.sopeco.webui.client.layout.center.ICenterController;
+import org.sopeco.webui.client.layout.center.result.ResultController;
+import org.sopeco.webui.client.layout.center.visualization.wizard.ChartSelectionPanel;
+import org.sopeco.webui.client.layout.center.visualization.wizard.VisualizationWizard;
 import org.sopeco.webui.client.resources.FrontEndResources;
 import org.sopeco.webui.client.resources.R;
 import org.sopeco.webui.client.rpc.RPC;
 import org.sopeco.webui.shared.entities.Visualization;
 
 import com.google.gwt.cell.client.AbstractCell;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -42,6 +47,7 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.cellview.client.SimplePager.TextLocation;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
@@ -55,12 +61,7 @@ import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 
 public class VisualizationController implements ICenterController {
-	private static final String ADD_IMAGE = "images/add.png";
-	private static final String REMOVE_IMAGE = "images/remove_cross.png";
-	private static final String REFRESH_IMAGE = "images/refresh_small.png";
 	private static final String STATUS_READY_IMAGE = "images/status-green.png";
-	private static final String STATUS_LOADING_IMAGE = "images/status-yellow.png";
-	private static final String STATUS_BUSY_IMAGE = "images/status-red.png";
 	private static final String STATUS_UNKOWN_IMAGE = "images/status-gray.png";
 
 	private DockLayoutPanel rootWidget;
@@ -70,8 +71,10 @@ public class VisualizationController implements ICenterController {
 	private ChartWidget chartWidget;
 	private Image statusImage;
 	private Status status = Status.UNKNOWN;
+	private SingleSelectionModel<Visualization> visualizationSelection;
+	private SimplePager pager;
 
-	public static ChartsDataProvider visualizationDataProvider;
+	private ChartsDataProvider chartDataProvider;
 	public static final ProvidesKey<Visualization> KEY_PROVIDER = new ProvidesKey<Visualization>() {
 		@Override
 		public Object getKey(Visualization item) {
@@ -83,8 +86,8 @@ public class VisualizationController implements ICenterController {
 		FrontEndResources.loadVisualizationViewCSS();
 		rootWidget = new DockLayoutPanel(Unit.EM);
 		controlWidget = new FlowPanel();
-		final SingleSelectionModel<Visualization> ssm = new SingleSelectionModel<Visualization>(KEY_PROVIDER);
-		visualizationDataProvider = new ChartsDataProvider(this);
+		visualizationSelection = new SingleSelectionModel<Visualization>(KEY_PROVIDER);
+		chartDataProvider = new ChartsDataProvider(this);
 		controlWidget.addStyleName("visualizationControl");
 		statusImage = new Image(STATUS_UNKOWN_IMAGE);
 		statusImage.setUrl(STATUS_READY_IMAGE);
@@ -93,7 +96,14 @@ public class VisualizationController implements ICenterController {
 		controlWidget.add(statusImage);
 		Image addVisualization = new ImageHover(R.resc.imgIconSet().getSafeUri(), 0, 120, 13, 13, R.resc.imgIconSet()
 				.getSafeUri(), 210, 150, 13, 13);
-		addVisualization.setTitle(R.get("addchart"));
+		addVisualization.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				MainLayoutPanel.get().switchView(ResultController.class);
+			}
+		});
+		addVisualization.setTitle(R.lang.newChart());
 		addVisualization.getElement().getStyle().setMarginLeft(1, Unit.EM);
 		addVisualization.getElement().getStyle().setMarginTop(1, Unit.EM);
 		addVisualization.getElement().getStyle().setCursor(Cursor.POINTER);
@@ -101,7 +111,7 @@ public class VisualizationController implements ICenterController {
 
 		Image remove = new ImageHover(R.resc.imgIconSet().getSafeUri(), 0, 60, 16, 18,
 				R.resc.imgIconSet().getSafeUri(), 0, 90, 16, 18);
-		remove.setTitle(R.get("removechart"));
+		remove.setTitle(R.lang.removeChart());
 		remove.getElement().getStyle().setMarginLeft(1, Unit.EM);
 		remove.getElement().getStyle().setMarginTop(1, Unit.EM);
 		remove.getElement().getStyle().setCursor(Cursor.POINTER);
@@ -109,7 +119,7 @@ public class VisualizationController implements ICenterController {
 
 			@Override
 			public void onClick(ClickEvent event) {
-				RPC.getVisualizationRPC().deleteVisualization(ssm.getSelectedObject(), new AsyncCallback<Void>() {
+				RPC.getVisualizationRPC().deleteVisualization(visualizationSelection.getSelectedObject(), new AsyncCallback<Void>() {
 
 					@Override
 					public void onFailure(Throwable caught) {
@@ -125,7 +135,7 @@ public class VisualizationController implements ICenterController {
 		controlWidget.add(remove);
 
 		Image refresh = new Image(R.resc.imgIconSet().getSafeUri(), 120, 150, 16, 15);
-		refresh.setTitle(R.get("refreshcharts"));
+		refresh.setTitle(R.lang.refreshCharts());
 		refresh.getElement().getStyle().setMarginLeft(1, Unit.EM);
 		refresh.getElement().getStyle().setMarginTop(1, Unit.EM);
 		refresh.getElement().getStyle().setCursor(Cursor.POINTER);
@@ -144,24 +154,24 @@ public class VisualizationController implements ICenterController {
 		visualizationList.setPageSize(8);
 		visualizationList.setEmptyListWidget(new Label(
 				"Either the visualizations are still loading or there are no visualizations yet."));
-		ssm.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
+		visualizationSelection.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
 
 			@Override
 			public void onSelectionChange(SelectionChangeEvent event) {
-				chartWidget.switchChart(ssm.getSelectedObject());
-				chartLink.setHref(ssm.getSelectedObject().getLink());
-				chartLink.setText(ssm.getSelectedObject().getLink());
+				chartWidget.switchChart(visualizationSelection.getSelectedObject());
+				chartLink.setHref(visualizationSelection.getSelectedObject().getLink());
+				chartLink.setText(visualizationSelection.getSelectedObject().getLink());
 
 			}
 		});
-		visualizationList.setSelectionModel(ssm);
+		visualizationList.setSelectionModel(visualizationSelection);
 		visualizationList.addStyleName("visualizationList");
-		visualizationDataProvider.addDataDisplay(visualizationList);
+		chartDataProvider.addDataDisplay(visualizationList);
 		visualizationList.setWidth("300px");
 		rootWidget.addNorth(controlWidget, 3);
 		FlowPanel listPanel = new FlowPanel();
 		listPanel.addStyleName("visualizationPanel");
-		SimplePager pager = new SimplePager(TextLocation.CENTER);
+		pager = new SimplePager(TextLocation.CENTER);
 		listPanel.add(pager);
 		pager.setPageSize(8);
 		pager.getElement().getStyle().setWidth(24, Unit.EM);
@@ -215,14 +225,20 @@ public class VisualizationController implements ICenterController {
 		Range range = visualizationList.getVisibleRange();
 		visualizationList.setVisibleRangeAndClearData(range, true);
 	}
+	
+	public void refreshVisualizationsAndSelect(final Visualization visualization) {
+		if (getStatus() != Status.BUSY) {
+			setStatus(Status.LOADING);
+		}
+		Range range = visualizationList.getVisibleRange();
+		visualizationList.setVisibleRangeAndClearData(range, true);
+		pager.setPage(pager.getPageCount()-1);
+		visualizationSelection.setSelected(visualization, true);
+	}
 
 	private static class VisualizationCell extends AbstractCell<Visualization> {
 
-		private static final String EXPERIMENT_IMAGE = "images/experiment.png";
-		private Image image;
-
 		public VisualizationCell() {
-			image = new Image(EXPERIMENT_IMAGE);
 		}
 
 		@Override
@@ -234,7 +250,17 @@ public class VisualizationController implements ICenterController {
 			sb.appendHtmlConstant("<table>");
 
 			sb.appendHtmlConstant("<tr><td rowspan='3'>");
-			sb.appendHtmlConstant(image.toString());
+			switch(value.getOptions().getType()){
+			case BARCHART:
+				sb.appendHtmlConstant(ChartSelectionPanel.BAR_CHART_IMAGE.toString());
+				break;
+			case PIECHART:
+				sb.appendHtmlConstant(ChartSelectionPanel.PIE_CHART_IMAGE.toString());
+				break;
+			case LINECHART:
+				sb.appendHtmlConstant(ChartSelectionPanel.LINE_CHART_IMAGE.toString());
+				break;
+			}
 			sb.appendHtmlConstant("</td>");
 
 			sb.appendHtmlConstant("<td style='font-size:95%;'>");

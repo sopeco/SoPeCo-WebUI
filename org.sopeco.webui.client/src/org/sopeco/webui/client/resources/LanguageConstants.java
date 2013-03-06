@@ -114,4 +114,12 @@ public interface LanguageConstants extends Constants {
 	String dataProcessing();
 	
 	String numberOfPoints();
+	
+	String regression();
+	
+	String aggregation();
+	
+	String removeChart();
+	
+	String refreshCharts();
 }

@@ -32,7 +32,9 @@ import java.util.Map;
 import org.sopeco.webui.shared.definitions.result.SharedExperimentRuns;
 import org.sopeco.webui.shared.entities.ChartOptions;
 import org.sopeco.webui.shared.entities.ChartParameter;
+import org.sopeco.webui.shared.entities.RegressionInfo;
 import org.sopeco.webui.shared.entities.Visualization;
+import org.sopeco.webui.shared.entities.VisualizationBundle;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -73,7 +75,7 @@ public interface VisualizationRPCAsync {
 	 * @param length
 	 * @param callback
 	 */
-	void getVisualizations(int start, int length, AsyncCallback<List<Visualization>> callback);
+	void getVisualizations(int start, int length, AsyncCallback<VisualizationBundle> callback);
 	
 	/** Deletes the visualization.
 	 * 
@@ -103,5 +105,5 @@ public interface VisualizationRPCAsync {
 	 * @param values The values on which the regression should be applied.
 	 * @param callback The asynchronous callback which is needed for all RPCs.
 	 */
-	void applySimpleRegression(Map<Double, List<Double>> values, AsyncCallback<Map<Double, List<Double>>> callback);
+	void applySimpleRegression(Map<Double, List<Double>> values, AsyncCallback<RegressionInfo> callback);
 }

@@ -26,12 +26,10 @@
  */
 package org.sopeco.webui.client.layout.center.visualization;
 
-import java.util.List;
-
-import org.sopeco.webui.client.layout.MainLayoutPanel;
 import org.sopeco.webui.client.layout.center.visualization.VisualizationController.Status;
 import org.sopeco.webui.client.rpc.RPC;
 import org.sopeco.webui.shared.entities.Visualization;
+import org.sopeco.webui.shared.entities.VisualizationBundle;
 
 import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -40,7 +38,7 @@ import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.Range;
 
 public class ChartsDataProvider extends AsyncDataProvider<Visualization> {
-	private VisualizationController visualizationController;
+	private final VisualizationController visualizationController;
 	
 	public ChartsDataProvider(VisualizationController visualizationController) {
 		this.visualizationController = visualizationController;
@@ -52,11 +50,12 @@ public class ChartsDataProvider extends AsyncDataProvider<Visualization> {
 		if (visualizationController.getStatus() != Status.BUSY){
 			visualizationController.setStatus(Status.LOADING);
 		}
-		RPC.getVisualizationRPC().getVisualizations(range.getStart(), range.getLength(), new AsyncCallback<List<Visualization>>() {
+		RPC.getVisualizationRPC().getVisualizations(range.getStart(), range.getLength(), new AsyncCallback<VisualizationBundle>() {
 			
 			@Override
-			public void onSuccess(List<Visualization> result) {
-				updateRowData(range.getStart(), result);
+			public void onSuccess(VisualizationBundle result) {
+				updateRowData(range.getStart(), result.getVisualizations());
+				updateRowCount(result.getTotalNumberOfVisualizations(), true);
 				if (visualizationController.getStatus() != Status.BUSY){
 					visualizationController.setStatus(Status.READY);
 				}

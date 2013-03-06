@@ -45,13 +45,15 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class ChartSelectionPanel extends FlowPanel {
+	public static final Image PIE_CHART_IMAGE = new Image(R.resc.imgIconSet().getSafeUri(), 120, 180, 60, 60);
+	public static final Image BAR_CHART_IMAGE = new Image(R.resc.imgIconSet().getSafeUri(), 60, 180, 60, 60);
+	public static final Image LINE_CHART_IMAGE = new Image(R.resc.imgIconSet().getSafeUri(), 0, 180, 60, 60);
 
 	private ChartType selectedType = ChartType.LINECHART;
 	private List<ClickHandler> clickHandler;
 	private List<ChartIconPanel> chartIconPanels;
 
 	public ChartSelectionPanel() {
-		FrontEndResources.loadVisualizationWizardCSS();
 		clickHandler = new ArrayList<ClickHandler>();
 		chartIconPanels = new ArrayList<ChartSelectionPanel.ChartIconPanel>();
 		ChartType[] types = ChartType.values();
@@ -62,16 +64,13 @@ public class ChartSelectionPanel extends FlowPanel {
 			// TODO
 			switch (type) {
 			case BARCHART:
-				chartIconPanel = new ChartIconPanel(type.name(), new Image(R.resc.imgIconSet().getSafeUri(), 60, 180,
-						60, 60));
+				chartIconPanel = new ChartIconPanel(type.name(), BAR_CHART_IMAGE);
 				break;
 			case LINECHART:
-				chartIconPanel = new ChartIconPanel(type.name(), new Image(R.resc.imgIconSet().getSafeUri(), 0, 180,
-						60, 60));
+				chartIconPanel = new ChartIconPanel(type.name(), LINE_CHART_IMAGE);
 				break;
 			case PIECHART:
-				chartIconPanel = new ChartIconPanel(type.name(), new Image(R.resc.imgIconSet().getSafeUri(), 120, 180,
-						60, 60));
+				chartIconPanel = new ChartIconPanel(type.name(), PIE_CHART_IMAGE);
 				break;
 			default:
 				chartIconPanel = null;
@@ -112,7 +111,7 @@ public class ChartSelectionPanel extends FlowPanel {
 	private static class ChartIconPanel extends FocusPanel {
 		private VerticalPanel rootWidget;
 
-		public ChartIconPanel(String labelString, Image image) {
+		public ChartIconPanel(String labelString, final Image image) {
 			rootWidget = new VerticalPanel();
 			this.setPixelSize(100, 100);
 			rootWidget.setPixelSize(100, 100);
@@ -133,9 +132,11 @@ public class ChartSelectionPanel extends FlowPanel {
 
 		public void setSelected(boolean selected) {
 			if (selected) {
-				this.getElement().getStyle().setBorderColor("red");
+				this.getElement().getStyle().setProperty("WebkitBoxShadow", "0px 0px 10px 5px rgba(255, 0, 0, 1)");
+				this.getElement().getStyle().setProperty("boxShadow", "0px 0px 10px 5px rgba(255, 0, 0, 1)");
 			} else {
-				this.getElement().getStyle().setBorderColor("grey");
+				this.getElement().getStyle().setProperty("WebkitBoxShadow", "");
+				this.getElement().getStyle().setProperty("boxShadow", "");
 			}
 		}
 	}

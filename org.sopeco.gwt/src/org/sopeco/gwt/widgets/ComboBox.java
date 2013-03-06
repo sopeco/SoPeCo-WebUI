@@ -52,6 +52,7 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -439,6 +440,10 @@ public class ComboBox extends FlowPanel implements
 	@Override
 	public void onResize(ResizeEvent event) {
 		updatePositionOfDropDown();
+	}
+	
+	public void addEventPartner(DialogBox dialog){
+		dialog.addAutoHidePartner(this.dropdownView.getElement());
 	}
 
 	@Override

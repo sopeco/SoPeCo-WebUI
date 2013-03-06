@@ -49,8 +49,8 @@ import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.entities.definition.ParameterRole;
 import org.sopeco.persistence.exceptions.DataNotFoundException;
 import org.sopeco.webui.client.rpc.VisualizationRPC;
-import org.sopeco.webui.server.chartconnector.IChartConnection;
-import org.sopeco.webui.server.chartconnector.IChartConnectionExtension;
+import org.sopeco.webui.server.chartconnector.IChartCreator;
+import org.sopeco.webui.server.chartconnector.IChartCreatorExtension;
 import org.sopeco.webui.server.gcharts.GCharts;
 import org.sopeco.webui.server.persistence.UiPersistence;
 import org.sopeco.webui.server.user.User;
@@ -60,18 +60,20 @@ import org.sopeco.webui.shared.entities.ChartData;
 import org.sopeco.webui.shared.entities.ChartOptions;
 import org.sopeco.webui.shared.entities.ChartParameter;
 import org.sopeco.webui.shared.entities.ChartRowKey;
+import org.sopeco.webui.shared.entities.RegressionInfo;
 import org.sopeco.webui.shared.entities.Visualization;
+import org.sopeco.webui.shared.entities.VisualizationBundle;
 
 public class VisualizationRPCImpl extends SuperRemoteServlet implements
 		VisualizationRPC {
-	private IChartConnection chartCreator;
-	private List<IChartConnectionExtension> extensions;
+	private IChartCreator chartCreator;
+	private List<IChartCreatorExtension> extensions;
 	public static final String G_CHARTS = "Google Charts";
 
 	public VisualizationRPCImpl() {
 		chartCreator = new GCharts();
 		extensions = (ExtensionRegistry.getSingleton()
-				.getExtensions(IChartConnectionExtension.class)).getList();
+				.getExtensions(IChartCreatorExtension.class)).getList();
 	}
 
 	@Override
@@ -104,14 +106,16 @@ public class VisualizationRPCImpl extends SuperRemoteServlet implements
 	}
 
 	@Override
-	public List<Visualization> getVisualizations(int start, int length) {
+	public VisualizationBundle getVisualizations(int start, int length) {
+		VisualizationBundle visualizationBundle = new VisualizationBundle();
 		List<Visualization> visualizations = new ArrayList<Visualization>();
 		String accountName = getUser().getCurrentAccount().getId();
 		System.out.println("loading charts...");
 		visualizations.addAll(UiPersistence.getUiProvider()
 				.loadVisualizationsByAccount(accountName));
+		visualizationBundle.setTotalNumberOfVisualizations(visualizations.size());
 		if (start > visualizations.size() - 1){
-			return new ArrayList<Visualization>();
+			return visualizationBundle;
 		}
 		start = start < 0 ? 0 : start;
 		length = start + length > visualizations.size() ? visualizations.size()-start : length;
@@ -132,7 +136,8 @@ public class VisualizationRPCImpl extends SuperRemoteServlet implements
 			}
 		}
 		vis.removeAll(visualizationsToRemove);
-		return vis;
+		visualizationBundle.setVisualizations(vis);
+		return visualizationBundle;
 	}
 
 	private ChartData loadData(ExperimentSeriesRun run,
@@ -245,7 +250,7 @@ public class VisualizationRPCImpl extends SuperRemoteServlet implements
 			chartCreator = new GCharts();
 			return;
 		}
-		for (IChartConnectionExtension ex : extensions){
+		for (IChartCreatorExtension ex : extensions){
 			if (ex.getName().equals(name)){
 				chartCreator = ex.createExtensionArtifact();
 				return;
@@ -257,7 +262,7 @@ public class VisualizationRPCImpl extends SuperRemoteServlet implements
 	public List<String> getExtensions() {
 		List<String> extensionNames = new ArrayList<String>();
 		extensionNames.add(G_CHARTS);
-		for (IChartConnectionExtension ex : extensions){
+		for (IChartCreatorExtension ex : extensions){
 			extensionNames.add(ex.getName());
 		}
 		return extensionNames;
@@ -289,7 +294,7 @@ public class VisualizationRPCImpl extends SuperRemoteServlet implements
 		return values;
 	}
 
-	public Map<Double, List<Double>> applySimpleRegression(
+	public RegressionInfo applySimpleRegression(
 			Map<Double, List<Double>> values) {
 		double min = values.entrySet().iterator().next().getKey();
 		double max = min;
@@ -307,7 +312,9 @@ public class VisualizationRPCImpl extends SuperRemoteServlet implements
 			values.put(d, new ArrayList<Double>());
 			values.get(d).add(regression.predict(d));
 		}
-		return values;
+		RegressionInfo regressionInfo = new RegressionInfo();
+		regressionInfo.setData(values);
+		return regressionInfo;
 	}
 
 }
