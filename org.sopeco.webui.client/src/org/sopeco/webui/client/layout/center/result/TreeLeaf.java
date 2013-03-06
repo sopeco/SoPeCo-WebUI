@@ -61,7 +61,6 @@ public class TreeLeaf extends TreeItem implements /* HasClickHandlers, */ClickHa
 	private static final String CHART_IMAGE = "images/line_chart.png";
 
 	private Image downloadImage, rImage, chartImage;
-	private PopupPanel chartPopup;
 
 	private SharedExperimentRuns experimentRun;
 
@@ -73,8 +72,6 @@ public class TreeLeaf extends TreeItem implements /* HasClickHandlers, */ClickHa
 		this(run.getLabel());
 
 		experimentRun = run;
-
-		chartPopup = new VisualizationWizard(experimentRun);
 	}
 
 	@Override
@@ -134,7 +131,7 @@ public class TreeLeaf extends TreeItem implements /* HasClickHandlers, */ClickHa
 			ExportCsvDialog.show(timestamp, experimentName, controllerURL, scenarioName);
 
 		} else if (event.getSource() == chartImage) {
-			chartPopup.center();
+			new VisualizationWizard(experimentRun);
 		} else {
 			RPC.getResultRPC().getResultAsR(experimentRun.getParentSeries().getParentInstance().getScenarioName(),
 					experimentRun.getParentSeries().getExperimentName(),
