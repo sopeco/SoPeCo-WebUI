@@ -38,7 +38,7 @@ import com.google.gwt.user.client.ui.Image;
  * 
  */
 public class EmptyCenterPanel extends CenterPanel {
-	private static final int IMG_SIZE_X = 640, IMG_SIZE_Y = 126;
+	private static final int IMG_SIZE_X = 640, IMG_SIZE_Y = 175;
 	private static final int FIFTY = 50;
 	private static final double OPACITY = 0.1;
 	private static Image logo;
