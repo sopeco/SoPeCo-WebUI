@@ -69,25 +69,13 @@ public class NorthPanel extends FlowPanel implements ClickHandler, InputDialogHa
 
 	private static final String DISABLED_CSS_CLASS = "disabled";
 	private static final String GRADIENT_CSS = "gradient-blue";
-	private static final String IMAGE_CHANGE_ACCOUNT = "images/logout_invert.png";
-
-	private static final String IMAGE_EXPORT = "images/download_invert.png";
-	private static final String IMAGE_LOG = "images/log_invert.png";
-	private static final String IMAGE_SATELLITE = "images/satellite_invert.png";
-	private static final String IMAGE_SCENARIO_ADD = "images/scenario_add_invert.png";
-	private static final String IMAGE_SCENARIO_CLONE = "images/scenario_clone_invert.png";
-	private static final String IMAGE_SCENARIO_REMOVE = "images/scenario_delete_invert.png";
 	private static final String IMG_BUTTON_CSS_CLASS = "imgButton";
 	private static final String NAVI_PANEL_HEIGHT = "2.8em";
 
-	private static final String SAP_RESEARCH_LOGO = "images/sopeco-logo-gray.png";
-
-	private static final String SAP_RESEARCH_LOGO_ID = "sapResearchLogo";
-
 	private static final String SEPARATOR_CSS_CLASS = "separator";
 	private HTML connectedToText, htmlSelectScenario;
-	private Image imageSatellite, imageExport, researchLogo, imageScenarioAdd, imageScenarioRemove, imageChangeAccount,
-			imageLog, imageScenarioClone;
+	private Image imageSatellite, imageExport, imageScenarioAdd, imageScenarioRemove, imageChangeAccount, imageLog,
+			imageScenarioClone;
 	private InputDialog inputClone;
 
 	private ComboBox cbScenarios;
@@ -266,8 +254,8 @@ public class NorthPanel extends FlowPanel implements ClickHandler, InputDialogHa
 
 		navigationPanel.add(createSeparator());
 
-		imageExport = new ImageHover(R.resc.imgIconSet().getSafeUri(), 30, 0, 28, 22, R.resc.imgIconSet()
-				.getSafeUri(), 30, 30, 28, 22);
+		imageExport = new ImageHover(R.resc.imgIconSet().getSafeUri(), 30, 0, 28, 22, R.resc.imgIconSet().getSafeUri(),
+				30, 30, 28, 22);
 		imageExport.addClickHandler(this);
 		imageExport.addStyleName(IMG_BUTTON_CSS_CLASS);
 		imageExport.setTitle(R.get("exportModel"));
@@ -284,18 +272,14 @@ public class NorthPanel extends FlowPanel implements ClickHandler, InputDialogHa
 
 		navigationPanel.add(createSeparator());
 
-		imageLog = new ImageHover(R.resc.imgIconSet().getSafeUri(), 120, 0, 21, 28, R.resc.imgIconSet()
-				.getSafeUri(), 120, 30, 21, 28);
+		imageLog = new ImageHover(R.resc.imgIconSet().getSafeUri(), 120, 0, 21, 28, R.resc.imgIconSet().getSafeUri(),
+				120, 30, 21, 28);
 		imageLog.addClickHandler(this);
 		imageLog.addStyleName(IMG_BUTTON_CSS_CLASS);
 		imageLog.setTitle(R.get("showLog"));
 		navigationPanel.add(imageLog);
 
 		navigationPanel.add(createSeparator());
-
-		researchLogo = new Image(R.resc.imgSopecoLogoGray().getSafeUri());
-		researchLogo.getElement().setId(SAP_RESEARCH_LOGO_ID);
-		getElement().appendChild(researchLogo.getElement());
 
 		add(navigationPanel);
 
