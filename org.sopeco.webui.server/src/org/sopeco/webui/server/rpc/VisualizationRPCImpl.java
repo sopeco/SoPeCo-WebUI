@@ -26,6 +26,7 @@
  */
 package org.sopeco.webui.server.rpc;
 
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -48,6 +49,7 @@ import org.sopeco.persistence.entities.ScenarioInstance;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.entities.definition.ParameterRole;
 import org.sopeco.persistence.exceptions.DataNotFoundException;
+import org.sopeco.util.Tools;
 import org.sopeco.webui.client.rpc.VisualizationRPC;
 import org.sopeco.webui.server.chartconnector.IChartCreator;
 import org.sopeco.webui.server.chartconnector.IChartCreatorExtension;
@@ -153,6 +155,10 @@ public class VisualizationRPCImpl extends SuperRemoteServlet implements
 		for (SimpleDataSetRow row : simpledata) {
 			ChartRowKey key = new ChartRowKey();
 			for (ParameterValue<?> value : row.getRowValues()){
+				Tools.SupportedTypes type = Tools.SupportedTypes.get(value.getParameter().getType());
+				if(type != Tools.SupportedTypes.Double && type != Tools.SupportedTypes.Integer) {
+					continue;
+				}
 				if(value.getParameter().getRole() == ParameterRole.INPUT){
 					ChartParameter cp = new ChartParameter();
 					cp.setParameterName(value.getParameter().getFullName());
@@ -160,6 +166,10 @@ public class VisualizationRPCImpl extends SuperRemoteServlet implements
 				}
 			}
 			for (ParameterValue<?> value : row.getRowValues()){
+				Tools.SupportedTypes type = Tools.SupportedTypes.get(value.getParameter().getType());
+				if(type != Tools.SupportedTypes.Double && type != Tools.SupportedTypes.Integer) {
+					continue;
+				}
 				if(value.getParameter().getRole() == ParameterRole.OBSERVATION && value.getParameter().getFullName().equals(outputParameter.getParameterName())){
 					List<Double> list = datamap.get(key);
 					if (list == null){
