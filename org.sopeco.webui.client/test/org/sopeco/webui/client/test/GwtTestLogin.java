@@ -33,66 +33,66 @@ public class GwtTestLogin extends GWTTestCase {
 	}
 
 	public void testIt(){
-		DatabaseManagerRPCAsync dbmanager = GWT.create(DatabaseManagerRPC.class);
-		System.out.println("Created db manager " + dbmanager);
-		delayTestFinish(20000);
-		soPeCoUI = new SoPeCoUI();
-		soPeCoUI.onModuleLoad();
-		System.out.println("Created SoPeCoUI-Module... -----------------------------------------------------------------------------------------------------");
-		dbmanager.getAllDatabases(new AsyncCallback<List<DatabaseInstance>>() {
-			
-			@Override
-			public void onSuccess(List<DatabaseInstance> result) {
-				if (result.size() <= 0){
-					fail("No databases found");
-				} else {
-					System.out.println("answer -----------------------------------------------------------------------------------------------------");
-					for (DatabaseInstance dbi : result){
-						System.out.println(dbi.getDbName());
-					}
-					db = result.get(0);
-					login();
-				}
-			}
-			
-			@Override
-			public void onFailure(Throwable caught) {
-				fail(caught.getMessage());
-			}
-		});
+//		DatabaseManagerRPCAsync dbmanager = GWT.create(DatabaseManagerRPC.class);
+//		System.out.println("Created db manager " + dbmanager);
+//		delayTestFinish(20000);
+//		soPeCoUI = new SoPeCoUI();
+//		soPeCoUI.onModuleLoad();
+//		System.out.println("Created SoPeCoUI-Module... -----------------------------------------------------------------------------------------------------");
+//		dbmanager.getAllDatabases(new AsyncCallback<List<DatabaseInstance>>() {
+//			
+//			@Override
+//			public void onSuccess(List<DatabaseInstance> result) {
+//				if (result.size() <= 0){
+//					fail("No databases found");
+//				} else {
+//					System.out.println("answer -----------------------------------------------------------------------------------------------------");
+//					for (DatabaseInstance dbi : result){
+//						System.out.println(dbi.getDbName());
+//					}
+//					db = result.get(0);
+//					login();
+//				}
+//			}
+//			
+//			@Override
+//			public void onFailure(Throwable caught) {
+//				fail(caught.getMessage());
+//			}
+//		});
 	}
 	
 	public void login(){
-		RPC.getDatabaseManagerRPC().login(db, "", new AsyncCallback<Boolean>() {
-
-			@Override
-			public void onFailure(Throwable caught) {
-				fail(caught.getMessage());
-			}
-
-			@Override
-			public void onSuccess(Boolean result) {
-				GWT.log("Succesfully logged in. -----------------------------------------------------------------------------------------------------");
-				getAccountDetails();
-			}
-		});
+//		RPC.getDatabaseManagerRPC().login(db, "", new AsyncCallback<Boolean>() {
+//
+//			@Override
+//			public void onFailure(Throwable caught) {
+//				fail(caught.getMessage());
+//			}
+//
+//			@Override
+//			public void onSuccess(Boolean result) {
+//				GWT.log("Succesfully logged in. -----------------------------------------------------------------------------------------------------");
+//				getAccountDetails();
+//			}
+//		});
 	}
 	
 	public void getAccountDetails(){
-		RPC.getDatabaseManagerRPC().getAccountDetails(new AsyncCallback<AccountDetails>() {
-
-			@Override
-			public void onFailure(Throwable caught) {
-				fail(caught.getMessage());
-			}
-
-			@Override
-			public void onSuccess(AccountDetails result) {
-				Manager.get().setAccountDetails(result);
-				SoPeCoUI.get().initializeMainView(db);
-				GWT.log("Initialized main view -----------------------------------------------------------------------------------------------------");
-				finishTest();
-			}
-		});
+//		RPC.getDatabaseManagerRPC().getAccountDetails(new AsyncCallback<AccountDetails>() {
+//
+//			@Override
+//			public void onFailure(Throwable caught) {
+//				fail(caught.getMessage());
+//			}
+//
+//			@Override
+//			public void onSuccess(AccountDetails result) {
+//				Manager.get().setAccountDetails(result);
+//				SoPeCoUI.get().initializeMainView(db);
+//				GWT.log("Initialized main view -----------------------------------------------------------------------------------------------------");
+//				finishTest();
+//			}
+//		});
 	}
 }
