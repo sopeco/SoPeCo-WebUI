@@ -71,10 +71,10 @@ public class DataSetExportServlet extends HttpServlet {
 			ExperimentSeriesRun run = getRun(series, timestamp);
 
 			DataSetAggregated dataset = run.getSuccessfulResultDataSet();
-			SimpleDataSet simpleDataset = dataset.convertToSimpleDataSet();
+//			SimpleDataSet simpleDataset = dataset.convertToSimpleDataSet();
 
 			DataSetCsvHandler handler = new DataSetCsvHandler(separator[0], separator[1], separator[2], true);
-			String csvData = handler.convertToCSVString(simpleDataset);
+			String csvData = handler.convertToCSVString(dataset);
 
 			sendData(resp, csvData, run.getLabel().replaceAll(" ", "_") + ".csv");
 
