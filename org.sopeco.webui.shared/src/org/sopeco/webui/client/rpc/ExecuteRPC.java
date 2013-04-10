@@ -57,4 +57,6 @@ public interface ExecuteRPC extends RemoteService {
 	RunningControllerStatus getControllerLog();
 
 	MECLog getMECLog(long id);
+	
+	void abortCurrentExperiment();
 }
