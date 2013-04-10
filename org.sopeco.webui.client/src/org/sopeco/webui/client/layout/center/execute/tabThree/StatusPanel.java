@@ -29,6 +29,7 @@ package org.sopeco.webui.client.layout.center.execute.tabThree;
 import org.sopeco.gwt.widgets.ProgressBar;
 import org.sopeco.webui.client.resources.R;
 
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -57,6 +58,7 @@ public class StatusPanel extends FlowPanel {
 	private HTML valueAccount, valueScenario, valueExperiments, valueStart, valueTimeElapsed, valueTimeRemaining;
 	private ProgressBar progressBar;
 
+	private Button btnAbort;
 	/**
 	 * Constructor.
 	 */
@@ -79,12 +81,16 @@ public class StatusPanel extends FlowPanel {
 		progressBar = new ProgressBar();
 
 		initTable();
-
+		
+		btnAbort = new Button(R.lang.abortExperiment());
+		btnAbort.setEnabled(false);
 		innerPanel = new FlowPanel();
 		innerPanel.add(scrollPanel);
 		innerPanel.add(detailsTable);
 		innerPanel.add(progressBar);
-
+		innerPanel.add(btnAbort);
+		
+		
 		add(innerPanel);
 	}
 
@@ -108,6 +114,8 @@ public class StatusPanel extends FlowPanel {
 		valueStart = new HTML("-");
 		valueTimeElapsed = new HTML("-");
 		valueTimeRemaining = new HTML("-");
+		
+		
 
 		detailsTable.setWidget(0, 0, labelAccount);
 		detailsTable.setWidget(1, 0, labelScenario);
@@ -166,6 +174,10 @@ public class StatusPanel extends FlowPanel {
 	 */
 	public void setScenario(String value) {
 		valueScenario.setHTML(value);
+	}
+	
+	public Button getBtnAbort(){
+		return btnAbort;
 	}
 
 	/**

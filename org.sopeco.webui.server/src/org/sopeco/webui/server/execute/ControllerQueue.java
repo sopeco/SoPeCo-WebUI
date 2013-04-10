@@ -145,6 +145,14 @@ public class ControllerQueue implements IStatusListener {
 		checkQueue();
 	}
 
+	public void abortExperiment() {
+		if(isExecuting()){
+			Configuration.getSessionSingleton(generatedSessionId).setProperty(IConfiguration.EXPERIMENT_RUN_ABORT,
+					new Boolean(true));
+		}
+		
+	}
+
 	/**
 	 * Checks if the controller is ready and a experiment is waiting in the
 	 * queue. If so, the next experiment is started.
