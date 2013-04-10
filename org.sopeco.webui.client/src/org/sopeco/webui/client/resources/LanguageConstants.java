@@ -35,6 +35,12 @@ import com.google.gwt.i18n.client.Constants;
  */
 public interface LanguageConstants extends Constants {
 
+	String aborted(); 
+	
+	String aborting();
+	
+	String abortExperiment();
+	
 	String executeExperiment();
 
 	String scheduleExperiment();

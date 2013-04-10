@@ -128,4 +128,9 @@ public class ExecuteRPCImpl extends SuperRemoteServlet implements ExecuteRPC {
 		return ControllerQueueManager.get(getUser().getAccountDetails().getControllerUrl())
 				.createControllerStatusPackage();
 	}
+
+	@Override
+	public void abortCurrentExperiment() {
+		ControllerQueueManager.get(getUser().getAccountDetails().getControllerUrl()).abortExperiment();
+	}
 }

@@ -32,12 +32,16 @@ import java.util.List;
 import org.sopeco.webui.client.layout.center.execute.ExecuteController;
 import org.sopeco.webui.client.layout.center.execute.ExecuteTabPanel;
 import org.sopeco.webui.client.layout.center.execute.TabController;
+import org.sopeco.webui.client.layout.popups.Message;
+import org.sopeco.webui.client.resources.R;
 import org.sopeco.webui.client.rpc.RPC;
 import org.sopeco.webui.shared.entities.FrontendScheduledExperiment;
 import org.sopeco.webui.shared.entities.RunningControllerStatus;
 import org.sopeco.webui.shared.helper.MECLogEntry;
 import org.sopeco.webui.shared.helper.Metering;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.Timer;
@@ -50,7 +54,7 @@ import com.google.gwt.user.client.ui.HTML;
  * @author Marius Oehler
  * 
  */
-public class TabControllerThree extends TabController {
+public class TabControllerThree extends TabController implements ClickHandler {
 
 	private TabView tabView;
 	private RunningControllerStatus controllerExperiment;
@@ -63,6 +67,7 @@ public class TabControllerThree extends TabController {
 
 	private void initialize() {
 		tabView = new TabView();
+		tabView.getStatusPanel().getBtnAbort().addClickHandler(this);
 		setIdle();
 
 		elapsedTimeTimer = new Timer() {
@@ -86,6 +91,7 @@ public class TabControllerThree extends TabController {
 				if (result == null) {
 					return;
 				}
+
 				setCurrentControllerExperiment(result);
 			}
 
@@ -135,6 +141,7 @@ public class TabControllerThree extends TabController {
 		DateTimeFormat dft = DateTimeFormat.getFormat("HH:mm:ss");
 
 		tabView.getStatusPanel().clearLog();
+
 		tabView.getStatusPanel().addLogText(new HTML("<b>Executing '" + experiment.getLabel() + "'</b>"));
 
 		for (MECLogEntry log : experiment.getEventLogList()) {
@@ -148,6 +155,8 @@ public class TabControllerThree extends TabController {
 
 		if (experiment.getEventLogList().size() == 1) {
 			// Start
+			tabView.getStatusPanel().getBtnAbort().setEnabled(true);
+			tabView.getStatusPanel().getBtnAbort().setText(R.lang.abortExperiment());
 			elapsedTimeTimer.scheduleRepeating(1000);
 			tabView.getStatusPanel().getProgressBar().setValue(0, false);
 		}
@@ -162,6 +171,7 @@ public class TabControllerThree extends TabController {
 
 		if (experiment.isFinished()) {
 			elapsedTimeTimer.cancel();
+			tabView.getStatusPanel().getBtnAbort().setText(R.lang.aborted());
 			tabView.getStatusPanel().getProgressBar().setValue(100);
 			tabView.getStatusPanel().setTimeRemaining("-");
 		}
@@ -214,5 +224,22 @@ public class TabControllerThree extends TabController {
 
 		tabView.getStatusPanel().setTimeElapsed(elapsed);
 		tabView.getStatusPanel().setTimeRemaining(remaining);
+	}
+
+	@Override
+	public void onClick(ClickEvent event) {
+		tabView.getStatusPanel().getBtnAbort().setEnabled(false);
+		tabView.getStatusPanel().getBtnAbort().setText(R.lang.aborting());
+		RPC.getExecuteRPC().abortCurrentExperiment(new AsyncCallback<Void>() {
+			@Override
+			public void onSuccess(Void result) {
+			}
+
+			@Override
+			public void onFailure(Throwable caught) {
+				Message.error(caught.getMessage());
+			}
+		});
+
 	}
 }
