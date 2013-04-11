@@ -87,7 +87,7 @@ public class ExperimentSettingsView extends FlowPanel {
 		add(topWrapper);
 	}
 
-	public void addExtensionView(ExperimentExtensionView extView) {
+	public void addExtensionView(ExtensionView extView) {
 		add(extView);
 	}
 

@@ -29,6 +29,7 @@ package org.sopeco.webui.server.rpc;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.sopeco.engine.analysis.IPredictionFunctionStrategyExtension;
 import org.sopeco.engine.experimentseries.IConstantAssignmentExtension;
 import org.sopeco.engine.experimentseries.IExplorationStrategyExtension;
 import org.sopeco.engine.experimentseries.IParameterVariationExtension;
@@ -73,6 +74,10 @@ public class ExtensionRPCImpl extends SuperRemoteServlet implements ExtensionRPC
 			case PROCESSINGSTRATEGY:
 				container.getMap().put(ExtensionTypes.PROCESSINGSTRATEGY,
 						createExtension(IProcessingStrategyExtension.class));
+				break;
+			case ANALYSIS:
+				container.getMap().put(ExtensionTypes.ANALYSIS,
+						createExtension(IPredictionFunctionStrategyExtension.class));
 				break;
 			}
 		}
