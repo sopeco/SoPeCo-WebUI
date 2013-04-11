@@ -30,12 +30,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import org.sopeco.persistence.entities.definition.AnalysisConfiguration;
 import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
 import org.sopeco.webui.client.layout.MainLayoutPanel;
 import org.sopeco.webui.client.layout.center.ICenterController;
 import org.sopeco.webui.client.layout.center.experiment.assignment.AssignmentController;
-import org.sopeco.webui.client.layout.center.experiment.assignment.PreparationController;
 import org.sopeco.webui.client.layout.center.experiment.assignment.AssignmentController.Type;
+import org.sopeco.webui.client.layout.center.experiment.assignment.PreparationController;
 import org.sopeco.webui.client.layout.center.specification.SpecificationController;
 import org.sopeco.webui.client.layout.popups.Confirmation;
 import org.sopeco.webui.client.layout.popups.InputDialog;
@@ -68,7 +69,8 @@ public class ExperimentController implements ICenterController, ValueChangeHandl
 	private static final String ENV_TREE_CSS_CLASS = "expEnvTree";
 
 	private ExperimentView view;
-	private ExperimentExtensionController explorationExtController;
+	private ExtensionController explorationExtController;
+	private AnalysisController analysisController;
 	// private ParameterTreeController treeController;
 	private TerminationController terminationController;
 	private ExperimentEnvironmentTree expEnvironmentTree;
@@ -79,13 +81,17 @@ public class ExperimentController implements ICenterController, ValueChangeHandl
 	private ExperimentTabPanel tabPanel;
 
 	private InputDialog inputClone, inputRename;
+	private boolean analysisRequired = false;
 
 	public ExperimentController() {
 		R.resc.cssExperiment().ensureInjected();
 
 		tabPanel = new ExperimentTabPanel();
-
-		explorationExtController = new ExperimentExtensionController(this, ExperimentView.EXP_SETTINGS_PANEL_WIDTH);
+		
+		analysisController = new AnalysisController(this, ExperimentView.EXP_SETTINGS_PANEL_WIDTH);
+		analysisController.getView().setVisible(false);
+		explorationExtController = new ExtensionController(this, ExperimentView.EXP_SETTINGS_PANEL_WIDTH);
+		
 
 		// assignmentPreperation = new AssignmentController(Type.PREPERATION);
 		assignmentExperiment = new AssignmentController(Type.EXPERIMENT);
@@ -99,6 +105,7 @@ public class ExperimentController implements ICenterController, ValueChangeHandl
 		expEnvironmentTree = new ExperimentEnvironmentTree();
 
 		getSettingsView().addExtensionView(explorationExtController.getView());
+		getSettingsView().addExtensionView(analysisController.getView());
 		getSettingsView().add(terminationController.getView());
 		// getParameterView().add(assignmentPreperation.getView());
 		// getParameterView().add(preparationController.getView());
@@ -122,9 +129,13 @@ public class ExperimentController implements ICenterController, ValueChangeHandl
 
 		expEnvironmentTree.getView().addStyleName(ENV_TREE_CSS_CLASS);
 
+		analysisController.setHeadline(R.lang.analysisConfiguration());
+		analysisController.setExtensionType(ExtensionTypes.ANALYSIS);
+		
 		explorationExtController.setHeadline(R.get("explStrategy"));
-
 		explorationExtController.setExtensionType(ExtensionTypes.EXPLORATIONSTRATEGY);
+
+		
 
 		getSettingsView().getImgRemove().addClickHandler(this);
 		getSettingsView().getImgRename().addClickHandler(this);
@@ -238,6 +249,17 @@ public class ExperimentController implements ICenterController, ValueChangeHandl
 		// ScenarioManager.get().experiment().renameCurrentExpSeries(event.getValue());
 		// }
 	}
+	
+	public void updateAnalysisView(){
+		
+		if(explorationExtController.getCurrentExtensionName().startsWith("Full")){
+			analysisController.getView().setVisible(false);
+			setAnalysisRequired(false);
+		}else{
+			analysisController.getView().setVisible(true);
+			setAnalysisRequired(true);
+		}
+	}
 
 	/**
 	 * Register handlers to catch events.
@@ -266,15 +288,29 @@ public class ExperimentController implements ICenterController, ValueChangeHandl
 		Map<String, String> explorationConfig = ScenarioManager.get().experiment().getCurrentExperiment()
 				.getExplorationStrategy().getConfiguration();
 
+		List<AnalysisConfiguration> analysisConfigs = ScenarioManager.get().experiment().getCurrentExperiment()
+				.getExplorationStrategy().getAnalysisConfigurations();
+		if (!analysisConfigs.isEmpty()) {
+			analysisController.updateParameterSelectionWidgets();
+			String analysisName = analysisConfigs.get(0).getName();
+			Map<String, String> analysisConfig = analysisConfigs.get(0).getConfiguration();
+			analysisController.setExtension(analysisName);
+			analysisController.setConfigMap(analysisConfig);
+			analysisController.setDependentParameter(analysisConfigs.get(0).getDependentParameters().get(0));
+			analysisController.setIndependentParameters((analysisConfigs.get(0).getIndependentParameters()));
+		}
+		
 		explorationExtController.setExtension(explorationName);
 		explorationExtController.setConfigMap(explorationConfig);
 
-		expEnvironmentTree.generateTree();
 		
+
+		expEnvironmentTree.generateTree();
+
 		terminationController.updateConditions();
 		assignmentExperiment.addExisitngAssignments();
-//		assignmentPreperation.addExisitngAssignments();
-		
+		// assignmentPreperation.addExisitngAssignments();
+
 		preparationController.addExistingAssignments();
 	}
 
@@ -295,8 +331,29 @@ public class ExperimentController implements ICenterController, ValueChangeHandl
 	/**
 	 * @return the explorationExtController
 	 */
-	public ExperimentExtensionController getExplorationExtController() {
+	public ExtensionController getExplorationExtController() {
 		return explorationExtController;
+	}
+	
+	/**
+	 * @return the explorationExtController
+	 */
+	public AnalysisController getAnalysisController() {
+		return analysisController;
+	}
+
+	/**
+	 * @return the analysisRequired
+	 */
+	public boolean isAnalysisRequired() {
+		return analysisRequired;
+	}
+
+	/**
+	 * @param analysisRequired the analysisRequired to set
+	 */
+	public void setAnalysisRequired(boolean analysisRequired) {
+		this.analysisRequired = analysisRequired;
 	}
 
 }

@@ -287,7 +287,7 @@ public final class MainLayoutPanel extends DockLayoutPanel {
 	 * calling {@link #switchView(Class)}.
 	 */
 	private void initialize() {
-
+		ScenarioManager.get().switchScenario(Manager.get().getAccountDetails().getSelectedScenario());
 		addNorth(getNorthPanel(), Float.parseFloat(NorthPanel.PANEL_HEIGHT));
 
 		naviController = new NaviController();
@@ -301,7 +301,7 @@ public final class MainLayoutPanel extends DockLayoutPanel {
 
 		refreshView();
 
-		ScenarioManager.get().switchScenario(Manager.get().getAccountDetails().getSelectedScenario());
+		
 
 	}
 

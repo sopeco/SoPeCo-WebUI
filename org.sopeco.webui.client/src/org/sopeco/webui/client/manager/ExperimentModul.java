@@ -133,7 +133,9 @@ public class ExperimentModul {
 		LOGGER.fine("Switch experiment to '" + newExperiment + "'");
 		currentExperiment = newExperiment;
 		Manager.get().setSelectedExperiment(newExperiment);
+
 		MainLayoutPanel.get().getController(ExperimentController.class).experimentChanged(newExperiment);
+		MainLayoutPanel.get().getController(ExperimentController.class).updateAnalysisView();
 	}
 
 	/**
@@ -160,8 +162,18 @@ public class ExperimentModul {
 
 		// experiment.setExperimentTerminationCondition(SimpleEntityFactory.createTerminationCondition(terminationName,
 		// terminationConfig));
-		experiment.setExplorationStrategy(SimpleEntityFactory.createExplorationStrategy(explorationName,
-				explorationConfig));
+		if (experimentController.isAnalysisRequired()) {
+			String analysisName = experimentController.getAnalysisController().getCurrentExtensionName();
+			Map<String, String> analysisConfig = experimentController.getAnalysisController().getConfigMap();
+
+			experiment.setExplorationStrategy(SimpleEntityFactory.createExplorationStrategy(explorationName,
+					explorationConfig, analysisName, analysisConfig, experimentController.getAnalysisController()
+							.getDependentParameter(), experimentController.getAnalysisController()
+							.getIndependentParameters()));
+		} else {
+			experiment.setExplorationStrategy(SimpleEntityFactory.createExplorationStrategy(explorationName,
+					explorationConfig));
+		}
 
 		manager.storeScenario();
 

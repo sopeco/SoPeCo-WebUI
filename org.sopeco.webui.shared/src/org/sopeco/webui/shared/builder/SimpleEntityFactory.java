@@ -26,8 +26,10 @@
  */
 package org.sopeco.webui.shared.builder;
 
+import java.util.List;
 import java.util.Map;
 
+import org.sopeco.persistence.entities.definition.AnalysisConfiguration;
 import org.sopeco.persistence.entities.definition.ConstantValueAssignment;
 import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
 import org.sopeco.persistence.entities.definition.ExplorationStrategy;
@@ -98,6 +100,20 @@ public class SimpleEntityFactory {
 		if (config != null) {
 			es.getConfiguration().putAll(config);
 		}
+		return es;
+	}
+
+	public static ExplorationStrategy createExplorationStrategy(String explorationName,
+			Map<String, String> explorationConfig, String analysisName, Map<String, String> analysisConfig, ParameterDefinition dependentParameter, List<ParameterDefinition> independentParameters) {
+		ExplorationStrategy es = createExplorationStrategy(explorationName, explorationConfig);
+		AnalysisConfiguration ac = new AnalysisConfiguration();
+		ac.setName(analysisName);
+		if(analysisConfig != null){
+			ac.getConfiguration().putAll(analysisConfig);
+		}
+		ac.getDependentParameters().add(dependentParameter);
+		ac.getIndependentParameters().addAll(independentParameters);
+		es.getAnalysisConfigurations().add(ac);
 		return es;
 	}
 }
