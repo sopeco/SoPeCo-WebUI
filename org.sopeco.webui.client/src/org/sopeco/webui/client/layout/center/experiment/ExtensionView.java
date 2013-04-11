@@ -41,18 +41,18 @@ import com.google.gwt.user.client.ui.HTML;
  * @author Marius Oehler
  * 
  */
-public class ExperimentExtensionView extends FlowPanel {
+public class ExtensionView extends FlowPanel {
 
-	private static final String EXTENSION_VIEW_CSS_CLASS = "experimentExtensionView";
-	private static final int DEFAULT_MARGIN = 20;
+	protected static final String EXTENSION_VIEW_CSS_CLASS = "experimentExtensionView";
+	protected static final int DEFAULT_MARGIN = 20;
 
 	private ComboBox combobox;
 	private Element headline;
 	private FlexTable configTable;
 
-	private int width;
+	protected int width;
 
-	public ExperimentExtensionView(int pxWidth) {
+	public ExtensionView(int pxWidth) {
 		width = pxWidth;
 
 		initialize();

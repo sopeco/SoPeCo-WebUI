@@ -1,38 +1,15 @@
-/**
- * Copyright (c) 2013 SAP
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the SAP nor the
- *       names of its contributors may be used to endorse or promote products
- *       derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL SAP BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
 package org.sopeco.webui.client.layout.center.experiment;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Logger;
 
 import org.sopeco.gwt.widgets.EditableText;
+import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.webui.client.extensions.Extensions;
 import org.sopeco.webui.client.manager.ScenarioManager;
 import org.sopeco.webui.client.resources.R;
@@ -44,30 +21,27 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.user.client.ui.TextBox;
 
-/**
- * 
- * @author Marius Oehler
- * 
- */
-public class ExperimentExtensionController implements ValueChangeHandler<String> {
-
-	private static final Logger LOGGER = Logger.getLogger(ExperimentExtensionController.class.getName());
+public class AnalysisController implements ValueChangeHandler<String> {
+	private static final Logger LOGGER = Logger.getLogger(ExtensionController.class.getName());
 	private static final String VALUE_CHANGED_CSS_CLASS = "valueChanged";
 
 	private ExperimentController parentController;
-	private ExperimentExtensionView view;
+	private AnalysisView view;
 	// private ExtensionTypes extensionType;
-	private Map<String, Map<String, String>> extensionMap;
+	private Map<String, Map<String, String>> explorationExtensionMap;
 	private Map<String, String> currentConfig;
 	private Map<EditableText, String> editTextToKey;
 	private String currentExtensionName;
 
-	public ExperimentExtensionController(ExperimentController parent, int width) {
-		view = new ExperimentExtensionView(width);
-		currentConfig = new HashMap<String, String>();
-		parentController = parent;
-		currentExtensionName = "";
+	private ParameterDefinition dependentParameter;
+	private final List<ParameterDefinition> independentParameters = new ArrayList<ParameterDefinition>();
 
+	public AnalysisController(ExperimentController parent, int width) {
+		view = new AnalysisView(width);
+		currentConfig = new HashMap<String, String>();
+		setParentController(parent);
+		currentExtensionName = "";
+		view.getParameterTree().setAnalysisController(this);
 		view.getCombobox().addValueChangeHandler(new ValueChangeHandler<String>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<String> event) {
@@ -77,10 +51,27 @@ public class ExperimentExtensionController implements ValueChangeHandler<String>
 				changeConfig();
 
 				updateConfigTable();
-
-				ScenarioManager.get().experiment().saveExperimentConfig(parentController);
+				ScenarioManager.get().experiment().saveExperimentConfig(getParentController());
 
 				Metering.stop(metering);
+			}
+		});
+
+		view.getCbDependentParameter().addValueChangeHandler(new ValueChangeHandler<String>() {
+
+			@Override
+			public void onValueChange(ValueChangeEvent<String> event) {
+
+				for (ParameterDefinition pDef : ScenarioManager.get().getBuilder().getMEDefinition().getRoot()
+						.getAllParameters()) {
+					if (view.getCbDependentParameter().getText().equalsIgnoreCase(pDef.getFullName())) {
+						dependentParameter = pDef;
+						break;
+					}
+				}
+
+				ScenarioManager.get().experiment().saveExperimentConfig(getParentController());
+
 			}
 		});
 	}
@@ -90,13 +81,13 @@ public class ExperimentExtensionController implements ValueChangeHandler<String>
 	 */
 	private void changeConfig() {
 		currentConfig.clear();
-		currentConfig.putAll(extensionMap.get(getSelectedExtensionName()));
+		currentConfig.putAll(explorationExtensionMap.get(getSelectedExtensionName()));
 	}
 
 	/**
 	 * @return the view
 	 */
-	public ExperimentExtensionView getView() {
+	public ExtensionView getView() {
 		return view;
 	}
 
@@ -107,12 +98,8 @@ public class ExperimentExtensionController implements ValueChangeHandler<String>
 		view.getHeadline().setInnerHTML(text);
 	}
 
-	/**
-	 * @param extensionMap
-	 *            the extension to set
-	 */
-	public void setExtensionType(ExtensionTypes newExtensionType) {
-		extensionMap = Extensions.get().getExtensions(newExtensionType);
+	public void setExtensionType(ExtensionTypes extensionType) {
+		explorationExtensionMap = Extensions.get().getExtensions(extensionType);
 		updateView();
 	}
 
@@ -133,14 +120,36 @@ public class ExperimentExtensionController implements ValueChangeHandler<String>
 
 		view.getCombobox().clear();
 
-		Set<String> keySet = new TreeSet<String>(extensionMap.keySet());
+		Set<String> keySet = new TreeSet<String>(explorationExtensionMap.keySet());
 
 		for (String name : keySet) {
 			view.getCombobox().addItem(name);
 		}
-
+		
+		
+		
+		
 		updateConfigTable();
 		Metering.stop(metering);
+	}
+
+	protected void updateParameterSelectionWidgets() {
+		view.getCbDependentParameter().clear();
+		for (ParameterDefinition parDef : ScenarioManager.get().getBuilder().getMEDefinition().getRoot()
+				.getObservationParameters()) {
+			view.getCbDependentParameter().addItem(parDef.getFullName());
+		
+		}
+		
+		for (ParameterDefinition pDef : ScenarioManager.get().getBuilder().getMEDefinition().getRoot()
+				.getAllParameters()) {
+			if (view.getCbDependentParameter().getText().equalsIgnoreCase(pDef.getFullName())) {
+				dependentParameter = pDef;
+				break;
+			}
+		}
+		
+		view.getParameterTree().generateTree();
 	}
 
 	/**
@@ -157,8 +166,8 @@ public class ExperimentExtensionController implements ValueChangeHandler<String>
 		for (String key : currentConfig.keySet()) {
 			// Puts an whitespace infront of every capital
 			String text = regex.replace(key, " $1");
-			String defaultValue = extensionMap.get(currentExtensionName).get(key);
-			
+			String defaultValue = explorationExtensionMap.get(currentExtensionName).get(key);
+
 			EditableText newTextbox = view.addConfigRow(text, key, currentConfig.get(key));
 			newTextbox.setDefaultValue(defaultValue);
 
@@ -188,7 +197,7 @@ public class ExperimentExtensionController implements ValueChangeHandler<String>
 
 		currentConfig.put(key, event.getValue());
 
-		ScenarioManager.get().experiment().saveExperimentConfig(parentController);
+		ScenarioManager.get().experiment().saveExperimentConfig(getParentController());
 
 		Metering.stop(metering);
 	}
@@ -203,7 +212,7 @@ public class ExperimentExtensionController implements ValueChangeHandler<String>
 	private boolean valueIsDefault(String key, String value) {
 		// LOGGER.info("check: " + key + " = " + value + " [" +
 		// currentExtensionName + "]");
-		return extensionMap.get(currentExtensionName).get(key).equals(value);
+		return explorationExtensionMap.get(currentExtensionName).get(key).equals(value);
 	}
 
 	/**
@@ -236,7 +245,7 @@ public class ExperimentExtensionController implements ValueChangeHandler<String>
 	 * @param name
 	 */
 	public void setExtension(String name) {
-		Set<String> keySet = new TreeSet<String>(extensionMap.keySet());
+		Set<String> keySet = new TreeSet<String>(explorationExtensionMap.keySet());
 
 		int i = 0;
 		for (String key : keySet) {
@@ -269,4 +278,49 @@ public class ExperimentExtensionController implements ValueChangeHandler<String>
 	public String getCurrentExtensionName() {
 		return currentExtensionName;
 	}
+
+	/**
+	 * @return the dependentParameter
+	 */
+	public ParameterDefinition getDependentParameter() {
+		return dependentParameter;
+	}
+
+	/**
+	 * @param dependentParameter
+	 *            the dependentParameter to set
+	 */
+	public void setDependentParameter(ParameterDefinition dependentParameter) {
+		this.dependentParameter = dependentParameter;
+
+		view.getCbDependentParameter().setSelectedText(dependentParameter.getFullName());
+
+	}
+
+	/**
+	 * @return the independentParameters
+	 */
+	public List<ParameterDefinition> getIndependentParameters() {
+		return independentParameters;
+	}
+
+	public void setIndependentParameters(List<ParameterDefinition> independentParameters) {
+		this.independentParameters.clear();
+		this.independentParameters.addAll(independentParameters);
+	}
+
+	/**
+	 * @return the parentController
+	 */
+	public ExperimentController getParentController() {
+		return parentController;
+	}
+
+	/**
+	 * @param parentController the parentController to set
+	 */
+	public void setParentController(ExperimentController parentController) {
+		this.parentController = parentController;
+	}
+
 }

@@ -795,6 +795,16 @@ p {
 	padding-top: 3px;
 }
 
+.envTreeView .rMarker2 {
+	display: block;
+	width: 15px;
+	background-color: #F4F6F8;
+	position: relative;
+	right: 15px;
+	text-align: center;
+	padding-top: 3px;
+}
+
 .envTreeView .rMarker img {
 	width: 14px;
 	height: 14px;

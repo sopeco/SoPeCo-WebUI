@@ -41,6 +41,10 @@ public interface LanguageConstants extends Constants {
 	
 	String abortExperiment();
 	
+	String analysisConfiguration();
+	
+	String addAsIndependentParameter();
+	
 	String executeExperiment();
 
 	String scheduleExperiment();

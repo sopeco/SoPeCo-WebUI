@@ -95,7 +95,7 @@ public class TreeView extends FlowPanel {
 
 	private FlowPanel createMarkerBox(boolean first) {
 		FlowPanel testMarker = new FlowPanel();
-		testMarker.addStyleName("rMarker");
+		testMarker.addStyleName("rMarker2");
 		Image infoImg = new Image(R.resc.imgIconSet().getSafeUri(), 150, 60, 14, 14);
 		infoImg.setTitle("test");
 		testMarker.add(infoImg);
