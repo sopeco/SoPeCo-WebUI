@@ -33,6 +33,8 @@ import org.sopeco.webui.client.helper.callback.ParallelCallback;
 import org.sopeco.webui.shared.helper.ExtensionContainer;
 import org.sopeco.webui.shared.helper.ExtensionTypes;
 
+import com.google.gwt.core.shared.GWT;
+
 /**
  * 
  * @author Marius Oehler
@@ -64,6 +66,11 @@ public final class Extensions {
 	 */
 	public static ParallelCallback<ExtensionContainer> getLoadingCallback() {
 		return new ParallelCallback<ExtensionContainer>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				GWT.log("Exception", caught);
+				super.onFailure(caught);
+			}
 
 			@Override
 			public void onSuccess(ExtensionContainer result) {

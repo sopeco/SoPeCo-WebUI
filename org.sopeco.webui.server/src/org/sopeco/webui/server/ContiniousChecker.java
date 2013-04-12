@@ -67,7 +67,7 @@ public final class ContiniousChecker {
 		LOGGER.fine("Connected SocketMEController: " + SocketManager.getAllSocketApps().size());
 		for (SocketAppWrapper saw : SocketManager.getAllSocketApps()) {
 			if (!saw.isAlive()) {
-				LOGGER.fine("Removing dead controller " + saw.getSocket().getInetAddress().getHostAddress());
+				LOGGER.info("Removing dead controller " + saw.getSocket().getInetAddress().getHostAddress());
 				SocketManager.removeSocketApp(saw);
 			}
 		}

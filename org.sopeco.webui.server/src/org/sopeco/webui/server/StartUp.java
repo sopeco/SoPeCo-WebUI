@@ -33,6 +33,8 @@ import org.sopeco.config.Configuration;
 import org.sopeco.config.IConfiguration;
 import org.sopeco.config.exception.ConfigurationException;
 import org.sopeco.engine.measurementenvironment.socket.SocketAcception;
+import org.sopeco.persistence.exceptions.DataNotFoundException;
+import org.sopeco.webui.server.persistence.UiPersistence;
 import org.sopeco.webui.server.rpc.database.DatabaseManagerRPCImpl;
 
 /**
@@ -66,7 +68,11 @@ public final class StartUp implements ServletContextListener {
 			loadConfiguration();
 
 			// Workaround that the persistence drives are available
-			new DatabaseManagerRPCImpl().getAllDatabases();
+			try {
+				UiPersistence.getMetaProvider().loadAllDatabaseInstances();
+			} catch (DataNotFoundException e) {
+				e.printStackTrace();
+			}
 
 			Scheduler.startScheduler();
 

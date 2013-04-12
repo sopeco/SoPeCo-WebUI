@@ -27,7 +27,6 @@
 package org.sopeco.webui.client.layout.login;
 
 import java.util.Date;
-import java.util.List;
 
 import org.sopeco.persistence.metadata.entities.DatabaseInstance;
 import org.sopeco.webui.client.SoPeCoUI;
@@ -42,6 +41,10 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -57,7 +60,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
  * @author Marius Oehler
  * 
  */
-public class LoginPanel extends FlowPanel implements ClickHandler {
+public class LoginPanel extends FlowPanel implements ClickHandler, KeyUpHandler, ValueChangeHandler<String> {
 
 	public static final String COOKIE_DATABASE = "selected_database";
 
@@ -68,7 +71,7 @@ public class LoginPanel extends FlowPanel implements ClickHandler {
 	private SelectAccountPanel selectAccountPanel;
 	private AddAccountPanel addAccountPanel;
 	private DeleteAccountPanel deleteAccountPanel;
-	private PasswordLoginPanel passwordLoginPanel;
+	private MessagePanel messagePanel;
 
 	private HTML htmlFEVersionInfo;
 
@@ -81,7 +84,7 @@ public class LoginPanel extends FlowPanel implements ClickHandler {
 	public LoginPanel() {
 		init();
 
-		fetchAccounts();
+		// fetchAccounts();
 	}
 
 	/**
@@ -110,7 +113,9 @@ public class LoginPanel extends FlowPanel implements ClickHandler {
 		selectAccountPanel = new SelectAccountPanel();
 		selectAccountPanel.getBtnConnect().addClickHandler(this);
 		selectAccountPanel.getBtnAddAccount().addClickHandler(this);
-		selectAccountPanel.getBtnRemoveAccount().addClickHandler(this);
+		selectAccountPanel.getTbLogin().getTextbox().addKeyUpHandler(this);
+		selectAccountPanel.getTbLogin().getTextbox().addValueChangeHandler(this);
+		// selectAccountPanel.getBtnRemoveAccount().addClickHandler(this);
 
 		addAccountPanel = new AddAccountPanel();
 		addAccountPanel.getBtnCancel().addClickHandler(this);
@@ -120,9 +125,8 @@ public class LoginPanel extends FlowPanel implements ClickHandler {
 		deleteAccountPanel.getBtnCancel().addClickHandler(this);
 		deleteAccountPanel.getBtnDelete().addClickHandler(this);
 
-		passwordLoginPanel = new PasswordLoginPanel();
-		passwordLoginPanel.getBtnCancel().addClickHandler(this);
-		passwordLoginPanel.getBtnContinue().addClickHandler(this);
+		messagePanel = new MessagePanel();
+		messagePanel.getBtnBack().addClickHandler(this);
 
 		verticalCell.add(selectAccountPanel);
 		add(verticalCell);
@@ -131,6 +135,28 @@ public class LoginPanel extends FlowPanel implements ClickHandler {
 			add(logoPanel);
 		}
 		add(selectLanguagePanel);
+	}
+
+	@Override
+	public void onValueChange(ValueChangeEvent<String> event) {
+		if (event.getSource() == selectAccountPanel.getTbLogin().getTextbox()) {
+			inputEvent();
+		}
+	}
+
+	@Override
+	public void onKeyUp(KeyUpEvent event) {
+		if (event.getSource() == selectAccountPanel.getTbLogin().getTextbox()) {
+			inputEvent();
+		}
+	}
+
+	private void inputEvent() {
+		if (!selectAccountPanel.getTbLogin().getTextbox().getValue().isEmpty()) {
+			selectAccountPanel.getBtnConnect().setEnabled(true);
+		} else {
+			selectAccountPanel.getBtnConnect().setEnabled(false);
+		}
 	}
 
 	private void createLanguagePanel() {
@@ -144,46 +170,10 @@ public class LoginPanel extends FlowPanel implements ClickHandler {
 				"frontend.jsp?locale=de"));
 	}
 
-	/**
-	 * Fetches the available accounts from the server.
-	 */
-	private void fetchAccounts() {
-		fetchAccounts(null);
-	}
-
-	private void fetchAccounts(final String setSelectedAccount) {
-		fetchAccounts(setSelectedAccount, false);
-	}
-
-	private void fetchAccounts(final String setSelectedAccount, final boolean login) {
-		RPC.getDatabaseManagerRPC().getAllDatabases(new AsyncCallback<List<DatabaseInstance>>() {
-			@Override
-			public void onSuccess(List<DatabaseInstance> result) {
-				selectAccountPanel.updateAccountList(result);
-
-				if (setSelectedAccount != null) {
-					selectAccountPanel.getCbAccounts().setSelectedText(setSelectedAccount);
-				}
-
-				if (login) {
-					login();
-				}
-			}
-
-			@Override
-			public void onFailure(Throwable caught) {
-				// TODO Errorhandling
-			}
-		});
-	}
-
 	@Override
 	public void onClick(ClickEvent event) {
 		if (event.getSource() == selectAccountPanel.getBtnConnect()) {
-			// Connect to the selected account if accounts are available
-			if (Manager.get().getAvailableDatabases() != null && !Manager.get().getAvailableDatabases().isEmpty()) {
-				login();
-			}
+			login();
 		} else if (event.getSource() == selectAccountPanel.getBtnAddAccount()) {
 			verticalCell.clear();
 			addAccountPanel.reset();
@@ -194,122 +184,37 @@ public class LoginPanel extends FlowPanel implements ClickHandler {
 			verticalCell.add(selectAccountPanel);
 		} else if (event.getSource() == addAccountPanel.getBtnAddAccount()) {
 			if (addAccountPanel.formValid()) {
-				addAccount();
+				checkAccountName();
 			}
-		} else if (event.getSource() == selectAccountPanel.getBtnRemoveAccount()) {
-			verticalCell.clear();
-			deleteAccountPanel.setAccountInfos(getSelectedAccount());
-			verticalCell.add(deleteAccountPanel);
-			deleteAccountPanel.getTbPassword().setFocus(true);
 		} else if (event.getSource() == deleteAccountPanel.getBtnCancel()) {
 			verticalCell.clear();
 			verticalCell.add(selectAccountPanel);
-		} else if (event.getSource() == deleteAccountPanel.getBtnDelete()) {
-			delete();
-		} else if (event.getSource() == passwordLoginPanel.getBtnCancel()) {
+		} else if (event.getSource() == messagePanel.getBtnBack()) {
 			verticalCell.clear();
 			verticalCell.add(selectAccountPanel);
-		} else if (event.getSource() == passwordLoginPanel.getBtnContinue()) {
-			loginCheckPassword();
 		}
-	}
-
-	/**
-	 * Returns the DatabaseInstance object which is related to the selected
-	 * account.
-	 * 
-	 * @return DatabaseInstance of the selected account
-	 */
-	private DatabaseInstance getSelectedAccount() {
-		return Manager.get().getAvailableDatabases().get(selectAccountPanel.getCbAccounts().getSelectedIndex());
-	}
-
-	private void delete() {
-		final DatabaseInstance account = getSelectedAccount();
-
-		if (account.isProtectedByPassword()) {
-			RPC.getDatabaseManagerRPC().checkPassword(account, deleteAccountPanel.getTbPassword().getText(),
-					new AsyncCallback<Boolean>() {
-						@Override
-						public void onFailure(Throwable caught) {
-							SoPeCoUI.get().onUncaughtException(caught);
-						}
-
-						@Override
-						public void onSuccess(Boolean result) {
-							if (result) {
-								deleteAccount(account);
-							} else {
-								deleteAccountPanel.getHtmlWrongPassword().setVisible(true);
-								deleteAccountPanel.getTbPassword().setText("");
-							}
-						}
-					});
-		} else {
-			deleteAccount(account);
-		}
-	}
-
-	private void deleteAccount(DatabaseInstance account) {
-		RPC.getDatabaseManagerRPC().removeDatabase(account, new AsyncCallback<Boolean>() {
-			@Override
-			public void onFailure(Throwable caught) {
-				SoPeCoUI.get().onUncaughtException(caught);
-			}
-
-			@Override
-			public void onSuccess(Boolean result) {
-				verticalCell.clear();
-				verticalCell.add(selectAccountPanel);
-				fetchAccounts();
-			}
-		});
 	}
 
 	private void login() {
-		final DatabaseInstance account = getSelectedAccount();
-		Manager.get().setSelectedDatabaseIndex(selectAccountPanel.getCbAccounts().getSelectedIndex());
+		String accountName = selectAccountPanel.getTbLogin().getTextbox().getValue();
+		String password = selectAccountPanel.getTbPassword().getTextbox().getValue();
+
+		loginIntoAccount(accountName, password);
+	}
+
+	private void loginIntoAccount(final String accountName, final String password) {
+
+		messagePanel.setMessage("Logging into SoPeCo..");
+		messagePanel.getBtnBack().setVisible(false);
 
 		Date expireDate = new Date();
 		long sevenDaysInFuture = expireDate.getTime() + COOKIE_EXPIRE_TIME;
 		expireDate.setTime(sevenDaysInFuture);
 
-		Cookies.setCookie(COOKIE_DATABASE, account.getDbName(), expireDate);
+		Cookies.setCookie(COOKIE_DATABASE, accountName, expireDate);
 
-		if (account.isProtectedByPassword()) {
-			verticalCell.clear();
-			passwordLoginPanel.setAccountInfos(account);
-			verticalCell.add(passwordLoginPanel);
-			passwordLoginPanel.getTbPassword().setFocus(true);
-		} else {
-			loginIntoAccount(account, "");
-		}
-
-	}
-
-	private void loginCheckPassword() {
-		final DatabaseInstance account = getSelectedAccount();
-		final String password = passwordLoginPanel.getTbPassword().getText();
-		RPC.getDatabaseManagerRPC().checkPassword(account, password, new AsyncCallback<Boolean>() {
-			@Override
-			public void onFailure(Throwable caught) {
-				SoPeCoUI.get().onUncaughtException(caught);
-			}
-
-			@Override
-			public void onSuccess(Boolean result) {
-				if (result) {
-					loginIntoAccount(account, password);
-				} else {
-					passwordLoginPanel.getHtmlWrongPassword().setVisible(true);
-					passwordLoginPanel.getTbPassword().setText("");
-				}
-			}
-		});
-	}
-
-	private void loginIntoAccount(final DatabaseInstance account, final String password) {
-		selectAccountPanel.setIsLogginIn(true);
+		verticalCell.clear();
+		verticalCell.add(messagePanel);
 
 		/** code split point */
 		GWT.runAsync(new RunAsyncCallback() {
@@ -321,7 +226,7 @@ public class LoginPanel extends FlowPanel implements ClickHandler {
 
 			@Override
 			public void onSuccess() {
-				RPC.getDatabaseManagerRPC().login(account, password, new AsyncCallback<Boolean>() {
+				RPC.getDatabaseManagerRPC().login(accountName, password, new AsyncCallback<Boolean>() {
 					@Override
 					public void onFailure(Throwable caught) {
 						Message.error(caught.getMessage());
@@ -330,9 +235,14 @@ public class LoginPanel extends FlowPanel implements ClickHandler {
 					@Override
 					public void onSuccess(Boolean result) {
 						if (result) {
-							getAccountSettings(account);
+							getAccountSettings(accountName);
 						} else {
-							Message.error(R.get("wrong_db_credentials"));
+							// Message.error(R.get("wrong_db_credentials"));
+							verticalCell.clear();
+
+							messagePanel.loginFailed();
+
+							verticalCell.add(messagePanel);
 						}
 					}
 				});
@@ -340,8 +250,8 @@ public class LoginPanel extends FlowPanel implements ClickHandler {
 		});
 	}
 
-	private void getAccountSettings(final DatabaseInstance instance) {
-		RPC.getDatabaseManagerRPC().getAccountDetails(new AsyncCallback<AccountDetails>() {
+	private void getAccountSettings(final String accountName) {
+		RPC.getDatabaseManagerRPC().getDatabase(new AsyncCallback<DatabaseInstance>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
@@ -349,18 +259,49 @@ public class LoginPanel extends FlowPanel implements ClickHandler {
 			}
 
 			@Override
-			public void onSuccess(AccountDetails result) {
+			public void onSuccess(DatabaseInstance result) {
+				Manager.get().setCurrentDatabaseInstance(result);
+				RPC.getDatabaseManagerRPC().getAccountDetails(new AsyncCallback<AccountDetails>() {
 
-				Manager.get().setAccountDetails(result);
-				SoPeCoUI.get().initializeMainView(instance);
+					@Override
+					public void onFailure(Throwable caught) {
+						Message.error(caught.getMessage());
+					}
+
+					@Override
+					public void onSuccess(AccountDetails result) {
+						Manager.get().setAccountDetails(result);
+						SoPeCoUI.get().initializeMainView(accountName);
+					}
+				});
 			}
 		});
 	}
 
-	private void addAccount() {
+	private void checkAccountName() {
+		final String accountName = Utilities.cleanString(addAccountPanel.getTbName().getText());
+
+		RPC.getDatabaseManagerRPC().accountExists(accountName, new AsyncCallback<Boolean>() {
+			@Override
+			public void onSuccess(Boolean result) {
+				if (result) {
+					// TODO dirty -> make nice warning
+					Window.alert("Account '" + accountName + "' already exists");
+				} else {
+					addAccount(accountName);
+				}
+			}
+
+			@Override
+			public void onFailure(Throwable caught) {
+				Message.error("Database was not added: " + caught.getMessage());
+			}
+		});
+	}
+
+	private void addAccount(final String accountName) {
 
 		final DatabaseInstance newAccount = new DatabaseInstance();
-		final String accountName = Utilities.cleanString(addAccountPanel.getTbName().getText());
 
 		newAccount.setDbName(accountName);
 		newAccount.setHost(addAccountPanel.getTbDatabaseHost().getText());
@@ -383,15 +324,7 @@ public class LoginPanel extends FlowPanel implements ClickHandler {
 
 			@Override
 			public void onSuccess(Boolean result) {
-				verticalCell.clear();
-				verticalCell.add(selectAccountPanel);
-
-				String selectAccount = accountName;
-				if (newAccount.isProtectedByPassword()) {
-					selectAccount = "* " + selectAccount;
-				}
-
-				fetchAccounts(selectAccount, true);
+				loginIntoAccount(accountName, addAccountPanel.getTbPassword().getText());
 			}
 		});
 
