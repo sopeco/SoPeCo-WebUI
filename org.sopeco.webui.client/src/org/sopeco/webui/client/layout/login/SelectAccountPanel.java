@@ -30,9 +30,11 @@ import java.util.List;
 
 import org.sopeco.gwt.widgets.ClearDiv;
 import org.sopeco.gwt.widgets.ComboBox;
+import org.sopeco.gwt.widgets.WrappedTextBox;
 import org.sopeco.persistence.metadata.entities.DatabaseInstance;
 import org.sopeco.webui.client.manager.Manager;
 import org.sopeco.webui.client.resources.R;
+import org.sopeco.webui.client.widget.SmallTableLabel;
 
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.Cookies;
@@ -57,38 +59,42 @@ public class SelectAccountPanel extends VerticalPanel {
 	private Button btnConnect;
 	private FlowPanel panelSelection;
 
-	private ComboBox cbAccounts;
 	private Button btnAddAccount;
-	private Button btnRemoveAccount;
+
+	private WrappedTextBox tbLogin;
+	private WrappedTextBox tbPassword;
+
+	private SmallTableLabel lblLogin;
+	private SmallTableLabel lblPassword;
 
 	public SelectAccountPanel() {
 		init();
 	}
 
 	private void init() {
-		HTML infoText = new HTML(R.lang.loginSelectAccount());
-		infoText.addStyleName("infoText");
-
-		cbAccounts = new ComboBox();
-		cbAccounts.addStyleName("cbAccounts");
-		cbAccounts.setWidth(CB_ACCOUNTS_WIDTH);
-		cbAccounts.setEditable(false);
-
 		btnAddAccount = new Button((AbstractImagePrototype.create(R.resc.imgIconDatabaseAdd()).getHTML()));
 		btnAddAccount.addStyleName("accountButton");
-
-		btnRemoveAccount = new Button((AbstractImagePrototype.create(R.resc.imgIconDatabaseRemove()).getHTML()));
-		btnRemoveAccount.addStyleName("accountButton");
+		btnAddAccount.setTitle(R.lang.addNewAccount());
 
 		btnConnect = new Button(R.lang.connect());
 		btnConnect.addStyleName("btnConnect");
 
 		panelSelection = new FlowPanel();
 		panelSelection.addStyleName("panelSelection");
-		panelSelection.add(cbAccounts);
-		panelSelection.add(btnRemoveAccount);
 		panelSelection.add(btnAddAccount);
+		panelSelection.add(btnConnect);
 		panelSelection.add(new ClearDiv());
+
+		tbLogin = new WrappedTextBox();
+		tbPassword = new WrappedTextBox();
+		tbPassword.setAsPasswordTextbox();
+
+		lblLogin = new SmallTableLabel("Login");
+		lblPassword = new SmallTableLabel("Password");
+
+		String cookieText = Cookies.getCookie(LoginPanel.COOKIE_DATABASE);
+		if (cookieText != null)
+			tbLogin.getTextbox().setText(cookieText);
 
 		addStyleName("content");
 		addStyleName("dialogBox");
@@ -101,14 +107,18 @@ public class SelectAccountPanel extends VerticalPanel {
 		sopecoLogo.setWidth("280px");
 		sopecoLogo.setHeight("77px");
 		sopecoLogo.getElement().getStyle().setMarginTop(25, Unit.PX);
-		sopecoLogo.getElement().getStyle().setMarginBottom(25, Unit.PX);
+		sopecoLogo.getElement().getStyle().setMarginBottom(10, Unit.PX);
 
 		add(sopecoLogo);
-		add(infoText);
-		add(panelSelection);
-		add(btnConnect);
 
-		setIsLogginIn(false);
+		setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
+		add(lblLogin);
+		add(tbLogin);
+		add(lblPassword);
+		add(tbPassword);
+		add(panelSelection);
+
+		btnConnect.setEnabled(!tbLogin.getTextbox().getValue().isEmpty());
 	}
 
 	public Button getBtnConnect() {
@@ -119,57 +129,11 @@ public class SelectAccountPanel extends VerticalPanel {
 		return btnAddAccount;
 	}
 
-	public Button getBtnRemoveAccount() {
-		return btnRemoveAccount;
+	public WrappedTextBox getTbLogin() {
+		return tbLogin;
 	}
 
-	public ComboBox getCbAccounts() {
-		return cbAccounts;
-	}
-
-	/**
-	 * Updates the available account (and the combobox) with those from the
-	 * list.
-	 * 
-	 * @param result
-	 *            list with accounts
-	 */
-	public void updateAccountList(List<DatabaseInstance> result) {
-		Manager.get().setAvailableDatabases(result);
-
-		cbAccounts.clear();
-		cbAccounts.setEnabled(!result.isEmpty());
-
-		for (DatabaseInstance database : result) {
-			String itemName = database.getDbName();
-
-			if (database.isProtectedByPassword()) {
-				itemName = "* " + itemName;
-			}
-
-			cbAccounts.addItem(itemName);
-		}
-
-		String cookieLastAccount = Cookies.getCookie(LoginPanel.COOKIE_DATABASE);
-		if (cookieLastAccount != null) {
-			cbAccounts.setSelectedText(cookieLastAccount);
-		}
-
-		setIsLogginIn(false);
-	}
-
-	public void setIsLogginIn(boolean status) {
-		if (status) {
-			btnConnect.setEnabled(false);
-			btnConnect.setText("loggin in..");
-		} else {
-			if (Manager.get().getAvailableDatabases() == null || Manager.get().getAvailableDatabases().isEmpty()) {
-				cbAccounts.addItem(R.lang.noAccountsAvailable());
-				btnConnect.setEnabled(false);
-			} else {
-				btnConnect.setEnabled(true);
-				btnConnect.setText("connect");
-			}
-		}
+	public WrappedTextBox getTbPassword() {
+		return tbPassword;
 	}
 }

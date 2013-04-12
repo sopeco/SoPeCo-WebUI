@@ -75,10 +75,11 @@ public class MEControllerSettingsView extends FlexTable {
 		setWidth("100%");
 		addStyleName(CSS_CLASS);
 
-		int port = Configuration.getSessionSingleton(Configuration.getGlobalSessionId()).getPropertyAsInteger(
-				UiConfiguration.SOPECO_CONFIG_MEC_LISTENER_PORT, 11300);
-
-		htmlDescription = new HTML(R.lang.mecSettingDescription() + " (Socket-Port: " + port + ")");
+//		int port = Configuration.getSessionSingleton(Configuration.getGlobalSessionId()).getPropertyAsInteger(
+//				UiConfiguration.SOPECO_CONFIG_MEC_LISTENER_PORT, 11300);
+		//int port = 11300;
+		
+		htmlDescription = new HTML(R.lang.mecSettingDescription() /*+ " (Socket-Port: " + port + ")"*/);
 
 		cbProtocol = new ComboBox();
 		cbProtocol.setWidth(100 + "px");

@@ -283,8 +283,7 @@ public class NorthPanel extends FlowPanel implements ClickHandler, InputDialogHa
 
 		add(navigationPanel);
 
-		connectedToText.setHTML(R.get("connected_to") + ": <b>" + SoPeCoUI.get().getConnectedDatabase().getDbName()
-				+ "</b>");
+		connectedToText.setHTML(R.get("connected_to") + ": <b>" + SoPeCoUI.get().getConnectedAccount() + "</b>");
 
 		updateScenarioList();
 	}

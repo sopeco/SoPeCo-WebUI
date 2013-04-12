@@ -26,10 +26,7 @@
  */
 package org.sopeco.webui.server.rpc.database;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import javax.servlet.ServletException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,22 +51,14 @@ public class DatabaseManagerRPCImpl extends SuperRemoteServlet implements Databa
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseManagerRPCImpl.class);
 	private static final long serialVersionUID = 1L;
-	
+
 	/**
 	 * Returns the databases which are stored in the meta database.
 	 * 
 	 * @return List of database instances
 	 */
-	public List<DatabaseInstance> getAllDatabases() {
-		LOGGER.debug("loading databases");
-
-		try {
-			return UiPersistence.getMetaProvider().loadAllDatabaseInstances();
-		} catch (DataNotFoundException e) {
-			return new ArrayList<DatabaseInstance>();
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+	public DatabaseInstance getDatabase() {
+		return getUser().getCurrentAccount();
 	}
 
 	/**
@@ -114,6 +103,10 @@ public class DatabaseManagerRPCImpl extends SuperRemoteServlet implements Databa
 		dbName = dbName.replaceAll("[^a-zA-Z0-9]", "_");
 		dbInstance.setDbName(dbName);
 
+		if (accountExists(dbName)) {
+			return false;
+		}
+
 		if (dbInstance.isProtectedByPassword()) {
 			FlexiblePersistenceProviderFactory.createPersistenceProvider(getThreadLocalRequest().getSession(),
 					dbInstance.getHost(), dbInstance.getPort(), dbInstance.getDbName(), passwd);
@@ -149,6 +142,22 @@ public class DatabaseManagerRPCImpl extends SuperRemoteServlet implements Databa
 			return null;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
+		}
+	}
+
+	private DatabaseInstance getDatabaseInstance(String dbName) {
+		try {
+			List<DatabaseInstance> instanceList = UiPersistence.getMetaProvider().loadAllDatabaseInstances();
+
+			for (DatabaseInstance instance : instanceList) {
+				if (instance.getDbName().equals(dbName)) {
+					return instance;
+				}
+			}
+
+			return null;
+		} catch (Exception e) {
+			return null;
 		}
 	}
 
@@ -191,12 +200,12 @@ public class DatabaseManagerRPCImpl extends SuperRemoteServlet implements Databa
 	 * 
 	 */
 	@Override
-	public boolean login(DatabaseInstance databaseInstance, String passwd) {
+	public boolean login(String dbName, String passwd) {
 		double metering = Metering.start();
 
-		DatabaseInstance dbInstance = getRealInstance(databaseInstance);
+		DatabaseInstance dbInstance = getDatabaseInstance(dbName);
 
-		if (dbInstance == null || databaseInstance == null) {
+		if (dbInstance == null) {
 			return false;
 		}
 
@@ -218,7 +227,7 @@ public class DatabaseManagerRPCImpl extends SuperRemoteServlet implements Databa
 			LOGGER.warn(e.getMessage());
 			return false;
 		}
-		
+
 		if (dbConnection == null) {
 			LOGGER.warn("Can't connect to database..");
 			return false;
@@ -251,7 +260,12 @@ public class DatabaseManagerRPCImpl extends SuperRemoteServlet implements Databa
 	 * @return true if password is correct
 	 */
 	@Override
-	public boolean checkPassword(DatabaseInstance instance, String passwd) {
+	public boolean checkPassword(String dbName, String passwd) {
+		DatabaseInstance instance = getDatabaseInstance(dbName);
+		if (instance == null) {
+			throw new RuntimeException("No database with name " + dbName + " found.");
+		}
+
 		if (!instance.isProtectedByPassword()) {
 			return true;
 		}
@@ -277,5 +291,22 @@ public class DatabaseManagerRPCImpl extends SuperRemoteServlet implements Databa
 	@Override
 	public void storeAccountDetails(AccountDetails details) {
 		UiPersistence.getUiProvider().storeAccountDetails(details);
+	}
+
+	@Override
+	public boolean accountExists(String accountName) {
+		try {
+			List<DatabaseInstance> accountList = UiPersistence.getMetaProvider().loadAllDatabaseInstances();
+
+			for (DatabaseInstance instance : accountList) {
+				if (instance.getDbName().equals(accountName)) {
+					return true;
+				}
+			}
+			return false;
+		} catch (DataNotFoundException e) {
+			return false;
+		}
+
 	}
 }

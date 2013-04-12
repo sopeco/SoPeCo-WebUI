@@ -62,7 +62,7 @@ public final class Manager {
 	private ControllerStatus controllerLastStatus = ControllerStatus.UNKNOWN;
 	private AccountDetails accountDetails = null;
 	private String selectedExperiment;
-	private List<DatabaseInstance> availableDatabases;
+	private DatabaseInstance currentDatabaseInstance;
 	private int selectedDatabaseIndex = -1;
 
 	public void reset() {
@@ -106,22 +106,16 @@ public final class Manager {
 	}
 
 	public DatabaseInstance getSelectedDatabaseInstance() {
-		if (selectedDatabaseIndex < 0) {
-			return null;
-		}
-		return availableDatabases.get(selectedDatabaseIndex);
+		return currentDatabaseInstance;
 	}
 
 	public void setSelectedDatabaseIndex(int selectedDatabaseIndex) {
 		this.selectedDatabaseIndex = selectedDatabaseIndex;
 	}
 
-	public List<DatabaseInstance> getAvailableDatabases() {
-		return availableDatabases;
-	}
-
-	public void setAvailableDatabases(List<DatabaseInstance> pAvailableDatabases) {
-		this.availableDatabases = pAvailableDatabases;
+	
+	public void setCurrentDatabaseInstance(DatabaseInstance currentDatabaseInstance) {
+		this.currentDatabaseInstance = currentDatabaseInstance;
 	}
 
 	/**
