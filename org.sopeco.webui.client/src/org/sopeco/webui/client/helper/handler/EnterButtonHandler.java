@@ -26,6 +26,7 @@
  */
 package org.sopeco.webui.client.helper.handler;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
@@ -48,6 +49,7 @@ public class EnterButtonHandler implements KeyPressHandler {
 	@Override
 	public void onKeyPress(KeyPressEvent event) {
 		if (event.getCharCode() == KeyCodes.KEY_ENTER) {
+			GWT.log("fire");
 			target.fireEvent(new ClickEvent() {
 			});
 		}

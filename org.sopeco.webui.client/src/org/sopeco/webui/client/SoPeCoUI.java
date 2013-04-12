@@ -86,6 +86,7 @@ public class SoPeCoUI implements EntryPoint, SimpleNotify, UncaughtExceptionHand
 	}-*/;
 
 	private DatabaseInstance connectedDatabase;
+	private String connectedAccountName;
 
 	private CallbackBatch loadingBatch;
 
@@ -119,6 +120,7 @@ public class SoPeCoUI implements EntryPoint, SimpleNotify, UncaughtExceptionHand
 
 	@Override
 	public void onUncaughtException(Throwable e) {
+		GWT.log("Uncaught Exception", e);
 		e = e.getCause();
 
 		String st = e.getClass().getName() + ": " + e.getMessage();
@@ -186,8 +188,8 @@ public class SoPeCoUI implements EntryPoint, SimpleNotify, UncaughtExceptionHand
 	 * 
 	 * @return database instance
 	 */
-	public DatabaseInstance getConnectedDatabase() {
-		return connectedDatabase;
+	public String getConnectedAccount() {
+		return connectedAccountName;
 	}
 
 	/**
@@ -196,8 +198,8 @@ public class SoPeCoUI implements EntryPoint, SimpleNotify, UncaughtExceptionHand
 	 * @param newConnectedDatabase
 	 *            the database of the current connection.
 	 */
-	public void initializeMainView(DatabaseInstance newConnectedDatabase) {
-		connectedDatabase = newConnectedDatabase;
+	public void initializeMainView(String accountName) {
+		connectedAccountName = accountName;
 
 		ScenarioManager.clear();
 		MainLayoutPanel.destroy();

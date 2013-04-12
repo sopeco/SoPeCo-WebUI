@@ -118,11 +118,12 @@
 }
 
 .loginPanel .content .btnConnect {
-	width: 100%;
+	padding: 5px 15px;
+	float: right;
 }
 
 .loginPanel .content .panelSelection {
-	margin-bottom: 0.5em;
+	margin-top: 0.5em;
 }
 
 .loginPanel .content .cbAccounts {
@@ -130,10 +131,9 @@
 }
 
 .loginPanel .content .accountButton {
-	margin-left: 0.5em;
-	padding: 4px 6px;
-	height: 24px;
-	float: right;
+	padding: 6px 10px;
+	height: 30px;
+	float: left;
 }
 
 .loginPanel .content h3 {

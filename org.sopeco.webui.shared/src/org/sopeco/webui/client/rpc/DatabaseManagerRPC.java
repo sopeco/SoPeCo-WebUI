@@ -48,7 +48,7 @@ public interface DatabaseManagerRPC extends RemoteService {
 	 * 
 	 * @return List of all databases
 	 */
-	List<DatabaseInstance> getAllDatabases();
+	DatabaseInstance getDatabase();
 
 	/**
 	 * Add a new database in the metadatabase.
@@ -75,9 +75,11 @@ public interface DatabaseManagerRPC extends RemoteService {
 	 *            which will be selected
 	 * @return true if succeeded
 	 */
-	boolean login(DatabaseInstance databaseInstance, String passwd);
+	boolean login(String dbName, String passwd);
 
-	boolean checkPassword(DatabaseInstance databaseInstance, String passwd);
+	boolean checkPassword(String dbName, String passwd);
+	
+	boolean accountExists(String accountName);
 
 	AccountDetails getAccountDetails();
 	

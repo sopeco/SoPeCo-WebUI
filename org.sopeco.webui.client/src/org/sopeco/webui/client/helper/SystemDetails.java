@@ -30,6 +30,8 @@ import java.util.HashMap;
 
 import org.sopeco.webui.client.helper.callback.ParallelCallback;
 
+import com.google.gwt.core.client.GWT;
+
 /**
  * 
  * @author Marius Oehler
@@ -53,6 +55,12 @@ public final class SystemDetails {
 				metaPort = result.get("port");
 				metaDatabaseDetailsAvailable = true;
 				super.onSuccess(result);
+			}
+
+			@Override
+			public void onFailure(Throwable caught) {
+				GWT.log("Exception", caught);
+				super.onFailure(caught);
 			}
 		};
 	}

@@ -39,7 +39,7 @@ import com.google.gwt.view.client.Range;
 
 public class ChartsDataProvider extends AsyncDataProvider<Visualization> {
 	private final VisualizationController visualizationController;
-	
+
 	public ChartsDataProvider(VisualizationController visualizationController) {
 		this.visualizationController = visualizationController;
 	}
@@ -47,24 +47,27 @@ public class ChartsDataProvider extends AsyncDataProvider<Visualization> {
 	@Override
 	protected void onRangeChanged(HasData<Visualization> display) {
 		final Range range = display.getVisibleRange();
-		if (visualizationController.getStatus() != Status.BUSY){
+		if (visualizationController.getStatus() != Status.BUSY) {
 			visualizationController.setStatus(Status.LOADING);
 		}
-		RPC.getVisualizationRPC().getVisualizations(range.getStart(), range.getLength(), new AsyncCallback<VisualizationBundle>() {
-			
-			@Override
-			public void onSuccess(VisualizationBundle result) {
-				updateRowData(range.getStart(), result.getVisualizations());
-				updateRowCount(result.getTotalNumberOfVisualizations(), true);
-				if (visualizationController.getStatus() != Status.BUSY){
-					visualizationController.setStatus(Status.READY);
-				}
-			}
-			
-			@Override
-			public void onFailure(Throwable caught) {
-			}
-		});
+		RPC.getVisualizationRPC().getVisualizations(range.getStart(), range.getLength(),
+				new AsyncCallback<VisualizationBundle>() {
+
+					@Override
+					public void onSuccess(VisualizationBundle result) {
+						if (result.getVisualizations() != null) {
+							updateRowData(range.getStart(), result.getVisualizations());
+							updateRowCount(result.getTotalNumberOfVisualizations(), true);
+						}
+						if (visualizationController.getStatus() != Status.BUSY) {
+							visualizationController.setStatus(Status.READY);
+						}
+					}
+
+					@Override
+					public void onFailure(Throwable caught) {
+					}
+				});
 	}
 
 	public void addDataDisplay(CellList<Visualization> visualizationList) {

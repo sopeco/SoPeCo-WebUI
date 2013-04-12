@@ -40,17 +40,19 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  */
 public interface DatabaseManagerRPCAsync {
 
-	void getAllDatabases(AsyncCallback<List<DatabaseInstance>> callback);
+	void getDatabase(AsyncCallback<DatabaseInstance> callback);
 
 	void removeDatabase(DatabaseInstance databaseInstance, AsyncCallback<Boolean> callback);
 
 	void addDatabase(DatabaseInstance databaseInstance, String passwd, AsyncCallback<Boolean> callback);
 
-	void login(DatabaseInstance databaseInstance, String passwd, AsyncCallback<Boolean> callback);
+	void login(String dbName, String passwd, AsyncCallback<Boolean> callback);
 
-	void checkPassword(DatabaseInstance databaseInstance, String passwd, AsyncCallback<Boolean> callback);
+	void checkPassword(String dbName, String passwd, AsyncCallback<Boolean> callback);
 
 	void getAccountDetails(AsyncCallback<AccountDetails> callback);
 
 	void storeAccountDetails(AccountDetails details, AsyncCallback<Void> callback);
+	
+	void accountExists(String accountName, AsyncCallback<Boolean> callback);
 }
