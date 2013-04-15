@@ -257,6 +257,7 @@ public class ExperimentController implements ICenterController, ValueChangeHandl
 			setAnalysisRequired(false);
 		}else{
 			analysisController.getView().setVisible(true);
+			analysisController.updateParameterSelectionWidgets();
 			setAnalysisRequired(true);
 		}
 	}

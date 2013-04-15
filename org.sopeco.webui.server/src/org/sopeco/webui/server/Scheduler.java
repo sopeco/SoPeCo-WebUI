@@ -79,7 +79,6 @@ public final class Scheduler {
 		@Override
 		public void run() {
 			LOGGER.finer("SchedulerAction starts..");
-
 			ContiniousChecker.checkUserTimeout();
 			ExecuteScheduler.get().checkExperiments();
 			ContiniousChecker.checkSocketMEController();

@@ -171,7 +171,7 @@ public class MEControllerSettingsView extends FlexTable {
 		}
 
 		// setWidget(1, 1, new SmallTableLabel(R.lang.mecAppToken()));
-		setWidget(1, 1, new SmallTableLabel(R.lang.mecApplication() + " " + R.lang.ipAddress()));
+		setWidget(1, 1, new SmallTableLabel(R.lang.mecApplication() + " " + R.lang.token()));
 		setWidget(2, 1, tbToken);
 
 		updatePasswordInput();

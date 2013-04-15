@@ -55,16 +55,16 @@ public class TreeView extends FlowPanel {
 	private ToggleButton tbtnObservation, tbtnInitialAssignments;
 	private Image imgInfoFirst, imgInfoSecond;
 
-	TreeView(boolean hasTwoCheckboxes) {
-		init(hasTwoCheckboxes);
+	TreeView(boolean hasTwoCheckboxes, String headLine) {
+		init(hasTwoCheckboxes, headLine);
 	}
 
-	private void init(boolean hasTwoCheckboxes) {
+	private void init(boolean hasTwoCheckboxes, String headLine) {
 		addStyleName(ELEMENT_CSS_CLASS);
 
 		headline = new FlowPanel();
-		HTML headlineText = new HTML(R.get("envParameter"));
-
+		HTML headlineText = new HTML(headLine);
+		
 		Image imgObserve = new Image(R.resc.imgIconSet().getSafeUri(), 180, 60, 16, 8);
 		tbtnObservation = new ToggleButton(imgObserve);
 		tbtnObservation.setTitle(R.get("showObservation"));
@@ -98,6 +98,8 @@ public class TreeView extends FlowPanel {
 		testMarker.addStyleName("rMarker2");
 		Image infoImg = new Image(R.resc.imgIconSet().getSafeUri(), 150, 60, 14, 14);
 		infoImg.setTitle("test");
+		// TODO: fix quick - make visible again
+		testMarker.setVisible(false);
 		testMarker.add(infoImg);
 		if (first) {
 			imgInfoFirst = infoImg;
@@ -130,4 +132,9 @@ public class TreeView extends FlowPanel {
 	public Tree getTree() {
 		return tree;
 	}
+	
+	public void setShowObservableButtonVisible(boolean visible){
+		tbtnObservation.setVisible(visible);
+	}
+	
 }
