@@ -69,8 +69,8 @@ public abstract class EnvironmentTree implements ClickHandler, ValueChangeHandle
 		FIRST, SECOND
 	}
 
-	public EnvironmentTree(boolean hasTwoCheckboxes) {
-		view = new TreeView(hasTwoCheckboxes);
+	public EnvironmentTree(boolean hasTwoCheckboxes, String headline) {
+		view = new TreeView(hasTwoCheckboxes, headline);
 		view.getTbtnObservationButton().addClickHandler(this);
 		view.getTbtnInitialAssignments().addClickHandler(this);
 

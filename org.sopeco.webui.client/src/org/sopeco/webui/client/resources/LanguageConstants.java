@@ -35,6 +35,8 @@ import com.google.gwt.i18n.client.Constants;
  */
 public interface LanguageConstants extends Constants {
 
+	String independentParameters();
+	
 	String aborted(); 
 	
 	String aborting();
@@ -132,4 +134,6 @@ public interface LanguageConstants extends Constants {
 	String removeChart();
 	
 	String refreshCharts();
+
+	String token();
 }

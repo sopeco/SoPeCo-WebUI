@@ -15,8 +15,10 @@ public class AnalysisDefinitionTree extends EnvironmentTree {
 	private AnalysisController analysisController;
 
 	public AnalysisDefinitionTree() {
-		super(false);
+		super(false, R.lang.independentParameters());
 		getView().setFirstInfoText(R.lang.addAsIndependentParameter());
+		getView().setShowObservableButtonVisible(false);
+		
 	}
 
 	@Override

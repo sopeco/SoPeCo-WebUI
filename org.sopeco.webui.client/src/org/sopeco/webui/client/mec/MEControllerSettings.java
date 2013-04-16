@@ -290,7 +290,7 @@ public class MEControllerSettings implements HasValueChangeHandlers<Boolean>, Va
 		view.getTextboxPort().setText("1099");
 		view.getComboBoxController().setEnabled(false);
 		view.getTextboxHost().setText("localhost");
-		view.getTextboxToken().getTextbox().setText("127.0.0.1");
+		view.getTextboxToken().getTextbox().setText("token");
 
 		if (view.getSelectedProtocol() == MEControllerProtocol.SOCKET) {
 			view.setStyleToken();
