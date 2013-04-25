@@ -1,0 +1,12 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder">
+	<ui:style>
+		.style {
+			margin-top: 0px;
+		}
+	</ui:style>
+	
+	<h3 class="{style.style}" ui:field="element">
+	    SoPeCo Dialog
+	</h3>
+</ui:UiBinder>

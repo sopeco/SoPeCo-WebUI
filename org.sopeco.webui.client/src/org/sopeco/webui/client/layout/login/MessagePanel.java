@@ -73,6 +73,6 @@ public class MessagePanel extends FlowPanel {
 	public void loginFailed() {
 		btnBack.setVisible(true);
 		image.setVisible(false);
-		message.setText("The user name or password is incorrect.");
+		message.setText("The username or password is incorrect.");
 	}
 }

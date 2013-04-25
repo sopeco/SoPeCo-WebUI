@@ -1,0 +1,123 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:spc="urn:import:org.sopeco.webui.client.ui">
+	<ui:style>
+		.textBox {
+			width: 175px;
+		}
+
+		.label {
+			margin-top: 7px;
+		}
+
+		.optionalLabel {
+			float:right;
+			color: gray;
+    		font-size: 10px;
+		}
+
+		.line {
+			background-color: #CCCCCC;
+   	 		display: block;
+   	 		height: 1px;
+   	 		margin-top: 5px;
+  			width: 100%;
+		}
+
+		.staticText {
+			white-space: nowrap;
+			padding-right: 1em;
+			color: #777777;
+			cursor: pointer;
+		}
+
+		.errorText {
+			color: #dd4c40;
+			display: none;
+		}
+
+		.hidden {
+			display: none;
+		}
+
+		.button {
+			float: right;
+			margin-left: 0.5em;
+		}
+
+		.mt { margin-top: 4px; }
+
+		.transparent {
+			opacity: 0.7;
+		}
+	</ui:style>
+
+	<spc:Dialog title="Add new account" widthPX="320">
+
+		<g:HorizontalPanel verticalAlignment="ALIGN_TOP" width="100%">
+		    <g:Label addStyleNames="{style.label}">Accountname:</g:Label>
+		    <g:Cell width="185px">
+			    <g:HTMLPanel>
+					<g:TextBox ui:field="accountName" addStyleNames="{style.textBox}"></g:TextBox>
+					<g:Label ui:field="errorName" addStyleNames="{style.errorText}"></g:Label>
+				</g:HTMLPanel>
+			</g:Cell>
+		</g:HorizontalPanel>
+		
+		<g:HorizontalPanel addStyleNames="{style.mt}" verticalAlignment="ALIGN_TOP" width="100%">
+		    <g:Label addStyleNames="{style.label}">Password:</g:Label>
+		    <g:Cell width="185px">
+			    <g:HTMLPanel>
+					<g:PasswordTextBox ui:field="password" addStyleNames="{style.textBox}"></g:PasswordTextBox>
+					<g:Label ui:field="errorPassword" addStyleNames="{style.errorText}"></g:Label>
+				</g:HTMLPanel>
+			</g:Cell>
+		</g:HorizontalPanel>
+		
+		<g:HorizontalPanel addStyleNames="{style.mt}" verticalAlignment="ALIGN_TOP" width="100%">
+		    <g:Label addStyleNames="{style.label}">Confirm password:</g:Label>
+		    <g:Cell width="185px">
+			    <g:HTMLPanel>
+					<g:PasswordTextBox ui:field="passwordConfirm" addStyleNames="{style.textBox}"></g:PasswordTextBox>
+					<g:Label ui:field="errorPasswordConfirm" addStyleNames="{style.errorText}"></g:Label>
+				</g:HTMLPanel>
+			</g:Cell>
+		</g:HorizontalPanel>
+		
+		<g:HorizontalPanel ui:field="panelDb" addStyleNames="{style.mt} {style.transparent}" verticalAlignment="ALIGN_MIDDLE" width="100%">
+		    <g:Label ui:field="toggleText">Use own database:</g:Label>
+		    <g:Cell horizontalAlignment="ALIGN_RIGHT">
+			    <g:CheckBox ui:field="ownDatabase"></g:CheckBox>
+			</g:Cell>
+		</g:HorizontalPanel>
+		
+		<g:HorizontalPanel ui:field="panelDbHost" addStyleNames="{style.mt} {style.hidden}" verticalAlignment="ALIGN_TOP" width="100%">
+		    <g:Label addStyleNames="{style.label}">Database Host:</g:Label>
+		    <g:Cell width="185px">
+			    <g:HTMLPanel>
+					<g:TextBox ui:field="dbHost" addStyleNames="{style.textBox}"></g:TextBox>
+					<g:Label ui:field="errorDbHost" addStyleNames="{style.errorText}"></g:Label>
+				</g:HTMLPanel>
+			</g:Cell>
+		</g:HorizontalPanel>
+		
+		<g:HorizontalPanel ui:field="panelDbPort" addStyleNames="{style.mt} {style.hidden}" verticalAlignment="ALIGN_TOP" width="100%">
+		    <g:Label addStyleNames="{style.label}">Database Port:</g:Label>
+		    <g:Cell width="185px">
+			    <g:HTMLPanel>
+					<g:TextBox ui:field="dbPort" addStyleNames="{style.textBox}"></g:TextBox>
+					<g:Label ui:field="errorDbPort" addStyleNames="{style.errorText}"></g:Label>
+				</g:HTMLPanel>
+			</g:Cell>
+		</g:HorizontalPanel>
+
+		<spc:HorizontalRuler />
+		
+		<g:Button ui:field="btnCancel" text="Cancel" addStyleNames="{style.button}"/>
+		<g:Button ui:field="btnAdd" text="Add account" addStyleNames="{style.button}"/>
+		<spc:ClearFloating />
+		
+	</spc:Dialog>
+	<!--</g:HTMLPanel> -->
+</ui:UiBinder> 
