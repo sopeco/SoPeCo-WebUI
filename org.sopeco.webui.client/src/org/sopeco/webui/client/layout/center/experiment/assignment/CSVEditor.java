@@ -77,7 +77,7 @@ public class CSVEditor extends DialogBox implements HasValueChangeHandlers<Strin
 	private ListElement newRowElement;
 
 	public CSVEditor() {
-		R.resc.cssCsvEditor().ensureInjected();
+		R.css.cssCsvEditor().ensureInjected();
 
 		initialize();
 	}

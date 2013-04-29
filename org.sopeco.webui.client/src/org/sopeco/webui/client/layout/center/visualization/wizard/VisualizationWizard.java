@@ -33,7 +33,6 @@ import org.sopeco.gwt.widgets.Headline;
 import org.sopeco.webui.client.layout.MainLayoutPanel;
 import org.sopeco.webui.client.layout.center.visualization.VisualizationController;
 import org.sopeco.webui.client.layout.center.visualization.VisualizationController.Status;
-import org.sopeco.webui.client.resources.FrontEndResources;
 import org.sopeco.webui.client.resources.R;
 import org.sopeco.webui.client.rpc.RPC;
 import org.sopeco.webui.shared.definitions.result.SharedExperimentRuns;
@@ -66,7 +65,7 @@ public class VisualizationWizard extends DialogBox {
 
 	public VisualizationWizard(final SharedExperimentRuns experimentRun) {
 		super(true);
-		FrontEndResources.loadVisualizationWizardCSS();
+		R.css.visualizationWizardCss().ensureInjected();
 		this.experimentRun = experimentRun;
 		inputParameter = new ArrayList<ChartParameter>();
 		outputParameter = new ArrayList<ChartParameter>();

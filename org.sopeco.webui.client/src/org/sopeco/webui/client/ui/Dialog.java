@@ -29,6 +29,7 @@ public class Dialog extends Composite implements HasWidgets {
 	Heading heading;
 
 	public void setTitle(String title) {
+		heading.setVisible(!title.isEmpty());
 		heading.setTitle(title);
 	}
 
@@ -39,6 +40,12 @@ public class Dialog extends Composite implements HasWidgets {
 	@UiChild
 	public void addChild(Widget w) {
 		GWT.log("add");
+	}
+
+	public void setHasTitle(boolean hasTitle) {
+		if (!hasTitle) {
+			heading.removeFromParent();
+		}
 	}
 
 	@Override

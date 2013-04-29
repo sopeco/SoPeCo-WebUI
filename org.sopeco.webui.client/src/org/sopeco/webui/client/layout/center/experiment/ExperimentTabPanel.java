@@ -45,7 +45,7 @@ public class ExperimentTabPanel extends TabPanel implements ClickHandler {
 	private ExperimentParameterView parameterView;
 
 	public ExperimentTabPanel() {
-		R.resc.cssSopecoTabPanel().ensureInjected();
+		R.css.cssSopecoTabPanel().ensureInjected();
 		init();
 	}
 

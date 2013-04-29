@@ -51,7 +51,8 @@ public final class R {
 	private static final String PAIRSEPERATOR = "=";
 
 	public static final LanguageConstants lang = GWT.create(LanguageConstants.class);
-	public static final Resources resc = GWT.create(Resources.class);
+	public static final CssBundle css = GWT.create(CssBundle.class);
+	public static final ImageBundle img = GWT.create(ImageBundle.class);
 
 	/**
 	 * Returns the string of the language file(map) which is related to the

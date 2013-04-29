@@ -99,7 +99,7 @@ public class SoPeCoUI implements EntryPoint, SimpleNotify, UncaughtExceptionHand
 	public void onModuleLoad() {
 		frontend = this;
 
-		R.resc.cssCommon().ensureInjected();
+		R.css.cssCommon().ensureInjected();
 
 		RootLayoutPanel.get().addStyleName("rootPanel");
 

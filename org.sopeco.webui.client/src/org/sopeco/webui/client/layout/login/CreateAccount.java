@@ -2,12 +2,14 @@ package org.sopeco.webui.client.layout.login;
 
 import org.sopeco.persistence.metadata.entities.DatabaseInstance;
 import org.sopeco.webui.client.helper.SystemDetails;
-import org.sopeco.webui.client.layout.popups.Message;
+import org.sopeco.webui.client.resources.R;
 import org.sopeco.webui.client.rpc.RPC;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -95,6 +97,13 @@ public class CreateAccount extends Composite {
 		loginPanel.switchToLogin();
 	}
 
+	@UiHandler({ "accountName", "password", "passwordConfirm", "dbPort", "dbHost" })
+	void onPasswordTextBoxKeyPress(KeyPressEvent event) {
+		if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER) {
+			startInputVerification();
+		}
+	}
+	
 	/**
 	 * Creates an account with the data of the TextBoxes and after the creation,
 	 * it'll log into this new account.
@@ -110,7 +119,7 @@ public class CreateAccount extends Composite {
 		RPC.getDatabaseManagerRPC().addDatabase(newAccount, password.getValue(), new AsyncCallback<Boolean>() {
 			@Override
 			public void onFailure(Throwable caught) {
-				Message.error("Database was not added: " + caught.getMessage());
+				throw new RuntimeException(caught);
 			}
 
 			@Override
@@ -133,7 +142,7 @@ public class CreateAccount extends Composite {
 
 			@Override
 			public void onFailure(Throwable caught) {
-				Message.error(caught.getMessage());
+				throw new RuntimeException(caught);
 			}
 		});
 	}
@@ -166,21 +175,21 @@ public class CreateAccount extends Composite {
 		}
 
 		if (getTextBox(EField.NAME).getValue().isEmpty()) {
-			setErrorText(EField.NAME, "Field must not be empty");
+			setErrorText(EField.NAME, R.lang.msgFieldNotEmpty());
 			result = false;
 		} else if (getTextBox(EField.NAME).getValue().matches("^[0-9]+.*$")) {
-			setErrorText(EField.NAME, "Field must not start with a number");
+			setErrorText(EField.NAME, R.lang.msgFieldNotStartNumber());
 			result = false;
 		} else if (!getTextBox(EField.NAME).getValue().matches("^[0-9a-zA-Z_]*$")) {
-			setErrorText(EField.NAME, "Please use only following characters: a-z A-Z 0-9 _");
+			setErrorText(EField.NAME, R.lang.msgNoSpecialChars());
 			result = false;
 		} else if (nameAlreadyExists) {
-			setErrorText(EField.NAME, "Account with the specified name already exists");
+			setErrorText(EField.NAME, R.lang.msgAccountExists());
 			result = false;
 		}
 
 		if (!getTextBox(EField.PASSWORD_CONFIRM).getValue().equals(getTextBox(EField.PASSWORD).getValue())) {
-			setErrorText(EField.PASSWORD_CONFIRM, "Password does not match");
+			setErrorText(EField.PASSWORD_CONFIRM, R.lang.msgPasswordNotMatch());
 			result = false;
 		}
 
@@ -188,13 +197,13 @@ public class CreateAccount extends Composite {
 
 			if (!getTextBox(EField.DB_PORT).getValue().matches(
 					"(\\d{1,4}|[1-5]\\d{4}|6[0-4]\\d{3}|65[0-4]\\d{2}|655[0-2]\\d|6553[0-5])")) {
-				setErrorText(EField.DB_PORT, "Port must be between 0 and 65535");
+				setErrorText(EField.DB_PORT, R.lang.msgPortMustBeInRange());
 				result = false;
 			}
 
 		}
 
-		// Create account if everything is ok.
+		// Create account if everything is ok
 		if (result) {
 			createAccount();
 		}

@@ -1,0 +1,106 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:spc="urn:import:org.sopeco.webui.client.ui">
+
+	<ui:with field='lang'
+		type='org.sopeco.webui.client.resources.LanguageConstants' />
+	<ui:with field='img' type='org.sopeco.webui.client.resources.ImageBundle' />
+
+	<ui:style>
+		.dialog {
+		text-align: center;
+		padding-top: 2em;
+		}
+
+		.label {
+		font-size: .85em;
+		color: #666666;
+		margin:0;
+		margin-top: 6px;
+		}
+
+		.buttonPanel {
+		margin-top: 6px;
+		}
+
+		.loginButton {
+		float: right;
+		padding: 5px
+		15px;
+		}
+
+		.pushButton {
+		background: 0;
+		background-color: #f1f1f1;
+		}
+
+		.accountButton img {
+		margin-left: 6px;
+		margin-top: 2px;
+		margin-bottom:
+		-2px;
+		}
+
+		.errorText {
+		color: #dd4c40;
+		display: none;
+		}
+
+		.stayLoggedIn {
+		float: right;
+		margin-right: 1em;
+		margin-top: 0.5em;
+		}
+
+		.stayLoggedIn > * {
+		float: left;
+		color:#666;
+		}
+
+		.stayLoggedIn > span {
+		opacity: 0.75;
+		}
+	</ui:style>
+
+	<spc:Dialog addStyleNames="{style.dialog}" hasTitle="false"
+		widthPX="320">
+		<g:Image resource="{img.sopecoLogoSmall}" />
+
+		<g:VerticalPanel width="100%">
+			<g:Label styleName="{style.label}">
+				<ui:text from='{lang.accountname}' />
+			</g:Label>
+			<g:TextBox ui:field="tbAccount" width="310px" />
+
+			<g:Label ui:field="errorAccount" styleName="{style.errorText}" />
+			
+			<g:Label styleName="{style.label}">
+				<ui:text from='{lang.password}' />
+			</g:Label>
+			<g:PasswordTextBox ui:field="tbPassword" width="310px" />
+
+			<g:Label ui:field="errorPassword" styleName="{style.errorText}" />
+			
+			<g:FlowPanel styleName="{style.buttonPanel}">
+				<g:PushButton ui:field="btnLogin" text="{lang.logIn}"
+					addStyleNames="{style.loginButton} {style.pushButton}" />
+
+				
+				<g:FlowPanel styleName="{style.stayLoggedIn}">
+					<g:CheckBox />
+					<g:Label text="{lang.stayLoggedIn}" />
+				</g:FlowPanel>
+				
+				
+				<g:PushButton ui:field="btnCreate"
+					addStyleNames="{style.accountButton} {style.pushButton}" width="30px">
+					<g:upFace image="{img.iconDatabaseAdd}" />
+				</g:PushButton>
+
+				<spc:ClearFloating />
+			</g:FlowPanel>
+		</g:VerticalPanel>
+
+	</spc:Dialog>
+
+</ui:UiBinder> 

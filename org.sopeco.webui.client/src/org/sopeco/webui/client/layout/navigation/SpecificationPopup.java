@@ -66,7 +66,7 @@ public class SpecificationPopup extends VerticalPanel implements ClickHandler {
 		addPanel = new FlowPanel();
 		addPanel.addStyleName(CSS_CLASS_ADD);
 		addPanel.add(addSpecificationHTML);
-		addPanel.add(new Image(R.resc.imgIconSet().getSafeUri(), 0, 120, 13, 13));
+		addPanel.add(new Image(R.img.iconSet().getSafeUri(), 0, 120, 13, 13));
 		add(addPanel);
 	}
 

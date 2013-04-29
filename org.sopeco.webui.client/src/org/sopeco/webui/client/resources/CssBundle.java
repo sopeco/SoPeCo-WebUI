@@ -26,72 +26,77 @@
  */
 package org.sopeco.webui.client.resources;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.RunAsyncCallback;
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
-import com.google.gwt.user.client.Window;
+import com.google.gwt.resources.client.GwtCreateResource;
+import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.resources.client.GwtCreateResource.ClassType;
 
 /**
- * Loading Resources. The resources are not loaded until they are requested. =>
- * Code-Split-Point.
  * 
  * @author Marius Oehler
  * 
  */
-public final class FrontEndResources {
+public interface CssBundle extends ClientBundle {
+	
+	// To access images of the ImageBundle
+	ImageBundle image();
+	
+	@Source("css/common.css")
+	@CssResource.NotStrict
+	CssResource cssCommon();
 
-	private FrontEndResources() {
-	}
+	@Source("css/experimentView.css")
+	@CssResource.NotStrict
+	CssResource cssExperiment();
 
-	/**
-	 * 
-	 */
-	public static void loadVisualizationViewCSS() {
-		GWT.runAsync(new RunAsyncCallback() {
-			@Override
-			public void onFailure(Throwable reason) {
-				Window.alert(R.get("errorCssLoading"));
-			}
+	@Source("css/csvEditor.css")
+	@CssResource.NotStrict
+	CssResource cssCsvEditor();
 
-			@Override
-			public void onSuccess() {
-				ResourceBundle rsc = GWT.create(ResourceBundle.class);
-				rsc.visualizationViewCss().ensureInjected();
-			}
-		});
-	}
+	@Source("css/specificationView.css")
+	@CssResource.NotStrict
+	CssResource cssSpecification();
 
-	/**
-	 * 
-	 */
-	public static void loadVisualizationWizardCSS() {
-		GWT.runAsync(new RunAsyncCallback() {
-			@Override
-			public void onFailure(Throwable reason) {
-				Window.alert(R.get("errorCssLoading"));
-			}
+	@Source("css/topNavigation.css")
+	@CssResource.NotStrict
+	CssResource cssTopNavigation();
 
-			@Override
-			public void onSuccess() {
-				ResourceBundle rsc = GWT.create(ResourceBundle.class);
-				rsc.visualizationWizardCss().ensureInjected();
-			}
-		});
-	}
+	@Source("css/scenarioAddView.css")
+	@CssResource.NotStrict
+	CssResource cssScenarioAdd();
 
-	/**
-	 * ClientBundle to load Resources.
-	 */
-	interface ResourceBundle extends ClientBundle {
+	@Source("css/sopecoTabPanel.css")
+	@CssResource.NotStrict
+	CssResource cssSopecoTabPanel();
 
-		@Source("visualizationView.css")
-		@CssResource.NotStrict
-		CssResource visualizationViewCss();
+	@Source("css/controllerView.css")
+	@CssResource.NotStrict
+	CssResource cssControllerView();
 
-		@Source("visualizationWizard.css")
-		@CssResource.NotStrict
-		CssResource visualizationWizardCss();
-	}
+	@Source("css/loginBox.css")
+	@CssResource.NotStrict
+	CssResource cssLoginBox();
+
+	@Source("css/executeView.css")
+	@CssResource.NotStrict
+	CssResource cssExecuteView();
+
+	@Source("css/visualizationView.css")
+	@CssResource.NotStrict
+	CssResource visualizationViewCss();
+
+	@Source("css/visualizationWizard.css")
+	@CssResource.NotStrict
+	CssResource visualizationWizardCss();
+
+	@Source("css/navigation.css")
+	@CssResource.NotStrict
+	CssResource cssNavigation();
+
+	@Source("css/mecSettingsView.css")
+	@CssResource.NotStrict
+	CssResource cssMECSettingsView();
 
 }

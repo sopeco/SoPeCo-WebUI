@@ -65,11 +65,11 @@ public class TreeView extends FlowPanel {
 		headline = new FlowPanel();
 		HTML headlineText = new HTML(headLine);
 		
-		Image imgObserve = new Image(R.resc.imgIconSet().getSafeUri(), 180, 60, 16, 8);
+		Image imgObserve = new Image(R.img.iconSet().getSafeUri(), 180, 60, 16, 8);
 		tbtnObservation = new ToggleButton(imgObserve);
 		tbtnObservation.setTitle(R.get("showObservation"));
 
-		Image imgInitAssignment = new Image(R.resc.imgIconSet().getSafeUri(), 210, 60, 16, 8);
+		Image imgInitAssignment = new Image(R.img.iconSet().getSafeUri(), 210, 60, 16, 8);
 		tbtnInitialAssignments = new ToggleButton(imgInitAssignment);
 		tbtnInitialAssignments.setDown(true);
 		tbtnInitialAssignments.setTitle(R.get("showInitAssignments"));
@@ -96,7 +96,7 @@ public class TreeView extends FlowPanel {
 	private FlowPanel createMarkerBox(boolean first) {
 		FlowPanel testMarker = new FlowPanel();
 		testMarker.addStyleName("rMarker2");
-		Image infoImg = new Image(R.resc.imgIconSet().getSafeUri(), 150, 60, 14, 14);
+		Image infoImg = new Image(R.img.iconSet().getSafeUri(), 150, 60, 14, 14);
 		infoImg.setTitle("test");
 		// TODO: fix quick - make visible again
 		testMarker.setVisible(false);

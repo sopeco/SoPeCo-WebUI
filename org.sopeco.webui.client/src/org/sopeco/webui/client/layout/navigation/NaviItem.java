@@ -62,7 +62,7 @@ public class NaviItem extends FlowPanel {
 	}
 
 	public NaviItem(String pText, String pSubText) {
-		R.resc.cssNavigation().ensureInjected();
+		R.css.cssNavigation().ensureInjected();
 
 		text = pText;
 		subText = pSubText;
@@ -86,7 +86,7 @@ public class NaviItem extends FlowPanel {
 	public void setAsExperiment() {
 		setAsSubItem();
 		addStyleName(CSS_CLASS_EXPERIMENT);
-		add(new Image(R.resc.imgIconSet().getSafeUri(), 150, 150, 16, 16));
+		add(new Image(R.img.iconSet().getSafeUri(), 150, 150, 16, 16));
 		setTitle(text);
 	}
 
@@ -97,7 +97,7 @@ public class NaviItem extends FlowPanel {
 	public void setAsAddItem() {
 		addStyleName(CSS_CLASS_ADDITEM);
 
-		add(new Image(R.resc.imgIconSet().getSafeUri(), 0, 120, 13, 13));
+		add(new Image(R.img.iconSet().getSafeUri(), 0, 120, 13, 13));
 	}
 
 	public void setText(String pText) {
@@ -133,7 +133,7 @@ public class NaviItem extends FlowPanel {
 	}
 
 	public void addChangeSpecificationIcon(final SpecificationPopup specificationPopup) {
-		Image changeSpecification = new Image(R.resc.imgIconSet().getSafeUri(), 180, 150, 16, 13);
+		Image changeSpecification = new Image(R.img.iconSet().getSafeUri(), 180, 150, 16, 13);
 		changeSpecification.addStyleName(CSS_CLASS_CHANGE_SPECIFICATION);
 
 		changeSpecification.addClickHandler(new ClickHandler() {

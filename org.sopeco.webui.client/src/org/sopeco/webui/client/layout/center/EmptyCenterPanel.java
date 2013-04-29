@@ -45,7 +45,7 @@ public class EmptyCenterPanel extends CenterPanel {
 
 	public EmptyCenterPanel() {
 		if (logo == null) {
-			logo = new Image(R.resc.imgSoPeCoLogo().getSafeUri());
+			logo = new Image(R.img.sopecoLogo().getSafeUri());
 			logo.setSize(IMG_SIZE_X + "px", IMG_SIZE_Y + "px");
 			logo.getElement().getStyle().setPosition(Position.ABSOLUTE);
 			logo.getElement().getStyle().setTop(FIFTY, Unit.PCT);

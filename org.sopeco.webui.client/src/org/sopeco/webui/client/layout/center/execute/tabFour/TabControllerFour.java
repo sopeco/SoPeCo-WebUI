@@ -113,9 +113,9 @@ public class TabControllerFour extends TabController {
 			@Override
 			public Image getValue(ExecutedExperimentDetails object) {
 				if (object.isSuccessful()) {
-					return new Image(R.resc.imgIconSet().getSafeUri(), 60, 120, 16, 13);
+					return new Image(R.img.iconSet().getSafeUri(), 60, 120, 16, 13);
 				} else {
-					return new Image(R.resc.imgIconSet().getSafeUri(), 30, 120, 13, 13);
+					return new Image(R.img.iconSet().getSafeUri(), 30, 120, 13, 13);
 				}
 			}
 		};

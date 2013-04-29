@@ -64,7 +64,7 @@ public class SpecificationController implements ICenterController, ClickHandler,
 	private InputDialog inputRename;
 
 	public SpecificationController() {
-		R.resc.cssSpecification().ensureInjected();
+		R.css.cssSpecification().ensureInjected();
 
 		if (ScenarioManager.get().isScenarioAvailable()) {
 			reload();

@@ -41,7 +41,7 @@ public class ExecuteTabPanel extends TabPanel {
 	private static final String EXECUTE_CSS_CLASS = "executeTabPanel";
 
 	public ExecuteTabPanel() {
-		R.resc.cssSopecoTabPanel().ensureInjected();
+		R.css.cssSopecoTabPanel().ensureInjected();
 		init();
 	}
 

@@ -67,7 +67,7 @@ public class ScenarioAddController implements ClickHandler, BlurHandler, KeyPres
 	private ClickHandler hideHandler;
 
 	public ScenarioAddController(boolean pHasInfoText, boolean pHasCancelButton, boolean pHasAddButton) {
-		R.resc.cssScenarioAdd().ensureInjected();
+		R.css.cssScenarioAdd().ensureInjected();
 
 		hasInfoText = pHasInfoText;
 		hasCancelButton = pHasCancelButton;

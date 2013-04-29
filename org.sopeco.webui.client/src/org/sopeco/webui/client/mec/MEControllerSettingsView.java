@@ -67,7 +67,7 @@ public class MEControllerSettingsView extends FlexTable {
 	private Image imgStatus;
 
 	public MEControllerSettingsView() {
-		R.resc.cssMECSettingsView().ensureInjected();
+		R.css.cssMECSettingsView().ensureInjected();
 		init();
 	}
 
@@ -105,10 +105,10 @@ public class MEControllerSettingsView extends FlexTable {
 
 		htmlStatus = new HTML("unknown");
 
-		imgReload = new Image(R.resc.imgIconSet().getSafeUri(), 120, 150, 16, 15);
+		imgReload = new Image(R.img.iconSet().getSafeUri(), 120, 150, 16, 15);
 		imgReload.addStyleName("reloadImage");
 
-		imgStatus = new Image(R.resc.imgIconSet().getSafeUri(), 0, 150, 10, 10);
+		imgStatus = new Image(R.img.iconSet().getSafeUri(), 0, 150, 10, 10);
 		imgStatus.addStyleName("status");
 
 		panelStatus = new FlowPanel();
@@ -195,19 +195,19 @@ public class MEControllerSettingsView extends FlexTable {
 	public void setStatusImage(StatusImage status) {
 		switch (status) {
 		case GRAY:
-			imgStatus.setUrlAndVisibleRect(R.resc.imgIconSet().getSafeUri(), 0, 150, 10, 10);
+			imgStatus.setUrlAndVisibleRect(R.img.iconSet().getSafeUri(), 0, 150, 10, 10);
 			break;
 		case GREEN:
-			imgStatus.setUrlAndVisibleRect(R.resc.imgIconSet().getSafeUri(), 60, 150, 10, 10);
+			imgStatus.setUrlAndVisibleRect(R.img.iconSet().getSafeUri(), 60, 150, 10, 10);
 			break;
 		case RED:
-			imgStatus.setUrlAndVisibleRect(R.resc.imgIconSet().getSafeUri(), 30, 150, 10, 10);
+			imgStatus.setUrlAndVisibleRect(R.img.iconSet().getSafeUri(), 30, 150, 10, 10);
 			break;
 		case YELLOW:
-			imgStatus.setUrlAndVisibleRect(R.resc.imgIconSet().getSafeUri(), 90, 150, 10, 10);
+			imgStatus.setUrlAndVisibleRect(R.img.iconSet().getSafeUri(), 90, 150, 10, 10);
 			break;
 		case LOADING:
-			imgStatus.setResource(R.resc.imgLoadingIndicatorCircle());
+			imgStatus.setResource(R.img.loadingIndicatorCircle());
 			break;
 		default:
 			throw new IllegalStateException("No valid enum: " + status.toString());

@@ -30,7 +30,6 @@ import java.util.Date;
 
 import org.sopeco.persistence.metadata.entities.DatabaseInstance;
 import org.sopeco.webui.client.SoPeCoUI;
-import org.sopeco.webui.client.layout.popups.Message;
 import org.sopeco.webui.client.manager.Manager;
 import org.sopeco.webui.client.resources.R;
 import org.sopeco.webui.client.rpc.RPC;
@@ -38,12 +37,6 @@ import org.sopeco.webui.shared.entities.AccountDetails;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -59,18 +52,18 @@ import com.google.gwt.user.client.ui.SimplePanel;
  * @author Marius Oehler
  * 
  */
-public class LoginPanel extends FlowPanel implements ClickHandler, KeyUpHandler, ValueChangeHandler<String> {
+public class LoginPanel extends FlowPanel {
 
 	public static final String COOKIE_DATABASE = "selected_database";
 
+	/** Number of milliseconds in seven days. */
 	private static final long COOKIE_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7;
 
 	private SimplePanel verticalCell;
 
-	private SelectAccountPanel selectAccountPanel;
-	private DeleteAccountPanel deleteAccountPanel;
-	private MessagePanel messagePanel;
+
 	private CreateAccount createAccount;
+	private LoginView loginView;
 
 	private HTML htmlFEVersionInfo;
 
@@ -82,15 +75,13 @@ public class LoginPanel extends FlowPanel implements ClickHandler, KeyUpHandler,
 	 */
 	public LoginPanel() {
 		init();
-
-		// fetchAccounts();
 	}
 
 	/**
 	 * Initializes all necessary objects.
 	 */
 	private void init() {
-		R.resc.cssLoginBox().ensureInjected();
+		R.css.cssLoginBox().ensureInjected();
 		addStyleName("loginPanel");
 
 		htmlFEVersionInfo = new HTML(SoPeCoUI.getBuildInfo());
@@ -109,51 +100,16 @@ public class LoginPanel extends FlowPanel implements ClickHandler, KeyUpHandler,
 
 		verticalCell = new SimplePanel();
 
-		selectAccountPanel = new SelectAccountPanel();
-		selectAccountPanel.getBtnConnect().addClickHandler(this);
-		selectAccountPanel.getBtnAddAccount().addClickHandler(this);
-		selectAccountPanel.getTbLogin().getTextbox().addKeyUpHandler(this);
-		selectAccountPanel.getTbLogin().getTextbox().addValueChangeHandler(this);
-		// selectAccountPanel.getBtnRemoveAccount().addClickHandler(this);
-
 		createAccount = new CreateAccount(this);
+		loginView = new LoginView(this);
 
-		deleteAccountPanel = new DeleteAccountPanel();
-		deleteAccountPanel.getBtnCancel().addClickHandler(this);
-		deleteAccountPanel.getBtnDelete().addClickHandler(this);
-
-		messagePanel = new MessagePanel();
-		messagePanel.getBtnBack().addClickHandler(this);
-
-		verticalCell.add(selectAccountPanel);
+		verticalCell.add(loginView);
 		add(verticalCell);
 		add(htmlFEVersionInfo);
 		if (logoPanel != null) {
 			add(logoPanel);
 		}
-		add(selectLanguagePanel);
-	}
 
-	@Override
-	public void onValueChange(ValueChangeEvent<String> event) {
-		if (event.getSource() == selectAccountPanel.getTbLogin().getTextbox()) {
-			inputEvent();
-		}
-	}
-
-	@Override
-	public void onKeyUp(KeyUpEvent event) {
-		if (event.getSource() == selectAccountPanel.getTbLogin().getTextbox()) {
-			inputEvent();
-		}
-	}
-
-	private void inputEvent() {
-		if (!selectAccountPanel.getTbLogin().getTextbox().getValue().isEmpty()) {
-			selectAccountPanel.getBtnConnect().setEnabled(true);
-		} else {
-			selectAccountPanel.getBtnConnect().setEnabled(false);
-		}
 	}
 
 	private void createLanguagePanel() {
@@ -161,52 +117,26 @@ public class LoginPanel extends FlowPanel implements ClickHandler, KeyUpHandler,
 		selectLanguagePanel.addStyleName("selectLanguage");
 
 		selectLanguagePanel.add(new HTML(R.lang.selectLanguage()));
-		selectLanguagePanel.add(new Anchor(AbstractImagePrototype.create(R.resc.imgFlagEn()).getSafeHtml(),
-				"frontend.jsp"));
-		selectLanguagePanel.add(new Anchor(AbstractImagePrototype.create(R.resc.imgFlagDe()).getSafeHtml(),
+		selectLanguagePanel
+				.add(new Anchor(AbstractImagePrototype.create(R.img.flagEn()).getSafeHtml(), "frontend.jsp"));
+		selectLanguagePanel.add(new Anchor(AbstractImagePrototype.create(R.img.flagDe()).getSafeHtml(),
 				"frontend.jsp?locale=de"));
-	}
-
-	@Override
-	public void onClick(ClickEvent event) {
-		if (event.getSource() == selectAccountPanel.getBtnConnect()) {
-			login();
-		} else if (event.getSource() == selectAccountPanel.getBtnAddAccount()) {
-			verticalCell.clear();
-			createAccount.resetInput();
-			verticalCell.add(createAccount);
-		} else if (event.getSource() == deleteAccountPanel.getBtnCancel()) {
-			switchToLogin();
-		} else if (event.getSource() == messagePanel.getBtnBack()) {
-			switchToLogin();
-		}
 	}
 
 	public void switchToLogin() {
 		verticalCell.clear();
-		verticalCell.add(selectAccountPanel);
+		loginView.resetFields();
+		verticalCell.add(loginView);
 	}
 
-	private void login() {
-		String accountName = selectAccountPanel.getTbLogin().getTextbox().getValue();
-		String password = selectAccountPanel.getTbPassword().getTextbox().getValue();
-
-		loginIntoAccount(accountName, password);
+	public void switchToCreate() {
+		verticalCell.clear();
+		createAccount.resetInput();
+		verticalCell.add(createAccount);
 	}
 
 	public void loginIntoAccount(final String accountName, final String password) {
-
-		messagePanel.setMessage("Logging into SoPeCo..");
-		messagePanel.getBtnBack().setVisible(false);
-
-		Date expireDate = new Date();
-		long sevenDaysInFuture = expireDate.getTime() + COOKIE_EXPIRE_TIME;
-		expireDate.setTime(sevenDaysInFuture);
-
-		Cookies.setCookie(COOKIE_DATABASE, accountName, expireDate);
-
-		verticalCell.clear();
-		verticalCell.add(messagePanel);
+		loginView.setEnableLoginButton(false);
 
 		/** code split point */
 		GWT.runAsync(new RunAsyncCallback() {
@@ -221,20 +151,21 @@ public class LoginPanel extends FlowPanel implements ClickHandler, KeyUpHandler,
 				RPC.getDatabaseManagerRPC().login(accountName, password, new AsyncCallback<Boolean>() {
 					@Override
 					public void onFailure(Throwable caught) {
-						Message.error(caught.getMessage());
+						throw new RuntimeException(caught);
 					}
 
 					@Override
 					public void onSuccess(Boolean result) {
 						if (result) {
+							Date expireDate = new Date();
+							expireDate.setTime(expireDate.getTime() + COOKIE_EXPIRE_TIME);
+							Cookies.setCookie(COOKIE_DATABASE, accountName, expireDate);
+
 							getAccountSettings(accountName);
 						} else {
-							// Message.error(R.get("wrong_db_credentials"));
-							verticalCell.clear();
-
-							messagePanel.loginFailed();
-
-							verticalCell.add(messagePanel);
+							loginView.setPasswordError(R.lang.msgPasswordIncorrect());
+							loginView.selectPasswordField();
+							loginView.setEnableLoginButton(true);
 						}
 					}
 				});
@@ -247,7 +178,7 @@ public class LoginPanel extends FlowPanel implements ClickHandler, KeyUpHandler,
 
 			@Override
 			public void onFailure(Throwable caught) {
-				Message.error(caught.getMessage());
+				throw new RuntimeException(caught);
 			}
 
 			@Override
@@ -257,7 +188,7 @@ public class LoginPanel extends FlowPanel implements ClickHandler, KeyUpHandler,
 
 					@Override
 					public void onFailure(Throwable caught) {
-						Message.error(caught.getMessage());
+						throw new RuntimeException(caught);
 					}
 
 					@Override
@@ -269,7 +200,5 @@ public class LoginPanel extends FlowPanel implements ClickHandler, KeyUpHandler,
 			}
 		});
 	}
-
-	
 
 }
