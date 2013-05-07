@@ -39,7 +39,6 @@ public final class RPC {
 	private RPC() {
 	}
 
-	private static DatabaseManagerRPCAsync databaseManager = null;
 	private static ScenarioManagerRPCAsync scenarioManager = null;
 	private static MEControllerRPCAsync meController = null;
 	private static SystemDetailsRPCAsync systemDetails = null;
@@ -49,19 +48,8 @@ public final class RPC {
 	private static ResultRPCAsync resultRPC = null;
 	private static VisualizationRPCAsync visualizationRPC = null;
 	private static GetRPCAsync getRPC = null;
+	private static AccountManagementRPCAsync accountManagementRPC = null;
 
-	/**
-	 * Returns a instance of the ScenarioManagerRPCAsync.
-	 * 
-	 * @return
-	 */
-	public static DatabaseManagerRPCAsync getDatabaseManagerRPC() {
-		if (databaseManager == null) {
-			databaseManager = GWT.create(DatabaseManagerRPC.class);
-		}
-
-		return databaseManager;
-	}
 
 	/**
 	 * Returns a instance of the ScenarioManagerRPCAsync.
@@ -179,4 +167,17 @@ public final class RPC {
 
 		return getRPC;
 	}
+
+	/**
+	 * Returns a instance of the AccountManagementRPC.
+	 * 
+	 * @return
+	 */
+	public static AccountManagementRPCAsync getAccountManagementRPC() {
+		if (accountManagementRPC == null) {
+			accountManagementRPC = GWT.create(AccountManagementRPC.class);
+		}
+		return accountManagementRPC;
+	}
+
 }

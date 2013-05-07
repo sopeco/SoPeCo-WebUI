@@ -31,8 +31,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
-import org.sopeco.engine.measurementenvironment.socket.SocketAppWrapper;
-import org.sopeco.engine.measurementenvironment.socket.SocketManager;
 import org.sopeco.webui.server.execute.ExecuteScheduler;
 
 /**
@@ -79,9 +77,14 @@ public final class Scheduler {
 		@Override
 		public void run() {
 			LOGGER.finer("SchedulerAction starts..");
-			ContiniousChecker.checkUserTimeout();
-			ExecuteScheduler.get().checkExperiments();
-			ContiniousChecker.checkSocketMEController();
+
+			try {
+				ContiniousChecker.checkUserTimeout();
+				ExecuteScheduler.get().checkExperiments();
+				ContiniousChecker.checkSocketMEController();
+			} catch (Exception e) {
+				LOGGER.severe(e.getLocalizedMessage());
+			}
 
 			LOGGER.finer("SchedulerAction is finished");
 		}

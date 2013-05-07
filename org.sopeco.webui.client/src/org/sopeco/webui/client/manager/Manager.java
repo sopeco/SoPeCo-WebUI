@@ -31,8 +31,8 @@ import java.util.logging.Logger;
 
 import org.sopeco.persistence.metadata.entities.DatabaseInstance;
 import org.sopeco.webui.client.rpc.RPC;
-import org.sopeco.webui.shared.entities.AccountDetails;
 import org.sopeco.webui.shared.entities.ScenarioDetails;
+import org.sopeco.webui.shared.entities.account.AccountDetails;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -78,7 +78,7 @@ public final class Manager {
 	 */
 	public void storeAccountDetails() {
 		LOGGER.info("Store AccountDetails");
-		RPC.getDatabaseManagerRPC().storeAccountDetails(accountDetails, new AsyncCallback<Void>() {
+		RPC.getAccountManagementRPC().storeAccountDetails(accountDetails, new AsyncCallback<Void>() {
 			@Override
 			public void onSuccess(Void result) {
 			}
@@ -105,17 +105,8 @@ public final class Manager {
 		return accountDetails.getScenarioDetail(accountDetails.getSelectedScenario());
 	}
 
-	public DatabaseInstance getSelectedDatabaseInstance() {
-		return currentDatabaseInstance;
-	}
-
 	public void setSelectedDatabaseIndex(int selectedDatabaseIndex) {
 		this.selectedDatabaseIndex = selectedDatabaseIndex;
-	}
-
-	
-	public void setCurrentDatabaseInstance(DatabaseInstance currentDatabaseInstance) {
-		this.currentDatabaseInstance = currentDatabaseInstance;
 	}
 
 	/**

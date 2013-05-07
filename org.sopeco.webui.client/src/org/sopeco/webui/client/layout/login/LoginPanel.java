@@ -28,12 +28,12 @@ package org.sopeco.webui.client.layout.login;
 
 import java.util.Date;
 
-import org.sopeco.persistence.metadata.entities.DatabaseInstance;
 import org.sopeco.webui.client.SoPeCoUI;
 import org.sopeco.webui.client.manager.Manager;
 import org.sopeco.webui.client.resources.R;
 import org.sopeco.webui.client.rpc.RPC;
-import org.sopeco.webui.shared.entities.AccountDetails;
+import org.sopeco.webui.shared.entities.account.AccountDetails;
+import org.sopeco.webui.shared.helper.LoginResponse;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
@@ -56,11 +56,13 @@ public class LoginPanel extends FlowPanel {
 
 	public static final String COOKIE_DATABASE = "selected_database";
 
+	public static final String COOKIE_RM_ACCOUNT = "RMAccount";
+	public static final String COOKIE_RM_TOKEN = "RMToken";
+
 	/** Number of milliseconds in seven days. */
 	private static final long COOKIE_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7;
 
 	private SimplePanel verticalCell;
-
 
 	private CreateAccount createAccount;
 	private LoginView loginView;
@@ -74,7 +76,9 @@ public class LoginPanel extends FlowPanel {
 	 * Cosntructor.
 	 */
 	public LoginPanel() {
-		init();
+		if (!rememberMe()) {
+			init();
+		}
 	}
 
 	/**
@@ -112,6 +116,50 @@ public class LoginPanel extends FlowPanel {
 
 	}
 
+	private boolean rememberMe() {
+		final String accountName = Cookies.getCookie(COOKIE_RM_ACCOUNT);
+		final String token = Cookies.getCookie(COOKIE_RM_TOKEN);
+
+		if (accountName != null && token != null) {
+			RPC.getAccountManagementRPC().login(accountName, token, new AsyncCallback<LoginResponse>() {
+				@Override
+				public void onSuccess(LoginResponse result) {
+					handleLoginResponse(result, accountName, true);
+				}
+
+				@Override
+				public void onFailure(Throwable caught) {
+					throw new IllegalStateException(caught);
+				}
+			});
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	private void handleLoginResponse(LoginResponse response, String accountName, boolean persistentLogin) {
+		if (response.isSuccessful()) {
+			Date expireDate = new Date();
+			expireDate.setTime(expireDate.getTime() + COOKIE_EXPIRE_TIME);
+			Cookies.setCookie(COOKIE_DATABASE, accountName, expireDate);
+
+			if (persistentLogin) {
+				Cookies.setCookie(COOKIE_RM_ACCOUNT, accountName, expireDate);
+				Cookies.setCookie(COOKIE_RM_TOKEN, response.getRememberMeToken(), expireDate);
+			}
+
+			getAccountSettings();
+		} else {
+			loginView.setPasswordError(R.lang.msgPasswordIncorrect());
+			loginView.selectPasswordField();
+			loginView.setEnableLoginButton(true);
+
+			Cookies.removeCookie(COOKIE_RM_ACCOUNT);
+			Cookies.removeCookie(COOKIE_RM_TOKEN);
+		}
+	}
+
 	private void createLanguagePanel() {
 		selectLanguagePanel = new FlowPanel();
 		selectLanguagePanel.addStyleName("selectLanguage");
@@ -135,7 +183,7 @@ public class LoginPanel extends FlowPanel {
 		verticalCell.add(createAccount);
 	}
 
-	public void loginIntoAccount(final String accountName, final String password) {
+	public void loginIntoAccount(final String accountName, final String password, final boolean persistentLogin) {
 		loginView.setEnableLoginButton(false);
 
 		/** code split point */
@@ -148,33 +196,24 @@ public class LoginPanel extends FlowPanel {
 
 			@Override
 			public void onSuccess() {
-				RPC.getDatabaseManagerRPC().login(accountName, password, new AsyncCallback<Boolean>() {
-					@Override
-					public void onFailure(Throwable caught) {
-						throw new RuntimeException(caught);
-					}
+				RPC.getAccountManagementRPC().login(accountName, password, persistentLogin,
+						new AsyncCallback<LoginResponse>() {
+							@Override
+							public void onFailure(Throwable caught) {
+								throw new RuntimeException(caught);
+							}
 
-					@Override
-					public void onSuccess(Boolean result) {
-						if (result) {
-							Date expireDate = new Date();
-							expireDate.setTime(expireDate.getTime() + COOKIE_EXPIRE_TIME);
-							Cookies.setCookie(COOKIE_DATABASE, accountName, expireDate);
-
-							getAccountSettings(accountName);
-						} else {
-							loginView.setPasswordError(R.lang.msgPasswordIncorrect());
-							loginView.selectPasswordField();
-							loginView.setEnableLoginButton(true);
-						}
-					}
-				});
+							@Override
+							public void onSuccess(LoginResponse result) {
+								handleLoginResponse(result, accountName, persistentLogin);
+							}
+						});
 			}
 		});
 	}
 
-	private void getAccountSettings(final String accountName) {
-		RPC.getDatabaseManagerRPC().getDatabase(new AsyncCallback<DatabaseInstance>() {
+	private void getAccountSettings() {
+		RPC.getAccountManagementRPC().getAccountDetails(new AsyncCallback<AccountDetails>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
@@ -182,21 +221,9 @@ public class LoginPanel extends FlowPanel {
 			}
 
 			@Override
-			public void onSuccess(DatabaseInstance result) {
-				Manager.get().setCurrentDatabaseInstance(result);
-				RPC.getDatabaseManagerRPC().getAccountDetails(new AsyncCallback<AccountDetails>() {
-
-					@Override
-					public void onFailure(Throwable caught) {
-						throw new RuntimeException(caught);
-					}
-
-					@Override
-					public void onSuccess(AccountDetails result) {
-						Manager.get().setAccountDetails(result);
-						SoPeCoUI.get().initializeMainView(accountName);
-					}
-				});
+			public void onSuccess(AccountDetails result) {
+				Manager.get().setAccountDetails(result);
+				SoPeCoUI.get().initializeMainView();
 			}
 		});
 	}

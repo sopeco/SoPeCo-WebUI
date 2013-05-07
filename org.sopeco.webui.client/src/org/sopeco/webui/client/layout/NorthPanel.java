@@ -109,7 +109,7 @@ public class NorthPanel extends FlowPanel implements ClickHandler, InputDialogHa
 		} else if (event.getSource() == imageScenarioRemove && isEnabled(imageScenarioRemove)) {
 			removeScenario();
 		} else if (event.getSource() == imageChangeAccount) {
-			SoPeCoUI.get().changeDatabase();
+			SoPeCoUI.get().logout();
 		} else if (event.getSource() == imageLog) {
 			LogDialog.show();
 		}
@@ -283,7 +283,7 @@ public class NorthPanel extends FlowPanel implements ClickHandler, InputDialogHa
 
 		add(navigationPanel);
 
-		connectedToText.setHTML(R.get("connected_to") + ": <b>" + SoPeCoUI.get().getConnectedAccount() + "</b>");
+		connectedToText.setHTML(R.get("connected_to") + ": <b>" + Manager.get().getAccountDetails().getAccountName() + "</b>");
 
 		updateScenarioList();
 	}

@@ -426,7 +426,7 @@ public class ControllerQueue implements IStatusListener {
 		listPackage.setAttachment(fseList);
 
 		for (String sId : UserManager.getAllUsers().keySet()) {
-			DatabaseInstance db = UserManager.getUser(sId).getCurrentAccount();
+			DatabaseInstance db = UserManager.getUser(sId).getCurrentDatabase();
 			if (db != null && db.getDbName().equals(runningExperiment.getScheduledExperiment().getAccountId())) {
 				PushRPCImpl.push(sId, listPackage);
 			}

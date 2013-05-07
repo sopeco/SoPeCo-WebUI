@@ -74,7 +74,7 @@ public class ExecuteRPCImpl extends SuperRemoteServlet implements ExecuteRPC {
 
 	@Override
 	public List<FrontendScheduledExperiment> getScheduledExperiments() {
-		String accountName = getUser().getCurrentAccount().getId();
+		String accountName = getUser().getCurrentDatabase().getId();
 		List<ScheduledExperiment> resultList = UiPersistence.getUiProvider().loadScheduledExperimentsByAccount(
 				accountName);
 
@@ -112,7 +112,7 @@ public class ExecuteRPCImpl extends SuperRemoteServlet implements ExecuteRPC {
 
 	@Override
 	public List<ExecutedExperimentDetails> getExecutedExperimentDetails() {
-		String accountId = getUser().getCurrentAccount().getId();
+		String accountId = getUser().getCurrentDatabase().getId();
 		String scenarioName = getUser().getAccountDetails().getSelectedScenario();
 
 		return UiPersistence.getUiProvider().loadExecutedExperimentDetails(accountId, scenarioName);

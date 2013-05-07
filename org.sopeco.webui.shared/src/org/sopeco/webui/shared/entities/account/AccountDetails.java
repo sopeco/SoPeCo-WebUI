@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sopeco.webui.shared.entities;
+package org.sopeco.webui.shared.entities.account;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -37,13 +37,15 @@ import javax.persistence.Lob;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
+import org.sopeco.webui.shared.entities.ScenarioDetails;
+
 /**
  * 
  * @author Marius Oehler
  * 
  */
 @Entity
-@NamedQueries({ @NamedQuery(name = "getAllAccounts", query = "SELECT u FROM AccountDetails u") })
+@NamedQueries({ @NamedQuery(name = "getAllAccountDetails", query = "SELECT u FROM AccountDetails u") })
 public class AccountDetails implements Serializable {
 
 	/**
@@ -53,7 +55,7 @@ public class AccountDetails implements Serializable {
 
 	@Id
 	@Column(name = "id")
-	private String id;
+	private long id;
 
 	@Column(name = "accountName")
 	private String accountName;
@@ -128,7 +130,7 @@ public class AccountDetails implements Serializable {
 	/**
 	 * @return the id
 	 */
-	public String getId() {
+	public long getId() {
 		return id;
 	}
 
@@ -136,7 +138,7 @@ public class AccountDetails implements Serializable {
 	 * @param pId
 	 *            the id to set
 	 */
-	public void setId(String pId) {
+	public void setId(long pId) {
 		this.id = pId;
 	}
 

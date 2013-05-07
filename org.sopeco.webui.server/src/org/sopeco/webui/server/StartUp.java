@@ -35,7 +35,6 @@ import org.sopeco.config.exception.ConfigurationException;
 import org.sopeco.engine.measurementenvironment.socket.SocketAcception;
 import org.sopeco.persistence.exceptions.DataNotFoundException;
 import org.sopeco.webui.server.persistence.UiPersistence;
-import org.sopeco.webui.server.rpc.database.DatabaseManagerRPCImpl;
 
 /**
  * 

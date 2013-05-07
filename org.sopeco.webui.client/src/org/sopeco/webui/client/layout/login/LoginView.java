@@ -9,6 +9,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Cookies;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PasswordTextBox;
@@ -48,6 +49,9 @@ public class LoginView extends Composite {
 	@UiField
 	PushButton btnLogin;
 
+	@UiField
+	CheckBox cbPersistentLogin;
+
 	@UiHandler("btnLogin")
 	void clickLogin(ClickEvent e) {
 		boolean valid = true;
@@ -64,7 +68,7 @@ public class LoginView extends Composite {
 		}
 
 		if (valid) {
-			loginPanel.loginIntoAccount(tbAccount.getValue(), tbPassword.getValue());
+			loginPanel.loginIntoAccount(tbAccount.getValue(), tbPassword.getValue(), cbPersistentLogin.getValue());
 		}
 	}
 

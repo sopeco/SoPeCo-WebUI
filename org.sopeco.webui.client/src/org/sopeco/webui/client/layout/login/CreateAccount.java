@@ -103,30 +103,41 @@ public class CreateAccount extends Composite {
 			startInputVerification();
 		}
 	}
-	
+
 	/**
 	 * Creates an account with the data of the TextBoxes and after the creation,
 	 * it'll log into this new account.
 	 */
 	private void createAccount() {
-		final DatabaseInstance newAccount = new DatabaseInstance();
 
-		newAccount.setDbName(accountName.getValue());
-		newAccount.setHost(dbHost.getValue());
-		newAccount.setPort(dbPort.getValue());
-		newAccount.setProtectedByPassword(!password.getValue().isEmpty());
+		RPC.getAccountManagementRPC().createAccount(accountName.getValue(), password.getValue(), dbHost.getValue(),
+				Integer.parseInt(dbPort.getValue()), new AsyncCallback<Boolean>() {
+					@Override
+					public void onFailure(Throwable caught) {
+						throw new RuntimeException(caught);
+					}
 
-		RPC.getDatabaseManagerRPC().addDatabase(newAccount, password.getValue(), new AsyncCallback<Boolean>() {
-			@Override
-			public void onFailure(Throwable caught) {
-				throw new RuntimeException(caught);
-			}
+					@Override
+					public void onSuccess(Boolean result) {
+						loginPanel.loginIntoAccount(accountName.getValue(), password.getValue(), false);
+					}
+				});
 
-			@Override
-			public void onSuccess(Boolean result) {
-				loginPanel.loginIntoAccount(accountName.getValue(), password.getValue());
-			}
-		});
+//		 DatabaseInstance newAccount = new DatabaseInstance(accountName.getValue(), dbHost.getValue(), dbPort.getValue(), false);
+//		 
+//		RPC.getDatabaseManagerRPC().addDatabase(newAccount,
+//		 password.getValue(), new AsyncCallback<Boolean>() {
+//		 @Override
+//		 public void onFailure(Throwable caught) {
+//		 throw new RuntimeException(caught);
+//		 }
+//		
+//		 @Override
+//		 public void onSuccess(Boolean result) {
+//		 loginPanel.loginIntoAccount(accountName.getValue(),
+//		 password.getValue());
+//		 }
+//		 });
 	}
 
 	/**
@@ -134,7 +145,7 @@ public class CreateAccount extends Composite {
 	 * exist, it'll call the {@link #createAccount()} method.
 	 */
 	private void startInputVerification() {
-		RPC.getDatabaseManagerRPC().accountExists(accountName.getValue(), new AsyncCallback<Boolean>() {
+		RPC.getAccountManagementRPC().accountExist(accountName.getValue(), new AsyncCallback<Boolean>() {
 			@Override
 			public void onSuccess(Boolean result) {
 				verifyInput(result);

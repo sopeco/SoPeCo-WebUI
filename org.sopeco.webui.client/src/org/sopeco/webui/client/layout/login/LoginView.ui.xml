@@ -87,7 +87,7 @@
 
 				
 				<g:FlowPanel styleName="{style.stayLoggedIn}">
-					<g:CheckBox />
+					<g:CheckBox ui:field="cbPersistentLogin" />
 					<g:Label text="{lang.stayLoggedIn}" />
 				</g:FlowPanel>
 				

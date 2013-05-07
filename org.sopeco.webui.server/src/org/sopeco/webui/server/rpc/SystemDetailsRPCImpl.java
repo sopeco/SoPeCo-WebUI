@@ -29,7 +29,6 @@ package org.sopeco.webui.server.rpc;
 import java.util.HashMap;
 
 import org.sopeco.config.Configuration;
-import org.sopeco.config.IConfiguration;
 import org.sopeco.persistence.config.PersistenceConfiguration;
 import org.sopeco.webui.client.rpc.SystemDetailsRPC;
 
