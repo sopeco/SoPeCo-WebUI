@@ -31,14 +31,11 @@ import org.sopeco.webui.client.layout.MainLayoutPanel;
 import org.sopeco.webui.client.layout.center.ICenterController;
 import org.sopeco.webui.client.layout.center.result.ResultController;
 import org.sopeco.webui.client.layout.center.visualization.wizard.ChartSelectionPanel;
-import org.sopeco.webui.client.layout.center.visualization.wizard.VisualizationWizard;
-import org.sopeco.webui.client.resources.FrontEndResources;
 import org.sopeco.webui.client.resources.R;
 import org.sopeco.webui.client.rpc.RPC;
 import org.sopeco.webui.shared.entities.Visualization;
 
 import com.google.gwt.cell.client.AbstractCell;
-import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -47,7 +44,6 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.cellview.client.SimplePager.TextLocation;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
@@ -83,7 +79,7 @@ public class VisualizationController implements ICenterController {
 	};
 
 	public VisualizationController() {
-		FrontEndResources.loadVisualizationViewCSS();
+		R.css.visualizationViewCss().ensureInjected();
 		rootWidget = new DockLayoutPanel(Unit.EM);
 		controlWidget = new FlowPanel();
 		visualizationSelection = new SingleSelectionModel<Visualization>(KEY_PROVIDER);
@@ -94,7 +90,7 @@ public class VisualizationController implements ICenterController {
 		statusImage.getElement().getStyle().setMarginLeft(1, Unit.EM);
 		statusImage.getElement().getStyle().setMarginTop(1, Unit.EM);
 		controlWidget.add(statusImage);
-		Image addVisualization = new ImageHover(R.resc.imgIconSet().getSafeUri(), 0, 120, 13, 13, R.resc.imgIconSet()
+		Image addVisualization = new ImageHover(R.img.iconSet().getSafeUri(), 0, 120, 13, 13, R.img.iconSet()
 				.getSafeUri(), 210, 150, 13, 13);
 		addVisualization.addClickHandler(new ClickHandler() {
 			
@@ -109,8 +105,8 @@ public class VisualizationController implements ICenterController {
 		addVisualization.getElement().getStyle().setCursor(Cursor.POINTER);
 		controlWidget.add(addVisualization);
 
-		Image remove = new ImageHover(R.resc.imgIconSet().getSafeUri(), 0, 60, 16, 18,
-				R.resc.imgIconSet().getSafeUri(), 0, 90, 16, 18);
+		Image remove = new ImageHover(R.img.iconSet().getSafeUri(), 0, 60, 16, 18,
+				R.img.iconSet().getSafeUri(), 0, 90, 16, 18);
 		remove.setTitle(R.lang.removeChart());
 		remove.getElement().getStyle().setMarginLeft(1, Unit.EM);
 		remove.getElement().getStyle().setMarginTop(1, Unit.EM);
@@ -134,7 +130,7 @@ public class VisualizationController implements ICenterController {
 		});
 		controlWidget.add(remove);
 
-		Image refresh = new Image(R.resc.imgIconSet().getSafeUri(), 120, 150, 16, 15);
+		Image refresh = new Image(R.img.iconSet().getSafeUri(), 120, 150, 16, 15);
 		refresh.setTitle(R.lang.refreshCharts());
 		refresh.getElement().getStyle().setMarginLeft(1, Unit.EM);
 		refresh.getElement().getStyle().setMarginTop(1, Unit.EM);
@@ -187,16 +183,16 @@ public class VisualizationController implements ICenterController {
 		this.status = status;
 		switch (status) {
 		case READY:
-			statusImage.setUrlAndVisibleRect(R.resc.imgIconSet().getSafeUri(), 60, 150, 10, 10);
+			statusImage.setUrlAndVisibleRect(R.img.iconSet().getSafeUri(), 60, 150, 10, 10);
 			break;
 		case BUSY:
-			statusImage.setUrlAndVisibleRect(R.resc.imgIconSet().getSafeUri(), 30, 150, 10, 10);
+			statusImage.setUrlAndVisibleRect(R.img.iconSet().getSafeUri(), 30, 150, 10, 10);
 			break;
 		case LOADING:
-			statusImage.setUrlAndVisibleRect(R.resc.imgIconSet().getSafeUri(), 90, 150, 10, 10);
+			statusImage.setUrlAndVisibleRect(R.img.iconSet().getSafeUri(), 90, 150, 10, 10);
 			break;
 		default:
-			statusImage.setUrlAndVisibleRect(R.resc.imgIconSet().getSafeUri(), 0, 150, 10, 10);
+			statusImage.setUrlAndVisibleRect(R.img.iconSet().getSafeUri(), 0, 150, 10, 10);
 		}
 	}
 

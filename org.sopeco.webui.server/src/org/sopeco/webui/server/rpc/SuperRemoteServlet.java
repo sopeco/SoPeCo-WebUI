@@ -26,6 +26,8 @@
  */
 package org.sopeco.webui.server.rpc;
 
+import javax.servlet.http.HttpSession;
+
 import org.sopeco.webui.server.user.User;
 import org.sopeco.webui.server.user.UserManager;
 
@@ -45,6 +47,10 @@ public class SuperRemoteServlet extends RemoteServiceServlet {
 
 	protected String getSessionId() {
 		return getThreadLocalRequest().getSession().getId();
+	}
+
+	protected HttpSession getSession() {
+		return getThreadLocalRequest().getSession();
 	}
 
 	protected User getUser() {

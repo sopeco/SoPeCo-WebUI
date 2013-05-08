@@ -29,7 +29,6 @@ package org.sopeco.webui.client.layout.center.visualization.wizard;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.sopeco.webui.client.resources.FrontEndResources;
 import org.sopeco.webui.client.resources.R;
 import org.sopeco.webui.shared.entities.ChartOptions.ChartType;
 
@@ -45,9 +44,9 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class ChartSelectionPanel extends FlowPanel {
-	public static final Image PIE_CHART_IMAGE = new Image(R.resc.imgIconSet().getSafeUri(), 120, 180, 60, 60);
-	public static final Image BAR_CHART_IMAGE = new Image(R.resc.imgIconSet().getSafeUri(), 60, 180, 60, 60);
-	public static final Image LINE_CHART_IMAGE = new Image(R.resc.imgIconSet().getSafeUri(), 0, 180, 60, 60);
+	public static final Image PIE_CHART_IMAGE = new Image(R.img.iconSet().getSafeUri(), 120, 180, 60, 60);
+	public static final Image BAR_CHART_IMAGE = new Image(R.img.iconSet().getSafeUri(), 60, 180, 60, 60);
+	public static final Image LINE_CHART_IMAGE = new Image(R.img.iconSet().getSafeUri(), 0, 180, 60, 60);
 
 	private ChartType selectedType = ChartType.LINECHART;
 	private List<ClickHandler> clickHandler;

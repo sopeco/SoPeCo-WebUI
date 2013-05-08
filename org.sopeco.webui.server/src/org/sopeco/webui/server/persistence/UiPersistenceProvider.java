@@ -31,15 +31,21 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.sopeco.persistence.exceptions.DataNotFoundException;
 import org.sopeco.webui.server.persistence.entities.ScheduledExperiment;
-import org.sopeco.webui.shared.entities.AccountDetails;
 import org.sopeco.webui.shared.entities.ExecutedExperimentDetails;
 import org.sopeco.webui.shared.entities.MECLog;
 import org.sopeco.webui.shared.entities.Visualization;
+import org.sopeco.webui.shared.entities.account.Account;
+import org.sopeco.webui.shared.entities.account.AccountDetails;
+import org.sopeco.webui.shared.entities.account.RememberMeToken;
 
 /**
  * 
@@ -47,6 +53,8 @@ import org.sopeco.webui.shared.entities.Visualization;
  * 
  */
 public class UiPersistenceProvider {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(UiPersistenceProvider.class);
 
 	private EntityManagerFactory emf;
 
@@ -57,230 +65,132 @@ public class UiPersistenceProvider {
 		emf = factory;
 	}
 
-	/**
-	 * Returns the AccountDetails object with the given id. The Id is composed
-	 * of: dbHost + ":" + dbPort + "/" + dbName
-	 * 
-	 * @param accountId
-	 * @return AccountDetails with the given Id
-	 */
-	public AccountDetails loadAccountDetails(String accountId) {
-		EntityManager em = emf.createEntityManager();
-		AccountDetails foundDetails = em.find(AccountDetails.class, accountId);
-		em.close();
-		return foundDetails;
+	public AccountDetails loadAccountDetails(long accountId) {
+		return loadSingleById(AccountDetails.class, accountId);
 	}
 
-	/**
-	 * Returns all AccountDetails object from the database.
-	 * 
-	 * @return AccountDetails with the given Id
-	 */
-	@SuppressWarnings("unchecked")
 	public List<AccountDetails> loadAllAccountDetails() throws DataNotFoundException {
-		List<AccountDetails> accountDetails = null;
-		EntityManager em = emf.createEntityManager();
-		try {
-			Query query = em.createNamedQuery("getAllAccounts");
-			accountDetails = query.getResultList();
-			return accountDetails;
-		} catch (Exception e) {
-			return new ArrayList<AccountDetails>();
-		} finally {
-			em.close();
-		}
+		return loadByQuery(AccountDetails.class, "getAllAccountDetails");
 	}
 
-	/**
-	 * Removes the given AccountDetails object from the database.
-	 * 
-	 * @param accountDetails
-	 *            which will be removed
-	 */
 	public void removeAccountDetails(AccountDetails accountDetails) {
-		EntityManager em = emf.createEntityManager();
-		try {
-			em.getTransaction().begin();
-			AccountDetails toBeRemoved = em.merge(accountDetails);
-			em.remove(toBeRemoved);
-			em.getTransaction().commit();
-		} finally {
-			if (em.getTransaction().isActive()) {
-				em.getTransaction().rollback();
-			}
-			em.close();
-		}
+		remove(accountDetails);
 	}
 
-	/**
-	 * Stores the given AccountDetails object in the database.
-	 * 
-	 * @param accountDetails
-	 */
 	public void storeAccountDetails(AccountDetails accountDetails) {
-		EntityManager em = emf.createEntityManager();
-		try {
-			em.getTransaction().begin();
-			em.merge(accountDetails);
-			em.getTransaction().commit();
-		} finally {
-			if (em.getTransaction().isActive()) {
-				em.getTransaction().rollback();
-			}
-			em.close();
-		}
+		store(accountDetails);
 	}
 
 	public void storeScheduledExperiment(ScheduledExperiment scheduledExperiment) {
-		EntityManager em = emf.createEntityManager();
-		try {
-			em.getTransaction().begin();
-			em.merge(scheduledExperiment);
-			em.getTransaction().commit();
-		} finally {
-			if (em.getTransaction().isActive()) {
-				em.getTransaction().rollback();
-			}
-			em.close();
-		}
+		store(scheduledExperiment);
 	}
 
 	public List<ScheduledExperiment> loadAllScheduledExperiments() {
-		List<ScheduledExperiment> accountDetails = null;
-		EntityManager em = emf.createEntityManager();
-		try {
-			TypedQuery<ScheduledExperiment> query = em.createNamedQuery("getAllExperiments", ScheduledExperiment.class);
-			accountDetails = query.getResultList();
-			return accountDetails;
-		} catch (Exception e) {
-			return new ArrayList<ScheduledExperiment>();
-		} finally {
-			em.close();
-		}
+		return loadByQuery(ScheduledExperiment.class, "getAllExperiments");
 	}
 
 	public List<ScheduledExperiment> loadScheduledExperimentsByAccount(String accountName) {
-		List<ScheduledExperiment> accountDetails = null;
-		EntityManager em = emf.createEntityManager();
-		try {
-			TypedQuery<ScheduledExperiment> query = em.createNamedQuery("getExperimentsByAccount",
-					ScheduledExperiment.class);
-			accountDetails = query.setParameter("account", accountName).getResultList();
-			return accountDetails;
-		} catch (Exception e) {
-			return new ArrayList<ScheduledExperiment>();
-		} finally {
-			em.close();
-		}
+		return loadByQuery(ScheduledExperiment.class, "getExperimentsByAccount", "account", accountName);
 	}
 
 	public List<ExecutedExperimentDetails> loadExecutedExperimentDetails(String accountId, String scenarioName) {
-		List<ExecutedExperimentDetails> mecLogs = null;
-		EntityManager em = emf.createEntityManager();
-		try {
-			TypedQuery<ExecutedExperimentDetails> query = em.createNamedQuery("getExperiments",
-					ExecutedExperimentDetails.class);
-			mecLogs = query.setParameter("accountId", accountId).setParameter("scenarioName", scenarioName)
-					.getResultList();
-			return mecLogs;
-		} catch (Exception e) {
-			return new ArrayList<ExecutedExperimentDetails>();
-		} finally {
-			em.close();
-		}
+		return loadByQuery(ExecutedExperimentDetails.class, "getExperiments", "accountId", accountId, "scenarioName",
+				scenarioName);
 	}
 
 	public long storeExecutedExperimentDetails(ExecutedExperimentDetails experimentDetails) {
-		EntityManager em = emf.createEntityManager();
-		try {
-			em.getTransaction().begin();
-			experimentDetails = em.merge(experimentDetails);
-			em.getTransaction().commit();
-		} finally {
-			if (em.getTransaction().isActive()) {
-				em.getTransaction().rollback();
-			}
-			em.close();
-		}
-		return experimentDetails.getId();
+		ExecutedExperimentDetails entity = store(experimentDetails);
+		return entity == null ? -1 : entity.getId();
 	}
 
 	public void storeMECLog(MECLog mecLog) {
-		EntityManager em = emf.createEntityManager();
-		try {
-			em.getTransaction().begin();
-			em.merge(mecLog);
-			em.getTransaction().commit();
-		} finally {
-			if (em.getTransaction().isActive()) {
-				em.getTransaction().rollback();
-			}
-			em.close();
-		}
+		store(mecLog);
 	}
 
 	public MECLog loadMECLog(long id) {
-		EntityManager em = emf.createEntityManager();
-		MECLog log = em.find(MECLog.class, id);
-		em.close();
-		return log;
+		return loadSingleById(MECLog.class, id);
 	}
 
 	public ScheduledExperiment loadScheduledExperiment(long id) {
-		EntityManager em = emf.createEntityManager();
-		ScheduledExperiment experiment = em.find(ScheduledExperiment.class, id);
-		em.close();
-		return experiment;
+		return loadSingleById(ScheduledExperiment.class, id);
 	}
 
 	public void removeScheduledExperiment(ScheduledExperiment experiment) {
-		EntityManager em = emf.createEntityManager();
-		try {
-			em.getTransaction().begin();
-			ScheduledExperiment toBeRemoved = em.merge(experiment);
-			em.remove(toBeRemoved);
-			em.getTransaction().commit();
-		} finally {
-			if (em.getTransaction().isActive()) {
-				em.getTransaction().rollback();
-			}
-			em.close();
-		}
+		remove(experiment);
 	}
 
 	public List<Visualization> loadAllVisualizations() {
-		List<Visualization> visualizations = null;
-		EntityManager em = emf.createEntityManager();
-		try {
-			TypedQuery<Visualization> query = em.createNamedQuery("getAllVisualizations", Visualization.class);
-			visualizations = query.getResultList();
-			return visualizations;
-		} catch (Exception e) {
-			return new ArrayList<Visualization>();
-		} finally {
-			em.close();
-		}
+		return loadByQuery(Visualization.class, "getAllVisualizations");
 	}
 
 	public List<Visualization> loadVisualizationsByAccount(String accountName) {
-		List<Visualization> visualizations = null;
-		EntityManager em = emf.createEntityManager();
-		try {
-			TypedQuery<Visualization> query = em.createNamedQuery("getVisualizationsByAccount", Visualization.class);
-			visualizations = query.setParameter("accountId", accountName).getResultList();
-			return visualizations;
-		} catch (Exception e) {
-			return new ArrayList<Visualization>();
-		} finally {
-			em.close();
-		}
+		return loadByQuery(Visualization.class, "getVisualizationsByAccount", "accountId", accountName);
 	}
 
 	public void storeVisualization(Visualization visualization) {
+		store(visualization);
+	}
+
+	public void removeVisualization(Visualization visualization) {
+		remove(visualization);
+	}
+
+	public Account storeAccount(Account account) {
+		return store(account);
+	}
+
+	public void removeAccount(Account account) {
+		remove(account);
+	}
+
+	public Account loadAccount(String accountName) {
+		return loadSingleByQuery(Account.class, "getAccountByName", "accountName", accountName);
+	}
+
+	public Account loadAccount(long primaryKey) {
+		return loadSingleById(Account.class, primaryKey);
+	}
+
+	public void storeRememberMeToken(RememberMeToken token) {
+		store(token);
+	}
+
+	public RememberMeToken loadRememberMeToken(String tokenHash) {
+		return loadSingleById(RememberMeToken.class, tokenHash);
+	}
+
+	public int deleteExpiredRememberMeToken() {
+		return updateQuery("deleteExipredTokens", "expireDate", System.currentTimeMillis());
+	}
+
+	public void removeRememberMeToken(RememberMeToken rememberMeToken) {
+		remove(rememberMeToken);
+	}
+
+	/********************************************************************/
+
+	private <T> T store(T object) {
+		EntityManager em = emf.createEntityManager();
+		T managedObject = null;
+		try {
+			em.getTransaction().begin();
+			managedObject = em.merge(object);
+			em.getTransaction().commit();
+		} finally {
+			if (em.getTransaction().isActive()) {
+				em.getTransaction().rollback();
+			}
+			em.close();
+		}
+		return managedObject;
+	}
+
+	private <T> void remove(T object) {
 		EntityManager em = emf.createEntityManager();
 		try {
 			em.getTransaction().begin();
-			em.merge(visualization);
+			T removeObject = em.merge(object);
+			em.remove(removeObject);
 			em.getTransaction().commit();
 		} finally {
 			if (em.getTransaction().isActive()) {
@@ -290,12 +200,71 @@ public class UiPersistenceProvider {
 		}
 	}
 
-	public void removeVisualization(Visualization visualization) {
+	private <T> T loadSingleById(Class<T> returnClazz, Object primaryKey) {
+		EntityManager em = emf.createEntityManager();
+		T entity = em.find(returnClazz, primaryKey);
+		em.close();
+		return entity;
+	}
+
+	private <T> T loadSingleByQuery(Class<T> returnClazz, String queryName, Object... parameterList) {
+		T result = null;
 		EntityManager em = emf.createEntityManager();
 		try {
+			TypedQuery<T> query = em.createNamedQuery(queryName, returnClazz);
+			for (int i = 0; i < parameterList.length / 2; i += 2) {
+				query.setParameter((String) parameterList[i], parameterList[i + 1]);
+			}
+			result = query.getSingleResult();
+		} catch (NoResultException e) {
+			String parameter = "[";
+			for (int i = 0; i < parameterList.length; i++) {
+				parameter += (i == 0 ? "" : ", ") + parameterList[i];
+			}
+			parameter += "]";
+			LOGGER.debug("No result with query '" + queryName + "' with parameter " + parameter);
+		} catch (NonUniqueResultException e) {
+			String parameter = "[";
+			for (int i = 0; i < parameterList.length; i++) {
+				parameter += (i == 0 ? "" : ", ") + parameterList[i];
+			}
+			parameter += "]";
+			LOGGER.debug("No unique result with query '" + queryName + "' with parameter " + parameter);
+		} catch (IllegalStateException e) {
+			LOGGER.error("Query '" + queryName + "' failed: " + e);
+		} finally {
+			em.close();
+		}
+		return result;
+	}
+
+	private <T> List<T> loadByQuery(Class<T> clazz, String queryName, Object... parameterList) {
+		List<T> result = new ArrayList<T>();
+		EntityManager em = emf.createEntityManager();
+		try {
+			TypedQuery<T> query = em.createNamedQuery(queryName, clazz);
+			for (int i = 0; i < parameterList.length / 2; i += 2) {
+				query.setParameter((String) parameterList[i], parameterList[i + 1]);
+			}
+			result = query.getResultList();
+		} catch (IllegalStateException e) {
+			LOGGER.error("Query '" + queryName + "' failed: " + e);
+		} finally {
+			em.close();
+		}
+		return result;
+	}
+
+	private int updateQuery(String queryName, Object... parameterList) {
+		EntityManager em = emf.createEntityManager();
+		Query query = em.createNamedQuery(queryName);
+		for (int i = 0; i < parameterList.length / 2; i += 2) {
+			query.setParameter((String) parameterList[i], parameterList[i + 1]);
+		}
+		int count = 0;
+		try {
 			em.getTransaction().begin();
-			Visualization toBeRemoved = em.merge(visualization);
-			em.remove(toBeRemoved);
+			count = query.executeUpdate();
 			em.getTransaction().commit();
 		} finally {
 			if (em.getTransaction().isActive()) {
@@ -303,5 +272,6 @@ public class UiPersistenceProvider {
 			}
 			em.close();
 		}
+		return count;
 	}
 }

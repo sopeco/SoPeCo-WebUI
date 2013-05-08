@@ -100,10 +100,10 @@ public class TabControllerOne extends TabController implements ClickHandler, MEC
 		view.getEditLabel().setValue("ExperimentRun " + dtf.format(new Date()));
 	}
 
-	public void updateControllerURL () {
+	public void updateControllerURL() {
 		view.getEditController().setValue(Manager.get().getControllerUrl());
 	}
-	
+
 	@Override
 	public void onClick(ClickEvent event) {
 		scheduleExperiment();
@@ -156,7 +156,7 @@ public class TabControllerOne extends TabController implements ClickHandler, MEC
 	private void scheduleExperiment() {
 		FrontendScheduledExperiment scheduledExperiment = new FrontendScheduledExperiment();
 		// scheduledExperiment.setAccount(Manager.get().getAccountDetails().getAccountName());
-		scheduledExperiment.setAccount(Manager.get().getSelectedDatabaseInstance().getId());
+		scheduledExperiment.setAccount("" + Manager.get().getAccountDetails().getId());
 		scheduledExperiment.setLabel(view.getEditLabel().getValue());
 		scheduledExperiment.setStartTime(getStartTime());
 		scheduledExperiment.setControllerUrl(Manager.get().getControllerUrl());

@@ -149,9 +149,9 @@ public class TreeItem extends FlowPanel implements ClickHandler {
 			image.removeStyleName(CSS_TRANSPARENT);
 			
 			if (expanded) {
-				image.setUrlAndVisibleRect(R.resc.imgIconSet().getSafeUri(), 120, 60, 16, 16);
+				image.setUrlAndVisibleRect(R.img.iconSet().getSafeUri(), 120, 60, 16, 16);
 			} else {
-				image.setUrlAndVisibleRect(R.resc.imgIconSet().getSafeUri(), 90, 60, 16, 16);
+				image.setUrlAndVisibleRect(R.img.iconSet().getSafeUri(), 90, 60, 16, 16);
 			}
 		}
 	}

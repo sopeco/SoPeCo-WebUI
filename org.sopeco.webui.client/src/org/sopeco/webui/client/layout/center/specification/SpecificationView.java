@@ -78,11 +78,11 @@ public class SpecificationView extends FlowPanel {
 		htmlName = new HTML("1234567890");
 		htmlName.addStyleName("name");
 
-		imgRename = new ImageHover(R.resc.imgIconSet().getSafeUri(), 30, 60, 24, 18, R.resc.imgIconSet().getSafeUri(),
+		imgRename = new ImageHover(R.img.iconSet().getSafeUri(), 30, 60, 24, 18, R.img.iconSet().getSafeUri(),
 				30, 90, 24, 18);
-		imgDuplicate = new ImageHover(R.resc.imgIconSet().getSafeUri(), 60, 60, 13, 18, R.resc.imgIconSet().getSafeUri(),
+		imgDuplicate = new ImageHover(R.img.iconSet().getSafeUri(), 60, 60, 13, 18, R.img.iconSet().getSafeUri(),
 				60, 90, 13, 18);
-		imgRemove = new ImageHover(R.resc.imgIconSet().getSafeUri(), 0, 60, 16, 18, R.resc.imgIconSet().getSafeUri(),
+		imgRemove = new ImageHover(R.img.iconSet().getSafeUri(), 0, 60, 16, 18, R.img.iconSet().getSafeUri(),
 				0, 90, 16, 18);
 
 		imgRename.setTitle(R.get("Rename"));

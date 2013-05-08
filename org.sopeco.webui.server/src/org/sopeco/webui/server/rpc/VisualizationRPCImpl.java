@@ -26,7 +26,6 @@
  */
 package org.sopeco.webui.server.rpc;
 
-import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -90,7 +89,7 @@ public class VisualizationRPCImpl extends SuperRemoteServlet implements
 		String experimentName = experiementRun.getParentSeries()
 				.getExperimentName();
 		Long timestamp = experiementRun.getTimestamp();
-		String accountName = getUser().getCurrentAccount().getId();
+		String accountName = getUser().getCurrentDatabase().getId();
 		ExperimentSeriesRun run = getRun(scenarioName,
 				measurementEnvironmentUrl, experimentName, timestamp);
 		data = loadData(run, inputParameter, outputParameterd, options);
@@ -111,7 +110,7 @@ public class VisualizationRPCImpl extends SuperRemoteServlet implements
 	public VisualizationBundle getVisualizations(int start, int length) {
 		VisualizationBundle visualizationBundle = new VisualizationBundle();
 		List<Visualization> visualizations = new ArrayList<Visualization>();
-		String accountName = getUser().getCurrentAccount().getId();
+		String accountName = getUser().getCurrentDatabase().getId();
 		System.out.println("loading charts...");
 		visualizations.addAll(UiPersistence.getUiProvider()
 				.loadVisualizationsByAccount(accountName));

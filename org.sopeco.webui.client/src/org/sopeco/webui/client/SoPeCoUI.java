@@ -52,6 +52,7 @@ import org.sopeco.webui.shared.helper.ExtensionContainer;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
+import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 
 /**
@@ -97,9 +98,9 @@ public class SoPeCoUI implements EntryPoint, SimpleNotify, UncaughtExceptionHand
 	 */
 	@Override
 	public void onModuleLoad() {
-		frontend = this;
-
-		R.resc.cssCommon().ensureInjected();
+		frontend = this;	
+		
+		R.css.cssCommon().ensureInjected();
 
 		RootLayoutPanel.get().addStyleName("rootPanel");
 
@@ -183,13 +184,10 @@ public class SoPeCoUI implements EntryPoint, SimpleNotify, UncaughtExceptionHand
 		RootLayoutPanel.get().add(new LoginPanel());
 	}
 
-	/**
-	 * returns the database instance of the current connection/session.
-	 * 
-	 * @return database instance
-	 */
-	public String getConnectedAccount() {
-		return connectedAccountName;
+	public void logout () {
+		Cookies.removeCookie(LoginPanel.COOKIE_RM_ACCOUNT);
+		Cookies.removeCookie(LoginPanel.COOKIE_RM_TOKEN);
+		changeDatabase();
 	}
 
 	/**
@@ -198,9 +196,7 @@ public class SoPeCoUI implements EntryPoint, SimpleNotify, UncaughtExceptionHand
 	 * @param newConnectedDatabase
 	 *            the database of the current connection.
 	 */
-	public void initializeMainView(String accountName) {
-		connectedAccountName = accountName;
-
+	public void initializeMainView() {
 		ScenarioManager.clear();
 		MainLayoutPanel.destroy();
 
