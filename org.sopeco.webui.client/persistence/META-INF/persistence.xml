@@ -34,11 +34,14 @@
 		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
 		<class>org.sopeco.webui.server.persistence.entities.Test</class>
 		<class>org.sopeco.webui.server.persistence.entities.MEControllerUrl</class>
-		<class>org.sopeco.webui.shared.entities.AccountDetails</class>
 		<class>org.sopeco.webui.server.persistence.entities.ScheduledExperiment</class>
 		<class>org.sopeco.webui.shared.entities.ExecutedExperimentDetails</class>
 		<class>org.sopeco.webui.shared.entities.Visualization</class>
 		<class>org.sopeco.webui.shared.entities.MECLog</class>
+		
+		<class>org.sopeco.webui.shared.entities.account.Account</class>
+		<class>org.sopeco.webui.shared.entities.account.AccountDetails</class>
+		<class>org.sopeco.webui.shared.entities.account.RememberMeToken</class>
 		
 		<properties>
 			

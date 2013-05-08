@@ -35,15 +35,6 @@
 	</listener>
 
 	<servlet>
-		<servlet-name>databaseManagerRPC</servlet-name>
-		<servlet-class>org.sopeco.webui.server.rpc.database.DatabaseManagerRPCImpl</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>databaseManagerRPC</servlet-name>
-		<url-pattern>/sopeco_webui/databaseManagerRPC</url-pattern>
-	</servlet-mapping>
-
-	<servlet>
 		<servlet-name>systemDetailsRPC</servlet-name>
 		<servlet-class>org.sopeco.webui.server.rpc.SystemDetailsRPCImpl</servlet-class>
 	</servlet>
@@ -131,6 +122,15 @@
 	<servlet-mapping>
 		<servlet-name>getRPC</servlet-name>
 		<url-pattern>/sopeco_webui/getRPC</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>accountManagementRPC</servlet-name>
+		<servlet-class>org.sopeco.webui.server.rpc.AccountManagementRPCImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>accountManagementRPC</servlet-name>
+		<url-pattern>/sopeco_webui/accountManagementRPC</url-pattern>
 	</servlet-mapping>
 
 

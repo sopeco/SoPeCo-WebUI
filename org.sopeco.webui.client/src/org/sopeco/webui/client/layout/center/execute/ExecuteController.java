@@ -64,7 +64,7 @@ public class ExecuteController implements ICenterController, ClickHandler, Selec
 	 * method.
 	 */
 	public ExecuteController() {
-		R.resc.cssExecuteView().ensureInjected();
+		R.css.cssExecuteView().ensureInjected();
 		init();
 	}
 

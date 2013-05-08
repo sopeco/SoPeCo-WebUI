@@ -46,7 +46,7 @@ public class NaviView extends FlowPanel {
 	private FlowPanel logoPanel;
 
 	public NaviView() {
-		R.resc.cssNavigation().ensureInjected();
+		R.css.cssNavigation().ensureInjected();
 
 		init();
 	}

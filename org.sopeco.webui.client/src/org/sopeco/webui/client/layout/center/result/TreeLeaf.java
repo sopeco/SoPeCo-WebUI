@@ -82,22 +82,22 @@ public class TreeLeaf extends TreeItem implements /* HasClickHandlers, */ClickHa
 		removeIcon();
 		getContentWrapper().getElement().getStyle().setMarginLeft(1, Unit.EM);
 
-		downloadImage = new ImageHover(R.resc.imgIconSet().getSafeUri(), 90, 120, 16, 16, R.resc.imgIconSet()
+		downloadImage = new ImageHover(R.img.iconSet().getSafeUri(), 90, 120, 16, 16, R.img.iconSet()
 				.getSafeUri(), 120, 120, 16, 16);
 		downloadImage.setTitle(R.get("download"));
 		downloadImage.getElement().getStyle().setMarginLeft(1, Unit.EM);
 		downloadImage.getElement().getStyle().setCursor(Cursor.POINTER);
 		downloadImage.addClickHandler(this);
 
-		rImage = new ImageHover(R.resc.imgIconSet().getSafeUri(), 150, 120, 13, 16, R.resc.imgIconSet().getSafeUri(),
+		rImage = new ImageHover(R.img.iconSet().getSafeUri(), 150, 120, 13, 16, R.img.iconSet().getSafeUri(),
 				180, 120, 13, 16);
 		rImage.setTitle(R.get("Get R-Command"));
 		rImage.getElement().getStyle().setMarginLeft(1, Unit.EM);
 		rImage.getElement().getStyle().setCursor(Cursor.POINTER);
 		rImage.addClickHandler(this);
 
-		chartImage = new ImageHover(R.resc.imgIconSet().getSafeUri(), 210, 90, 16, 16,
-				R.resc.imgIconSet().getSafeUri(), 210, 120, 16, 16);
+		chartImage = new ImageHover(R.img.iconSet().getSafeUri(), 210, 90, 16, 16,
+				R.img.iconSet().getSafeUri(), 210, 120, 16, 16);
 		chartImage.setTitle(R.lang.newChart());
 
 		chartImage.getElement().getStyle().setMarginLeft(1, Unit.EM);

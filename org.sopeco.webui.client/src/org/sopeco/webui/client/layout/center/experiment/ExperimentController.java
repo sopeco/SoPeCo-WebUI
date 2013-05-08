@@ -84,7 +84,7 @@ public class ExperimentController implements ICenterController, ValueChangeHandl
 	private boolean analysisRequired = false;
 
 	public ExperimentController() {
-		R.resc.cssExperiment().ensureInjected();
+		R.css.cssExperiment().ensureInjected();
 
 		tabPanel = new ExperimentTabPanel();
 		
