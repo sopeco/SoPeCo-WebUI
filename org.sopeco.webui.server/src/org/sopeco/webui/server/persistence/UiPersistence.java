@@ -42,7 +42,7 @@ public final class UiPersistence {
 	private UiPersistence() {
 	}
 
-	private static IMetaDataPersistenceProvider metaPersistenceProvider;
+//	private static IMetaDataPersistenceProvider metaPersistenceProvider;
 	private static UiPersistenceProvider uiPersistenceProvider;
 
 	/**
@@ -52,12 +52,12 @@ public final class UiPersistence {
 	 * 
 	 * @return IMetaDataPersistenceProvider
 	 */
-	public static IMetaDataPersistenceProvider getMetaProvider() {
-		if (metaPersistenceProvider == null) {
-			metaPersistenceProvider = PersistenceProviderFactory.getInstance().getMetaDataPersistenceProvider();
-		}
-		return metaPersistenceProvider;
-	}
+//	public static IMetaDataPersistenceProvider getMetaProvider() {
+//		if (metaPersistenceProvider == null) {
+//			metaPersistenceProvider = PersistenceProviderFactory.getInstance().getMetaDataPersistenceProvider();
+//		}
+//		return metaPersistenceProvider;
+//	}
 
 	/**
 	 * Returns the provider of the database, which contains all settings, like

@@ -55,9 +55,8 @@ public final class UiPersistenceProviderFactory {
 	 * Hidden constructor.
 	 */
 	private UiPersistenceProviderFactory() {
-
 	}
-
+	
 	/**
 	 * Creates a new UiPersistenceProvider.
 	 * 

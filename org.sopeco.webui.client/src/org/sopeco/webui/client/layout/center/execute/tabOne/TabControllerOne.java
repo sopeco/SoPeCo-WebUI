@@ -156,7 +156,7 @@ public class TabControllerOne extends TabController implements ClickHandler, MEC
 	private void scheduleExperiment() {
 		FrontendScheduledExperiment scheduledExperiment = new FrontendScheduledExperiment();
 		// scheduledExperiment.setAccount(Manager.get().getAccountDetails().getAccountName());
-		scheduledExperiment.setAccount("" + Manager.get().getAccountDetails().getId());
+		scheduledExperiment.setAccount(Manager.get().getAccountDetails().getId());
 		scheduledExperiment.setLabel(view.getEditLabel().getValue());
 		scheduledExperiment.setStartTime(getStartTime());
 		scheduledExperiment.setControllerUrl(Manager.get().getControllerUrl());

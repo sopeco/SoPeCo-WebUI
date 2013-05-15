@@ -133,7 +133,8 @@ public class TabControllerThree extends TabController implements ClickHandler {
 
 		// tabView.getStatusPanel().setStatusLabel(experiment.getLabel() + " - "
 		// + experiment.getStatusString());
-		tabView.getStatusPanel().setAccount(experiment.getAccount());
+		//TODO: show account name
+		tabView.getStatusPanel().setAccount("" + experiment.getAccount());
 		tabView.getStatusPanel().setScenario(experiment.getScenario());
 		// TODO
 		tabView.getStatusPanel().setExperiments("n/a");
