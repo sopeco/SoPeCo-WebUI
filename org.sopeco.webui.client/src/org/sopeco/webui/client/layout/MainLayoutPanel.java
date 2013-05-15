@@ -277,7 +277,9 @@ public final class MainLayoutPanel extends DockLayoutPanel {
 	 */
 	public <T extends ICenterController> void switchView(Class<T> targetClass) {
 		currentCenterClass = targetClass;
-		controllerMap.get(targetClass).onSwitchTo();
+		if (targetClass != null) {
+			controllerMap.get(targetClass).onSwitchTo();
+		}
 		refreshView();
 	}
 
@@ -300,8 +302,6 @@ public final class MainLayoutPanel extends DockLayoutPanel {
 		registerCenterController(new VisualizationController());
 
 		refreshView();
-
-		
 
 	}
 
