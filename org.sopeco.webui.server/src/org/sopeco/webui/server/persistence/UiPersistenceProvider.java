@@ -89,11 +89,11 @@ public class UiPersistenceProvider {
 		return loadByQuery(ScheduledExperiment.class, "getAllExperiments");
 	}
 
-	public List<ScheduledExperiment> loadScheduledExperimentsByAccount(String accountName) {
-		return loadByQuery(ScheduledExperiment.class, "getExperimentsByAccount", "account", accountName);
+	public List<ScheduledExperiment> loadScheduledExperimentsByAccount(long accountId) {
+		return loadByQuery(ScheduledExperiment.class, "getExperimentsByAccount", "account", accountId);
 	}
 
-	public List<ExecutedExperimentDetails> loadExecutedExperimentDetails(String accountId, String scenarioName) {
+	public List<ExecutedExperimentDetails> loadExecutedExperimentDetails(long accountId, String scenarioName) {
 		return loadByQuery(ExecutedExperimentDetails.class, "getExperiments", "accountId", accountId, "scenarioName",
 				scenarioName);
 	}
@@ -212,7 +212,7 @@ public class UiPersistenceProvider {
 		EntityManager em = emf.createEntityManager();
 		try {
 			TypedQuery<T> query = em.createNamedQuery(queryName, returnClazz);
-			for (int i = 0; i < parameterList.length / 2; i += 2) {
+			for (int i = 0; i <= parameterList.length / 2; i += 2) {
 				query.setParameter((String) parameterList[i], parameterList[i + 1]);
 			}
 			result = query.getSingleResult();
@@ -243,7 +243,7 @@ public class UiPersistenceProvider {
 		EntityManager em = emf.createEntityManager();
 		try {
 			TypedQuery<T> query = em.createNamedQuery(queryName, clazz);
-			for (int i = 0; i < parameterList.length / 2; i += 2) {
+			for (int i = 0; i + 1< parameterList.length; i += 2) {
 				query.setParameter((String) parameterList[i], parameterList[i + 1]);
 			}
 			result = query.getResultList();
@@ -258,7 +258,7 @@ public class UiPersistenceProvider {
 	private int updateQuery(String queryName, Object... parameterList) {
 		EntityManager em = emf.createEntityManager();
 		Query query = em.createNamedQuery(queryName);
-		for (int i = 0; i < parameterList.length / 2; i += 2) {
+		for (int i = 0; i <= parameterList.length / 2; i += 2) {
 			query.setParameter((String) parameterList[i], parameterList[i + 1]);
 		}
 		int count = 0;

@@ -67,11 +67,7 @@ public final class StartUp implements ServletContextListener {
 			loadConfiguration();
 
 			// Workaround that the persistence drives are available
-			try {
-				UiPersistence.getMetaProvider().loadAllDatabaseInstances();
-			} catch (DataNotFoundException e) {
-				e.printStackTrace();
-			}
+			UiPersistence.getUiProvider().loadAccount(0);
 
 			Scheduler.startScheduler();
 

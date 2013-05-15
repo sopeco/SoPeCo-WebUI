@@ -74,9 +74,9 @@ public class ExecuteRPCImpl extends SuperRemoteServlet implements ExecuteRPC {
 
 	@Override
 	public List<FrontendScheduledExperiment> getScheduledExperiments() {
-		String accountName = getUser().getCurrentDatabase().getId();
+		long accountId = getUser().getCurrentAccount().getId();
 		List<ScheduledExperiment> resultList = UiPersistence.getUiProvider().loadScheduledExperimentsByAccount(
-				accountName);
+				accountId);
 
 		// List<Long> runningExperiments =
 		// ControllerQueueManager.getRunningExperimentIds();
@@ -92,7 +92,7 @@ public class ExecuteRPCImpl extends SuperRemoteServlet implements ExecuteRPC {
 	@Override
 	public boolean removeScheduledExperiment(long id) {
 		ScheduledExperiment exp = UiPersistence.getUiProvider().loadScheduledExperiment(id);
-		if (exp != null && exp.getAccountId().equals(getUser().getCurrentAccount().getId())) {
+		if (exp != null && exp.getAccountId() == getUser().getCurrentAccount().getId()) {
 			UiPersistence.getUiProvider().removeScheduledExperiment(exp);
 			return true;
 		}
@@ -102,7 +102,7 @@ public class ExecuteRPCImpl extends SuperRemoteServlet implements ExecuteRPC {
 	@Override
 	public boolean setScheduledExperimentEnabled(long id, boolean enabled) {
 		ScheduledExperiment exp = UiPersistence.getUiProvider().loadScheduledExperiment(id);
-		if (exp != null && exp.getAccountId().equals(getUser().getCurrentAccount().getId())) {
+		if (exp != null && exp.getAccountId() == getUser().getCurrentAccount().getId()) {
 			exp.setActive(enabled);
 			UiPersistence.getUiProvider().storeScheduledExperiment(exp);
 			return true;
@@ -112,7 +112,8 @@ public class ExecuteRPCImpl extends SuperRemoteServlet implements ExecuteRPC {
 
 	@Override
 	public List<ExecutedExperimentDetails> getExecutedExperimentDetails() {
-		String accountId = getUser().getCurrentDatabase().getId();
+		// String accountId = getUser().getCurrentDatabase().getId();
+		long accountId = getUser().getCurrentAccount().getId();
 		String scenarioName = getUser().getAccountDetails().getSelectedScenario();
 
 		return UiPersistence.getUiProvider().loadExecutedExperimentDetails(accountId, scenarioName);
