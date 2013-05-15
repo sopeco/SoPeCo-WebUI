@@ -88,13 +88,4 @@ public final class ControllerQueueManager {
 		return false;
 	}
 
-	// public static List<Long> getRunningExperimentIds() {
-	// List<Long> returnList = new ArrayList<Long>();
-	// for (ControllerQueue cq : queueMap.values()) {
-	// if (cq.isExecuting()) {
-	// returnList.add(cq.getCurrentlyRunning().getId());
-	// }
-	// }
-	// return returnList;
-	// }
 }

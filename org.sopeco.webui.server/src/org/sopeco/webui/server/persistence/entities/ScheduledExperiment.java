@@ -84,7 +84,7 @@ public class ScheduledExperiment implements Serializable {
 	private long startTime;
 
 	@Column(name = "account")
-	private String account;
+	private long account;
 
 	@Column(name = "controllerUrl")
 	private String controllerUrl;
@@ -232,16 +232,12 @@ public class ScheduledExperiment implements Serializable {
 		this.startTime = startTime;
 	}
 
-	public String getAccountId() {
+	public long getAccountId() {
 		return account;
 	}
 
-	public void setAccountId(String account) {
+	public void setAccountId(long account) {
 		this.account = account;
-	}
-
-	public String getAccountName() {
-		return account.substring(account.lastIndexOf("/") + 1);
 	}
 
 	public String getControllerUrl() {

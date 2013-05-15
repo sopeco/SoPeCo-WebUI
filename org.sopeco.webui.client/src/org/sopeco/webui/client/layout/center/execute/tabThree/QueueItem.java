@@ -72,7 +72,8 @@ public class QueueItem extends FlowPanel {
 		labelScenario = new HTML(R.get("Scenario") + ":");
 		labelExperiments = new HTML(R.get("Experiments") + ":");
 
-		valueAccount = new HTML(experiment.getAccount());
+		// TODO: show account name
+		valueAccount = new HTML(""+experiment.getAccount());
 		valueScenario = new HTML(experiment.getScenarioDefinition().getScenarioName());
 		valueExperiments = new HTML("n/a");
 

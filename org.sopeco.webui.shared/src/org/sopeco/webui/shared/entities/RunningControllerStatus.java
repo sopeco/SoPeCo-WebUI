@@ -46,7 +46,7 @@ public class RunningControllerStatus implements PushSerializable {
 	private long timeRemaining;
 
 	private String label;
-	private String account;
+	private long accountId;
 	private String scenario;
 	private float progress;
 	
@@ -113,16 +113,16 @@ public class RunningControllerStatus implements PushSerializable {
 	/**
 	 * @return the account
 	 */
-	public String getAccount() {
-		return account;
+	public long getAccount() {
+		return accountId;
 	}
 
 	/**
 	 * @param account
 	 *            the account to set
 	 */
-	public void setAccount(String account) {
-		this.account = account;
+	public void setAccount(long account) {
+		this.accountId = account;
 	}
 
 	/**

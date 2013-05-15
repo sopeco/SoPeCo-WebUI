@@ -44,7 +44,7 @@ public class FrontendScheduledExperiment implements PushSerializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private String account;
+	private long accountId;
 
 	private String controllerUrl;
 
@@ -138,12 +138,12 @@ public class FrontendScheduledExperiment implements PushSerializable {
 		this.lastExecutionTime = pLastExecutionTime;
 	}
 
-	public String getAccount() {
-		return account;
+	public long getAccount() {
+		return accountId;
 	}
 
-	public void setAccount(String pAccount) {
-		this.account = pAccount;
+	public void setAccount(long pAccount) {
+		this.accountId = pAccount;
 	}
 
 	public void setId(long pId) {

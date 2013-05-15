@@ -72,6 +72,8 @@ public class LoginPanel extends FlowPanel {
 	private FlowPanel selectLanguagePanel;
 	private FlowPanel logoPanel;
 
+	private boolean initialized = false;
+
 	/**
 	 * Cosntructor.
 	 */
@@ -85,35 +87,38 @@ public class LoginPanel extends FlowPanel {
 	 * Initializes all necessary objects.
 	 */
 	private void init() {
-		R.css.cssLoginBox().ensureInjected();
-		addStyleName("loginPanel");
+		if (!initialized) {
+			initialized = true;
+			
+			R.css.cssLoginBox().ensureInjected();
+			addStyleName("loginPanel");
 
-		htmlFEVersionInfo = new HTML(SoPeCoUI.getBuildInfo());
-		htmlFEVersionInfo.addStyleName("htmlFEVersionInfo");
+			htmlFEVersionInfo = new HTML(SoPeCoUI.getBuildInfo());
+			htmlFEVersionInfo.addStyleName("htmlFEVersionInfo");
 
-		Image imgLogo = new Image("/branding.png");
+			Image imgLogo = new Image("/branding.png");
 
-		if (SoPeCoUI.hasBranding()) {
-			logoPanel = new FlowPanel();
-			logoPanel.addStyleName("imgSapResearch");
-			logoPanel.add(new HTML("powered by"));
-			logoPanel.add(imgLogo);
+			if (SoPeCoUI.hasBranding()) {
+				logoPanel = new FlowPanel();
+				logoPanel.addStyleName("imgSapResearch");
+				logoPanel.add(new HTML("powered by"));
+				logoPanel.add(imgLogo);
+			}
+
+			createLanguagePanel();
+
+			verticalCell = new SimplePanel();
+
+			createAccount = new CreateAccount(this);
+			loginView = new LoginView(this);
+
+			verticalCell.add(loginView);
+			add(verticalCell);
+			add(htmlFEVersionInfo);
+			if (logoPanel != null) {
+				add(logoPanel);
+			}
 		}
-
-		createLanguagePanel();
-
-		verticalCell = new SimplePanel();
-
-		createAccount = new CreateAccount(this);
-		loginView = new LoginView(this);
-
-		verticalCell.add(loginView);
-		add(verticalCell);
-		add(htmlFEVersionInfo);
-		if (logoPanel != null) {
-			add(logoPanel);
-		}
-
 	}
 
 	private boolean rememberMe() {
@@ -151,6 +156,7 @@ public class LoginPanel extends FlowPanel {
 
 			getAccountSettings();
 		} else {
+			init();
 			loginView.setPasswordError(R.lang.msgPasswordIncorrect());
 			loginView.selectPasswordField();
 			loginView.setEnableLoginButton(true);
