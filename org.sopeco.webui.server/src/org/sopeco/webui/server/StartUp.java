@@ -87,14 +87,6 @@ public final class StartUp implements ServletContextListener {
 		try {
 			loadConfiguration();
 
-			//TODO: Fix this. Workaround that the persistence drives are available
-			try {
-				UiPersistence.getMetaProvider().loadAllDatabaseInstances();
-			} catch (DataNotFoundException e) {
-				e.printStackTrace();
-			}
-			
-			
 			Scheduler.startScheduler();
 
 			int port = Configuration.getSessionSingleton(Configuration.getGlobalSessionId()).getPropertyAsInteger(
