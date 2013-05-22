@@ -104,7 +104,7 @@ public class LoginView extends Composite {
 	}
 
 	private void setErrorText(TextBox textbox, Label label, String text) {
-		if (text.isEmpty()) {
+		if (text.trim().isEmpty()) {
 			textbox.getElement().getStyle().clearBorderColor();
 			label.getElement().getStyle().setDisplay(Display.NONE);
 		} else {

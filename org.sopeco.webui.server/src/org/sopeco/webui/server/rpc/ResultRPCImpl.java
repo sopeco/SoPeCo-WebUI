@@ -40,12 +40,12 @@ import org.sopeco.persistence.entities.ExperimentSeriesRun;
 import org.sopeco.persistence.entities.ScenarioInstance;
 import org.sopeco.persistence.exceptions.DataNotFoundException;
 import org.sopeco.persistence.util.DataSetCsvHandler;
-import org.sopeco.webui.client.rpc.ResultRPC;
 import org.sopeco.webui.server.user.User;
 import org.sopeco.webui.server.user.UserManager;
 import org.sopeco.webui.shared.definitions.result.SharedExperimentRuns;
 import org.sopeco.webui.shared.definitions.result.SharedExperimentSeries;
 import org.sopeco.webui.shared.definitions.result.SharedScenarioInstance;
+import org.sopeco.webui.shared.rpc.ResultRPC;
 
 /**
  * 

@@ -24,10 +24,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sopeco.webui.client.rpc;
+package org.sopeco.webui.shared.rpc;
 
-import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
-import org.sopeco.persistence.entities.definition.ScenarioDefinition;
+import org.sopeco.webui.shared.push.PushPackage;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
@@ -35,30 +34,23 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 /**
  * 
  * @author Marius Oehler
- * 
+ *
  */
-@RemoteServiceRelativePath("scenarioManagerRPC")
-public interface ScenarioManagerRPC extends RemoteService {
+@RemoteServiceRelativePath("pushRPC")
+public interface PushRPC extends RemoteService {
 
-	/**
-	 * Return a String-Array with all existing scenario names.
-	 * 
-	 * @return scenario names
-	 */
-	String[] getScenarioNames();
+	public static enum Type {
+		ERROR, IDLE, MESSAGE, NEW_MEC_AVAILABLE, NEW_ENV_DEFINITION,
+		
+		GET_MEC_TOKEN,
+		CONTROLLER_STATUS,
+		SCHEDULED_EXPERIMENT_CHANGED,
+		
+		PUSH_SCHEDULED_EXPERIMENT,
+		PUSH_CURRENT_CONTROLLER_EXPERIMENT,
+		PUSH_CURRENT_CONTROLLER_QUEUE,
+		PUSH_SERVER_SHUTTING_DOWN
+	}
 
-	boolean addScenario(String scenarioName, String specificationName, ExperimentSeriesDefinition experiment);
-
-	boolean addScenario(ScenarioDefinition scenario);
-
-	boolean removeScenario(String name);
-
-	boolean switchScenario(String name);
-
-	ScenarioDefinition getCurrentScenarioDefinition();
-
-	boolean storeScenarioDefinition(ScenarioDefinition definition);
-
-	String getScenarioAsXML();
-
+	PushPackage push();
 }

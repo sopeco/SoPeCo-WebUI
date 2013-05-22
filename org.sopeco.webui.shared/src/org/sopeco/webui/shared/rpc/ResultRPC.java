@@ -24,25 +24,21 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sopeco.webui.client.rpc;
+package org.sopeco.webui.shared.rpc;
 
 import java.util.List;
 
 import org.sopeco.webui.shared.definitions.result.SharedScenarioInstance;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.rpc.RemoteService;
+import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
-/**
- * 
- * @author Marius Oehler
- * 
- */
-public interface ResultRPCAsync {
-	void getResults(AsyncCallback<Void> callback);
+@RemoteServiceRelativePath("resultRPC")
+public interface ResultRPC extends RemoteService {
 
-	void getInstances(String scenarioName,
-			AsyncCallback<List<SharedScenarioInstance>> callback);
+	void getResults();
 
-	void getResultAsR(String scenario, String exoerimentSeries, String url,
-			long timestamp, AsyncCallback<String> callback);
+	List<SharedScenarioInstance> getInstances(String scenarioName);
+	
+	String getResultAsR(String scenario, String exoerimentSeries, String url, long timestamp);
 }

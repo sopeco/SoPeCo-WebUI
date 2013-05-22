@@ -30,7 +30,7 @@ import java.util.HashMap;
 
 import org.sopeco.config.Configuration;
 import org.sopeco.persistence.config.PersistenceConfiguration;
-import org.sopeco.webui.client.rpc.SystemDetailsRPC;
+import org.sopeco.webui.shared.rpc.SystemDetailsRPC;
 
 /**
  * 

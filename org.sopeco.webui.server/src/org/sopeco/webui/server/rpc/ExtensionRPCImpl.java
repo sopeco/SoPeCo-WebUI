@@ -36,9 +36,9 @@ import org.sopeco.engine.experimentseries.IParameterVariationExtension;
 import org.sopeco.engine.processing.IProcessingStrategyExtension;
 import org.sopeco.engine.registry.ExtensionRegistry;
 import org.sopeco.engine.registry.ISoPeCoExtension;
-import org.sopeco.webui.client.rpc.ExtensionRPC;
 import org.sopeco.webui.shared.helper.ExtensionContainer;
 import org.sopeco.webui.shared.helper.ExtensionTypes;
+import org.sopeco.webui.shared.rpc.ExtensionRPC;
 
 /**
  * 

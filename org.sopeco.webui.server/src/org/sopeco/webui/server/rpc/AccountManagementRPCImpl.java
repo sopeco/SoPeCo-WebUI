@@ -6,7 +6,6 @@ import org.sopeco.config.Configuration;
 import org.sopeco.persistence.IPersistenceProvider;
 import org.sopeco.persistence.config.PersistenceConfiguration;
 import org.sopeco.persistence.exceptions.WrongCredentialsException;
-import org.sopeco.webui.client.rpc.AccountManagementRPC;
 import org.sopeco.webui.server.helper.Security;
 import org.sopeco.webui.server.persistence.FlexiblePersistenceProviderFactory;
 import org.sopeco.webui.server.persistence.UiPersistence;
@@ -14,6 +13,7 @@ import org.sopeco.webui.shared.entities.account.Account;
 import org.sopeco.webui.shared.entities.account.AccountDetails;
 import org.sopeco.webui.shared.entities.account.RememberMeToken;
 import org.sopeco.webui.shared.helper.LoginResponse;
+import org.sopeco.webui.shared.rpc.AccountManagementRPC;
 
 /**
  * 
@@ -167,7 +167,7 @@ public class AccountManagementRPCImpl extends SuperRemoteServlet implements Acco
 
 		try {
 			String password = Security.decrypt(rememberMeToken, rmToken.getEncrypted());
-			
+
 			return login(accountName, password, true);
 		} catch (Exception e) {
 			return response;

@@ -24,19 +24,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sopeco.webui.client.rpc;
+package org.sopeco.webui.shared.rpc;
 
-import org.sopeco.webui.shared.helper.ExtensionContainer;
+import java.util.HashMap;
 
-import com.google.gwt.user.client.rpc.RemoteService;
-import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
-/**
- * 
- * @author Marius Oehler
- * 
- */
-@RemoteServiceRelativePath("extensionRPC")
-public interface ExtensionRPC extends RemoteService {
-	ExtensionContainer getExtensions();
+public interface SystemDetailsRPCAsync {
+
+	void getMetaDatabaseDetails(AsyncCallback<HashMap<String, String>> callback);
+
 }

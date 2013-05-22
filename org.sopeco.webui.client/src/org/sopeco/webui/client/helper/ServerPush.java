@@ -32,14 +32,14 @@ import java.util.logging.Logger;
 import org.sopeco.webui.client.layout.MainLayoutPanel;
 import org.sopeco.webui.client.layout.center.execute.ExecuteController;
 import org.sopeco.webui.client.layout.popups.Message;
-import org.sopeco.webui.client.rpc.PushRPC;
-import org.sopeco.webui.client.rpc.PushRPCAsync;
-import org.sopeco.webui.client.rpc.PushRPC.Type;
 import org.sopeco.webui.shared.entities.FrontendScheduledExperiment;
 import org.sopeco.webui.shared.entities.RunningControllerStatus;
 import org.sopeco.webui.shared.push.PushListPackage;
 import org.sopeco.webui.shared.push.PushObjectPackage;
 import org.sopeco.webui.shared.push.PushPackage;
+import org.sopeco.webui.shared.rpc.PushRPC;
+import org.sopeco.webui.shared.rpc.PushRPCAsync;
+import org.sopeco.webui.shared.rpc.PushRPC.Type;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;

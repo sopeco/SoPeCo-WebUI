@@ -24,33 +24,36 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sopeco.webui.client.rpc;
+package org.sopeco.webui.shared.rpc;
 
-import org.sopeco.webui.shared.push.PushPackage;
+import java.util.List;
 
-import com.google.gwt.user.client.rpc.RemoteService;
-import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import org.sopeco.webui.shared.entities.ExecutedExperimentDetails;
+import org.sopeco.webui.shared.entities.FrontendScheduledExperiment;
+import org.sopeco.webui.shared.entities.MECLog;
+import org.sopeco.webui.shared.entities.RunningControllerStatus;
+
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * 
  * @author Marius Oehler
- *
+ * 
  */
-@RemoteServiceRelativePath("pushRPC")
-public interface PushRPC extends RemoteService {
+public interface ExecuteRPCAsync {
+	void scheduleExperiment(FrontendScheduledExperiment rawScheduledExperiment, AsyncCallback<Void> callback);
 
-	public static enum Type {
-		ERROR, IDLE, MESSAGE, NEW_MEC_AVAILABLE, NEW_ENV_DEFINITION,
-		
-		GET_MEC_TOKEN,
-		CONTROLLER_STATUS,
-		SCHEDULED_EXPERIMENT_CHANGED,
-		
-		PUSH_SCHEDULED_EXPERIMENT,
-		PUSH_CURRENT_CONTROLLER_EXPERIMENT,
-		PUSH_CURRENT_CONTROLLER_QUEUE,
-		PUSH_SERVER_SHUTTING_DOWN
-	}
+	void getScheduledExperiments(AsyncCallback<List<FrontendScheduledExperiment>> callback);
 
-	PushPackage push();
+	void removeScheduledExperiment(long id, AsyncCallback<Boolean> callback);
+
+	void setScheduledExperimentEnabled(long id, boolean enabled, AsyncCallback<Boolean> callback);
+
+	void getExecutedExperimentDetails(AsyncCallback<List<ExecutedExperimentDetails>> callback);
+
+	void getControllerLog(AsyncCallback<RunningControllerStatus> callback);
+
+	void getMECLog(long id, AsyncCallback<MECLog> callback);
+	
+	void abortCurrentExperiment(AsyncCallback<Void> callback);
 }

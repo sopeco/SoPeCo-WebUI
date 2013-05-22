@@ -40,8 +40,8 @@ import org.sopeco.webui.client.layout.center.execute.TabController;
 import org.sopeco.webui.client.layout.popups.Message;
 import org.sopeco.webui.client.manager.Manager;
 import org.sopeco.webui.client.manager.ScenarioManager;
-import org.sopeco.webui.client.rpc.RPC;
 import org.sopeco.webui.shared.entities.FrontendScheduledExperiment;
+import org.sopeco.webui.shared.rpc.RPC;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;

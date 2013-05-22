@@ -42,11 +42,11 @@ import org.sopeco.webui.client.layout.center.experiment.ExperimentController;
 import org.sopeco.webui.client.layout.center.specification.SpecificationController;
 import org.sopeco.webui.client.layout.popups.Message;
 import org.sopeco.webui.client.manager.helper.Duplicator;
-import org.sopeco.webui.client.rpc.RPC;
 import org.sopeco.webui.shared.builder.ScenarioDefinitionBuilder;
 import org.sopeco.webui.shared.entities.ScenarioDetails;
 import org.sopeco.webui.shared.helper.Helper;
 import org.sopeco.webui.shared.helper.Utilities;
+import org.sopeco.webui.shared.rpc.RPC;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -268,13 +268,15 @@ public final class ScenarioManager {
 				builder = ScenarioDefinitionBuilder.load(result);
 				scenarioLoaded = true;
 
-				String specification = Manager.get().getCurrentScenarioDetails().getSelectedSpecification();
-				if (specification == null || !specification().existSpecification(specification)) {
-					specification = builder.getBuiltScenario().getMeasurementSpecifications().get(0).getName();
+				if (Manager.get().getCurrentScenarioDetails() != null) {
+					String specification = Manager.get().getCurrentScenarioDetails().getSelectedSpecification();
+					if (specification == null || !specification().existSpecification(specification)) {
+						specification = builder.getBuiltScenario().getMeasurementSpecifications().get(0).getName();
+					}
+					MainLayoutPanel.get().reloadPanels();
+
+					specification().changeSpecification(specification);
 				}
-				MainLayoutPanel.get().reloadPanels();
-				
-				specification().changeSpecification(specification);
 
 				MainLayoutPanel.get().switchView(SpecificationController.class);
 			}

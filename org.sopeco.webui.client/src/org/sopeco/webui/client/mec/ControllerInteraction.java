@@ -31,8 +31,8 @@ import java.util.List;
 import org.sopeco.webui.client.SoPeCoUI;
 import org.sopeco.webui.client.helper.INotifyHandler;
 import org.sopeco.webui.client.helper.INotifyHandler.Result;
-import org.sopeco.webui.client.rpc.RPC;
 import org.sopeco.webui.shared.helper.MEControllerProtocol;
+import org.sopeco.webui.shared.rpc.RPC;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 

@@ -45,9 +45,9 @@ import org.sopeco.webui.client.log.LogHandler;
 import org.sopeco.webui.client.manager.Manager;
 import org.sopeco.webui.client.manager.ScenarioManager;
 import org.sopeco.webui.client.resources.R;
-import org.sopeco.webui.client.rpc.RPC;
 import org.sopeco.webui.client.widget.ExceptionDialog;
 import org.sopeco.webui.shared.helper.ExtensionContainer;
+import org.sopeco.webui.shared.rpc.RPC;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;

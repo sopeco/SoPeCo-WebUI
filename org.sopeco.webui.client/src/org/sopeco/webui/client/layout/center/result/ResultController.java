@@ -33,11 +33,11 @@ import org.sopeco.webui.client.layout.center.ICenterController;
 import org.sopeco.webui.client.layout.dialog.ExportCsvDialog;
 import org.sopeco.webui.client.layout.popups.Message;
 import org.sopeco.webui.client.manager.ScenarioManager;
-import org.sopeco.webui.client.rpc.RPC;
 import org.sopeco.webui.client.widget.TreeItem;
 import org.sopeco.webui.shared.definitions.result.SharedExperimentRuns;
 import org.sopeco.webui.shared.definitions.result.SharedExperimentSeries;
 import org.sopeco.webui.shared.definitions.result.SharedScenarioInstance;
+import org.sopeco.webui.shared.rpc.RPC;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;

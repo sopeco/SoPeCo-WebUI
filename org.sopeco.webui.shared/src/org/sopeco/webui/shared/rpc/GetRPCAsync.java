@@ -24,9 +24,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sopeco.webui.client.rpc;
+package org.sopeco.webui.shared.rpc;
 
-import org.sopeco.webui.shared.helper.ExtensionContainer;
+import java.util.List;
+import java.util.Map;
+
+import org.sopeco.webui.shared.helper.MEControllerProtocol;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -35,6 +38,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * @author Marius Oehler
  * 
  */
-public interface ExtensionRPCAsync {
-	void getExtensions(AsyncCallback<ExtensionContainer> callback);
+public interface GetRPCAsync {
+
+	void getConnectedSocketController(AsyncCallback<Map<String, String[]>> callback);
+
+	void getControllerFromMEC(MEControllerProtocol protocol, String host, int port, AsyncCallback<List<String>> callback);
 }

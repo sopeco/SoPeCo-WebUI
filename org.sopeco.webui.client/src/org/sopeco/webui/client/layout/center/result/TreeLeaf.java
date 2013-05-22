@@ -34,9 +34,9 @@ import org.sopeco.webui.client.layout.dialog.ExportCsvDialog;
 import org.sopeco.webui.client.layout.dialog.ExportToRDialog;
 import org.sopeco.webui.client.layout.popups.Message;
 import org.sopeco.webui.client.resources.R;
-import org.sopeco.webui.client.rpc.RPC;
 import org.sopeco.webui.client.widget.TreeItem;
 import org.sopeco.webui.shared.definitions.result.SharedExperimentRuns;
+import org.sopeco.webui.shared.rpc.RPC;
 
 import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.dom.client.Style.Unit;
