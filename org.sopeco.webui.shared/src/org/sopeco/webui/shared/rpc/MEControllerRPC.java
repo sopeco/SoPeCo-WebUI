@@ -24,11 +24,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sopeco.webui.client.rpc;
+package org.sopeco.webui.shared.rpc;
 
 import java.util.List;
 
-import org.sopeco.persistence.entities.definition.MeasurementSpecification;
+import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
+import org.sopeco.persistence.entities.definition.ParameterRole;
+import org.sopeco.webui.shared.helper.MEControllerProtocol;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
@@ -38,45 +40,78 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * @author Marius Oehler
  * 
  */
-@RemoteServiceRelativePath("mSpecificationRPC")
-public interface MSpecificationRPC extends RemoteService {
+@RemoteServiceRelativePath("meControllerRPC")
+public interface MEControllerRPC extends RemoteService {
 
 	/**
-	 * Return a list with all specification names, of the selected scenario.
-	 * 
-	 * @return list with names
+	 * Checked controller is offline.
 	 */
-	List<String> getAllSpecificationNames();
-
+	int STATUS_OFFLINE = 0;
 	/**
-	 * Return a list with all specifications.
-	 * 
-	 * @return list with names
+	 * Checked controller is online.
 	 */
-	List<MeasurementSpecification> getAllSpecifications();
+	int STATUS_ONLINE = 1;
+	/**
+	 * Checked controller is online but can't return any information about the
+	 * me.
+	 */
+	int STATUS_ONLINE_NO_META = 2;
+	/**
+	 * The given url is not valid.
+	 */
+	int NO_VALID_MEC_URL = 3;
 
 	/**
-	 * Set the current working specification to the given specification.
+	 * Returns all existing Controller URLs.
 	 * 
-	 * @param specificationName
+	 * @return List of Controller URLs
+	 */
+	// List<String> getMEControllerList();
+
+	/**
+	 * Checks the current status of a controller.
+	 * 
+	 * @param url
+	 *            controller url
+	 * @return staus
+	 */
+	int checkControllerStatus(String url);
+
+	/**
+	 * Returns a String array with valid url patterns.
+	 * 
+	 * @return string array
+	 */
+	String[] getValidUrlPattern();
+
+	/**
+	 * 
+	 * @param controllerUrl
 	 * @return
 	 */
-	boolean setWorkingSpecification(String specificationName);
+	MeasurementEnvironmentDefinition getMEDefinitionFromMEC(String controllerUrl);
 
 	/**
-	 * Creates a new specification with the given name.
 	 * 
-	 * @param name
 	 * @return
 	 */
-	boolean createSpecification(String name);
+	MeasurementEnvironmentDefinition getBlankMEDefinition();
 
-	/**
-	 * Renames the working specification to the new name.
-	 * 
-	 * @param newName
-	 *            the new name
-	 * @return
-	 */
-	boolean renameWorkingSpecification(String newName);
+	MeasurementEnvironmentDefinition getCurrentMEDefinition();
+
+	boolean addNamespace(String path);
+
+	boolean removeNamespace(String path);
+
+	boolean renameNamespace(String namespacePath, String newName);
+
+	boolean addParameter(String path, String name, String type, ParameterRole role);
+
+	boolean removeParameter(String path, String name);
+
+	boolean updateParameter(String path, String oldName, String newName, String type, ParameterRole role);
+
+	boolean isPortReachable(String host, int port);
+
+	List<String> getController(MEControllerProtocol protocol, String host, int port);
 }

@@ -24,56 +24,50 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sopeco.webui.server.rpc;
+package org.sopeco.webui.shared.rpc;
 
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.sopeco.engine.measurementenvironment.socket.SocketAppWrapper;
-import org.sopeco.engine.measurementenvironment.socket.SocketManager;
-import org.sopeco.webui.server.helper.ServerCheck;
+import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
+import org.sopeco.persistence.entities.definition.ParameterRole;
 import org.sopeco.webui.shared.helper.MEControllerProtocol;
-import org.sopeco.webui.shared.rpc.GetRPC;
+
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * 
  * @author Marius Oehler
  * 
  */
-public class GetRPCImpl extends SuperRemoteServlet implements GetRPC {
+public interface MEControllerRPCAsync {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+	void checkControllerStatus(String url, AsyncCallback<Integer> callback);
 
-	@Override
-	public Map<String, String[]> getConnectedSocketController() {
-		Map<String, String[]> map = new HashMap<String, String[]>();
-		for (SocketAppWrapper app : SocketManager.getAllSocketApps()) {
-			String address = app.getSocket().getInetAddress().getHostAddress();
-			map.put(address, app.getAvailableController());
-		}
-		return map;
-	}
+	// void getMEControllerList(AsyncCallback<List<String>> callback);
 
-	@Override
-	public List<String> getControllerFromMEC(MEControllerProtocol protocol, String host, int port) {
-		if (protocol == MEControllerProtocol.SOCKET) {
-			SocketAppWrapper app = SocketManager.getSocketApp(host);
-			if (app == null) {
-				return null;
-			} else {
-				return Arrays.asList(app.getAvailableController());
-			}
-		} else {
-			if (ServerCheck.isPortReachable(host, port)) {
-				return ServerCheck.getController(protocol, host, port);
-			} else {
-				return null;
-			}
-		}
-	}
+	void getValidUrlPattern(AsyncCallback<String[]> callback);
+
+	void getMEDefinitionFromMEC(String controllerUrl, AsyncCallback<MeasurementEnvironmentDefinition> callback);
+
+	void getBlankMEDefinition(AsyncCallback<MeasurementEnvironmentDefinition> callback);
+
+	void removeNamespace(String path, AsyncCallback<Boolean> callback);
+
+	void addNamespace(String path, AsyncCallback<Boolean> callback);
+
+	void getCurrentMEDefinition(AsyncCallback<MeasurementEnvironmentDefinition> callback);
+
+	void renameNamespace(String namespacePath, String newName, AsyncCallback<Boolean> callback);
+
+	void addParameter(String path, String name, String type, ParameterRole role, AsyncCallback<Boolean> callback);
+
+	void removeParameter(String path, String name, AsyncCallback<Boolean> callback);
+
+	void updateParameter(String path, String oldName, String newName, String type, ParameterRole role,
+			AsyncCallback<Boolean> callback);
+
+	void isPortReachable(String host, int port, AsyncCallback<Boolean> callback);
+
+	void getController(MEControllerProtocol protocol, String host, int port,
+			AsyncCallback<List<String>> callback);
 }

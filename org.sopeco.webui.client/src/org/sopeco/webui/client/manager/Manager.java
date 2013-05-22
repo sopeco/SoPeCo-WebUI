@@ -30,9 +30,9 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.sopeco.persistence.metadata.entities.DatabaseInstance;
-import org.sopeco.webui.client.rpc.RPC;
 import org.sopeco.webui.shared.entities.ScenarioDetails;
 import org.sopeco.webui.shared.entities.account.AccountDetails;
+import org.sopeco.webui.shared.rpc.RPC;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -91,14 +91,12 @@ public final class Manager {
 
 	/**
 	 * Returns the ScenariODetail object of the current selected scenario. If no
-	 * object exists, it creates one.
+	 * object exists, it returns null.
 	 * 
 	 * @return
 	 */
 	public ScenarioDetails getCurrentScenarioDetails() {
 		if (accountDetails.getScenarioDetail(accountDetails.getSelectedScenario()) == null) {
-			// Manager.get().getAccountDetails().addScenarioDetails(accountDetails.getSelectedScenario());
-			// Manager.get().storeAccountDetails();
 			return null;
 		}
 

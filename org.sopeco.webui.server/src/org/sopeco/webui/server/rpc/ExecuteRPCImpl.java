@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.sopeco.config.Configuration;
-import org.sopeco.webui.client.rpc.ExecuteRPC;
 import org.sopeco.webui.server.execute.ControllerQueueManager;
 import org.sopeco.webui.server.helper.ScheduleExpression;
 import org.sopeco.webui.server.persistence.UiPersistence;
@@ -39,6 +38,7 @@ import org.sopeco.webui.shared.entities.ExecutedExperimentDetails;
 import org.sopeco.webui.shared.entities.FrontendScheduledExperiment;
 import org.sopeco.webui.shared.entities.MECLog;
 import org.sopeco.webui.shared.entities.RunningControllerStatus;
+import org.sopeco.webui.shared.rpc.ExecuteRPC;
 
 /**
  * 

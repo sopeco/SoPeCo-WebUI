@@ -1,4 +1,4 @@
-package org.sopeco.webui.client.rpc;
+package org.sopeco.webui.shared.rpc;
 
 import org.sopeco.webui.shared.entities.account.AccountDetails;
 import org.sopeco.webui.shared.helper.LoginResponse;

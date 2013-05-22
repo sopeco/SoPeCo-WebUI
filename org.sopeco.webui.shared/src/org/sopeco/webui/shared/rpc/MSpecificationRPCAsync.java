@@ -24,14 +24,28 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sopeco.webui.client.rpc;
+package org.sopeco.webui.shared.rpc;
 
-import org.sopeco.webui.shared.push.PushPackage;
+import java.util.List;
+
+import org.sopeco.persistence.entities.definition.MeasurementSpecification;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public interface PushRPCAsync {
+/**
+ * 
+ * @author Marius Oehler
+ * 
+ */
+public interface MSpecificationRPCAsync {
 
-	void push(AsyncCallback<PushPackage> callback);
+	void getAllSpecificationNames(AsyncCallback<List<String>> callback);
 
+	void getAllSpecifications(AsyncCallback<List<MeasurementSpecification>> callback);
+
+	void setWorkingSpecification(String specificationName, AsyncCallback<Boolean> callback);
+
+	void createSpecification(String name, AsyncCallback<Boolean> callback);
+
+	void renameWorkingSpecification(String newName, AsyncCallback<Boolean> callback);
 }

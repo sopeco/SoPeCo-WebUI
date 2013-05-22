@@ -41,9 +41,9 @@ import org.sopeco.persistence.entities.ScenarioInstance;
 import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 import org.sopeco.persistence.exceptions.DataNotFoundException;
-import org.sopeco.webui.client.rpc.ScenarioManagerRPC;
 import org.sopeco.webui.server.rpc.SuperRemoteServlet;
 import org.sopeco.webui.shared.builder.ScenarioDefinitionBuilder;
+import org.sopeco.webui.shared.rpc.ScenarioManagerRPC;
 
 /**
  * Implementation of the ScenarioManagerRPC. The Frontend is getting all

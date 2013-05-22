@@ -39,13 +39,13 @@ import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefiniti
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.entities.definition.ParameterNamespace;
 import org.sopeco.persistence.entities.definition.ParameterRole;
-import org.sopeco.webui.client.rpc.MEControllerRPC;
-import org.sopeco.webui.client.rpc.PushRPC.Type;
 import org.sopeco.webui.server.helper.ServerCheck;
 import org.sopeco.webui.server.rpc.SuperRemoteServlet;
 import org.sopeco.webui.shared.builder.MeasurementEnvironmentBuilder;
 import org.sopeco.webui.shared.helper.MEControllerProtocol;
 import org.sopeco.webui.shared.push.PushPackage;
+import org.sopeco.webui.shared.rpc.MEControllerRPC;
+import org.sopeco.webui.shared.rpc.PushRPC.Type;
 
 /**
  * 

@@ -28,7 +28,7 @@ package org.sopeco.webui.shared.push;
 
 import java.io.Serializable;
 
-import org.sopeco.webui.client.rpc.PushRPC.Type;
+import org.sopeco.webui.shared.rpc.PushRPC.Type;
 
 /**
  * 

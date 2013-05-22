@@ -1,9 +1,8 @@
 package org.sopeco.webui.client.layout.login;
 
-import org.sopeco.persistence.metadata.entities.DatabaseInstance;
 import org.sopeco.webui.client.helper.SystemDetails;
 import org.sopeco.webui.client.resources.R;
-import org.sopeco.webui.client.rpc.RPC;
+import org.sopeco.webui.shared.rpc.RPC;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Display;

@@ -32,8 +32,8 @@ import org.sopeco.webui.client.layout.center.ICenterController;
 import org.sopeco.webui.client.layout.center.result.ResultController;
 import org.sopeco.webui.client.layout.center.visualization.wizard.ChartSelectionPanel;
 import org.sopeco.webui.client.resources.R;
-import org.sopeco.webui.client.rpc.RPC;
 import org.sopeco.webui.shared.entities.Visualization;
+import org.sopeco.webui.shared.rpc.RPC;
 
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.dom.client.Style.Cursor;

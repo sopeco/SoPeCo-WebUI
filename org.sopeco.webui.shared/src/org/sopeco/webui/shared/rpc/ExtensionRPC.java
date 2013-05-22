@@ -24,12 +24,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sopeco.webui.client.rpc;
+package org.sopeco.webui.shared.rpc;
 
-import java.util.List;
-import java.util.Map;
-
-import org.sopeco.webui.shared.helper.MEControllerProtocol;
+import org.sopeco.webui.shared.helper.ExtensionContainer;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
@@ -39,10 +36,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * @author Marius Oehler
  * 
  */
-@RemoteServiceRelativePath("getRPC")
-public interface GetRPC extends RemoteService {
-
-	Map<String, String[]> getConnectedSocketController();
-
-	List<String> getControllerFromMEC(MEControllerProtocol protocol, String host, int port);
+@RemoteServiceRelativePath("extensionRPC")
+public interface ExtensionRPC extends RemoteService {
+	ExtensionContainer getExtensions();
 }

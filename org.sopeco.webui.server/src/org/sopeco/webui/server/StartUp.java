@@ -26,6 +26,11 @@
  */
 package org.sopeco.webui.server;
 
+import java.sql.Driver;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.Enumeration;
+
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
@@ -58,6 +63,22 @@ public final class StartUp implements ServletContextListener {
 	@Override
 	public void contextDestroyed(ServletContextEvent arg0) {
 		System.out.println(">> Destroying webapp..");
+		
+		Enumeration<Driver> drivers = DriverManager.getDrivers();
+	    while (drivers.hasMoreElements()) {
+	        Driver driver = drivers.nextElement();
+	        ClassLoader driverclassLoader = driver.getClass().getClassLoader();
+	        ClassLoader thisClassLoader = this.getClass().getClassLoader();
+	        if (driverclassLoader != null && thisClassLoader != null &&  driverclassLoader.equals(thisClassLoader)) {
+	            try {
+	            	System.out.println("Deregistering: " + driver);
+	                DriverManager.deregisterDriver(driver);
+	            } catch (SQLException e) {
+	                e.printStackTrace();
+	            }
+	        }
+	    }
+		
 	}
 
 	@Override
@@ -66,9 +87,14 @@ public final class StartUp implements ServletContextListener {
 		try {
 			loadConfiguration();
 
-			// Workaround that the persistence drives are available
-			UiPersistence.getUiProvider().loadAccount(0);
-
+			//TODO: Fix this. Workaround that the persistence drives are available
+			try {
+				UiPersistence.getMetaProvider().loadAllDatabaseInstances();
+			} catch (DataNotFoundException e) {
+				e.printStackTrace();
+			}
+			
+			
 			Scheduler.startScheduler();
 
 			int port = Configuration.getSessionSingleton(Configuration.getGlobalSessionId()).getPropertyAsInteger(
@@ -80,4 +106,6 @@ public final class StartUp implements ServletContextListener {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	
 }
