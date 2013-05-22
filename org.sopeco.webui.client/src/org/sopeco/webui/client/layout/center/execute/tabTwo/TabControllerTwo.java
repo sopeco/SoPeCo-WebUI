@@ -38,9 +38,9 @@ import org.sopeco.webui.client.layout.popups.Confirmation;
 import org.sopeco.webui.client.layout.popups.Message;
 import org.sopeco.webui.client.manager.Manager;
 import org.sopeco.webui.client.resources.R;
-import org.sopeco.webui.client.rpc.RPC;
 import org.sopeco.webui.shared.entities.FrontendScheduledExperiment;
 import org.sopeco.webui.shared.helper.Metering;
+import org.sopeco.webui.shared.rpc.RPC;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;

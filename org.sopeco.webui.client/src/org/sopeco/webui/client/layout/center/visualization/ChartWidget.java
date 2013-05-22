@@ -36,13 +36,13 @@ import java.util.TreeMap;
 
 import org.sopeco.gwt.widgets.ComboBox;
 import org.sopeco.webui.client.resources.R;
-import org.sopeco.webui.client.rpc.RPC;
 import org.sopeco.webui.shared.entities.ChartData;
 import org.sopeco.webui.shared.entities.ChartOptions;
 import org.sopeco.webui.shared.entities.ChartRowKey;
 import org.sopeco.webui.shared.entities.RegressionInfo;
 import org.sopeco.webui.shared.entities.Visualization;
 import org.sopeco.webui.shared.helper.AggregationOutputType;
+import org.sopeco.webui.shared.rpc.RPC;
 
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Style.Unit;

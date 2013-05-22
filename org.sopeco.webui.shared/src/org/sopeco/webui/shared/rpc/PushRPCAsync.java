@@ -24,40 +24,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sopeco.webui.client.rpc;
+package org.sopeco.webui.shared.rpc;
 
-import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
-import org.sopeco.persistence.entities.definition.ScenarioDefinition;
+import org.sopeco.webui.shared.push.PushPackage;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-/**
- * 
- * @author Marius Oehler
- * 
- */
-public interface ScenarioManagerRPCAsync {
+public interface PushRPCAsync {
 
-	/**
-	 * Return a String-Array with all existing scenario names.
-	 * 
-	 * @param callback
-	 */
-	void getScenarioNames(AsyncCallback<String[]> callback);
-
-	void addScenario(String scenarioName, String specificationName, ExperimentSeriesDefinition experiment,
-			AsyncCallback<Boolean> callback);
-
-	void addScenario(ScenarioDefinition scenario, AsyncCallback<Boolean> callback);
-
-	void removeScenario(String name, AsyncCallback<Boolean> callback);
-
-	void switchScenario(String name, AsyncCallback<Boolean> callback);
-
-	void getCurrentScenarioDefinition(AsyncCallback<ScenarioDefinition> callback);
-
-	void storeScenarioDefinition(ScenarioDefinition definition, AsyncCallback<Boolean> callback);
-
-	void getScenarioAsXML(AsyncCallback<String> callback);
+	void push(AsyncCallback<PushPackage> callback);
 
 }

@@ -24,21 +24,25 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sopeco.webui.client.rpc;
+package org.sopeco.webui.shared.rpc;
 
 import java.util.List;
+import java.util.Map;
 
-import org.sopeco.webui.shared.definitions.result.SharedScenarioInstance;
+import org.sopeco.webui.shared.helper.MEControllerProtocol;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
-@RemoteServiceRelativePath("resultRPC")
-public interface ResultRPC extends RemoteService {
+/**
+ * 
+ * @author Marius Oehler
+ * 
+ */
+@RemoteServiceRelativePath("getRPC")
+public interface GetRPC extends RemoteService {
 
-	void getResults();
+	Map<String, String[]> getConnectedSocketController();
 
-	List<SharedScenarioInstance> getInstances(String scenarioName);
-	
-	String getResultAsR(String scenario, String exoerimentSeries, String url, long timestamp);
+	List<String> getControllerFromMEC(MEControllerProtocol protocol, String host, int port);
 }

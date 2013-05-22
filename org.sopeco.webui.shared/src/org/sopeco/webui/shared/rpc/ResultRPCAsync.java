@@ -24,13 +24,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sopeco.webui.client.rpc;
+package org.sopeco.webui.shared.rpc;
 
 import java.util.List;
 
-import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
-import org.sopeco.persistence.entities.definition.ParameterRole;
-import org.sopeco.webui.shared.helper.MEControllerProtocol;
+import org.sopeco.webui.shared.definitions.result.SharedScenarioInstance;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -39,35 +37,12 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * @author Marius Oehler
  * 
  */
-public interface MEControllerRPCAsync {
+public interface ResultRPCAsync {
+	void getResults(AsyncCallback<Void> callback);
 
-	void checkControllerStatus(String url, AsyncCallback<Integer> callback);
+	void getInstances(String scenarioName,
+			AsyncCallback<List<SharedScenarioInstance>> callback);
 
-	// void getMEControllerList(AsyncCallback<List<String>> callback);
-
-	void getValidUrlPattern(AsyncCallback<String[]> callback);
-
-	void getMEDefinitionFromMEC(String controllerUrl, AsyncCallback<MeasurementEnvironmentDefinition> callback);
-
-	void getBlankMEDefinition(AsyncCallback<MeasurementEnvironmentDefinition> callback);
-
-	void removeNamespace(String path, AsyncCallback<Boolean> callback);
-
-	void addNamespace(String path, AsyncCallback<Boolean> callback);
-
-	void getCurrentMEDefinition(AsyncCallback<MeasurementEnvironmentDefinition> callback);
-
-	void renameNamespace(String namespacePath, String newName, AsyncCallback<Boolean> callback);
-
-	void addParameter(String path, String name, String type, ParameterRole role, AsyncCallback<Boolean> callback);
-
-	void removeParameter(String path, String name, AsyncCallback<Boolean> callback);
-
-	void updateParameter(String path, String oldName, String newName, String type, ParameterRole role,
-			AsyncCallback<Boolean> callback);
-
-	void isPortReachable(String host, int port, AsyncCallback<Boolean> callback);
-
-	void getController(MEControllerProtocol protocol, String host, int port,
-			AsyncCallback<List<String>> callback);
+	void getResultAsR(String scenario, String exoerimentSeries, String url,
+			long timestamp, AsyncCallback<String> callback);
 }

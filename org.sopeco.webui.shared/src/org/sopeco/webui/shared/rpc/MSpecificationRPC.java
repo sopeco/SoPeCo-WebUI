@@ -24,23 +24,59 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sopeco.webui.client.rpc;
+package org.sopeco.webui.shared.rpc;
 
 import java.util.List;
-import java.util.Map;
 
-import org.sopeco.webui.shared.helper.MEControllerProtocol;
+import org.sopeco.persistence.entities.definition.MeasurementSpecification;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.rpc.RemoteService;
+import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 /**
  * 
  * @author Marius Oehler
  * 
  */
-public interface GetRPCAsync {
+@RemoteServiceRelativePath("mSpecificationRPC")
+public interface MSpecificationRPC extends RemoteService {
 
-	void getConnectedSocketController(AsyncCallback<Map<String, String[]>> callback);
+	/**
+	 * Return a list with all specification names, of the selected scenario.
+	 * 
+	 * @return list with names
+	 */
+	List<String> getAllSpecificationNames();
 
-	void getControllerFromMEC(MEControllerProtocol protocol, String host, int port, AsyncCallback<List<String>> callback);
+	/**
+	 * Return a list with all specifications.
+	 * 
+	 * @return list with names
+	 */
+	List<MeasurementSpecification> getAllSpecifications();
+
+	/**
+	 * Set the current working specification to the given specification.
+	 * 
+	 * @param specificationName
+	 * @return
+	 */
+	boolean setWorkingSpecification(String specificationName);
+
+	/**
+	 * Creates a new specification with the given name.
+	 * 
+	 * @param name
+	 * @return
+	 */
+	boolean createSpecification(String name);
+
+	/**
+	 * Renames the working specification to the new name.
+	 * 
+	 * @param newName
+	 *            the new name
+	 * @return
+	 */
+	boolean renameWorkingSpecification(String newName);
 }

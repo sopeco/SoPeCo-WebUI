@@ -24,28 +24,41 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sopeco.webui.client.rpc;
+package org.sopeco.webui.shared.rpc;
 
-import java.util.List;
+import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
+import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 
-import org.sopeco.persistence.entities.definition.MeasurementSpecification;
-
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.rpc.RemoteService;
+import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 /**
  * 
  * @author Marius Oehler
  * 
  */
-public interface MSpecificationRPCAsync {
+@RemoteServiceRelativePath("scenarioManagerRPC")
+public interface ScenarioManagerRPC extends RemoteService {
 
-	void getAllSpecificationNames(AsyncCallback<List<String>> callback);
+	/**
+	 * Return a String-Array with all existing scenario names.
+	 * 
+	 * @return scenario names
+	 */
+	String[] getScenarioNames();
 
-	void getAllSpecifications(AsyncCallback<List<MeasurementSpecification>> callback);
+	boolean addScenario(String scenarioName, String specificationName, ExperimentSeriesDefinition experiment);
 
-	void setWorkingSpecification(String specificationName, AsyncCallback<Boolean> callback);
+	boolean addScenario(ScenarioDefinition scenario);
 
-	void createSpecification(String name, AsyncCallback<Boolean> callback);
+	boolean removeScenario(String name);
 
-	void renameWorkingSpecification(String newName, AsyncCallback<Boolean> callback);
+	boolean switchScenario(String name);
+
+	ScenarioDefinition getCurrentScenarioDefinition();
+
+	boolean storeScenarioDefinition(ScenarioDefinition definition);
+
+	String getScenarioAsXML();
+
 }

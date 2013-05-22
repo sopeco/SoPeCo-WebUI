@@ -37,8 +37,8 @@ import org.sopeco.webui.client.manager.Manager;
 import org.sopeco.webui.client.manager.ScenarioManager;
 import org.sopeco.webui.client.mec.MEControllerSettingsView.StatusImage;
 import org.sopeco.webui.client.resources.R;
-import org.sopeco.webui.client.rpc.RPC;
 import org.sopeco.webui.shared.helper.MEControllerProtocol;
+import org.sopeco.webui.shared.rpc.RPC;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;

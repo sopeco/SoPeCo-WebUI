@@ -27,7 +27,7 @@
 package org.sopeco.webui.client.layout;
 
 import org.sopeco.webui.client.resources.R;
-import org.sopeco.webui.client.rpc.RPC;
+import org.sopeco.webui.shared.rpc.RPC;
 
 import com.google.gwt.dom.client.Style.Float;
 import com.google.gwt.dom.client.Style.Unit;

@@ -27,9 +27,9 @@
 package org.sopeco.webui.client.layout.center.visualization;
 
 import org.sopeco.webui.client.layout.center.visualization.VisualizationController.Status;
-import org.sopeco.webui.client.rpc.RPC;
 import org.sopeco.webui.shared.entities.Visualization;
 import org.sopeco.webui.shared.entities.VisualizationBundle;
+import org.sopeco.webui.shared.rpc.RPC;
 
 import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.user.client.rpc.AsyncCallback;

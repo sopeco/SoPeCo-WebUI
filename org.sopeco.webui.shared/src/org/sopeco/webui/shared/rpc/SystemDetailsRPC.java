@@ -24,14 +24,16 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sopeco.webui.client.rpc;
+package org.sopeco.webui.shared.rpc;
 
 import java.util.HashMap;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.rpc.RemoteService;
+import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
-public interface SystemDetailsRPCAsync {
+@RemoteServiceRelativePath("systemDetailsRPC")
+public interface SystemDetailsRPC extends RemoteService {
 
-	void getMetaDatabaseDetails(AsyncCallback<HashMap<String, String>> callback);
-
+	HashMap<String, String> getMetaDatabaseDetails ();
+	
 }

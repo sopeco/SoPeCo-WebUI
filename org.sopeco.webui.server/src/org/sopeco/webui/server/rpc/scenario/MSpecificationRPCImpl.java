@@ -32,10 +32,10 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sopeco.persistence.entities.definition.MeasurementSpecification;
-import org.sopeco.webui.client.rpc.MSpecificationRPC;
 import org.sopeco.webui.server.rpc.SuperRemoteServlet;
 import org.sopeco.webui.shared.builder.MeasurementSpecificationBuilder;
 import org.sopeco.webui.shared.helper.Metering;
+import org.sopeco.webui.shared.rpc.MSpecificationRPC;
 
 /**
  * 

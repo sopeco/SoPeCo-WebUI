@@ -47,7 +47,6 @@ import org.sopeco.engine.status.StatusBroker;
 import org.sopeco.engine.status.StatusMessage;
 import org.sopeco.persistence.metadata.entities.DatabaseInstance;
 import org.sopeco.runner.SoPeCoRunner;
-import org.sopeco.webui.client.rpc.PushRPC.Type;
 import org.sopeco.webui.server.persistence.UiPersistence;
 import org.sopeco.webui.server.persistence.entities.ScheduledExperiment;
 import org.sopeco.webui.server.rpc.PushRPCImpl;
@@ -58,6 +57,7 @@ import org.sopeco.webui.shared.entities.RunningControllerStatus;
 import org.sopeco.webui.shared.push.PushListPackage;
 import org.sopeco.webui.shared.push.PushObjectPackage;
 import org.sopeco.webui.shared.push.PushSerializable;
+import org.sopeco.webui.shared.rpc.PushRPC.Type;
 
 /**
  * 

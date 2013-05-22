@@ -24,14 +24,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sopeco.webui.client.rpc;
+package org.sopeco.webui.shared.rpc;
 
-import java.util.List;
-
-import org.sopeco.webui.shared.entities.ExecutedExperimentDetails;
-import org.sopeco.webui.shared.entities.FrontendScheduledExperiment;
-import org.sopeco.webui.shared.entities.MECLog;
-import org.sopeco.webui.shared.entities.RunningControllerStatus;
+import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
+import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -40,20 +36,28 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * @author Marius Oehler
  * 
  */
-public interface ExecuteRPCAsync {
-	void scheduleExperiment(FrontendScheduledExperiment rawScheduledExperiment, AsyncCallback<Void> callback);
+public interface ScenarioManagerRPCAsync {
 
-	void getScheduledExperiments(AsyncCallback<List<FrontendScheduledExperiment>> callback);
+	/**
+	 * Return a String-Array with all existing scenario names.
+	 * 
+	 * @param callback
+	 */
+	void getScenarioNames(AsyncCallback<String[]> callback);
 
-	void removeScheduledExperiment(long id, AsyncCallback<Boolean> callback);
+	void addScenario(String scenarioName, String specificationName, ExperimentSeriesDefinition experiment,
+			AsyncCallback<Boolean> callback);
 
-	void setScheduledExperimentEnabled(long id, boolean enabled, AsyncCallback<Boolean> callback);
+	void addScenario(ScenarioDefinition scenario, AsyncCallback<Boolean> callback);
 
-	void getExecutedExperimentDetails(AsyncCallback<List<ExecutedExperimentDetails>> callback);
+	void removeScenario(String name, AsyncCallback<Boolean> callback);
 
-	void getControllerLog(AsyncCallback<RunningControllerStatus> callback);
+	void switchScenario(String name, AsyncCallback<Boolean> callback);
 
-	void getMECLog(long id, AsyncCallback<MECLog> callback);
-	
-	void abortCurrentExperiment(AsyncCallback<Void> callback);
+	void getCurrentScenarioDefinition(AsyncCallback<ScenarioDefinition> callback);
+
+	void storeScenarioDefinition(ScenarioDefinition definition, AsyncCallback<Boolean> callback);
+
+	void getScenarioAsXML(AsyncCallback<String> callback);
+
 }

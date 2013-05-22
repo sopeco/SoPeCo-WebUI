@@ -31,9 +31,9 @@ import java.util.Date;
 import org.sopeco.webui.client.SoPeCoUI;
 import org.sopeco.webui.client.manager.Manager;
 import org.sopeco.webui.client.resources.R;
-import org.sopeco.webui.client.rpc.RPC;
 import org.sopeco.webui.shared.entities.account.AccountDetails;
 import org.sopeco.webui.shared.helper.LoginResponse;
+import org.sopeco.webui.shared.rpc.RPC;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;

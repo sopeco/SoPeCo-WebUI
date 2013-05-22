@@ -34,11 +34,11 @@ import org.sopeco.webui.client.layout.MainLayoutPanel;
 import org.sopeco.webui.client.layout.center.visualization.VisualizationController;
 import org.sopeco.webui.client.layout.center.visualization.VisualizationController.Status;
 import org.sopeco.webui.client.resources.R;
-import org.sopeco.webui.client.rpc.RPC;
 import org.sopeco.webui.shared.definitions.result.SharedExperimentRuns;
 import org.sopeco.webui.shared.entities.ChartOptions;
 import org.sopeco.webui.shared.entities.ChartParameter;
 import org.sopeco.webui.shared.entities.Visualization;
+import org.sopeco.webui.shared.rpc.RPC;
 
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Style.Unit;
