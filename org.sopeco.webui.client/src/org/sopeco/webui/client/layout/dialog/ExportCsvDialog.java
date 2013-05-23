@@ -56,7 +56,7 @@ public final class ExportCsvDialog extends DialogBox implements ClickHandler {
 	private FlowPanel contentWrapper;
 	private Headline headline;
 	private Paragraph infoText;
-	private ExtendedTextBox tbValueSeparator, tbCommentSeparator, tbDecimalDeimiter;
+	private ExtendedTextBox tbValueSeparator, tbQuoteChar, tbDecimalDeimiter;
 	private Button btnExport, btnCancel;
 
 	private String parameter;
@@ -88,11 +88,11 @@ public final class ExportCsvDialog extends DialogBox implements ClickHandler {
 		infoText = new Paragraph(R.get("csvExportDesc"));
 
 		tbValueSeparator = new ExtendedTextBox(";", false);
-		tbCommentSeparator = new ExtendedTextBox("#", false);
+		tbQuoteChar = new ExtendedTextBox("'", false);
 		tbDecimalDeimiter = new ExtendedTextBox(".", false);
 
 		tbValueSeparator.setMaxLength(1);
-		tbCommentSeparator.setMaxLength(1);
+		tbQuoteChar.setMaxLength(1);
 		tbDecimalDeimiter.setMaxLength(1);
 
 		loadSavedSeparator();
@@ -100,10 +100,10 @@ public final class ExportCsvDialog extends DialogBox implements ClickHandler {
 		FlexTable table = new FlexTable();
 
 		table.setWidget(0, 0, new SmallTableLabel("Value Separator"));
-		table.setWidget(0, 1, new SmallTableLabel("Comment Separator"));
+		table.setWidget(0, 1, new SmallTableLabel("Quote Character"));
 		table.setWidget(0, 2, new SmallTableLabel("Decimal Delimiter"));
 		table.setWidget(1, 0, tbValueSeparator);
-		table.setWidget(1, 1, tbCommentSeparator);
+		table.setWidget(1, 1, tbQuoteChar);
 		table.setWidget(1, 2, tbDecimalDeimiter);
 
 		btnExport = new Button("Export");
@@ -132,8 +132,8 @@ public final class ExportCsvDialog extends DialogBox implements ClickHandler {
 		if (Manager.get().getAccountDetails().getCsvValueSeparator() != null) {
 			tbValueSeparator.setText("" + Manager.get().getAccountDetails().getCsvValueSeparator());
 		}
-		if (Manager.get().getAccountDetails().getCsvCommentSeparator() != null) {
-			tbCommentSeparator.setText("" + Manager.get().getAccountDetails().getCsvCommentSeparator());
+		if (Manager.get().getAccountDetails().getCsvQuoteChar() != null) {
+			tbQuoteChar.setText("" + Manager.get().getAccountDetails().getCsvQuoteChar());
 		}
 		if (Manager.get().getAccountDetails().getCsvDecimalDelimiter() != null) {
 			tbDecimalDeimiter.setText("" + Manager.get().getAccountDetails().getCsvDecimalDelimiter());
@@ -145,7 +145,7 @@ public final class ExportCsvDialog extends DialogBox implements ClickHandler {
 	 */
 	private void saveSeparator() {
 		Manager.get().getAccountDetails().setCsvValueSeparator(tbValueSeparator.getText());
-		Manager.get().getAccountDetails().setCsvCommentSeparator(tbCommentSeparator.getText());
+		Manager.get().getAccountDetails().setCsvCommentSeparator(tbQuoteChar.getText());
 		Manager.get().getAccountDetails().setCsvDecimalDelimiter(tbDecimalDeimiter.getText());
 		Manager.get().storeAccountDetails();
 	}
@@ -157,7 +157,7 @@ public final class ExportCsvDialog extends DialogBox implements ClickHandler {
 		} else if (event.getSource() == btnExport) {
 			StringBuffer separator = new StringBuffer();
 			separator.append(tbValueSeparator.getText());
-			separator.append(tbCommentSeparator.getText());
+			separator.append(tbQuoteChar.getText());
 			separator.append(tbDecimalDeimiter.getText());
 
 			String url = GWT.getModuleBaseURL() + DOWNLOAD_DATASET_URL;

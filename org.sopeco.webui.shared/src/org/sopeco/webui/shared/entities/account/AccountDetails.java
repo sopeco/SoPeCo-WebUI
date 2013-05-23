@@ -190,7 +190,7 @@ public class AccountDetails implements Serializable {
 	/**
 	 * @return the csvCommentSeparator
 	 */
-	public String getCsvCommentSeparator() {
+	public String getCsvQuoteChar() {
 		return csvCommentSeparator;
 	}
 
