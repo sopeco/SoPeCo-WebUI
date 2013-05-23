@@ -50,5 +50,96 @@ public interface ImageBundle extends ClientBundle {
 	@Source("images/database_add.png")
 	ImageResource iconDatabaseAdd();
 
-
+	
+	@Source("images/nav_export.png")
+	ImageResource navExport();
+	
+	
+	@Source("images/nav_export_hover.png")
+	ImageResource navExportHover();
+	
+	@Source("images/nav_file_add.png")
+	ImageResource navFileAdd();
+	
+	@Source("images/nav_file_add_hover.png")
+	ImageResource navFileAddHover();
+	
+	@Source("images/nav_file_delete.png")
+	ImageResource navFileDelete();
+	
+	@Source("images/nav_file_delete_hover.png")
+	ImageResource navFileDeleteHover();
+	
+	@Source("images/nav_file_duplicate.png")
+	ImageResource navFileDuplicate();
+	
+	@Source("images/nav_file_duplicate_hover.png")
+	ImageResource navFileDuplicateHover();
+	
+	@Source("images/nav_gear.png")
+	ImageResource navGear();
+	
+	@Source("images/nav_gear_hover.png")
+	ImageResource navGearHover();
+	
+	@Source("images/nav_logout.png")
+	ImageResource navLogout();
+	
+	@Source("images/nav_logout_hover.png")
+	ImageResource navLogoutHover();
+	
+	@Source("images/nav_satellite.png")
+	ImageResource navSatellite();
+	
+	@Source("images/nav_satellite_hover.png")
+	ImageResource navSatelliteHover();
+	
+	@Source("images/nav_log.png")
+	ImageResource navLog();
+	
+	@Source("images/nav_log_hover.png")
+	ImageResource navLogHover();
+	
+	@Source("images/ico_duplicate.png")
+	ImageResource icoDuplicate();
+	
+	@Source("images/ico_duplicate_hover.png")
+	ImageResource icoDuplicateHover();
+	
+	@Source("images/ico_rename.png")
+	ImageResource icoRename();
+	
+	@Source("images/ico_rename_hover.png")
+	ImageResource icoRenameHover();
+	
+	@Source("images/ico_trash.png")
+	ImageResource icoTrash();
+	
+	@Source("images/ico_trash_hover.png")
+	ImageResource icoTrashHover();
+	
+	
+	@Source("images/ico_download.png")
+	ImageResource icoDownload();
+	
+	@Source("images/ico_download_hover.png")
+	ImageResource icoDownloadHover();
+	
+	@Source("images/ico_chart.png")
+	ImageResource icoChart();
+	
+	@Source("images/ico_chart_hover.png")
+	ImageResource icoChartHover();
+	
+	@Source("images/ico_r.png")
+	ImageResource icoR();
+	
+	@Source("images/ico_r_hover.png")
+	ImageResource icoRHover();
+	
+	@Source("images/ico_add.png")
+	ImageResource icoAdd();
+	
+	@Source("images/ico_add_hover.png")
+	ImageResource icoAddHover();
 }

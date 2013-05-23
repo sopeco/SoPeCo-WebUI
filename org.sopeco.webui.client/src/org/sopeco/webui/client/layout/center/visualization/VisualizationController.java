@@ -90,8 +90,7 @@ public class VisualizationController implements ICenterController {
 		statusImage.getElement().getStyle().setMarginLeft(1, Unit.EM);
 		statusImage.getElement().getStyle().setMarginTop(1, Unit.EM);
 		controlWidget.add(statusImage);
-		Image addVisualization = new ImageHover(R.img.iconSet().getSafeUri(), 0, 120, 13, 13, R.img.iconSet()
-				.getSafeUri(), 210, 150, 13, 13);
+		Image addVisualization = new ImageHover(R.img.icoAdd(), R.img.icoAddHover());
 		addVisualization.addClickHandler(new ClickHandler() {
 			
 			@Override
@@ -105,8 +104,7 @@ public class VisualizationController implements ICenterController {
 		addVisualization.getElement().getStyle().setCursor(Cursor.POINTER);
 		controlWidget.add(addVisualization);
 
-		Image remove = new ImageHover(R.img.iconSet().getSafeUri(), 0, 60, 16, 18,
-				R.img.iconSet().getSafeUri(), 0, 90, 16, 18);
+		Image remove = new ImageHover(R.img.icoTrash(), R.img.icoTrashHover());
 		remove.setTitle(R.lang.removeChart());
 		remove.getElement().getStyle().setMarginLeft(1, Unit.EM);
 		remove.getElement().getStyle().setMarginTop(1, Unit.EM);

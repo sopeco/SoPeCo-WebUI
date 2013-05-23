@@ -32,7 +32,6 @@ import org.sopeco.gwt.widgets.ImageHover;
 import org.sopeco.webui.client.layout.center.visualization.wizard.VisualizationWizard;
 import org.sopeco.webui.client.layout.dialog.ExportCsvDialog;
 import org.sopeco.webui.client.layout.dialog.ExportToRDialog;
-import org.sopeco.webui.client.layout.popups.Message;
 import org.sopeco.webui.client.resources.R;
 import org.sopeco.webui.client.widget.TreeItem;
 import org.sopeco.webui.shared.definitions.result.SharedExperimentRuns;
@@ -44,7 +43,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.PopupPanel;
 
 /**
  * 
@@ -56,9 +54,6 @@ public class TreeLeaf extends TreeItem implements /* HasClickHandlers, */ClickHa
 	private static final Logger LOGGER = Logger.getLogger(TreeLeaf.class.getName());
 
 	private static final String ITEM_CSS_CLASS = "resultTreeItem";
-	private static final String DOWNLOAD_IMAGE = "images/download.png";
-	private static final String R_IMAGE = "images/r_logo.png";
-	private static final String CHART_IMAGE = "images/line_chart.png";
 
 	private Image downloadImage, rImage, chartImage;
 
@@ -82,22 +77,19 @@ public class TreeLeaf extends TreeItem implements /* HasClickHandlers, */ClickHa
 		removeIcon();
 		getContentWrapper().getElement().getStyle().setMarginLeft(1, Unit.EM);
 
-		downloadImage = new ImageHover(R.img.iconSet().getSafeUri(), 90, 120, 16, 16, R.img.iconSet()
-				.getSafeUri(), 120, 120, 16, 16);
+		downloadImage = new ImageHover(R.img.icoDownload(), R.img.icoDownloadHover());
 		downloadImage.setTitle(R.get("download"));
 		downloadImage.getElement().getStyle().setMarginLeft(1, Unit.EM);
 		downloadImage.getElement().getStyle().setCursor(Cursor.POINTER);
 		downloadImage.addClickHandler(this);
 
-		rImage = new ImageHover(R.img.iconSet().getSafeUri(), 150, 120, 13, 16, R.img.iconSet().getSafeUri(),
-				180, 120, 13, 16);
+		rImage = new ImageHover(R.img.icoR(), R.img.icoRHover());
 		rImage.setTitle(R.get("Get R-Command"));
 		rImage.getElement().getStyle().setMarginLeft(1, Unit.EM);
 		rImage.getElement().getStyle().setCursor(Cursor.POINTER);
 		rImage.addClickHandler(this);
 
-		chartImage = new ImageHover(R.img.iconSet().getSafeUri(), 210, 90, 16, 16,
-				R.img.iconSet().getSafeUri(), 210, 120, 16, 16);
+		chartImage = new ImageHover(R.img.icoChart(), R.img.icoChartHover());
 		chartImage.setTitle(R.lang.newChart());
 
 		chartImage.getElement().getStyle().setMarginLeft(1, Unit.EM);
@@ -120,8 +112,6 @@ public class TreeLeaf extends TreeItem implements /* HasClickHandlers, */ClickHa
 	public void onClick(ClickEvent event) {
 		if (event.getSource() == downloadImage) {
 
-			StringBuffer param = new StringBuffer();
-
 			String timestamp = "" + experimentRun.getTimestamp();
 			String experimentName = experimentRun.getParentSeries().getExperimentName();
 			String controllerURL = experimentRun.getParentSeries().getParentInstance().getControllerUrl();
@@ -143,7 +133,7 @@ public class TreeLeaf extends TreeItem implements /* HasClickHandlers, */ClickHa
 	@Override
 	public void onFailure(Throwable caught) {
 		LOGGER.severe(caught.getMessage());
-		Message.error(caught.getMessage());
+		throw new RuntimeException(caught);
 	}
 
 	@Override

@@ -42,9 +42,6 @@ import com.google.gwt.user.client.ui.Image;
 public class ExperimentSettingsView extends FlowPanel {
 
 	private static final String EXP_SETTINGS_PANEL_ID = "expSettingsPanel";
-	private static final String IMAGE_DUPLICATE = "images/duplicate.png";
-	private static final String IMAGE_RENAME = "images/rename.png";
-	private static final String IMAGE_REMOVE = "images/trash.png";
 
 	private HTML htmlName;
 	private FlowPanel topWrapper;
@@ -64,12 +61,9 @@ public class ExperimentSettingsView extends FlowPanel {
 		htmlName = new HTML("1234567890");
 		htmlName.addStyleName("name");
 
-		imgRename = new ImageHover(R.img.iconSet().getSafeUri(), 30, 60, 24, 18, R.img.iconSet().getSafeUri(),
-				30, 90, 24, 18);
-		imgDuplicate =  new ImageHover(R.img.iconSet().getSafeUri(), 60, 60, 13, 18, R.img.iconSet().getSafeUri(),
-				60, 90, 13, 18);
-		imgRemove = new ImageHover(R.img.iconSet().getSafeUri(), 0, 60, 16, 18, R.img.iconSet().getSafeUri(),
-				0, 90, 16, 18);
+		imgRename = new ImageHover(R.img.icoRename(), R.img.icoRenameHover());
+		imgDuplicate = new ImageHover(R.img.icoDuplicate(), R.img.icoDuplicateHover());
+		imgRemove = new ImageHover(R.img.icoTrash(), R.img.icoTrashHover());
 
 		imgRename.setTitle(R.get("Rename"));
 		imgDuplicate.setTitle(R.get("Duplicate"));
