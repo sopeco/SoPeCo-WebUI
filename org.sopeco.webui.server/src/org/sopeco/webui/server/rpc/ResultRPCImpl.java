@@ -137,12 +137,18 @@ public class ResultRPCImpl extends SuperRemoteServlet implements ResultRPC {
 
 			StringBuffer rValue = new StringBuffer();
 
-			int i = 0;
-			// for (SimpleDataSetRow row : simpleDataset.getRowList()) {
+			int rowCount = simpleDataset.getRowList().size();
+			int colCount = 0;
+			if (rowCount > 0)
+				colCount = simpleDataset.getRow(0).getRowValues().size();
+
+			rValue.append("myframe <- data.frame( matrix( nrow = " + rowCount + ", ncol = " + colCount + " ) )\n");
+
+			int i = 1;
 			for (Iterator<SimpleDataSetRow> rowIter = simpleDataset.getRowList().iterator(); rowIter.hasNext(); i++) {
-				rValue.append("r");
+				rValue.append("myframe[");
 				rValue.append(i);
-				rValue.append(" <- c(");
+				rValue.append(",] <- c(");
 
 				for (Iterator<ParameterValue> colIter = rowIter.next().getRowValues().iterator(); colIter.hasNext();) {
 					Object val = colIter.next().getValue();
@@ -150,6 +156,8 @@ public class ResultRPCImpl extends SuperRemoteServlet implements ResultRPC {
 						rValue.append("\"");
 						rValue.append(val.toString());
 						rValue.append("\"");
+					} else if (val instanceof Boolean) {
+						rValue.append(val.toString().toUpperCase());
 					} else {
 						rValue.append(val.toString());
 					}
@@ -160,16 +168,42 @@ public class ResultRPCImpl extends SuperRemoteServlet implements ResultRPC {
 
 				rValue.append(")\n");
 			}
+			
+//			int i = 0;
+//			for (Iterator<SimpleDataSetRow> rowIter = simpleDataset.getRowList().iterator(); rowIter.hasNext(); i++) {
+//				rValue.append("r");
+//				rValue.append(i);
+//				rValue.append(" <- c(");
+//
+//				for (Iterator<ParameterValue> colIter = rowIter.next().getRowValues().iterator(); colIter.hasNext();) {
+//					Object val = colIter.next().getValue();
+//					if (val instanceof String) {
+//						rValue.append("\"");
+//						rValue.append(val.toString());
+//						rValue.append("\"");
+//					} else if (val instanceof Boolean) {
+//						rValue.append(val.toString().toUpperCase());
+//					} else {
+//						rValue.append(val.toString());
+//					}
+//					if (colIter.hasNext()) {
+//						rValue.append(", ");
+//					}
+//				}
+//
+//				rValue.append(")\n");
+//			}
 
-			rValue.append("myframe <- data.frame(");
-			for (int n = 0; n < i; n++) {
-				rValue.append("r");
-				rValue.append(n);
-				if (n + 1 < i) {
-					rValue.append(", ");
-				}
-			}			
-			rValue.append(")\ncolnames(myframe) <- c(");
+//			rValue.append("myframe <- data.frame(");
+//			for (int n = 0; n < i; n++) {
+//				rValue.append("r");
+//				rValue.append(n);
+//				if (n + 1 < i) {
+//					rValue.append(", ");
+//				}
+//			}
+//			rValue.append(")\ncolnames(myframe) <- c(");
+			rValue.append("colnames(myframe) <- c(");
 
 			for (Iterator<SimpleDataSetColumn> iter = simpleDataset.getColumns().iterator(); iter.hasNext();) {
 				rValue.append("\"");
@@ -178,7 +212,7 @@ public class ResultRPCImpl extends SuperRemoteServlet implements ResultRPC {
 				if (iter.hasNext()) {
 					rValue.append(", ");
 				}
-			}			
+			}
 			rValue.append(")");
 
 			return rValue.toString();
