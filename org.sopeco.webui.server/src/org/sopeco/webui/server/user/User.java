@@ -31,7 +31,6 @@ import java.util.logging.Logger;
 import org.sopeco.persistence.IPersistenceProvider;
 import org.sopeco.persistence.entities.definition.MeasurementSpecification;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
-import org.sopeco.persistence.metadata.entities.DatabaseInstance;
 import org.sopeco.webui.server.persistence.UiPersistence;
 import org.sopeco.webui.shared.builder.MeasurementSpecificationBuilder;
 import org.sopeco.webui.shared.builder.ScenarioDefinitionBuilder;
@@ -50,7 +49,6 @@ public class User {
 	private ScenarioDefinitionBuilder currentScenarioDefinitionBuilder;
 
 	private String workingSpecification;
-	private DatabaseInstance currentDatabase;
 	private Account currentAccount;
 	private IPersistenceProvider currentPersistenceProvider;
 	private static final Logger LOGGER = Logger.getLogger(User.class.getName());
@@ -78,24 +76,12 @@ public class User {
 		this.lastRequestTime = pLastRequestTime;
 	}
 
-	public String getCurrentDatabaseId() {
-		return currentDatabase.getId();
-	}
-
-	public void setCurrentDatabase(DatabaseInstance currentAccount) {
-		this.currentDatabase = currentAccount;
-	}
-	
 	public void setCurrentAccount(Account currentAccount) {
 		this.currentAccount = currentAccount;
 	}
 
 	public Account getCurrentAccount() {
 		return currentAccount;
-	}
-	
-	public DatabaseInstance getCurrentDatabase() {
-		return currentDatabase;
 	}
 
 	public String getSessionId() {

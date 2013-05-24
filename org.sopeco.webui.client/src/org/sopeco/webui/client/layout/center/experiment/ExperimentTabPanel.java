@@ -58,8 +58,8 @@ public class ExperimentTabPanel extends TabPanel implements ClickHandler {
 		settingsView = new ExperimentSettingsView();
 		parameterView = new ExperimentParameterView();
 
-		add(settingsView, R.get("expConfig"));
-		add(parameterView, R.get("expParamAssignments"));
+		add(settingsView, R.lang.expConfig());
+		add(parameterView, R.lang.expParamAssignments());
 
 		selectTab(0);
 

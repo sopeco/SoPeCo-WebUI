@@ -173,7 +173,7 @@ public class AnalysisController implements ValueChangeHandler<String> {
 
 			// setTextboxHighligh(newTextbox, !valueIsDefault(key,
 			// currentConfig.get(key)));
-			newTextbox.setTitle(R.get("default") + ": " + defaultValue);
+			newTextbox.setTitle(R.lang.defaultString() + ": " + defaultValue);
 
 			editTextToKey.put(newTextbox, key);
 

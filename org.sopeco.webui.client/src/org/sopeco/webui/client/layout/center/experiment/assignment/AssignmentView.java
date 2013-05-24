@@ -82,10 +82,10 @@ public class AssignmentView extends FlowPanel {
 		grid.getColumnFormatter().setWidth(1, "1px");
 		grid.getColumnFormatter().setWidth(2, "1px");
 
-		grid.setText(0, 0, R.get("Namespace"));
-		grid.setText(0, 1, R.get("Parameter"));
-		grid.setText(0, 2, R.get("Type"));
-		grid.setText(0, 3, R.get("Variation"));
+		grid.setText(0, 0, R.lang.Namespace());
+		grid.setText(0, 1, R.lang.Parameter());
+		grid.setText(0, 2, R.lang.Type());
+		grid.setText(0, 3, R.lang.Variation());
 
 		grid.getRowFormatter().addStyleName(0, ASSIGNMENT_ITEM_TABLE_HEADER_CSS);
 	}

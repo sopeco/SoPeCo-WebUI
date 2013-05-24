@@ -77,7 +77,7 @@ public class CSVParameterPanel extends ParameterPanel implements ValueChangeHand
 	private void initialize() {
 		getElement().getStyle().setDisplay(Display.BLOCK);
 
-		label = new HTML(R.get("values") + ":");
+		label = new HTML(R.lang.Values() + ":");
 		label.getElement().getStyle().setDisplay(Display.INLINE_BLOCK);
 		label.getElement().getStyle().setProperty("whiteSpace", "nowrap");
 
@@ -88,7 +88,7 @@ public class CSVParameterPanel extends ParameterPanel implements ValueChangeHand
 		editImage.getElement().getStyle().setPaddingBottom(1, Unit.PX);
 		editImage.getElement().getStyle().setCursor(Cursor.POINTER);
 		editImage.addClickHandler(this);
-		editImage.setTitle(R.get("showCsvEditor"));
+		editImage.setTitle(R.lang.showCsvEditor());
 
 		HorizontalPanel hPanel = new HorizontalPanel();
 		hPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);

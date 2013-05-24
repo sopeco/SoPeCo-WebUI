@@ -29,6 +29,8 @@ package org.sopeco.webui.client.layout.login;
 import java.util.Date;
 
 import org.sopeco.webui.client.SoPeCoUI;
+import org.sopeco.webui.client.helper.BrandingChecker;
+import org.sopeco.webui.client.helper.SimpleCallback;
 import org.sopeco.webui.client.manager.Manager;
 import org.sopeco.webui.client.resources.R;
 import org.sopeco.webui.shared.entities.account.AccountDetails;
@@ -37,6 +39,8 @@ import org.sopeco.webui.shared.rpc.RPC;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
+import com.google.gwt.event.dom.client.ErrorEvent;
+import com.google.gwt.event.dom.client.ErrorHandler;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -52,7 +56,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
  * @author Marius Oehler
  * 
  */
-public class LoginPanel extends FlowPanel {
+public class LoginPanel extends FlowPanel implements SimpleCallback {
 
 	public static final String COOKIE_DATABASE = "selected_database";
 
@@ -89,21 +93,14 @@ public class LoginPanel extends FlowPanel {
 	private void init() {
 		if (!initialized) {
 			initialized = true;
-			
+
 			R.css.cssLoginBox().ensureInjected();
 			addStyleName("loginPanel");
 
 			htmlFEVersionInfo = new HTML(SoPeCoUI.getBuildInfo());
 			htmlFEVersionInfo.addStyleName("htmlFEVersionInfo");
 
-			Image imgLogo = new Image("/branding.png");
-
-			if (SoPeCoUI.hasBranding()) {
-				logoPanel = new FlowPanel();
-				logoPanel.addStyleName("imgSapResearch");
-				logoPanel.add(new HTML("powered by"));
-				logoPanel.add(imgLogo);
-			}
+			logoPanel = new FlowPanel();
 
 			createLanguagePanel();
 
@@ -115,9 +112,21 @@ public class LoginPanel extends FlowPanel {
 			verticalCell.add(loginView);
 			add(verticalCell);
 			add(htmlFEVersionInfo);
-			if (logoPanel != null) {
-				add(logoPanel);
-			}
+			add(logoPanel);
+			
+			BrandingChecker.checkBranding(this);
+		}
+	}
+
+	@Override
+	public void callback(Object object) {
+		if ((Boolean) object) {
+			Image imgLogo = new Image("/branding.png");
+			logoPanel.addStyleName("imgSapResearch");
+			logoPanel.add(new HTML("powered by"));
+			logoPanel.add(imgLogo);
+		} else {
+			logoPanel.removeFromParent();
 		}
 	}
 

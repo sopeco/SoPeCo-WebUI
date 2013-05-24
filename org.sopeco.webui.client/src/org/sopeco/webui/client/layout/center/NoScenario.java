@@ -31,7 +31,7 @@ import org.sopeco.gwt.widgets.SlidePanel;
 import org.sopeco.webui.client.event.EventControl;
 import org.sopeco.webui.client.event.MEControllerEvent;
 import org.sopeco.webui.client.event.MEControllerEvent.EventType;
-import org.sopeco.webui.client.helper.SimpleNotify;
+import org.sopeco.webui.client.helper.SimpleCallback;
 import org.sopeco.webui.client.layout.MainLayoutPanel;
 import org.sopeco.webui.client.layout.ScenarioAddController;
 import org.sopeco.webui.client.manager.Manager;
@@ -59,7 +59,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
  * 
  */
 public class NoScenario extends CenterPanel implements ClickHandler, BlurHandler, KeyUpHandler,
-		ValueChangeHandler<Boolean>, SimpleNotify {
+		ValueChangeHandler<Boolean>, SimpleCallback {
 
 	private static final String ADD_SCENARIO_BOX = "noScenarioBox";
 	private static final int SLIDER_HEIGHT = 250, SLIDER_WIDTH = 410;
@@ -78,11 +78,11 @@ public class NoScenario extends CenterPanel implements ClickHandler, BlurHandler
 
 		slidePanel.getFooterPanel().addStyleName(FOOTER_CSS_CLASS);
 
-		btnNext = new Button(R.get("Next"));
+		btnNext = new Button(R.lang.Next());
 		btnNext.addClickHandler(this);
 		btnNext.getElement().getStyle().setFloat(Float.RIGHT);
 
-		btnPrevious = new Button(R.get("Previous"));
+		btnPrevious = new Button(R.lang.Previous());
 		btnPrevious.addClickHandler(this);
 
 		slidePanel.addFooterWidget(btnPrevious);
@@ -142,7 +142,7 @@ public class NoScenario extends CenterPanel implements ClickHandler, BlurHandler
 	}
 
 	@Override
-	public void call() {
+	public void callback(Object object) {
 		addMEController();
 		MainLayoutPanel.get().getNorthPanel().updateScenarioList();
 		ScenarioManager.get().switchScenario(Manager.get().getAccountDetails().getSelectedScenario());
@@ -162,10 +162,10 @@ public class NoScenario extends CenterPanel implements ClickHandler, BlurHandler
 		btnPrevious.setEnabled(slidePanel.hasPrevious());
 
 		if (!slidePanel.hasNext()) {
-			btnNext.setText(R.get("AddScenario"));
+			btnNext.setText(R.lang.AddScenario());
 			btnNext.setEnabled(mecController.getLastValue());
 		} else {
-			btnNext.setText(R.get("Next"));
+			btnNext.setText(R.lang.Next());
 			btnNext.setEnabled(true);
 		}
 	}

@@ -26,7 +26,8 @@
  */
 package org.sopeco.webui.client.layout.navigation;
 
-import org.sopeco.webui.client.SoPeCoUI;
+import org.sopeco.webui.client.helper.BrandingChecker;
+import org.sopeco.webui.client.helper.SimpleCallback;
 import org.sopeco.webui.client.resources.R;
 
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -38,7 +39,7 @@ import com.google.gwt.user.client.ui.Image;
  * @author Marius Oehler
  * 
  */
-public class NaviView extends FlowPanel {
+public class NaviView extends FlowPanel implements SimpleCallback {
 	private static final String CSS_CLASS = "navigation";
 	private static final String CSS_CLASS_LOGO_PANEL = "logoPanel";
 
@@ -54,14 +55,21 @@ public class NaviView extends FlowPanel {
 	private void init() {
 		addStyleName(CSS_CLASS);
 
-		if (SoPeCoUI.hasBranding()) {
-			logo = new Image("/branding.png");
-			logoPanel = new FlowPanel();
+		logoPanel = new FlowPanel();
+		add(logoPanel);
+		
+		BrandingChecker.checkBranding(this);
+	}
 
+	@Override
+	public void callback(Object object) {
+		if ((Boolean) object) {
+			logo = new Image("/branding.png");
 			logoPanel.addStyleName(CSS_CLASS_LOGO_PANEL);
 			logoPanel.add(new HTML("powered by"));
 			logoPanel.add(logo);
-			add(logoPanel);
+		} else {
+			logoPanel.removeFromParent();
 		}
 	}
 

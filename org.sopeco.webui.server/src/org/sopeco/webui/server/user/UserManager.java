@@ -88,16 +88,16 @@ public final class UserManager {
 	}
 
 	/**
-	 * Returns a List with all users which have the given databaseId.
+	 * Returns a List with all users which are connected to the given account.
 	 * 
 	 * @param databaseId
 	 * @return
 	 */
-	public static List<User> getAllUserOnDatabase(String databaseId) {
+	public static List<User> getAllUserOnDatabase(long accountId) {
 		List<User> userList = new ArrayList<User>();
 
 		for (User u : userMap.values()) {
-			if (u.getCurrentDatabaseId().equals(databaseId)) {
+			if (u.getCurrentAccount().getId() == accountId) {
 				userList.add(u);
 			}
 		}

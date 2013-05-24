@@ -237,6 +237,6 @@ public class TabControllerTwo extends TabController {
 	 */
 	public void updateExperimentCount(int count) {
 		((ExecuteTabPanel) getParentController().getView()).getTabBar().setTabText(1,
-				R.get("ScheduledExperiments") + " [" + count + "]");
+				R.lang.ScheduledExperiments() + " [" + count + "]");
 	}
 }

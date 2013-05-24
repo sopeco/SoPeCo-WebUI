@@ -77,9 +77,9 @@ public class SpecificationView extends FlowPanel {
 		imgDuplicate = new ImageHover(R.img.icoDuplicate(), R.img.icoDuplicateHover());
 		imgRemove = new ImageHover(R.img.icoTrash(), R.img.icoTrashHover());
 
-		imgRename.setTitle(R.get("Rename"));
-		imgDuplicate.setTitle(R.get("Duplicate"));
-		imgRemove.setTitle(R.get("Remove"));
+		imgRename.setTitle(R.lang.Rename());
+		imgDuplicate.setTitle(R.lang.Duplicate());
+		imgRemove.setTitle(R.lang.Remove());
 
 		topWrapper = new FlowPanel();
 		topWrapper.add(new HTML("Name:"));
@@ -91,7 +91,7 @@ public class SpecificationView extends FlowPanel {
 		topWrapper.addStyleName("expTopWrapper");
 
 
-		Label nameLabel = new Label(R.get("name") + ":");
+		Label nameLabel = new Label(R.lang.name() + ":");
 		nameLabel.addStyleName("spc-Label");
 
 

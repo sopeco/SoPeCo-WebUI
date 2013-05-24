@@ -268,6 +268,15 @@ public interface LanguageConstants extends com.google.gwt.i18n.client.Constants 
   String Parameter();
 
   /**
+   * Translated "Perform now".
+   * 
+   * @return translated "Perform now"
+   */
+  @DefaultStringValue("Perform now")
+  @Key("PerformNow")
+  String PerformNow();
+
+  /**
    * Translated "Previous".
    * 
    * @return translated "Previous"
@@ -455,6 +464,15 @@ public interface LanguageConstants extends com.google.gwt.i18n.client.Constants 
   @DefaultStringValue("Value")
   @Key("Value")
   String Value();
+
+  /**
+   * Translated "Values".
+   * 
+   * @return translated "Values"
+   */
+  @DefaultStringValue("Values")
+  @Key("Values")
+  String Values();
 
   /**
    * Translated "Variation".
@@ -1175,6 +1193,15 @@ public interface LanguageConstants extends com.google.gwt.i18n.client.Constants 
   @DefaultStringValue("Get MeasurementEnvironment from MeasurementEnvironmentController")
   @Key("getMEfromMEC")
   String getMEfromMEC();
+
+  /**
+   * Translated "Get R-Command".
+   * 
+   * @return translated "Get R-Command"
+   */
+  @DefaultStringValue("Get R-Command")
+  @Key("getRCommand")
+  String getRCommand();
 
   /**
    * Translated "Hide".
@@ -2120,15 +2147,6 @@ public interface LanguageConstants extends com.google.gwt.i18n.client.Constants 
   @DefaultStringValue("Use own database")
   @Key("useOwnDatabase")
   String useOwnDatabase();
-
-  /**
-   * Translated "Values".
-   * 
-   * @return translated "Values"
-   */
-  @DefaultStringValue("Values")
-  @Key("values")
-  String values();
 
   /**
    * Translated "Visualization".

@@ -78,13 +78,13 @@ public class TreeLeaf extends TreeItem implements /* HasClickHandlers, */ClickHa
 		getContentWrapper().getElement().getStyle().setMarginLeft(1, Unit.EM);
 
 		downloadImage = new ImageHover(R.img.icoDownload(), R.img.icoDownloadHover());
-		downloadImage.setTitle(R.get("download"));
+		downloadImage.setTitle(R.lang.download());
 		downloadImage.getElement().getStyle().setMarginLeft(1, Unit.EM);
 		downloadImage.getElement().getStyle().setCursor(Cursor.POINTER);
 		downloadImage.addClickHandler(this);
 
 		rImage = new ImageHover(R.img.icoR(), R.img.icoRHover());
-		rImage.setTitle(R.get("Get R-Command"));
+		rImage.setTitle(R.lang.getRCommand());
 		rImage.getElement().getStyle().setMarginLeft(1, Unit.EM);
 		rImage.getElement().getStyle().setCursor(Cursor.POINTER);
 		rImage.addClickHandler(this);

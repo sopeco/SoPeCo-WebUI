@@ -123,8 +123,8 @@ public class UiPersistenceProvider {
 		return loadByQuery(Visualization.class, "getAllVisualizations");
 	}
 
-	public List<Visualization> loadVisualizationsByAccount(String accountName) {
-		return loadByQuery(Visualization.class, "getVisualizationsByAccount", "accountId", accountName);
+	public List<Visualization> loadVisualizationsByAccount(long accountId) {
+		return loadByQuery(Visualization.class, "getVisualizationsByAccount", "accountId", accountId);
 	}
 
 	public void storeVisualization(Visualization visualization) {

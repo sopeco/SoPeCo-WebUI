@@ -132,7 +132,7 @@ public class ExperimentController implements ICenterController, ValueChangeHandl
 		analysisController.setHeadline(R.lang.analysisConfiguration());
 		analysisController.setExtensionType(ExtensionTypes.ANALYSIS);
 		
-		explorationExtController.setHeadline(R.get("explStrategy"));
+		explorationExtController.setHeadline(R.lang.explStrategy());
 		explorationExtController.setExtensionType(ExtensionTypes.EXPLORATIONSTRATEGY);
 
 		
@@ -179,7 +179,7 @@ public class ExperimentController implements ICenterController, ValueChangeHandl
 
 	private void duplicateExperiment() {
 		if (inputClone == null) {
-			inputClone = new InputDialog(R.get("cloneExperiment"), R.get("nameForExperimentClone") + ":");
+			inputClone = new InputDialog(R.lang.cloneExperiment(), R.lang.nameForExperimentClone() + ":");
 			inputClone.addHandler(this);
 			inputClone.setValidator(this);
 		}
@@ -189,7 +189,7 @@ public class ExperimentController implements ICenterController, ValueChangeHandl
 
 	private void showRenameDialog() {
 		if (inputRename == null) {
-			inputRename = new InputDialog(R.get("renameExperiment"), R.get("newExpName") + ":");
+			inputRename = new InputDialog(R.lang.renameExperiment(), R.lang.newExpName() + ":");
 			inputRename.addHandler(this);
 			inputRename.setValidator(this);
 		}
@@ -226,7 +226,7 @@ public class ExperimentController implements ICenterController, ValueChangeHandl
 	}
 
 	private void removeExperiment() {
-		Confirmation.confirm(R.get("removeTihsExp"), new ClickHandler() {
+		Confirmation.confirm(R.lang.removeTihsExp(), new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				ScenarioManager.get().experiment().removeCurrentExperimentSeries();

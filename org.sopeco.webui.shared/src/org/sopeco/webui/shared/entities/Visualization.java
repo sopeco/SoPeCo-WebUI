@@ -62,7 +62,7 @@ public class Visualization implements Serializable {
 	private long id;
 	
 	@Column(name = "accountId")
-	private String accountId;
+	private long accountId;
 	
 	@Column(name = "name")
 	private String name;
@@ -190,11 +190,11 @@ public class Visualization implements Serializable {
 		this.experimentName = experimentName;
 	}
 
-	public String getAccountId() {
+	public long getAccountId() {
 		return accountId;
 	}
 
-	public void setAccountId(String accountId) {
+	public void setAccountId(long accountId) {
 		this.accountId = accountId;
 	}
 

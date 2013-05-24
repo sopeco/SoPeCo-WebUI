@@ -45,9 +45,9 @@ import com.google.gwt.core.client.GWT;
 public class SpecificationEnvironmentTree extends EnvironmentTree {
 
 	public SpecificationEnvironmentTree() {
-		super(false, R.get("envParameter"));
+		super(false, R.lang.envParameter());
 		
-		getView().setFirstInfoText(R.get("addToInitAssignments"));
+		getView().setFirstInfoText(R.lang.addToInitAssignments());
 	}
 
 	@Override

@@ -63,7 +63,7 @@ public class AssignmentController {
 
 	public AssignmentController(Type type) {
 		String headline = "";
-		headline = R.get("expAssignsments");
+		headline = R.lang.expAssignsments();
 
 		assignmentItems2 = new ArrayList<AssignmentItem>();
 

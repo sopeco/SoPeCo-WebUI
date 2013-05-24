@@ -212,8 +212,6 @@
 								<include>**/*.html</include>
 								<include>**/*.jsp</include>
 								<include>**/*.ico</include>
-								<include>**/rsc/lang/*</include>
-
 							</includes>
 						</resource>
 						<resource>

@@ -57,8 +57,6 @@ import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 
 public class VisualizationController implements ICenterController {
-	private static final String STATUS_READY_IMAGE = "images/status-green.png";
-	private static final String STATUS_UNKOWN_IMAGE = "images/status-gray.png";
 
 	private DockLayoutPanel rootWidget;
 	private FlowPanel controlWidget;
@@ -85,8 +83,7 @@ public class VisualizationController implements ICenterController {
 		visualizationSelection = new SingleSelectionModel<Visualization>(KEY_PROVIDER);
 		chartDataProvider = new ChartsDataProvider(this);
 		controlWidget.addStyleName("visualizationControl");
-		statusImage = new Image(STATUS_UNKOWN_IMAGE);
-		statusImage.setUrl(STATUS_READY_IMAGE);
+		statusImage = new Image(R.img.icoDotGreen());
 		statusImage.getElement().getStyle().setMarginLeft(1, Unit.EM);
 		statusImage.getElement().getStyle().setMarginTop(1, Unit.EM);
 		controlWidget.add(statusImage);
@@ -181,16 +178,16 @@ public class VisualizationController implements ICenterController {
 		this.status = status;
 		switch (status) {
 		case READY:
-			statusImage.setUrlAndVisibleRect(R.img.iconSet().getSafeUri(), 60, 150, 10, 10);
+			statusImage.setResource(R.img.icoDotGreen());
 			break;
 		case BUSY:
-			statusImage.setUrlAndVisibleRect(R.img.iconSet().getSafeUri(), 30, 150, 10, 10);
+			statusImage.setResource(R.img.icoDotRed());
 			break;
 		case LOADING:
-			statusImage.setUrlAndVisibleRect(R.img.iconSet().getSafeUri(), 90, 150, 10, 10);
+			statusImage.setResource(R.img.icoDotYellow());
 			break;
 		default:
-			statusImage.setUrlAndVisibleRect(R.img.iconSet().getSafeUri(), 0, 150, 10, 10);
+			statusImage.setResource(R.img.icoDotGray());
 		}
 	}
 

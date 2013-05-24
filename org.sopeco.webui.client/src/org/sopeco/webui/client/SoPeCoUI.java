@@ -35,7 +35,6 @@ import org.sopeco.persistence.metadata.entities.DatabaseInstance;
 import org.sopeco.webui.client.event.EventControl;
 import org.sopeco.webui.client.extensions.Extensions;
 import org.sopeco.webui.client.helper.ServerPush;
-import org.sopeco.webui.client.helper.SimpleNotify;
 import org.sopeco.webui.client.helper.SystemDetails;
 import org.sopeco.webui.client.helper.callback.CallbackBatch;
 import org.sopeco.webui.client.helper.callback.ParallelCallback;
@@ -61,11 +60,13 @@ import com.google.gwt.user.client.ui.RootLayoutPanel;
  * @author Marius Oehler
  * 
  */
-public class SoPeCoUI implements EntryPoint, SimpleNotify, UncaughtExceptionHandler {
+public class SoPeCoUI implements EntryPoint, UncaughtExceptionHandler {
 
 	private static SoPeCoUI frontend;
 
 	private static final Logger LOGGER = Logger.getLogger(SoPeCoUI.class.getName());
+
+	private static final String BRANDING_IMAGE_URL = "";
 
 	/**
 	 * Returns the FrontendEntryPoint object of this application.
@@ -81,11 +82,6 @@ public class SoPeCoUI implements EntryPoint, SimpleNotify, UncaughtExceptionHand
 		return $wnd.buildInfo;
 	}-*/;
 
-	public static native boolean hasBranding()
-	/*-{
-		return $wnd.hasBranding;
-	}-*/;
-
 	private DatabaseInstance connectedDatabase;
 	private String connectedAccountName;
 
@@ -98,14 +94,14 @@ public class SoPeCoUI implements EntryPoint, SimpleNotify, UncaughtExceptionHand
 	 */
 	@Override
 	public void onModuleLoad() {
-		frontend = this;	
-		
+		frontend = this;
+
 		R.css.cssCommon().ensureInjected();
 
 		RootLayoutPanel.get().addStyleName("rootPanel");
 
 		configLogger();
-		R.loadLangFile(SoPeCoUI.this);
+		rpcLoad();
 	}
 
 	/**
@@ -133,14 +129,6 @@ public class SoPeCoUI implements EntryPoint, SimpleNotify, UncaughtExceptionHand
 		GWT.log(e.getClass().getName() + ": " + e.getMessage(), e);
 
 		ExceptionDialog.show(e);
-	}
-
-	/**
-	 * Called when the language file was loaded.
-	 */
-	@Override
-	public void call() {
-		rpcLoad();
 	}
 
 	/**
@@ -184,7 +172,7 @@ public class SoPeCoUI implements EntryPoint, SimpleNotify, UncaughtExceptionHand
 		RootLayoutPanel.get().add(new LoginPanel());
 	}
 
-	public void logout () {
+	public void logout() {
 		Cookies.removeCookie(LoginPanel.COOKIE_RM_ACCOUNT);
 		Cookies.removeCookie(LoginPanel.COOKIE_RM_TOKEN);
 		changeDatabase();

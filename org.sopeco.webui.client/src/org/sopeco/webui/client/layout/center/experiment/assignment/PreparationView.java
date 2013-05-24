@@ -56,12 +56,12 @@ public class PreparationView extends FlowPanel {
 		getElement().getStyle().setPosition(Position.RELATIVE);
 		getElement().getStyle().setPadding(1, Unit.EM);
 
-		headline = new Headline(R.get("prepAssignments"));
+		headline = new Headline(R.lang.prepAssignments());
 		headline.getElement().getStyle().setMarginBottom(1, Unit.EM);
 
 		grid = new EditGrid(1, 4);
 		
-		htmlNoAssignments = new HTML(R.get("noprepAssignments"));
+		htmlNoAssignments = new HTML(R.lang.noprepAssignments());
 		htmlNoAssignments.setVisible(false);
 		htmlNoAssignments.addStyleName(NO_ASSIGNMENTS_CSS_CLASS);
 

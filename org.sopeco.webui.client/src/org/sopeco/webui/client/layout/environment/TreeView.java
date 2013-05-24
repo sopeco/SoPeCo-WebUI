@@ -64,15 +64,15 @@ public class TreeView extends FlowPanel {
 
 		headline = new FlowPanel();
 		HTML headlineText = new HTML(headLine);
-		
+
 		Image imgObserve = new Image(R.img.iconSet().getSafeUri(), 180, 60, 16, 8);
 		tbtnObservation = new ToggleButton(imgObserve);
-		tbtnObservation.setTitle(R.get("showObservation"));
+		tbtnObservation.setTitle(R.lang.showObservation());
 
 		Image imgInitAssignment = new Image(R.img.iconSet().getSafeUri(), 210, 60, 16, 8);
 		tbtnInitialAssignments = new ToggleButton(imgInitAssignment);
 		tbtnInitialAssignments.setDown(true);
-		tbtnInitialAssignments.setTitle(R.get("showInitAssignments"));
+		tbtnInitialAssignments.setTitle(R.lang.showInitAssignments());
 
 		headline.addStyleName(HEADLINE_CSS_CLASS);
 		headline.add(headlineText);
@@ -132,9 +132,9 @@ public class TreeView extends FlowPanel {
 	public Tree getTree() {
 		return tree;
 	}
-	
-	public void setShowObservableButtonVisible(boolean visible){
+
+	public void setShowObservableButtonVisible(boolean visible) {
 		tbtnObservation.setVisible(visible);
 	}
-	
+
 }

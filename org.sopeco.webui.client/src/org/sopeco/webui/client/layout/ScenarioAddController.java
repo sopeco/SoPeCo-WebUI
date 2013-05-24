@@ -30,7 +30,7 @@ import org.sopeco.gwt.widgets.ExtendedTextBox;
 import org.sopeco.gwt.widgets.Headline;
 import org.sopeco.gwt.widgets.Paragraph;
 import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
-import org.sopeco.webui.client.helper.SimpleNotify;
+import org.sopeco.webui.client.helper.SimpleCallback;
 import org.sopeco.webui.client.manager.ScenarioManager;
 import org.sopeco.webui.client.resources.R;
 
@@ -138,7 +138,7 @@ public class ScenarioAddController implements ClickHandler, BlurHandler, KeyPres
 			return false;
 		} else if (ScenarioManager.get().existScenario(view.getScenarioName().getText())) {
 			view.getScenarioName().addStyleName(INVALID_CSS_CLASS);
-			setErrorText(R.get("scenarioNameExists"));
+			setErrorText(R.lang.scenarioNameExists());
 			return false;
 		} else {
 			view.getScenarioName().removeStyleName(INVALID_CSS_CLASS);
@@ -170,7 +170,7 @@ public class ScenarioAddController implements ClickHandler, BlurHandler, KeyPres
 	/**
 	 * 
 	 */
-	public void createAndAddScenario(SimpleNotify simpleNotify) {
+	public void createAndAddScenario(SimpleCallback simpleNotify) {
 		ExperimentSeriesDefinition experiment = ScenarioManager.get().experiment()
 				.getNewExperimentSeries(view.getExperimentName().getText());
 
@@ -215,9 +215,9 @@ public class ScenarioAddController implements ClickHandler, BlurHandler, KeyPres
 		private void init() {
 			addStyleName(VIEW_CSS_CLASS);
 
-			headline = new Headline(R.get("addScenario"));
+			headline = new Headline(R.lang.addScenario());
 
-			infoText = new Paragraph(R.get("addScenarioInfoText"));
+			infoText = new Paragraph(R.lang.addScenarioInfoText());
 
 			table = new FlexTable();
 
@@ -227,15 +227,15 @@ public class ScenarioAddController implements ClickHandler, BlurHandler, KeyPres
 
 			scenarioName.addBlurHandler(ScenarioAddController.this);
 
-			htmlScenario = new HTML(R.get("scenarioName") + ":");
-			htmlSpecification = new HTML(R.get("specificationName") + ":");
-			htmlExperiment = new HTML(R.get("experimentName") + ":");
+			htmlScenario = new HTML(R.lang.scenarioName() + ":");
+			htmlSpecification = new HTML(R.lang.specificationName() + ":");
+			htmlExperiment = new HTML(R.lang.experimentName() + ":");
 			errorText = new HTML();
 
 			errorText.addStyleName(ERROR_TEXT_CSS_CLASS);
 
-			btnOk = new Button(R.get("AddScenario"));
-			btnCancel = new Button(R.get("Cancel"));
+			btnOk = new Button(R.lang.AddScenario());
+			btnCancel = new Button(R.lang.Cancel());
 
 			btnOk.addClickHandler(ScenarioAddController.this);
 			btnCancel.addClickHandler(ScenarioAddController.this);

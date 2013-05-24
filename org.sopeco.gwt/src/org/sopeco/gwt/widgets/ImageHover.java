@@ -14,8 +14,7 @@ import com.google.gwt.user.client.ui.Image;
  * @author Marius Oehler
  * 
  */
-public class ImageHover extends Image implements MouseOverHandler,
-		MouseOutHandler, ClickHandler {
+public class ImageHover extends Image implements MouseOverHandler, MouseOutHandler, ClickHandler {
 
 	private ImageResource defaultImage, hoverImage;
 
@@ -24,11 +23,15 @@ public class ImageHover extends Image implements MouseOverHandler,
 		defaultImage = pDefaultImage;
 		hoverImage = pHoverImage;
 
-		if (hoverImage != null) {
-			addMouseOverHandler(this);
-			addMouseOutHandler(this);
-			addClickHandler(this);
-		}
+		addMouseOverHandler(this);
+		addMouseOutHandler(this);
+		addClickHandler(this);
+	}
+
+	public void setResource(ImageResource pDefaultImage, ImageResource pHoverImage) {
+		defaultImage = pDefaultImage;
+		hoverImage = pHoverImage;
+		setResource(defaultImage);
 	}
 
 	@Override
@@ -38,7 +41,9 @@ public class ImageHover extends Image implements MouseOverHandler,
 
 	@Override
 	public void onMouseOver(MouseOverEvent event) {
-		setResource(hoverImage);
+		if (hoverImage != null) {
+			setResource(hoverImage);
+		}
 	}
 
 	@Override

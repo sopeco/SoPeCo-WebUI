@@ -101,12 +101,12 @@ public class StatusPanel extends FlowPanel {
 		detailsTable = new FlexTable();
 		detailsTable.addStyleName(TABLE_CSS_CLASS);
 
-		labelAccount = new HTML(R.get("Account") + ":");
-		labelScenario = new HTML(R.get("Scenario") + ":");
-		labelExperiments = new HTML(R.get("Experiments") + ":");
-		labelStart = new HTML(R.get("Start") + ":");
-		labelTimeElapsed = new HTML(R.get("ElapsedTime") + ":");
-		labelTimeRemaining = new HTML(R.get("RemainingTime") + ":");
+		labelAccount = new HTML(R.lang.Account() + ":");
+		labelScenario = new HTML(R.lang.Scenario() + ":");
+		labelExperiments = new HTML(R.lang.Experiments() + ":");
+		labelStart = new HTML(R.lang.Start() + ":");
+		labelTimeElapsed = new HTML(R.lang.ElapsedTime() + ":");
+		labelTimeRemaining = new HTML(R.lang.RemainingTime() + ":");
 
 		valueAccount = new HTML("-");
 		valueScenario = new HTML("-");

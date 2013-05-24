@@ -256,11 +256,11 @@ public final class InputDialog extends DialogBox implements ClickHandler, KeyUpH
 		HorizontalPanel panelButtons = new HorizontalPanel();
 		panelButtons.setSpacing(5);
 
-		btnOk = new Button(R.get("Ok"));
+		btnOk = new Button(R.lang.Ok());
 		btnOk.setWidth("80px");
 		btnOk.addClickHandler(this);
 
-		btnCancel = new Button(R.get("Cancel"));
+		btnCancel = new Button(R.lang.Cancel());
 		btnCancel.setWidth("80px");
 		btnCancel.addClickHandler(this);
 
