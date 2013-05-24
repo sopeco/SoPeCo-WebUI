@@ -54,6 +54,6 @@ public interface ExecuteRPCAsync {
 	void getControllerLog(AsyncCallback<RunningControllerStatus> callback);
 
 	void getMECLog(long id, AsyncCallback<MECLog> callback);
-	
+
 	void abortCurrentExperiment(AsyncCallback<Void> callback);
 }

@@ -103,15 +103,15 @@ public class ScheduleItem extends FlowPanel implements ClickHandler, Comparable<
 		imgRemove = new Image("images/trash.png");
 		imgRemove.addClickHandler(this);
 
-		htmlLabelExecute = new HTML(R.get("Experiments") + ":");
-		htmlLabelStartTime = new HTML(R.get("StartTime") + ":");
-		htmlLabelRepeat = new HTML(R.get("Repeat") + ":");
-		htmlLabelAdded = new HTML(R.get("Added") + ":");
-		htmlLabelLastExec = new HTML(R.get("LastExecution") + ":");
-		htmlLabelNextExec = new HTML(R.get("NextExecution") + ":");
-		htmlLabelLastDuration = new HTML(R.get("LastDuration") + ":");
+		htmlLabelExecute = new HTML(R.lang.Experiments() + ":");
+		htmlLabelStartTime = new HTML(R.lang.StartTime() + ":");
+		htmlLabelRepeat = new HTML(R.lang.Repeat() + ":");
+		htmlLabelAdded = new HTML(R.lang.Added() + ":");
+		htmlLabelLastExec = new HTML(R.lang.LastExecution() + ":");
+		htmlLabelNextExec = new HTML(R.lang.NextExecution() + ":");
+		htmlLabelLastDuration = new HTML(R.lang.LastDuration() + ":");
 
-		anchorPerformNow = new Anchor(R.get("PerfomrNow"));
+		anchorPerformNow = new Anchor(R.lang.PerformNow());
 
 		htmlExperiments = new HTML(getExperimentString());
 
@@ -132,7 +132,7 @@ public class ScheduleItem extends FlowPanel implements ClickHandler, Comparable<
 
 		String lastExec = "";
 		if (experiment.getLastExecutionTime() == -1) {
-			lastExec = R.get("NeverExecuted");
+			lastExec = R.lang.NeverExecuted();
 		} else {
 			lastExec = dtf.format(new Date(experiment.getLastExecutionTime()));
 		}
@@ -143,7 +143,7 @@ public class ScheduleItem extends FlowPanel implements ClickHandler, Comparable<
 			repeatText = getDay(experiment.getRepeatDays()) + " " + experiment.getRepeatHours() + " "
 					+ experiment.getRepeatMinutes();
 		} else {
-			repeatText = R.get("UniqueExecution");
+			repeatText = R.lang.UniqueExecution();
 		}
 		htmlRepeat = new HTML(repeatText);
 

@@ -111,14 +111,15 @@ class AssignmentController implements EditGridHandler {
 		}
 	}
 
-//	public void onValueChange(AssignmentItem item) {
-//		if (ScenarioManager.get().changeInitAssignmentValue(item.getNamespace(), item.getName(), item.getValue())) {
-//			ScenarioManager.get().storeScenario();
-//		} else {
-//			Message.error("error");
-//		}
-//	}
-	
+	// public void onValueChange(AssignmentItem item) {
+	// if (ScenarioManager.get().changeInitAssignmentValue(item.getNamespace(),
+	// item.getName(), item.getValue())) {
+	// ScenarioManager.get().storeScenario();
+	// } else {
+	// Message.error("error");
+	// }
+	// }
+
 	@Override
 	public void onValueChange(EditGridItem item) {
 		if (ScenarioManager.get().changeInitAssignmentValue(item.getNamespace(), item.getName(), item.getValue())) {

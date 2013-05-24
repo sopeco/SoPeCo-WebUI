@@ -26,8 +26,6 @@
  */
 package org.sopeco.webui.shared.helper;
 
-import javax.persistence.Entity;
-
 import org.sopeco.webui.shared.push.PushSerializable;
 
 /**

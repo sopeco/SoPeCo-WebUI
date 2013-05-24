@@ -76,11 +76,11 @@ public class ExecuteTab extends FlowPanel implements ValueChangeHandler<Boolean>
 		configTable = new FlexTable();
 		configTable.addStyleName(CONFIG_TABLE_CLASS);
 
-		htmlController = new HTML(R.get("Controller") + ":");
-		htmlLabel = new HTML(R.get("Label") + ":");
-		htmlExecution = new HTML(R.get("Execution") + ":");
-		htmlRdioOnReady = new HTML(R.get("execOnReady"));
-		htmlRdioSchedule = new HTML(R.get("execSchedule"));
+		htmlController = new HTML(R.lang.Controller() + ":");
+		htmlLabel = new HTML(R.lang.Label() + ":");
+		htmlExecution = new HTML(R.lang.Execution() + ":");
+		htmlRdioOnReady = new HTML(R.lang.execOnReady());
+		htmlRdioSchedule = new HTML(R.lang.execSchedule());
 
 		editLabel = new EditableText("My Scheduling");
 		btnExecute = new Button(R.lang.executeExperiment());
@@ -88,7 +88,8 @@ public class ExecuteTab extends FlowPanel implements ValueChangeHandler<Boolean>
 		editController = new EditableText(Manager.get().getControllerUrl());
 		editController.setEditable(false);
 		// Temporary
-		editController.getElement().getFirstChildElement().getNextSiblingElement().getStyle().setBackgroundColor("white");
+		editController.getElement().getFirstChildElement().getNextSiblingElement().getStyle()
+				.setBackgroundColor("white");
 		editController.getElement().getFirstChildElement().getNextSiblingElement().getStyle().setBorderColor("white");
 
 		rdioOnReady = new RadioButton("execution");

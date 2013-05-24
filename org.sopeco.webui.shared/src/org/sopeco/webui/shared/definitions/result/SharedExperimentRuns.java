@@ -49,6 +49,7 @@ public class SharedExperimentRuns implements Serializable {
 	public String getLabel() {
 		return label;
 	}
+
 	/**
 	 * @return the parentSeries
 	 */

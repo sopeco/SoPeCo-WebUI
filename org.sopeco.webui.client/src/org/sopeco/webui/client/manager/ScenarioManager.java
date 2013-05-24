@@ -36,7 +36,7 @@ import org.sopeco.persistence.entities.definition.ParameterNamespace;
 import org.sopeco.persistence.entities.definition.ParameterRole;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 import org.sopeco.webui.client.SoPeCoUI;
-import org.sopeco.webui.client.helper.SimpleNotify;
+import org.sopeco.webui.client.helper.SimpleCallback;
 import org.sopeco.webui.client.layout.MainLayoutPanel;
 import org.sopeco.webui.client.layout.center.experiment.ExperimentController;
 import org.sopeco.webui.client.layout.center.specification.SpecificationController;
@@ -155,7 +155,7 @@ public final class ScenarioManager {
 	 * @param simpleNotify
 	 */
 	public void createScenario(String scenarioName, String specificationName, ExperimentSeriesDefinition experiment,
-			final SimpleNotify simpleNotify) {
+			final SimpleCallback simpleNotify) {
 		final String cleanedScenarioName = Utilities.cleanString(scenarioName);
 
 		RPC.getScenarioManager().addScenario(cleanedScenarioName, specificationName, experiment,
@@ -172,7 +172,7 @@ public final class ScenarioManager {
 						Manager.get().storeAccountDetails();
 
 						if (simpleNotify != null) {
-							simpleNotify.call();
+							simpleNotify.callback(null);
 						} else {
 							MainLayoutPanel.get().getNorthPanel().updateScenarioList();
 							switchScenario(cleanedScenarioName);

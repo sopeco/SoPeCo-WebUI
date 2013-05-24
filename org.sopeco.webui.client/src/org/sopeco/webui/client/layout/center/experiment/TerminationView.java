@@ -61,7 +61,7 @@ public class TerminationView extends FlowPanel {
 		getElement().setId(TERMINATION_VIEW_ID);
 
 		Element headline = DOM.createElement("h3");
-		headline.setInnerHTML(R.get("terminationCondition"));
+		headline.setInnerHTML(R.lang.terminationCondition());
 		getElement().appendChild(headline);
 	}
 

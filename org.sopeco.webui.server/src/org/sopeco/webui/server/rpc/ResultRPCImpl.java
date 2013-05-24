@@ -168,41 +168,43 @@ public class ResultRPCImpl extends SuperRemoteServlet implements ResultRPC {
 
 				rValue.append(")\n");
 			}
-			
-//			int i = 0;
-//			for (Iterator<SimpleDataSetRow> rowIter = simpleDataset.getRowList().iterator(); rowIter.hasNext(); i++) {
-//				rValue.append("r");
-//				rValue.append(i);
-//				rValue.append(" <- c(");
-//
-//				for (Iterator<ParameterValue> colIter = rowIter.next().getRowValues().iterator(); colIter.hasNext();) {
-//					Object val = colIter.next().getValue();
-//					if (val instanceof String) {
-//						rValue.append("\"");
-//						rValue.append(val.toString());
-//						rValue.append("\"");
-//					} else if (val instanceof Boolean) {
-//						rValue.append(val.toString().toUpperCase());
-//					} else {
-//						rValue.append(val.toString());
-//					}
-//					if (colIter.hasNext()) {
-//						rValue.append(", ");
-//					}
-//				}
-//
-//				rValue.append(")\n");
-//			}
 
-//			rValue.append("myframe <- data.frame(");
-//			for (int n = 0; n < i; n++) {
-//				rValue.append("r");
-//				rValue.append(n);
-//				if (n + 1 < i) {
-//					rValue.append(", ");
-//				}
-//			}
-//			rValue.append(")\ncolnames(myframe) <- c(");
+			// int i = 0;
+			// for (Iterator<SimpleDataSetRow> rowIter =
+			// simpleDataset.getRowList().iterator(); rowIter.hasNext(); i++) {
+			// rValue.append("r");
+			// rValue.append(i);
+			// rValue.append(" <- c(");
+			//
+			// for (Iterator<ParameterValue> colIter =
+			// rowIter.next().getRowValues().iterator(); colIter.hasNext();) {
+			// Object val = colIter.next().getValue();
+			// if (val instanceof String) {
+			// rValue.append("\"");
+			// rValue.append(val.toString());
+			// rValue.append("\"");
+			// } else if (val instanceof Boolean) {
+			// rValue.append(val.toString().toUpperCase());
+			// } else {
+			// rValue.append(val.toString());
+			// }
+			// if (colIter.hasNext()) {
+			// rValue.append(", ");
+			// }
+			// }
+			//
+			// rValue.append(")\n");
+			// }
+
+			// rValue.append("myframe <- data.frame(");
+			// for (int n = 0; n < i; n++) {
+			// rValue.append("r");
+			// rValue.append(n);
+			// if (n + 1 < i) {
+			// rValue.append(", ");
+			// }
+			// }
+			// rValue.append(")\ncolnames(myframe) <- c(");
 			rValue.append("colnames(myframe) <- c(");
 
 			for (Iterator<SimpleDataSetColumn> iter = simpleDataset.getColumns().iterator(); iter.hasNext();) {

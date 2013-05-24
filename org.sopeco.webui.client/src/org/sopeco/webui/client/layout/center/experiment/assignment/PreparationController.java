@@ -56,7 +56,6 @@ public class PreparationController implements EditGridHandler {
 	private void init() {
 		view = new PreparationView();
 
-
 		EventControl.get().addHandler(PreperationAssignmentsChangedEvent.TYPE,
 				new PreperationAssignmentsChangedEventHandler() {
 					@Override

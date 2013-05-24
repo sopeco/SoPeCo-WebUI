@@ -31,7 +31,6 @@ import java.util.List;
 import org.sopeco.gwt.widgets.ComboBox;
 
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.user.client.ui.ListBox;
 
 public class ExtensionPanel extends ComboBox {
 
@@ -39,16 +38,15 @@ public class ExtensionPanel extends ComboBox {
 		this.getElement().getStyle().setBorderWidth(0, Unit.EM);
 		setEditable(false);
 	}
-	
-	public void setExtensions(List<String> extensions){
-		for (String ext : extensions){
+
+	public void setExtensions(List<String> extensions) {
+		for (String ext : extensions) {
 			this.addItem(ext);
 		}
 	}
-	
-	public String getExtension(){
+
+	public String getExtension() {
 		return this.getText();
 	}
-	
-	
+
 }

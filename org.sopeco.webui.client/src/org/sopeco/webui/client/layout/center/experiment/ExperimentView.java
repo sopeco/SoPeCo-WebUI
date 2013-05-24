@@ -43,7 +43,6 @@ public class ExperimentView extends CenterPanel {
 	private ExperimentSettingsView settingsView;
 	private ExperimentParameterView parameterView;
 
-
 	public ExperimentView() {
 		initialize();
 	}
@@ -54,7 +53,7 @@ public class ExperimentView extends CenterPanel {
 	private void initialize() {
 		settingsView = new ExperimentSettingsView();
 		parameterView = new ExperimentParameterView();
-		
+
 		add(settingsView);
 		add(parameterView);
 	}

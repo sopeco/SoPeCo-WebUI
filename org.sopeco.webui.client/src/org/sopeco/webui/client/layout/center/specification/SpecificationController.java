@@ -199,7 +199,7 @@ public class SpecificationController implements ICenterController, ClickHandler,
 
 	private void renameSpecification() {
 		if (inputRename == null) {
-			inputRename = new InputDialog(R.get("renameSpecification"), R.get("renameSpecificationLabel") + ":");
+			inputRename = new InputDialog(R.lang.renameSpecification(), R.lang.renameSpecificationLabel() + ":");
 			inputRename.addHandler(this);
 			inputRename.setValidator(this);
 		}
@@ -231,7 +231,7 @@ public class SpecificationController implements ICenterController, ClickHandler,
 	}
 
 	private void removeSpecification() {
-		Confirmation.confirm(R.get("removeSpecification"), new ClickHandler() {
+		Confirmation.confirm(R.lang.removeSpecification(), new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				if (!ScenarioManager.get().specification().removeCurrentSpecification()) {

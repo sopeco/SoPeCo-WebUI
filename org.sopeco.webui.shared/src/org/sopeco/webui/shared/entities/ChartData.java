@@ -34,15 +34,15 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 public class ChartData implements Serializable {
-	
+
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	private Map<ChartRowKey, List<Double>> data;
 	private ChartParameter inputParameter;
-	
+
 	public ChartData() {
 		data = new HashMap<ChartRowKey, List<Double>>();
 	}
@@ -58,8 +58,8 @@ public class ChartData implements Serializable {
 	public void addDatarows(String name, Double[] data) {
 		this.addDatarows(name, data);
 	}
-	
-	public void setData(Map<ChartRowKey, List<Double>> data){
+
+	public void setData(Map<ChartRowKey, List<Double>> data) {
 		this.data = data;
 	}
 
@@ -68,10 +68,10 @@ public class ChartData implements Serializable {
 		StringBuilder builder = new StringBuilder();
 		builder.append(getClass().getName());
 		builder.append("\n");
-		for (Entry<ChartRowKey, List<Double>> d : data.entrySet()){
+		for (Entry<ChartRowKey, List<Double>> d : data.entrySet()) {
 			builder.append(d.getKey());
 			builder.append(": ");
-			for (Double doub : d.getValue()){
+			for (Double doub : d.getValue()) {
 				builder.append(doub);
 				builder.append(", ");
 			}
@@ -88,5 +88,4 @@ public class ChartData implements Serializable {
 		this.inputParameter = inputParameter;
 	}
 
-	
 }

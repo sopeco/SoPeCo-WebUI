@@ -87,11 +87,10 @@ public class ExperimentController implements ICenterController, ValueChangeHandl
 		R.css.cssExperiment().ensureInjected();
 
 		tabPanel = new ExperimentTabPanel();
-		
+
 		analysisController = new AnalysisController(this, ExperimentView.EXP_SETTINGS_PANEL_WIDTH);
 		analysisController.getView().setVisible(false);
 		explorationExtController = new ExtensionController(this, ExperimentView.EXP_SETTINGS_PANEL_WIDTH);
-		
 
 		// assignmentPreperation = new AssignmentController(Type.PREPERATION);
 		assignmentExperiment = new AssignmentController(Type.EXPERIMENT);
@@ -131,11 +130,9 @@ public class ExperimentController implements ICenterController, ValueChangeHandl
 
 		analysisController.setHeadline(R.lang.analysisConfiguration());
 		analysisController.setExtensionType(ExtensionTypes.ANALYSIS);
-		
-		explorationExtController.setHeadline(R.get("explStrategy"));
-		explorationExtController.setExtensionType(ExtensionTypes.EXPLORATIONSTRATEGY);
 
-		
+		explorationExtController.setHeadline(R.lang.explStrategy());
+		explorationExtController.setExtensionType(ExtensionTypes.EXPLORATIONSTRATEGY);
 
 		getSettingsView().getImgRemove().addClickHandler(this);
 		getSettingsView().getImgRename().addClickHandler(this);
@@ -179,7 +176,7 @@ public class ExperimentController implements ICenterController, ValueChangeHandl
 
 	private void duplicateExperiment() {
 		if (inputClone == null) {
-			inputClone = new InputDialog(R.get("cloneExperiment"), R.get("nameForExperimentClone") + ":");
+			inputClone = new InputDialog(R.lang.cloneExperiment(), R.lang.nameForExperimentClone() + ":");
 			inputClone.addHandler(this);
 			inputClone.setValidator(this);
 		}
@@ -189,7 +186,7 @@ public class ExperimentController implements ICenterController, ValueChangeHandl
 
 	private void showRenameDialog() {
 		if (inputRename == null) {
-			inputRename = new InputDialog(R.get("renameExperiment"), R.get("newExpName") + ":");
+			inputRename = new InputDialog(R.lang.renameExperiment(), R.lang.newExpName() + ":");
 			inputRename.addHandler(this);
 			inputRename.setValidator(this);
 		}
@@ -226,7 +223,7 @@ public class ExperimentController implements ICenterController, ValueChangeHandl
 	}
 
 	private void removeExperiment() {
-		Confirmation.confirm(R.get("removeTihsExp"), new ClickHandler() {
+		Confirmation.confirm(R.lang.removeTihsExp(), new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				ScenarioManager.get().experiment().removeCurrentExperimentSeries();
@@ -249,13 +246,13 @@ public class ExperimentController implements ICenterController, ValueChangeHandl
 		// ScenarioManager.get().experiment().renameCurrentExpSeries(event.getValue());
 		// }
 	}
-	
-	public void updateAnalysisView(){
-		
-		if(explorationExtController.getCurrentExtensionName().startsWith("Full")){
+
+	public void updateAnalysisView() {
+
+		if (explorationExtController.getCurrentExtensionName().startsWith("Full")) {
 			analysisController.getView().setVisible(false);
 			setAnalysisRequired(false);
-		}else{
+		} else {
 			analysisController.getView().setVisible(true);
 			analysisController.updateParameterSelectionWidgets();
 			setAnalysisRequired(true);
@@ -300,11 +297,9 @@ public class ExperimentController implements ICenterController, ValueChangeHandl
 			analysisController.setDependentParameter(analysisConfigs.get(0).getDependentParameters().get(0));
 			analysisController.setIndependentParameters((analysisConfigs.get(0).getIndependentParameters()));
 		}
-		
+
 		explorationExtController.setExtension(explorationName);
 		explorationExtController.setConfigMap(explorationConfig);
-
-		
 
 		expEnvironmentTree.generateTree();
 
@@ -335,7 +330,7 @@ public class ExperimentController implements ICenterController, ValueChangeHandl
 	public ExtensionController getExplorationExtController() {
 		return explorationExtController;
 	}
-	
+
 	/**
 	 * @return the explorationExtController
 	 */
@@ -351,7 +346,8 @@ public class ExperimentController implements ICenterController, ValueChangeHandl
 	}
 
 	/**
-	 * @param analysisRequired the analysisRequired to set
+	 * @param analysisRequired
+	 *            the analysisRequired to set
 	 */
 	public void setAnalysisRequired(boolean analysisRequired) {
 		this.analysisRequired = analysisRequired;

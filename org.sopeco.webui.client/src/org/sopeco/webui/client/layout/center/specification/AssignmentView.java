@@ -60,11 +60,11 @@ class AssignmentView extends FlowPanel {
 	private void initialize() {
 		getElement().setId(ASSIGNMENT_PANEL_ID);
 
-		Headline headline = new Headline(R.get("initAssignments"));
+		Headline headline = new Headline(R.lang.initAssignments());
 
 		grid = new EditGrid(1, 4);
 
-		htmlNoAssignments = new HTML(R.get("noInitAssignments"));
+		htmlNoAssignments = new HTML(R.lang.noInitAssignments());
 		htmlNoAssignments.setVisible(false);
 		htmlNoAssignments.addStyleName(NO_ASSIGNMENTS_CSS_CLASS);
 

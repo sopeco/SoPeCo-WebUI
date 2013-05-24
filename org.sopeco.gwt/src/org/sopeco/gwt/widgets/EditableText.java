@@ -54,8 +54,8 @@ import com.google.gwt.user.client.ui.TextBox;
  * @author Marius Oehler
  * 
  */
-public class EditableText extends FocusPanel implements ClickHandler,
-		BlurHandler, HasValueChangeHandlers<String>, FocusHandler, KeyUpHandler {
+public class EditableText extends FocusPanel implements ClickHandler, BlurHandler, HasValueChangeHandlers<String>,
+		FocusHandler, KeyUpHandler {
 
 	/** regular expression. \\d* */
 	public static final String PATTERN_INTEGER = "\\d*";

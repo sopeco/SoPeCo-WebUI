@@ -57,7 +57,7 @@ public class TabView extends FlowPanel {
 
 		statusPanel = new StatusPanel();
 		queueItems = new ArrayList<QueueItem>();
-		
+
 		add(statusPanel);
 	}
 

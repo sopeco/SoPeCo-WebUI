@@ -107,7 +107,6 @@ public class ExtensionController implements ValueChangeHandler<String> {
 		view.getHeadline().setInnerHTML(text);
 	}
 
-	
 	public void setExtensionType(ExtensionTypes extensionType) {
 		explorationExtensionMap = Extensions.get().getExtensions(extensionType);
 		updateView();
@@ -155,13 +154,13 @@ public class ExtensionController implements ValueChangeHandler<String> {
 			// Puts an whitespace infront of every capital
 			String text = regex.replace(key, " $1");
 			String defaultValue = explorationExtensionMap.get(currentExtensionName).get(key);
-			
+
 			EditableText newTextbox = view.addConfigRow(text, key, currentConfig.get(key));
 			newTextbox.setDefaultValue(defaultValue);
 
 			// setTextboxHighligh(newTextbox, !valueIsDefault(key,
 			// currentConfig.get(key)));
-			newTextbox.setTitle(R.get("default") + ": " + defaultValue);
+			newTextbox.setTitle(R.lang.defaultString() + ": " + defaultValue);
 
 			editTextToKey.put(newTextbox, key);
 
@@ -275,7 +274,8 @@ public class ExtensionController implements ValueChangeHandler<String> {
 	}
 
 	/**
-	 * @param parentController the parentController to set
+	 * @param parentController
+	 *            the parentController to set
 	 */
 	public void setParentController(ExperimentController parentController) {
 		this.parentController = parentController;

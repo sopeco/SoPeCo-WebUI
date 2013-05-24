@@ -1,10 +1,12 @@
 package org.sopeco.gwt.widgets;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
-import com.google.gwt.safehtml.shared.SafeUri;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.Image;
 
 /**
@@ -12,45 +14,40 @@ import com.google.gwt.user.client.ui.Image;
  * @author Marius Oehler
  * 
  */
-public class ImageHover extends Image implements MouseOverHandler,
-		MouseOutHandler {
+public class ImageHover extends Image implements MouseOverHandler, MouseOutHandler, ClickHandler {
 
-	private SafeUri image, imageHover;
-	private int left, top, width, height;
-	private int leftHover, topHover, widthHover, heightHover;
+	private ImageResource defaultImage, hoverImage;
 
-	public ImageHover(SafeUri pImage, int pLeft, int pTop, int pWidth,
-			int pHeight, SafeUri pImageHover, int pLeftHover, int pTopHover,
-			int pWidthHover, int pHeightHover) {
-		super(pImage, pLeft, pTop, pWidth, pHeight);
+	public ImageHover(ImageResource pDefaultImage, ImageResource pHoverImage) {
+		super(pDefaultImage);
+		defaultImage = pDefaultImage;
+		hoverImage = pHoverImage;
 
-		image = pImage;
-		imageHover = pImageHover;
+		addMouseOverHandler(this);
+		addMouseOutHandler(this);
+		addClickHandler(this);
+	}
 
-		left = pLeft;
-		top = pTop;
-		width = pWidth;
-		height = pHeight;
-
-		leftHover = pLeftHover;
-		topHover = pTopHover;
-		widthHover = pWidthHover;
-		heightHover = pHeightHover;
-
-		if (imageHover != null) {
-			addMouseOverHandler(this);
-			addMouseOutHandler(this);
-		}
+	public void setResource(ImageResource pDefaultImage, ImageResource pHoverImage) {
+		defaultImage = pDefaultImage;
+		hoverImage = pHoverImage;
+		setResource(defaultImage);
 	}
 
 	@Override
 	public void onMouseOut(MouseOutEvent event) {
-		setUrlAndVisibleRect(image, left, top, width, height);
+		setResource(defaultImage);
 	}
 
 	@Override
 	public void onMouseOver(MouseOverEvent event) {
-		setUrlAndVisibleRect(imageHover, leftHover, topHover, widthHover,
-				heightHover);
+		if (hoverImage != null) {
+			setResource(hoverImage);
+		}
+	}
+
+	@Override
+	public void onClick(ClickEvent event) {
+		setResource(defaultImage);
 	}
 }

@@ -116,7 +116,7 @@ public class QueuedExperiment {
 			if (log.getStatusInfo() != null && log.getStatusInfo() instanceof ErrorInfo) {
 				logLite.setError(true);
 				logLite.setErrorMessage(((ErrorInfo) log.getStatusInfo()).getThrowable().getMessage());
-				
+
 				StringWriter sw = new StringWriter();
 				PrintWriter pw = new PrintWriter(sw);
 				((ErrorInfo) log.getStatusInfo()).getThrowable().printStackTrace(pw);

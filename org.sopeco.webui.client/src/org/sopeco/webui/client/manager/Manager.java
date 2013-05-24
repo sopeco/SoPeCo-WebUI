@@ -26,7 +26,6 @@
  */
 package org.sopeco.webui.client.manager;
 
-import java.util.List;
 import java.util.logging.Logger;
 
 import org.sopeco.persistence.metadata.entities.DatabaseInstance;

@@ -127,7 +127,7 @@ public final class MavenInfos {
 	 * build information are available, the return value is an empty string.
 	 * 
 	 * @param context
-	 * @return 
+	 * @return
 	 */
 	public static String getInfoString(ServletContext context) {
 		load(context);

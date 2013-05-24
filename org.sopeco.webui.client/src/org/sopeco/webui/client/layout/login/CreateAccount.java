@@ -122,21 +122,23 @@ public class CreateAccount extends Composite {
 					}
 				});
 
-//		 DatabaseInstance newAccount = new DatabaseInstance(accountName.getValue(), dbHost.getValue(), dbPort.getValue(), false);
-//		 
-//		RPC.getDatabaseManagerRPC().addDatabase(newAccount,
-//		 password.getValue(), new AsyncCallback<Boolean>() {
-//		 @Override
-//		 public void onFailure(Throwable caught) {
-//		 throw new RuntimeException(caught);
-//		 }
-//		
-//		 @Override
-//		 public void onSuccess(Boolean result) {
-//		 loginPanel.loginIntoAccount(accountName.getValue(),
-//		 password.getValue());
-//		 }
-//		 });
+		// DatabaseInstance newAccount = new
+		// DatabaseInstance(accountName.getValue(), dbHost.getValue(),
+		// dbPort.getValue(), false);
+		//
+		// RPC.getDatabaseManagerRPC().addDatabase(newAccount,
+		// password.getValue(), new AsyncCallback<Boolean>() {
+		// @Override
+		// public void onFailure(Throwable caught) {
+		// throw new RuntimeException(caught);
+		// }
+		//
+		// @Override
+		// public void onSuccess(Boolean result) {
+		// loginPanel.loginIntoAccount(accountName.getValue(),
+		// password.getValue());
+		// }
+		// });
 	}
 
 	/**

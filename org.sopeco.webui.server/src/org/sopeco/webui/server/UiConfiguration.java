@@ -43,6 +43,6 @@ public abstract class UiConfiguration {
 	public static final String SOPECO_UI_DATABASE_PASSWORD = "sopeco.ui.persistence.password";
 
 	public static final String SOPECO_UI_USERTIMEOUT = "sopeco.ui.userTimeout";
-	
+
 	public static final String SOPECO_CONFIG_MEC_LISTENER_PORT = "sopeco.config.mec.listener.port";
 }

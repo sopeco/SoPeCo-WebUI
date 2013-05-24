@@ -29,9 +29,7 @@ package org.sopeco.webui.client.layout.popups;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.sopeco.webui.client.SoPeCoUI;
 import org.sopeco.webui.client.widget.ExceptionDialog;
-import org.sopeco.webui.client.widget.SoPeCoDialog;
 
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;

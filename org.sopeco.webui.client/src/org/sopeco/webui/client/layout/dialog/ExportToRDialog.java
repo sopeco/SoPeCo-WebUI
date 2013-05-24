@@ -78,15 +78,15 @@ public final class ExportToRDialog extends DialogBox implements ClickHandler {
 		contentWrapper = new FlowPanel();
 		contentWrapper.getElement().setId("exportCsvDialog");
 
-		headline = new Headline(R.get("exportToR"));
-		infoText = new Paragraph(R.get("rExportDesc"));
+		headline = new Headline(R.lang.exportToR());
+		infoText = new Paragraph(R.lang.rExportDesc());
 
 		taValue = new TextArea();
 		taValue.setSize("500px", "160px");
 		taValue.getElement().getStyle().setProperty("whiteSpace", "nowrap");
 
 		// btnExport = new Button("Export");
-		btnCancel = new Button(R.get("Close"));
+		btnCancel = new Button(R.lang.Close());
 		// btnExport.addClickHandler(this);
 		btnCancel.addClickHandler(this);
 

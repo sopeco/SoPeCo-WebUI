@@ -84,7 +84,7 @@ public class VisualizationRPCImpl extends SuperRemoteServlet implements Visualiz
 		String measurementEnvironmentUrl = experiementRun.getParentSeries().getParentInstance().getControllerUrl();
 		String experimentName = experiementRun.getParentSeries().getExperimentName();
 		Long timestamp = experiementRun.getTimestamp();
-		String accountName = getUser().getCurrentDatabase().getId();
+		long accountId = getUser().getCurrentAccount().getId();
 		ExperimentSeriesRun run = getRun(scenarioName, measurementEnvironmentUrl, experimentName, timestamp);
 		data = loadData(run, inputParameter, outputParameterd, options);
 		Visualization visualization = chartCreator.createVisualization(run.getLabel(), data, inputParameter,
@@ -93,7 +93,7 @@ public class VisualizationRPCImpl extends SuperRemoteServlet implements Visualiz
 		visualization.setMeasurementEnvironmentUrl(measurementEnvironmentUrl);
 		visualization.setExperimentName(experimentName);
 		visualization.setTimestamp(timestamp);
-		visualization.setAccountId(accountName);
+		visualization.setAccountId(accountId);
 		visualization.setId(System.currentTimeMillis());
 		UiPersistence.getUiProvider().storeVisualization(visualization);
 		return visualization;
@@ -104,9 +104,9 @@ public class VisualizationRPCImpl extends SuperRemoteServlet implements Visualiz
 	public VisualizationBundle getVisualizations(int start, int length) {
 		VisualizationBundle visualizationBundle = new VisualizationBundle();
 		List<Visualization> visualizations = new ArrayList<Visualization>();
-		String accountName = getUser().getCurrentDatabase().getId();
+		long accountId = getUser().getCurrentAccount().getId();
 		System.out.println("loading charts...");
-		visualizations.addAll(UiPersistence.getUiProvider().loadVisualizationsByAccount(accountName));
+		visualizations.addAll(UiPersistence.getUiProvider().loadVisualizationsByAccount(accountId));
 		visualizationBundle.setTotalNumberOfVisualizations(visualizations.size());
 		if (start > visualizations.size() - 1) {
 			return visualizationBundle;

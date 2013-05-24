@@ -50,7 +50,6 @@ public final class RPC {
 	private static GetRPCAsync getRPC = null;
 	private static AccountManagementRPCAsync accountManagementRPC = null;
 
-
 	/**
 	 * Returns a instance of the ScenarioManagerRPCAsync.
 	 * 

@@ -96,16 +96,16 @@ public class CSVEditor extends DialogBox implements HasValueChangeHandlers<Strin
 
 		boxLayout = new FlexTable();
 
-		headline = new Headline(R.get("values"));
+		headline = new Headline(R.lang.Values());
 		headline.getElement().getStyle().setMarginTop(0, Unit.PX);
 		headline.getElement().getStyle().setMarginBottom(0, Unit.PX);
 
 		valueListPanel = new FlowPanel();
 		valueListPanel.addStyleName(LIST_CSS_CLASS);
 
-		btnSave = new Button(R.get("Ok"));
-		btnCancel = new Button(R.get("Cancel"));
-		btnClear = new Button(R.get("Clear"));
+		btnSave = new Button(R.lang.Ok());
+		btnCancel = new Button(R.lang.Cancel());
+		btnClear = new Button(R.lang.Clear());
 		btnCancel.addClickHandler(this);
 		btnSave.addClickHandler(this);
 		btnClear.addClickHandler(this);

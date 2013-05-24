@@ -38,8 +38,6 @@ import org.sopeco.config.Configuration;
 import org.sopeco.config.IConfiguration;
 import org.sopeco.config.exception.ConfigurationException;
 import org.sopeco.engine.measurementenvironment.socket.SocketAcception;
-import org.sopeco.persistence.exceptions.DataNotFoundException;
-import org.sopeco.webui.server.persistence.UiPersistence;
 
 /**
  * 
@@ -63,22 +61,22 @@ public final class StartUp implements ServletContextListener {
 	@Override
 	public void contextDestroyed(ServletContextEvent arg0) {
 		System.out.println(">> Destroying webapp..");
-		
+
 		Enumeration<Driver> drivers = DriverManager.getDrivers();
-	    while (drivers.hasMoreElements()) {
-	        Driver driver = drivers.nextElement();
-	        ClassLoader driverclassLoader = driver.getClass().getClassLoader();
-	        ClassLoader thisClassLoader = this.getClass().getClassLoader();
-	        if (driverclassLoader != null && thisClassLoader != null &&  driverclassLoader.equals(thisClassLoader)) {
-	            try {
-	            	System.out.println("Deregistering: " + driver);
-	                DriverManager.deregisterDriver(driver);
-	            } catch (SQLException e) {
-	                e.printStackTrace();
-	            }
-	        }
-	    }
-		
+		while (drivers.hasMoreElements()) {
+			Driver driver = drivers.nextElement();
+			ClassLoader driverclassLoader = driver.getClass().getClassLoader();
+			ClassLoader thisClassLoader = this.getClass().getClassLoader();
+			if (driverclassLoader != null && thisClassLoader != null && driverclassLoader.equals(thisClassLoader)) {
+				try {
+					System.out.println("Deregistering: " + driver);
+					DriverManager.deregisterDriver(driver);
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
 	}
 
 	@Override
@@ -98,6 +96,5 @@ public final class StartUp implements ServletContextListener {
 			throw new RuntimeException(e);
 		}
 	}
-	
-	
+
 }

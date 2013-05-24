@@ -77,7 +77,7 @@ public final class LogDialog {
 		preLog.getElement().getStyle().setFontSize(11, Unit.PX);
 
 		dialog = new SoPeCoDialog(false);
-		dialog.setHeadline(R.get("logDialog"));
+		dialog.setHeadline(R.lang.logDialog());
 		dialog.setContentWidget(scrollPanel);
 		dialog.setDraggable(true);
 		dialog.setWindowMargin(200);

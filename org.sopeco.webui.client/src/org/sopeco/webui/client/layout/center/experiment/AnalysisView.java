@@ -7,7 +7,7 @@ import com.google.gwt.user.client.ui.FlexTable;
 
 public class AnalysisView extends ExtensionView {
 	private static final String TREE_CSS_CLASS = "specificationTreeView";
-	
+
 	private ComboBox cbDependentParameter;
 	private FlexTable ftIndependentParameters;
 	private AnalysisDefinitionTree parameterTree;
@@ -15,7 +15,7 @@ public class AnalysisView extends ExtensionView {
 	public AnalysisView(int pxWidth) {
 		super(pxWidth);
 		initAnalysisView();
-		
+
 	}
 
 	private void initAnalysisView() {
@@ -25,10 +25,10 @@ public class AnalysisView extends ExtensionView {
 		getCbDependentParameter().getElement().getStyle().setMarginRight(DEFAULT_MARGIN, Unit.PX);
 
 		ftIndependentParameters = new FlexTable();
-		
-		parameterTree=new AnalysisDefinitionTree();
+
+		parameterTree = new AnalysisDefinitionTree();
 		parameterTree.getView().addStyleName(TREE_CSS_CLASS);
-		
+
 		add(getCbDependentParameter());
 		add(getFtIndependentParameters());
 		add(parameterTree.getView());

@@ -43,9 +43,8 @@ public class SharedExperimentSeries implements Serializable {
 
 	private String experimentName;
 
-
-
 	private List<SharedExperimentRuns> experimentRuns;
+
 	public SharedExperimentSeries() {
 		experimentRuns = new ArrayList<SharedExperimentRuns>();
 	}
@@ -75,8 +74,6 @@ public class SharedExperimentSeries implements Serializable {
 	public SharedScenarioInstance getParentInstance() {
 		return parentInstance;
 	}
-
-
 
 	/**
 	 * @param experimentName

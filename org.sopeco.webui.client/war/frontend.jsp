@@ -28,7 +28,6 @@
 --%>
 <%@ page import="javax.servlet.*" %>
 <%@ page import="org.sopeco.webui.server.helper.MavenInfos" %>
-<%@ page import="org.sopeco.webui.server.helper.LinkChecker" %>
 
 <!doctype html>
 
@@ -48,7 +47,6 @@
    
     <script type="text/javascript">
       var buildInfo = "<%= MavenInfos.getInfoString(application) %>";
-      var hasBranding = <%= LinkChecker.hasBranding(request) %>;
     </script>
     <script type="text/javascript" language="javascript" src="sopeco_webui/sopeco_webui.nocache.js"></script>
     

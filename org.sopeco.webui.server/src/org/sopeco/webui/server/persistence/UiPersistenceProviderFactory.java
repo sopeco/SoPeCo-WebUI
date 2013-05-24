@@ -56,7 +56,7 @@ public final class UiPersistenceProviderFactory {
 	 */
 	private UiPersistenceProviderFactory() {
 	}
-	
+
 	/**
 	 * Creates a new UiPersistenceProvider.
 	 * 

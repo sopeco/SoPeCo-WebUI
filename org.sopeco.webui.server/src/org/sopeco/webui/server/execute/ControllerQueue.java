@@ -45,7 +45,6 @@ import org.sopeco.engine.status.IStatusListener;
 import org.sopeco.engine.status.ProgressInfo;
 import org.sopeco.engine.status.StatusBroker;
 import org.sopeco.engine.status.StatusMessage;
-import org.sopeco.persistence.metadata.entities.DatabaseInstance;
 import org.sopeco.runner.SoPeCoRunner;
 import org.sopeco.webui.server.persistence.UiPersistence;
 import org.sopeco.webui.server.persistence.entities.ScheduledExperiment;
@@ -54,6 +53,7 @@ import org.sopeco.webui.server.user.UserManager;
 import org.sopeco.webui.shared.entities.ExecutedExperimentDetails;
 import org.sopeco.webui.shared.entities.MECLog;
 import org.sopeco.webui.shared.entities.RunningControllerStatus;
+import org.sopeco.webui.shared.entities.account.Account;
 import org.sopeco.webui.shared.push.PushListPackage;
 import org.sopeco.webui.shared.push.PushObjectPackage;
 import org.sopeco.webui.shared.push.PushSerializable;
@@ -146,11 +146,11 @@ public class ControllerQueue implements IStatusListener {
 	}
 
 	public void abortExperiment() {
-		if(isExecuting()){
+		if (isExecuting()) {
 			Configuration.getSessionSingleton(generatedSessionId).setProperty(IConfiguration.EXPERIMENT_RUN_ABORT,
 					new Boolean(true));
 		}
-		
+
 	}
 
 	/**
@@ -426,8 +426,8 @@ public class ControllerQueue implements IStatusListener {
 		listPackage.setAttachment(fseList);
 
 		for (String sId : UserManager.getAllUsers().keySet()) {
-			DatabaseInstance db = UserManager.getUser(sId).getCurrentDatabase();
-			if (db != null && db.getDbName().equals(runningExperiment.getScheduledExperiment().getAccountId())) {
+			Account account = UserManager.getUser(sId).getCurrentAccount();
+			if (account != null && account.getId() == runningExperiment.getScheduledExperiment().getAccountId()) {
 				PushRPCImpl.push(sId, listPackage);
 			}
 		}
