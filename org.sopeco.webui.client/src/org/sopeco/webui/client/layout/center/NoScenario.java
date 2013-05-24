@@ -28,15 +28,11 @@ package org.sopeco.webui.client.layout.center;
 
 import org.sopeco.gwt.widgets.Headline;
 import org.sopeco.gwt.widgets.SlidePanel;
-import org.sopeco.webui.client.event.EventControl;
-import org.sopeco.webui.client.event.MEControllerEvent;
-import org.sopeco.webui.client.event.MEControllerEvent.EventType;
 import org.sopeco.webui.client.helper.SimpleCallback;
 import org.sopeco.webui.client.layout.MainLayoutPanel;
 import org.sopeco.webui.client.layout.ScenarioAddController;
 import org.sopeco.webui.client.manager.Manager;
 import org.sopeco.webui.client.manager.ScenarioManager;
-import org.sopeco.webui.client.manager.Manager.ControllerStatus;
 import org.sopeco.webui.client.mec.MEControllerSettings;
 import org.sopeco.webui.client.resources.R;
 

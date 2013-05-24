@@ -46,7 +46,7 @@ public class SpecificationEnvironmentTree extends EnvironmentTree {
 
 	public SpecificationEnvironmentTree() {
 		super(false, R.lang.envParameter());
-		
+
 		getView().setFirstInfoText(R.lang.addToInitAssignments());
 	}
 

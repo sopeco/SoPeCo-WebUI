@@ -85,15 +85,13 @@ public class SpecificationView extends FlowPanel {
 		topWrapper.add(new HTML("Name:"));
 		topWrapper.add(htmlName);
 		topWrapper.add(imgRename);
-		//topWrapper.add(imgDuplicate);
+		// topWrapper.add(imgDuplicate);
 		topWrapper.add(imgRemove);
 		topWrapper.add(new ClearDiv());
 		topWrapper.addStyleName("expTopWrapper");
 
-
 		Label nameLabel = new Label(R.lang.name() + ":");
 		nameLabel.addStyleName("spc-Label");
-
 
 		selectionView.getElement().getStyle().setTop(Double.parseDouble(TOP_PANEL_HEIGHT), Unit.PX);
 		selectionView.getElement().getStyle().setPosition(Position.ABSOLUTE);

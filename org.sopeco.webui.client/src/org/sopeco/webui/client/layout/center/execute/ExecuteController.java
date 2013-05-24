@@ -143,7 +143,7 @@ public class ExecuteController implements ICenterController, ClickHandler, Selec
 		tabControllerFour = new TabControllerFour(this);
 
 		view = new ExecuteTabPanel();
-		view.add(tabControllerOne.getView(),R.lang.ExecuteExperiment());
+		view.add(tabControllerOne.getView(), R.lang.ExecuteExperiment());
 		view.add(tabControllerTwo.getView(), R.lang.ScheduledExperiments());
 		view.add(tabControllerThree.getView(), R.lang.controllerQueue());
 		view.add(tabControllerFour.getView(), R.lang.history());

@@ -59,6 +59,7 @@ public class StatusPanel extends FlowPanel {
 	private ProgressBar progressBar;
 
 	private Button btnAbort;
+
 	/**
 	 * Constructor.
 	 */
@@ -81,7 +82,7 @@ public class StatusPanel extends FlowPanel {
 		progressBar = new ProgressBar();
 
 		initTable();
-		
+
 		btnAbort = new Button(R.lang.abortExperiment());
 		btnAbort.setEnabled(false);
 		innerPanel = new FlowPanel();
@@ -89,8 +90,7 @@ public class StatusPanel extends FlowPanel {
 		innerPanel.add(detailsTable);
 		innerPanel.add(progressBar);
 		innerPanel.add(btnAbort);
-		
-		
+
 		add(innerPanel);
 	}
 
@@ -114,8 +114,6 @@ public class StatusPanel extends FlowPanel {
 		valueStart = new HTML("-");
 		valueTimeElapsed = new HTML("-");
 		valueTimeRemaining = new HTML("-");
-		
-		
 
 		detailsTable.setWidget(0, 0, labelAccount);
 		detailsTable.setWidget(1, 0, labelScenario);
@@ -175,8 +173,8 @@ public class StatusPanel extends FlowPanel {
 	public void setScenario(String value) {
 		valueScenario.setHTML(value);
 	}
-	
-	public Button getBtnAbort(){
+
+	public Button getBtnAbort() {
 		return btnAbort;
 	}
 

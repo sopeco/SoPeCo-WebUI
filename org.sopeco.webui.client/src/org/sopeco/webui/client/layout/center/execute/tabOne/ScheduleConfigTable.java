@@ -141,6 +141,5 @@ public class ScheduleConfigTable extends FlowPanel implements FocusHandler, Valu
 	public EditableText getEditStartDate() {
 		return editStartDate;
 	}
-	
-	
+
 }

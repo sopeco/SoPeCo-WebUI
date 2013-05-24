@@ -43,11 +43,11 @@ import com.google.gwt.user.client.ui.HTML;
 public class PreparationView extends FlowPanel {
 
 	private static final String NO_ASSIGNMENTS_CSS_CLASS = "noAssignments";
-	
+
 	private Headline headline;
 	private EditGrid grid;
 	private HTML htmlNoAssignments;
-	
+
 	public PreparationView() {
 		init();
 	}
@@ -60,7 +60,7 @@ public class PreparationView extends FlowPanel {
 		headline.getElement().getStyle().setMarginBottom(1, Unit.EM);
 
 		grid = new EditGrid(1, 4);
-		
+
 		htmlNoAssignments = new HTML(R.lang.noprepAssignments());
 		htmlNoAssignments.setVisible(false);
 		htmlNoAssignments.addStyleName(NO_ASSIGNMENTS_CSS_CLASS);

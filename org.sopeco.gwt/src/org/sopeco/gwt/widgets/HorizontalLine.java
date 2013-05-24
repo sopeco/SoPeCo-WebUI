@@ -32,7 +32,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 /**
  * 
  * @author Marius Oehler
- *
+ * 
  */
 public class HorizontalLine extends SimplePanel {
 

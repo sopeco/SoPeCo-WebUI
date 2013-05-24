@@ -108,7 +108,7 @@ public class ScheduleItem extends FlowPanel implements ClickHandler, Comparable<
 		htmlLabelRepeat = new HTML(R.lang.Repeat() + ":");
 		htmlLabelAdded = new HTML(R.lang.Added() + ":");
 		htmlLabelLastExec = new HTML(R.lang.LastExecution() + ":");
-		htmlLabelNextExec = new HTML(R.lang.NextExecution()+ ":");
+		htmlLabelNextExec = new HTML(R.lang.NextExecution() + ":");
 		htmlLabelLastDuration = new HTML(R.lang.LastDuration() + ":");
 
 		anchorPerformNow = new Anchor(R.lang.PerformNow());
@@ -143,7 +143,7 @@ public class ScheduleItem extends FlowPanel implements ClickHandler, Comparable<
 			repeatText = getDay(experiment.getRepeatDays()) + " " + experiment.getRepeatHours() + " "
 					+ experiment.getRepeatMinutes();
 		} else {
-			repeatText =R.lang.UniqueExecution();
+			repeatText = R.lang.UniqueExecution();
 		}
 		htmlRepeat = new HTML(repeatText);
 

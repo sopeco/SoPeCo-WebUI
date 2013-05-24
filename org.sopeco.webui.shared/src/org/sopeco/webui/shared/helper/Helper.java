@@ -44,7 +44,7 @@ public final class Helper {
 	public static void whoCalledMe() {
 		Exception x = new Exception();
 
-		GWT.log(x.getStackTrace()[1].getMethodName() + " CALLED FROM: " + x.getStackTrace()[2].getClassName() + " " + x.getStackTrace()[2].getMethodName() + ":"
-				+ x.getStackTrace()[2].getLineNumber());
+		GWT.log(x.getStackTrace()[1].getMethodName() + " CALLED FROM: " + x.getStackTrace()[2].getClassName() + " "
+				+ x.getStackTrace()[2].getMethodName() + ":" + x.getStackTrace()[2].getLineNumber());
 	}
 }

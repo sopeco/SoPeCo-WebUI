@@ -53,58 +53,58 @@ public class ColumnSelectionPanel extends Grid {
 		showColumnSelection(dialog);
 	}
 
-	public void setChartParameter(List<ChartParameter> inputParameter, List<ChartParameter> outputParameter, DialogBox dialog) {
+	public void setChartParameter(List<ChartParameter> inputParameter, List<ChartParameter> outputParameter,
+			DialogBox dialog) {
 		this.inputParameter = inputParameter;
 		this.outputParameter = outputParameter;
 		showColumnSelection(dialog);
 	}
-
 
 	public void showColumnSelection(DialogBox dialog) {
 		this.clear();
 		createChartInputWidget(dialog);
 		createChartOutputWidget(dialog);
 	}
-	
-	private void createChartInputWidget(DialogBox dialog){
+
+	private void createChartInputWidget(DialogBox dialog) {
 		Collections.sort(inputParameter);
 		this.setWidget(0, 0, new Label("Input "));
 		input = new ComboBox();
 		input.addEventPartner(dialog);
 		input.setEditable(false);
-		for (ChartParameter p : inputParameter){
+		for (ChartParameter p : inputParameter) {
 			input.addItem(Utilities.trimParameter(p.getParameterName()));
 		}
-		this.setWidget(0, 1, input); 
+		this.setWidget(0, 1, input);
 		return;
 	}
-	
-	private void createChartOutputWidget(DialogBox dialog){
+
+	private void createChartOutputWidget(DialogBox dialog) {
 		Collections.sort(outputParameter);
 		this.setWidget(1, 0, new Label("Observation Value "));
 		output = new ComboBox();
 		output.addEventPartner(dialog);
 		output.setEditable(false);
-		for (ChartParameter p : outputParameter){
+		for (ChartParameter p : outputParameter) {
 			output.addItem(Utilities.trimParameter(p.getParameterName()));
 		}
 		this.setWidget(1, 1, output);
-		
+
 		return;
 	}
-	
-	public ChartParameter getSelectedOutput(){
-		for (ChartParameter cp : outputParameter){
-			if (Utilities.trimParameter(cp.getParameterName()).equals(output.getText())){
+
+	public ChartParameter getSelectedOutput() {
+		for (ChartParameter cp : outputParameter) {
+			if (Utilities.trimParameter(cp.getParameterName()).equals(output.getText())) {
 				return cp;
 			}
 		}
 		return null;
 	}
-	
-	public ChartParameter getSelectedInput(){
-		for (int i = 0; i < inputParameter.size(); i++){
-			if (Utilities.trimParameter(inputParameter.get(i).getParameterName()).equals(input.getText())){
+
+	public ChartParameter getSelectedInput() {
+		for (int i = 0; i < inputParameter.size(); i++) {
+			if (Utilities.trimParameter(inputParameter.get(i).getParameterName()).equals(input.getText())) {
 				return inputParameter.get(i);
 			}
 		}

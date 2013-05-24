@@ -33,11 +33,11 @@ public class ChartParameter implements Serializable, Comparable<ChartParameter> 
 	 * 
 	 */
 	private static final long serialVersionUID = -4409439863166448986L;
-	
+
 	public static final int INPUT = 0;
 	public static final int OBSERVATION = 1;
 	private String parameterName;
-	private int type = INPUT;	
+	private int type = INPUT;
 
 	public ChartParameter() {
 	}
@@ -78,6 +78,5 @@ public class ChartParameter implements Serializable, Comparable<ChartParameter> 
 	public int hashCode() {
 		return getParameterName().hashCode();
 	}
-	
-	
+
 }

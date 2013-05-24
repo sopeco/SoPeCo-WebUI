@@ -38,8 +38,8 @@ import org.sopeco.webui.shared.push.PushListPackage;
 import org.sopeco.webui.shared.push.PushObjectPackage;
 import org.sopeco.webui.shared.push.PushPackage;
 import org.sopeco.webui.shared.rpc.PushRPC;
-import org.sopeco.webui.shared.rpc.PushRPCAsync;
 import org.sopeco.webui.shared.rpc.PushRPC.Type;
+import org.sopeco.webui.shared.rpc.PushRPCAsync;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;

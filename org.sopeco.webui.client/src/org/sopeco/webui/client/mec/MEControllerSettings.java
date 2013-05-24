@@ -53,7 +53,6 @@ import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * 
@@ -94,7 +93,7 @@ public class MEControllerSettings implements HasValueChangeHandlers<Boolean>, Va
 		view.getTextboxToken().getTextbox().addKeyPressHandler(this);
 
 		view.getImgReload().addClickHandler(this);
-		
+
 		resetViewToDefault();
 	}
 

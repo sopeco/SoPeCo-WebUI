@@ -88,7 +88,8 @@ public class ExecuteTab extends FlowPanel implements ValueChangeHandler<Boolean>
 		editController = new EditableText(Manager.get().getControllerUrl());
 		editController.setEditable(false);
 		// Temporary
-		editController.getElement().getFirstChildElement().getNextSiblingElement().getStyle().setBackgroundColor("white");
+		editController.getElement().getFirstChildElement().getNextSiblingElement().getStyle()
+				.setBackgroundColor("white");
 		editController.getElement().getFirstChildElement().getNextSiblingElement().getStyle().setBorderColor("white");
 
 		rdioOnReady = new RadioButton("execution");

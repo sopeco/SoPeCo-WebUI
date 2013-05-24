@@ -125,10 +125,7 @@ public class AnalysisController implements ValueChangeHandler<String> {
 		for (String name : keySet) {
 			view.getCombobox().addItem(name);
 		}
-		
-		
-		
-		
+
 		updateConfigTable();
 		Metering.stop(metering);
 	}
@@ -138,9 +135,9 @@ public class AnalysisController implements ValueChangeHandler<String> {
 		for (ParameterDefinition parDef : ScenarioManager.get().getBuilder().getMEDefinition().getRoot()
 				.getObservationParameters()) {
 			view.getCbDependentParameter().addItem(parDef.getFullName());
-		
+
 		}
-		
+
 		for (ParameterDefinition pDef : ScenarioManager.get().getBuilder().getMEDefinition().getRoot()
 				.getAllParameters()) {
 			if (view.getCbDependentParameter().getText().equalsIgnoreCase(pDef.getFullName())) {
@@ -148,7 +145,7 @@ public class AnalysisController implements ValueChangeHandler<String> {
 				break;
 			}
 		}
-		
+
 		view.getParameterTree().generateTree();
 	}
 
@@ -317,7 +314,8 @@ public class AnalysisController implements ValueChangeHandler<String> {
 	}
 
 	/**
-	 * @param parentController the parentController to set
+	 * @param parentController
+	 *            the parentController to set
 	 */
 	public void setParentController(ExperimentController parentController) {
 		this.parentController = parentController;

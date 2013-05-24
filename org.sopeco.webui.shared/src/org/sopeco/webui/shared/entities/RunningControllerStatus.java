@@ -49,7 +49,7 @@ public class RunningControllerStatus implements PushSerializable {
 	private long accountId;
 	private String scenario;
 	private float progress;
-	
+
 	private List<MECLogEntry> eventLogList;
 
 	private boolean hasFinished;
@@ -69,8 +69,6 @@ public class RunningControllerStatus implements PushSerializable {
 		this.eventLogList = eventLogList;
 	}
 
-	
-	
 	public boolean isFinished() {
 		return hasFinished;
 	}
@@ -108,7 +106,6 @@ public class RunningControllerStatus implements PushSerializable {
 	public void setTimeRemaining(long timeRemaining) {
 		this.timeRemaining = timeRemaining;
 	}
-
 
 	/**
 	 * @return the account

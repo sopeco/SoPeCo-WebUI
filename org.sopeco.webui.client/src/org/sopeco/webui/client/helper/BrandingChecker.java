@@ -21,8 +21,8 @@ public class BrandingChecker {
 	}
 
 	/**
-	 * Checks if an image for the branding exists and calls the callback with the
-	 * result (boolean).
+	 * Checks if an image for the branding exists and calls the callback with
+	 * the result (boolean).
 	 * 
 	 * @param callback
 	 */

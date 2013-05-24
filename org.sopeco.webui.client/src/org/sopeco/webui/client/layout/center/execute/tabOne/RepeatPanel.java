@@ -94,7 +94,7 @@ public class RepeatPanel extends SimplePanel implements ValueChangeHandler {
 		hPanelTimes.add(editMinutes);
 
 		String[] days = new String[] { R.lang.Sunday(), R.lang.Monday(), R.lang.Tuesday(), R.lang.Wednesday(),
-				R.lang.Thursday(),R.lang.Friday(), R.lang.Saturday() };
+				R.lang.Thursday(), R.lang.Friday(), R.lang.Saturday() };
 
 		int c = 1;
 		for (String d : days) {
@@ -159,7 +159,7 @@ class CheckBoxWidget extends HorizontalPanel implements ValueChangeHandler<Boole
 
 	public CheckBoxWidget(String text, String pValue) {
 		addStyleName("checkBoxWidget");
-		//addStyleName(NOT_CHECKED);
+		// addStyleName(NOT_CHECKED);
 
 		value = pValue;
 

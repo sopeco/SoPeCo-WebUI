@@ -143,8 +143,7 @@ public class ProgressBar extends FlowPanel {
 			barValue = tempBarValue;
 		}
 
-		double progressPercent = 100 / (maxValue - minValue)
-				* (value - minValue);
+		double progressPercent = 100 / (maxValue - minValue) * (value - minValue);
 		label.setText(((int) progressPercent) + " %");
 
 		if (animation) {

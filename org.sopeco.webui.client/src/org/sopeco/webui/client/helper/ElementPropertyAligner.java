@@ -46,7 +46,7 @@ public class ElementPropertyAligner {
 	private List<Element[]> relatedElementsList;
 
 	int waiting = 0;
-	
+
 	public ElementPropertyAligner() {
 		elementList = new ArrayList<Element>();
 		relatedElementsList = new ArrayList<Element[]>();

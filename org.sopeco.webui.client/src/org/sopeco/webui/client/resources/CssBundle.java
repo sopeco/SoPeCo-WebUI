@@ -26,12 +26,8 @@
  */
 package org.sopeco.webui.client.resources;
 
-import com.google.gwt.core.shared.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
-import com.google.gwt.resources.client.GwtCreateResource;
-import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.resources.client.GwtCreateResource.ClassType;
 
 /**
  * 
@@ -39,10 +35,10 @@ import com.google.gwt.resources.client.GwtCreateResource.ClassType;
  * 
  */
 public interface CssBundle extends ClientBundle {
-	
+
 	// To access images of the ImageBundle
 	ImageBundle image();
-	
+
 	@Source("css/common.css")
 	@CssResource.NotStrict
 	CssResource cssCommon();

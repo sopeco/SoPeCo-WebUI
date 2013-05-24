@@ -151,14 +151,13 @@ public interface ImageBundle extends ClientBundle {
 
 	@Source("images/sopeco-logo-small.png")
 	ImageResource sopecoLogoSmall();
-	
-	
+
 	@Source("images/ico_dot_red.png")
 	ImageResource icoDotRed();
 
 	@Source("images/ico_dot_green.png")
 	ImageResource icoDotGreen();
-	
+
 	@Source("images/ico_dot_gray.png")
 	ImageResource icoDotGray();
 

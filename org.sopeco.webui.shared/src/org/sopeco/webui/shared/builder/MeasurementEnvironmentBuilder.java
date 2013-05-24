@@ -240,18 +240,18 @@ public class MeasurementEnvironmentBuilder {
 		}
 
 		int startIndex;
-		
-		if ( nodes.length == 1 && nodes[0].equals(getRootNamespace().getName()) ) {
+
+		if (nodes.length == 1 && nodes[0].equals(getRootNamespace().getName())) {
 			LOGGER.info("namespace is root!");
 			return scenarioBuilder.getMEDefinition().getRoot();
-		} else if ( nodes[0].equals(getRootNamespace().getName()) ) {
+		} else if (nodes[0].equals(getRootNamespace().getName())) {
 			startIndex = 1;
 		} else {
 			startIndex = 0;
 		}
-		
+
 		ParameterNamespace currentNamespace = scenarioBuilder.getMEDefinition().getRoot();
-		
+
 		for (int i = startIndex; i < nodes.length; i++) {
 			if (currentNamespace.getChildren().size() <= 0) {
 				return null;
@@ -273,37 +273,38 @@ public class MeasurementEnvironmentBuilder {
 
 			return null;
 		}
-		
-//		if (!nodes[0].equals(getRootNamespace().getName())) {
-//			LOGGER.warning("first namespace must be the root namespace");
-//			return null;
-//		} else if (nodes.length == 1) {
-//			return scenarioBuilder.getMEDefinition().getRoot();
-//		}
-//
-//		ParameterNamespace currentNamespace = scenarioBuilder.getMEDefinition().getRoot();
-//
-//		for (int i = 1; i < nodes.length; i++) {
-//			if (currentNamespace.getChildren().size() <= 0) {
-//				return null;
-//			}
-//
-//			boolean found = false;
-//			for (ParameterNamespace ns : currentNamespace.getChildren()) {
-//				if (ns.getName().equals(nodes[i])) {
-//					currentNamespace = ns;
-//					found = true;
-//					break;
-//				}
-//
-//			}
-//
-//			if (found) {
-//				continue;
-//			}
-//
-//			return null;
-//		}
+
+		// if (!nodes[0].equals(getRootNamespace().getName())) {
+		// LOGGER.warning("first namespace must be the root namespace");
+		// return null;
+		// } else if (nodes.length == 1) {
+		// return scenarioBuilder.getMEDefinition().getRoot();
+		// }
+		//
+		// ParameterNamespace currentNamespace =
+		// scenarioBuilder.getMEDefinition().getRoot();
+		//
+		// for (int i = 1; i < nodes.length; i++) {
+		// if (currentNamespace.getChildren().size() <= 0) {
+		// return null;
+		// }
+		//
+		// boolean found = false;
+		// for (ParameterNamespace ns : currentNamespace.getChildren()) {
+		// if (ns.getName().equals(nodes[i])) {
+		// currentNamespace = ns;
+		// found = true;
+		// break;
+		// }
+		//
+		// }
+		//
+		// if (found) {
+		// continue;
+		// }
+		//
+		// return null;
+		// }
 
 		LOGGER.info("found namespace '" + currentNamespace.getFullName() + "'");
 

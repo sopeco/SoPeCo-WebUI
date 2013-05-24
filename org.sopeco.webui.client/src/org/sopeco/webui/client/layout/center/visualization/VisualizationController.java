@@ -89,7 +89,7 @@ public class VisualizationController implements ICenterController {
 		controlWidget.add(statusImage);
 		Image addVisualization = new ImageHover(R.img.icoAdd(), R.img.icoAddHover());
 		addVisualization.addClickHandler(new ClickHandler() {
-			
+
 			@Override
 			public void onClick(ClickEvent event) {
 				MainLayoutPanel.get().switchView(ResultController.class);
@@ -110,17 +110,18 @@ public class VisualizationController implements ICenterController {
 
 			@Override
 			public void onClick(ClickEvent event) {
-				RPC.getVisualizationRPC().deleteVisualization(visualizationSelection.getSelectedObject(), new AsyncCallback<Void>() {
+				RPC.getVisualizationRPC().deleteVisualization(visualizationSelection.getSelectedObject(),
+						new AsyncCallback<Void>() {
 
-					@Override
-					public void onFailure(Throwable caught) {
-					}
+							@Override
+							public void onFailure(Throwable caught) {
+							}
 
-					@Override
-					public void onSuccess(Void result) {
-						refreshVisualizations();
-					}
-				});
+							@Override
+							public void onSuccess(Void result) {
+								refreshVisualizations();
+							}
+						});
 			}
 		});
 		controlWidget.add(remove);
@@ -216,14 +217,14 @@ public class VisualizationController implements ICenterController {
 		Range range = visualizationList.getVisibleRange();
 		visualizationList.setVisibleRangeAndClearData(range, true);
 	}
-	
+
 	public void refreshVisualizationsAndSelect(final Visualization visualization) {
 		if (getStatus() != Status.BUSY) {
 			setStatus(Status.LOADING);
 		}
 		Range range = visualizationList.getVisibleRange();
 		visualizationList.setVisibleRangeAndClearData(range, true);
-		pager.setPage(pager.getPageCount()-1);
+		pager.setPage(pager.getPageCount() - 1);
 		visualizationSelection.setSelected(visualization, true);
 	}
 
@@ -241,7 +242,7 @@ public class VisualizationController implements ICenterController {
 			sb.appendHtmlConstant("<table>");
 
 			sb.appendHtmlConstant("<tr><td rowspan='3'>");
-			switch(value.getOptions().getType()){
+			switch (value.getOptions().getType()) {
 			case BARCHART:
 				sb.appendHtmlConstant(ChartSelectionPanel.BAR_CHART_IMAGE.toString());
 				break;

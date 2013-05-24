@@ -52,7 +52,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class VisualizationWizard extends DialogBox {
-	
+
 	private VerticalPanel rootWidget;
 	private Button create;
 	private SharedExperimentRuns experimentRun;
@@ -105,7 +105,7 @@ public class VisualizationWizard extends DialogBox {
 		rootWidget.setCellHorizontalAlignment(buttonPanel, HasHorizontalAlignment.ALIGN_RIGHT);
 		this.setWidget(rootWidget);
 		chartSelectionPanel.addClickHandler(new ClickHandler() {
-			
+
 			@Override
 			public void onClick(ClickEvent event) {
 				columnSelectionPanel.setVisible(true);
@@ -115,13 +115,13 @@ public class VisualizationWizard extends DialogBox {
 		loadInfos();
 		center();
 	}
-	
-	private void loadInfos(){
+
+	private void loadInfos() {
 		RPC.getVisualizationRPC().getExtensions(new AsyncCallback<List<String>>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
-				GWT.log("Could not load extensions.",caught);
+				GWT.log("Could not load extensions.", caught);
 			}
 
 			@Override
@@ -133,16 +133,15 @@ public class VisualizationWizard extends DialogBox {
 
 			@Override
 			public void onFailure(Throwable caught) {
-				GWT.log("Could not load chart parameter.",caught);
+				GWT.log("Could not load chart parameter.", caught);
 			}
 
 			@Override
 			public void onSuccess(ChartParameter[] result) {
-				for (ChartParameter param: result){
-					if (param.getType() == ChartParameter.INPUT){
+				for (ChartParameter param : result) {
+					if (param.getType() == ChartParameter.INPUT) {
 						inputParameter.add(param);
-					}
-					else {
+					} else {
 						outputParameter.add(param);
 					}
 				}
@@ -157,18 +156,21 @@ public class VisualizationWizard extends DialogBox {
 		VisualizationWizard.this.hide();
 		ChartOptions options = new ChartOptions();
 		options.setType(chartSelectionPanel.getSelectedType());
-		RPC.getVisualizationRPC().createVisualization(experimentRun, columnSelectionPanel.getSelectedInput(), columnSelectionPanel.getSelectedOutput(), options, extensionPanel.getExtension(), new AsyncCallback<Visualization>() {
+		RPC.getVisualizationRPC().createVisualization(experimentRun, columnSelectionPanel.getSelectedInput(),
+				columnSelectionPanel.getSelectedOutput(), options, extensionPanel.getExtension(),
+				new AsyncCallback<Visualization>() {
 
-			@Override
-			public void onFailure(Throwable caught) {
-				GWT.log("Chart could not be created.",caught);
-			}
+					@Override
+					public void onFailure(Throwable caught) {
+						GWT.log("Chart could not be created.", caught);
+					}
 
-			@Override
-			public void onSuccess(Visualization result) {
-				MainLayoutPanel.get().getController(VisualizationController.class).setStatus(Status.LOADING);
-				MainLayoutPanel.get().getController(VisualizationController.class).refreshVisualizationsAndSelect(result);
-			}
-		});
+					@Override
+					public void onSuccess(Visualization result) {
+						MainLayoutPanel.get().getController(VisualizationController.class).setStatus(Status.LOADING);
+						MainLayoutPanel.get().getController(VisualizationController.class)
+								.refreshVisualizationsAndSelect(result);
+					}
+				});
 	}
 }

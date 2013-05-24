@@ -34,6 +34,6 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 @RemoteServiceRelativePath("systemDetailsRPC")
 public interface SystemDetailsRPC extends RemoteService {
 
-	HashMap<String, String> getMetaDatabaseDetails ();
-	
+	HashMap<String, String> getMetaDatabaseDetails();
+
 }

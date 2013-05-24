@@ -57,7 +57,7 @@ public class NaviView extends FlowPanel implements SimpleCallback {
 
 		logoPanel = new FlowPanel();
 		add(logoPanel);
-		
+
 		BrandingChecker.checkBranding(this);
 	}
 

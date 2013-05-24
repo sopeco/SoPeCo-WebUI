@@ -41,7 +41,7 @@ public class Headline extends SimplePanel {
 	public Headline() {
 		this("", DEFAULT_TYPE);
 	}
-	
+
 	public Headline(String text) {
 		this(text, DEFAULT_TYPE);
 	}

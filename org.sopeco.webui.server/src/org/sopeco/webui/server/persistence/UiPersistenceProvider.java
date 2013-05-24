@@ -243,7 +243,7 @@ public class UiPersistenceProvider {
 		EntityManager em = emf.createEntityManager();
 		try {
 			TypedQuery<T> query = em.createNamedQuery(queryName, clazz);
-			for (int i = 0; i + 1< parameterList.length; i += 2) {
+			for (int i = 0; i + 1 < parameterList.length; i += 2) {
 				query.setParameter((String) parameterList[i], parameterList[i + 1]);
 			}
 			result = query.getResultList();
