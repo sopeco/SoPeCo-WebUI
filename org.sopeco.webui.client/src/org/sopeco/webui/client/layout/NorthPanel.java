@@ -179,7 +179,7 @@ public class NorthPanel extends FlowPanel implements ClickHandler, InputDialogHa
 
 	private void cloneScenario() {
 		if (inputClone == null) {
-			inputClone = new InputDialog(R.get("scenario_clone"), R.get("cloneScenarioName") + ":");
+			inputClone = new InputDialog(R.lang.scenario_clone(), R.lang.cloneScenarioName() + ":");
 			inputClone.addHandler(this);
 		}
 		inputClone.setText("");
@@ -214,16 +214,15 @@ public class NorthPanel extends FlowPanel implements ClickHandler, InputDialogHa
 		connectedToText = new HTML();
 		navigationPanel.add(connectedToText);
 
-		imageChangeAccount = new ImageHover(R.img.iconSet().getSafeUri(), 60, 0, 22, 24, R.img.iconSet()
-				.getSafeUri(), 60, 30, 22, 24);
+		imageChangeAccount = new ImageHover(R.img.navLogout(), R.img.navLogoutHover());
 		imageChangeAccount.addStyleName(IMG_BUTTON_CSS_CLASS);
-		imageChangeAccount.setTitle(R.get("Logout"));
+		imageChangeAccount.setTitle(R.lang.Logout());
 		imageChangeAccount.addClickHandler(this);
 		navigationPanel.add(imageChangeAccount);
 
 		navigationPanel.add(createSeparator());
 
-		htmlSelectScenario = new HTML(R.get("scenario_select") + ":");
+		htmlSelectScenario = new HTML(R.lang.scenario_select() + ":");
 		navigationPanel.add(htmlSelectScenario);
 
 		cbScenarios = new ComboBox();
@@ -231,59 +230,54 @@ public class NorthPanel extends FlowPanel implements ClickHandler, InputDialogHa
 		cbScenarios.addValueChangeHandler(this);
 		navigationPanel.add(cbScenarios);
 
-		imageScenarioAdd = new ImageHover(R.img.iconSet().getSafeUri(), 90, 0, 21, 26, R.img.iconSet()
-				.getSafeUri(), 90, 30, 21, 26);
+		imageScenarioAdd = new ImageHover(R.img.navFileAdd(), R.img.navFileAddHover());
 		imageScenarioAdd.addStyleName(IMG_BUTTON_CSS_CLASS);
-		imageScenarioAdd.setTitle(R.get("scenario_add"));
+		imageScenarioAdd.setTitle(R.lang.scenario_add());
 		imageScenarioAdd.addClickHandler(this);
 		navigationPanel.add(imageScenarioAdd);
 
-		imageScenarioClone = new ImageHover(R.img.iconSet().getSafeUri(), 150, 0, 21, 26, R.img.iconSet()
-				.getSafeUri(), 150, 30, 21, 26);
+		imageScenarioClone = new ImageHover(R.img.navFileDuplicate(), R.img.navFileDuplicateHover());
 		imageScenarioClone.addStyleName(IMG_BUTTON_CSS_CLASS);
-		imageScenarioClone.setTitle(R.get("scenario_clone"));
+		imageScenarioClone.setTitle(R.lang.scenario_clone());
 		imageScenarioClone.addClickHandler(this);
 		navigationPanel.add(imageScenarioClone);
 
-		imageScenarioRemove = new ImageHover(R.img.iconSet().getSafeUri(), 210, 0, 21, 26, R.img.iconSet()
-				.getSafeUri(), 210, 30, 21, 26);
+		imageScenarioRemove = new ImageHover(R.img.navFileDelete(), R.img.navFileDeleteHover());
 		imageScenarioRemove.addStyleName(IMG_BUTTON_CSS_CLASS);
-		imageScenarioRemove.setTitle(R.get("scenario_remove"));
+		imageScenarioRemove.setTitle(R.lang.scenario_remove());
 		imageScenarioRemove.addClickHandler(this);
 		navigationPanel.add(imageScenarioRemove);
 
 		navigationPanel.add(createSeparator());
 
-		imageExport = new ImageHover(R.img.iconSet().getSafeUri(), 30, 0, 28, 22, R.img.iconSet().getSafeUri(),
-				30, 30, 28, 22);
+		imageExport = new ImageHover(R.img.navExport(), R.img.navExportHover());
 		imageExport.addClickHandler(this);
 		imageExport.addStyleName(IMG_BUTTON_CSS_CLASS);
-		imageExport.setTitle(R.get("exportModel"));
+		imageExport.setTitle(R.lang.exportModel());
 		navigationPanel.add(imageExport);
 
 		navigationPanel.add(createSeparator());
 
-		imageSatellite = new ImageHover(R.img.iconSet().getSafeUri(), 0, 0, 28, 28, R.img.iconSet()
-				.getSafeUri(), 0, 30, 28, 28);
+		imageSatellite = new ImageHover(R.img.navSatellite(), R.img.navSatelliteHover());
 		imageSatellite.addClickHandler(this);
 		imageSatellite.addStyleName(IMG_BUTTON_CSS_CLASS);
-		imageSatellite.setTitle(R.get("mecSettings"));
+		imageSatellite.setTitle(R.lang.mecSettings());
 		navigationPanel.add(imageSatellite);
 
 		navigationPanel.add(createSeparator());
 
-		imageLog = new ImageHover(R.img.iconSet().getSafeUri(), 120, 0, 21, 28, R.img.iconSet().getSafeUri(),
-				120, 30, 21, 28);
+		imageLog = new ImageHover(R.img.navLog(), R.img.navLogHover());
 		imageLog.addClickHandler(this);
 		imageLog.addStyleName(IMG_BUTTON_CSS_CLASS);
-		imageLog.setTitle(R.get("showLog"));
+		imageLog.setTitle(R.lang.showLog());
 		navigationPanel.add(imageLog);
 
 		navigationPanel.add(createSeparator());
 
 		add(navigationPanel);
 
-		connectedToText.setHTML(R.get("connected_to") + ": <b>" + Manager.get().getAccountDetails().getAccountName() + "</b>");
+		connectedToText.setHTML(R.lang.connected_to() + ": <b>" + Manager.get().getAccountDetails().getAccountName()
+				+ "</b>");
 
 		updateScenarioList();
 	}
@@ -310,7 +304,7 @@ public class NorthPanel extends FlowPanel implements ClickHandler, InputDialogHa
 	 */
 	private void removeScenario() {
 		final String selectedScenario = Manager.get().getAccountDetails().getSelectedScenario();
-		String msg = R.get("confRemoveScenario") + " <b>'" + selectedScenario + "'</b>?";
+		String msg = R.lang.confRemoveScenario() + " <b>'" + selectedScenario + "'</b>?";
 		Confirmation.confirm(msg, new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {

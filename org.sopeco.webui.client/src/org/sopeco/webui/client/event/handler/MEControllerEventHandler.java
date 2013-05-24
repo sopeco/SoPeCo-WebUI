@@ -33,7 +33,7 @@ import com.google.gwt.event.shared.EventHandler;
 /**
  * 
  * @author Marius Oehler
- *
+ * 
  */
 public interface MEControllerEventHandler extends EventHandler {
 	void onNewMEControllerEvent(MEControllerEvent event);

@@ -68,12 +68,12 @@ public class QueueItem extends FlowPanel {
 		addStyleName(CONTROLLER_QUEUE_ITEM_CSS);
 
 		htmlLabel = new HTML("<b>" + experiment.getLabel() + "</b>");
-		labelAccount = new HTML(R.get("Account") + ":");
-		labelScenario = new HTML(R.get("Scenario") + ":");
-		labelExperiments = new HTML(R.get("Experiments") + ":");
+		labelAccount = new HTML(R.lang.Account() + ":");
+		labelScenario = new HTML(R.lang.Scenario() + ":");
+		labelExperiments = new HTML(R.lang.Experiments() + ":");
 
 		// TODO: show account name
-		valueAccount = new HTML(""+experiment.getAccount());
+		valueAccount = new HTML("" + experiment.getAccount());
 		valueScenario = new HTML(experiment.getScenarioDefinition().getScenarioName());
 		valueExperiments = new HTML("n/a");
 

@@ -24,30 +24,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sopeco.webui.server.persistence.entities;
+package org.sopeco.webui.client.helper;
 
-import java.io.Serializable;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-
-@Entity
-public class Test implements Serializable {
-
-	@Id
-	@Column(name = "id")
-	private String id;
-
-	@Column(name = "stringName")
-	private String name;
-
-	public Test() {
-	}
-
-	public Test(String name) {
-		this.name = name;
-		this.id = name;
-	}
-
+/**
+ * 
+ * @author Marius Oehler
+ * 
+ */
+public interface SimpleCallback {
+	void callback(Object object);
 }

@@ -26,13 +26,11 @@
  */
 package org.sopeco.webui.client.mec;
 
-import org.sopeco.config.Configuration;
 import org.sopeco.gwt.widgets.ClearDiv;
 import org.sopeco.gwt.widgets.ComboBox;
 import org.sopeco.gwt.widgets.WrappedTextBox;
 import org.sopeco.webui.client.resources.R;
 import org.sopeco.webui.client.widget.SmallTableLabel;
-import org.sopeco.webui.server.UiConfiguration;
 import org.sopeco.webui.shared.helper.MEControllerProtocol;
 
 import com.google.gwt.user.client.ui.FlexTable;
@@ -75,11 +73,16 @@ public class MEControllerSettingsView extends FlexTable {
 		setWidth("100%");
 		addStyleName(CSS_CLASS);
 
-//		int port = Configuration.getSessionSingleton(Configuration.getGlobalSessionId()).getPropertyAsInteger(
-//				UiConfiguration.SOPECO_CONFIG_MEC_LISTENER_PORT, 11300);
-		//int port = 11300;
-		
-		htmlDescription = new HTML(R.lang.mecSettingDescription() /*+ " (Socket-Port: " + port + ")"*/);
+		// int port =
+		// Configuration.getSessionSingleton(Configuration.getGlobalSessionId()).getPropertyAsInteger(
+		// UiConfiguration.SOPECO_CONFIG_MEC_LISTENER_PORT, 11300);
+		// int port = 11300;
+
+		htmlDescription = new HTML(R.lang.mecSettingDescription() /*
+																 * +
+																 * " (Socket-Port: "
+																 * + port + ")"
+																 */);
 
 		cbProtocol = new ComboBox();
 		cbProtocol.setWidth(100 + "px");

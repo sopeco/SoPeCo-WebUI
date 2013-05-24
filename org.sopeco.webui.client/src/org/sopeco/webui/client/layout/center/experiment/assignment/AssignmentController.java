@@ -63,7 +63,7 @@ public class AssignmentController {
 
 	public AssignmentController(Type type) {
 		String headline = "";
-		headline = R.get("expAssignsments");
+		headline = R.lang.expAssignsments();
 
 		assignmentItems2 = new ArrayList<AssignmentItem>();
 
@@ -84,7 +84,6 @@ public class AssignmentController {
 					}
 				});
 	}
-
 
 	/**
 	 * The called method at an PreperationAssignmentsChangedEvent.
@@ -107,15 +106,13 @@ public class AssignmentController {
 		if (ScenarioManager.get().experiment().getCurrentExperiment() == null) {
 			return;
 		}
-		
-		Map<String, ParameterValueAssignment> sortedMap = new TreeMap<String, ParameterValueAssignment>();
 
+		Map<String, ParameterValueAssignment> sortedMap = new TreeMap<String, ParameterValueAssignment>();
 
 		for (ParameterValueAssignment pva : ScenarioManager.get().experiment().getCurrentExperiment()
 				.getExperimentAssignments()) {
 			sortedMap.put(pva.getParameter().getFullName(), pva);
 		}
-
 
 		assignmentItems2.clear();
 

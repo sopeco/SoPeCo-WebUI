@@ -58,7 +58,6 @@ import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
@@ -67,8 +66,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  * @author Marius Oehler
  * 
  */
-public class ComboBox extends FlowPanel implements
-		HasValueChangeHandlers<String>, ResizeHandler {
+public class ComboBox extends FlowPanel implements HasValueChangeHandlers<String>, ResizeHandler {
 
 	private static final String CCS_CLASS_NAME = "spc-ComboBox";
 	private static final String CCS_DROPDOWN_VIEW_NAME = "spc-ComboBox-DropDownView";
@@ -272,8 +270,7 @@ public class ComboBox extends FlowPanel implements
 			ValueChangeEvent.fire(ComboBox.this, getText());
 			return;
 		} else if (i < 0 || i >= itemList.size()) {
-			throw new IndexOutOfBoundsException("Index " + i
-					+ " is out of the list size of " + itemList.size());
+			throw new IndexOutOfBoundsException("Index " + i + " is out of the list size of " + itemList.size());
 		}
 
 		selectedIndex = i;
@@ -431,8 +428,7 @@ public class ComboBox extends FlowPanel implements
 		dropdownWrapper.getElement().getStyle().setLeft(left, Unit.PX);
 		dropdownWrapper.getElement().getStyle().setTop(top, Unit.PX);
 
-		if (Window.getClientHeight() < top + dropdownWrapper.getOffsetHeight()
-				+ BORDER_SPACE) {
+		if (Window.getClientHeight() < top + dropdownWrapper.getOffsetHeight() + BORDER_SPACE) {
 			dropdownWrapper.getElement().getStyle().setBottom(BORDER_SPACE, Unit.PX);
 		}
 	}
@@ -441,8 +437,8 @@ public class ComboBox extends FlowPanel implements
 	public void onResize(ResizeEvent event) {
 		updatePositionOfDropDown();
 	}
-	
-	public void addEventPartner(DialogBox dialog){
+
+	public void addEventPartner(DialogBox dialog) {
 		dialog.addAutoHidePartner(this.dropdownView.getElement());
 	}
 
@@ -457,8 +453,7 @@ public class ComboBox extends FlowPanel implements
 	 * @author Marius Oehler
 	 * 
 	 */
-	private class ComboBoxItemHandler implements ClickHandler, BlurHandler,
-			MouseOverHandler, MouseOutHandler {
+	private class ComboBoxItemHandler implements ClickHandler, BlurHandler, MouseOverHandler, MouseOutHandler {
 		private boolean isOverElement = false;
 
 		@Override
@@ -492,8 +487,7 @@ public class ComboBox extends FlowPanel implements
 	 * @author Marius Oehler
 	 * 
 	 */
-	private class InputFieldHandler implements ValueChangeHandler<String>,
-			FocusHandler {
+	private class InputFieldHandler implements ValueChangeHandler<String>, FocusHandler {
 		@Override
 		public void onValueChange(ValueChangeEvent<String> event) {
 			setUserEdited();

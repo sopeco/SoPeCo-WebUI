@@ -51,10 +51,10 @@ public class EditGrid extends Grid {
 		getColumnFormatter().setWidth(1, "1px");
 		getColumnFormatter().setWidth(2, "1px");
 
-		setText(0, 0, R.get("Namespace"));
-		setText(0, 1, R.get("Parameter"));
-		setText(0, 2, R.get("Type"));
-		setText(0, 3, R.get("Value"));
+		setText(0, 0, R.lang.Namespace());
+		setText(0, 1, R.lang.Parameter());
+		setText(0, 2, R.lang.Type());
+		setText(0, 3, R.lang.Value());
 	}
 
 	public void addItem(int row, EditGridItem item) {

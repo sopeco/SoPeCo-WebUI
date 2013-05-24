@@ -29,7 +29,6 @@ package org.sopeco.webui.server.persistence;
 import org.sopeco.persistence.IMetaDataPersistenceProvider;
 import org.sopeco.persistence.PersistenceProviderFactory;
 
-
 /**
  * 
  * @author Marius Oehler

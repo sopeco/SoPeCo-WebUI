@@ -33,6 +33,7 @@ import org.sopeco.webui.shared.entities.ChartParameter;
 import org.sopeco.webui.shared.entities.Visualization;
 
 public interface IChartCreator extends ISoPeCoExtensionArtifact {
-	
-	public Visualization createVisualization(String experimentName, ChartData data, ChartParameter inputParameter, ChartParameter outputParameterd, ChartOptions options);
+
+	public Visualization createVisualization(String experimentName, ChartData data, ChartParameter inputParameter,
+			ChartParameter outputParameterd, ChartOptions options);
 }

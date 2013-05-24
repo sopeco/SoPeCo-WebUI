@@ -26,7 +26,7 @@
  */
 package org.sopeco.webui.client.layout.dialog;
 
-import org.sopeco.webui.client.helper.SimpleNotify;
+import org.sopeco.webui.client.helper.SimpleCallback;
 import org.sopeco.webui.client.layout.CreateScenarioWizzard;
 import org.sopeco.webui.client.resources.R;
 
@@ -42,7 +42,7 @@ import com.google.gwt.user.client.ui.DialogBox;
  * @author Marius Oehler
  * 
  */
-public class AddScenarioDialog extends DialogBox implements ClickHandler, SimpleNotify {
+public class AddScenarioDialog extends DialogBox implements ClickHandler, SimpleCallback {
 
 	private Button closeButton;
 
@@ -57,7 +57,7 @@ public class AddScenarioDialog extends DialogBox implements ClickHandler, Simple
 		CreateScenarioWizzard wizzard = new CreateScenarioWizzard(410, 250);
 		wizzard.addSimpleNotifier(this);
 
-		closeButton = new Button(R.get("Close"));
+		closeButton = new Button(R.lang.Close());
 		closeButton.addClickHandler(this);
 		closeButton.getElement().getStyle().setFloat(Float.RIGHT);
 		closeButton.getElement().getStyle().setMarginRight(10, Unit.PX);
@@ -74,7 +74,7 @@ public class AddScenarioDialog extends DialogBox implements ClickHandler, Simple
 	}
 
 	@Override
-	public void call() {
+	public void callback(Object object) {
 		hide();
 	}
 }

@@ -44,26 +44,28 @@ public final class Utilities {
 	public static String cleanString(String scenarioName) {
 		return scenarioName.replaceAll("[^a-zA-Z0-9_]", "_");
 	}
-	
-	/** Builds a short version of a parameter name.
-	 *  Trims all substrings (divided by a '.') to their first letter except the last one.
+
+	/**
+	 * Builds a short version of a parameter name. Trims all substrings (divided
+	 * by a '.') to their first letter except the last one.
 	 * 
-	 * @param parameterName The name of the parameter to trim.
+	 * @param parameterName
+	 *            The name of the parameter to trim.
 	 * @return
 	 */
-	public static String trimParameter(String parameterName){
+	public static String trimParameter(String parameterName) {
 		if (parameterName == null)
 			return null;
 		String[] subs = parameterName.split("\\.");
-		if (subs.length <= 0){
+		if (subs.length <= 0) {
 			return null;
 		}
 		StringBuilder builder = new StringBuilder();
-		for (int i = 0; i < subs.length - 1; i++){
+		for (int i = 0; i < subs.length - 1; i++) {
 			builder.append(subs[i].charAt(0));
 			builder.append(".");
 		}
-		builder.append(subs[subs.length-1]);
+		builder.append(subs[subs.length - 1]);
 		return builder.toString();
 	}
 }

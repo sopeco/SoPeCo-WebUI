@@ -67,7 +67,7 @@ public class TerminationController implements ValueChangeHandler<Boolean> {
 			if (ScenarioManager.get().experiment().isSetTermination(termination)) {
 				addedCondition.setConfiguration(ScenarioManager.get().experiment().getTerminationCondition(termination)
 						.getParametersValues());
-				
+
 				addedCondition.setConditionVisibility(true);
 			}
 		}

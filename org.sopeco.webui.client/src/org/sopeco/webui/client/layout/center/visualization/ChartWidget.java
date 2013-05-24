@@ -52,7 +52,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -73,15 +72,18 @@ import com.google.gwt.visualization.client.visualizations.corechart.LineChart;
 import com.google.gwt.visualization.client.visualizations.corechart.Options;
 import com.google.gwt.visualization.client.visualizations.corechart.PieChart;
 
-/** A gwt widget displaying a {@link Visualization}.
- * <br/>If the {@link Visualization} is of the type {@link Visualization.Type#GCHART} a google chart widget will be created.
- * <br/>If the {@link Visualization} is of the type {@link Visualization.Type#LINK} an &lt;iframe&gt; with the link will be created
+/**
+ * A gwt widget displaying a {@link Visualization}. <br/>
+ * If the {@link Visualization} is of the type {@link Visualization.Type#GCHART}
+ * a google chart widget will be created. <br/>
+ * If the {@link Visualization} is of the type {@link Visualization.Type#LINK}
+ * an &lt;iframe&gt; with the link will be created
  * 
  * @author Benjamin Ebling
- *
+ * 
  */
 public class ChartWidget extends FlowPanel {
-	
+
 	private Grid control;
 	private ComboBox aggregation;
 	private ComboBox dataProcessing;
@@ -95,8 +97,8 @@ public class ChartWidget extends FlowPanel {
 	private TextBox numberOfSplines;
 	private String initialNumberOfSplines = "100";
 	private CheckBox showRegression;
-	
-	public ChartWidget (){
+
+	public ChartWidget() {
 		this.getElement().getStyle().setPadding(1, Unit.EM);
 		chartWidget = new FlowPanel();
 		this.add(chartWidget);
@@ -113,7 +115,7 @@ public class ChartWidget extends FlowPanel {
 		control.setWidget(0, 0, new Label(R.lang.aggregation()));
 		aggregation = new ComboBox();
 		aggregation.setEditable(false);
-		for (AggregationOutputType t: AggregationOutputType.values()){
+		for (AggregationOutputType t : AggregationOutputType.values()) {
 			aggregation.addItem(t.name());
 		}
 		aggregation.addValueChangeHandler(new ValueChangeHandler<String>() {
@@ -121,14 +123,14 @@ public class ChartWidget extends FlowPanel {
 			@Override
 			public void onValueChange(ValueChangeEvent<String> event) {
 				dataProcessing.clear();
-				if (aggregation.getText().equals(AggregationOutputType.SCATTER.toString())){
-					for (DataProcessing i: DataProcessing.values()){
-						if (i != DataProcessing.INTERPOLATION){
+				if (aggregation.getText().equals(AggregationOutputType.SCATTER.toString())) {
+					for (DataProcessing i : DataProcessing.values()) {
+						if (i != DataProcessing.INTERPOLATION) {
 							dataProcessing.addItem(i.toString());
 						}
 					}
 				} else {
-					for (DataProcessing i: DataProcessing.values()){
+					for (DataProcessing i : DataProcessing.values()) {
 						dataProcessing.addItem(i.toString());
 					}
 				}
@@ -139,7 +141,7 @@ public class ChartWidget extends FlowPanel {
 		control.setWidget(0, 1, new Label(R.lang.regression()));
 		showRegression = new CheckBox();
 		showRegression.addClickHandler(new ClickHandler() {
-			
+
 			@Override
 			public void onClick(ClickEvent event) {
 				refreshChart();
@@ -149,19 +151,19 @@ public class ChartWidget extends FlowPanel {
 		control.setWidget(0, 2, new Label(R.lang.dataProcessing()));
 		dataProcessing = new ComboBox();
 		dataProcessing.setEditable(false);
-		for (DataProcessing i: DataProcessing.values()){
-			if (i != DataProcessing.INTERPOLATION){
+		for (DataProcessing i : DataProcessing.values()) {
+			if (i != DataProcessing.INTERPOLATION) {
 				dataProcessing.addItem(i.toString());
 			}
 		}
 		dataProcessing.addValueChangeHandler(new ValueChangeHandler<String>() {
-			
+
 			@Override
 			public void onValueChange(ValueChangeEvent<String> event) {
 				switch (DataProcessing.valueOf(dataProcessing.getText())) {
 				case INTERPOLATION:
 					processingType.clear();
-					for (Interpolation i : Interpolation.values()){
+					for (Interpolation i : Interpolation.values()) {
 						processingType.addItem(i.name());
 					}
 					processingType.setEnabled(true);
@@ -179,7 +181,7 @@ public class ChartWidget extends FlowPanel {
 		processingType = new ComboBox();
 		processingType.setEditable(false);
 		processingType.addValueChangeHandler(new ValueChangeHandler<String>() {
-			
+
 			@Override
 			public void onValueChange(ValueChangeEvent<String> event) {
 				refreshChart();
@@ -193,29 +195,29 @@ public class ChartWidget extends FlowPanel {
 		numberOfSplines = new TextBox();
 		numberOfSplines.setText(initialNumberOfSplines);
 		numberOfSplines.addChangeHandler(new ChangeHandler() {
-			
+
 			@Override
 			public void onChange(ChangeEvent event) {
 				try {
 					Integer.parseInt(numberOfSplines.getText());
-				} catch (NumberFormatException ex){
+				} catch (NumberFormatException ex) {
 					numberOfSplines.setText(initialNumberOfSplines);
 				}
 				refreshChart();
 			}
 		});
-		control.setWidget(1,3,numberOfSplines);
+		control.setWidget(1, 3, numberOfSplines);
 	}
-	
-	public void switchChart(Visualization visualization){
-		if (visualization == null){
+
+	public void switchChart(Visualization visualization) {
+		if (visualization == null) {
 			chartWidget = null;
 			return;
 		}
 		this.visualization = visualization;
 		showChart();
 	}
-	
+
 	private void refreshOptions() {
 		ChartOptions chartOptions = visualization.getOptions();
 		String name = visualization.getName();
@@ -224,7 +226,7 @@ public class ChartWidget extends FlowPanel {
 		AxisOptions vOptions = AxisOptions.create();
 		vOptions.setMinValue(0);
 		options = Options.create();
-		switch(chartOptions.getType()){
+		switch (chartOptions.getType()) {
 		case BARCHART:
 			options.set("bar.groupWidth", "50");
 			break;
@@ -232,12 +234,12 @@ public class ChartWidget extends FlowPanel {
 			options.set("is3D", true);
 			break;
 		case LINECHART:
-			//All series' default type is 'line'
+			// All series' default type is 'line'
 			options.setLineWidth(2);
 			options.setPointSize(0);
-			switch(DataProcessing.valueOf(dataProcessing.getText())){
+			switch (DataProcessing.valueOf(dataProcessing.getText())) {
 			case NONE:
-				//change type of first series to point
+				// change type of first series to point
 				Options seriesOptions = Options.create();
 				Options series1Options = Options.create();
 				series1Options.setLineWidth(0);
@@ -246,7 +248,7 @@ public class ChartWidget extends FlowPanel {
 				options.set("series", seriesOptions);
 				break;
 			default:
-				
+
 			}
 			break;
 		}
@@ -256,8 +258,8 @@ public class ChartWidget extends FlowPanel {
 		options.setHeight(500);
 		options.setTitle(name);
 	}
-	
-	public void refreshDataTable(){
+
+	public void refreshDataTable() {
 		ChartData data = visualization.getData();
 		dataTable = DataTable.create();
 		switch (visualization.getOptions().getType()) {
@@ -268,40 +270,41 @@ public class ChartWidget extends FlowPanel {
 		default:
 			dataTable.addColumn(ColumnType.NUMBER, "Input");
 		}
-		dataTable.addColumn(ColumnType.NUMBER,visualization.getOutputParameter().getParameterName());
+		dataTable.addColumn(ColumnType.NUMBER, visualization.getOutputParameter().getParameterName());
 		Map<Double, List<Double>> values = new TreeMap<Double, List<Double>>();
 		final Map<Double, Integer> total = new HashMap<Double, Integer>();
 		calculateData(data, values, total);
-		switch(DataProcessing.valueOf(dataProcessing.getText())){
+		switch (DataProcessing.valueOf(dataProcessing.getText())) {
 		case INTERPOLATION:
-			switch(Interpolation.valueOf(processingType.getText())){
+			switch (Interpolation.valueOf(processingType.getText())) {
 			case SPLINE:
-				RPC.getVisualizationRPC().applySplineInterpolation(values, 0, 10, Integer.parseInt(numberOfSplines.getText()), new AsyncCallback<Map<Double,List<Double>>>() {
-					
-					@Override
-					public void onSuccess(Map<Double, List<Double>> result) {
-						setData(result);
-						if (chart != null){
-							chart.draw(dataTable, options);
-						}
-					}
-					
-					@Override
-					public void onFailure(Throwable caught) {
-						GWT.log("Could not apply spline interpolation.",caught);
-					}
-				});
+				RPC.getVisualizationRPC().applySplineInterpolation(values, 0, 10,
+						Integer.parseInt(numberOfSplines.getText()), new AsyncCallback<Map<Double, List<Double>>>() {
+
+							@Override
+							public void onSuccess(Map<Double, List<Double>> result) {
+								setData(result);
+								if (chart != null) {
+									chart.draw(dataTable, options);
+								}
+							}
+
+							@Override
+							public void onFailure(Throwable caught) {
+								GWT.log("Could not apply spline interpolation.", caught);
+							}
+						});
 				break;
 			}
-			
+
 			break;
 		default:
 			setData(values);
 			break;
 		}
 	}
-	
-	private void refreshChart(){
+
+	private void refreshChart() {
 		if (visualization == null) {
 			return;
 		}
@@ -309,7 +312,7 @@ public class ChartWidget extends FlowPanel {
 		refreshDataTable();
 		chart.draw(dataTable, options);
 	}
-	
+
 	public void showChart() {
 		if (visualization == null) {
 			return;
@@ -322,15 +325,15 @@ public class ChartWidget extends FlowPanel {
 					refreshDataTable();
 					ChartWidget.this.remove(chartWidget);
 					chartWidget = new FlowPanel();
-					switch (visualization.getOptions().getType()){
+					switch (visualization.getOptions().getType()) {
 					case BARCHART:
-						chart = new ColumnChart(dataTable,options);
+						chart = new ColumnChart(dataTable, options);
 						break;
 					case PIECHART:
-						chart = new PieChart(dataTable,options);
+						chart = new PieChart(dataTable, options);
 						break;
 					default:
-					chart = new LineChart(dataTable,options);
+						chart = new LineChart(dataTable, options);
 					}
 					((FlowPanel) chartWidget).add(chart);
 					ChartWidget.this.add(chartWidget);
@@ -341,8 +344,7 @@ public class ChartWidget extends FlowPanel {
 			// Load the visualization api, passing the onLoadCallback to be
 			// called
 			// when loading is done.
-			VisualizationUtils.loadVisualizationApi(onLoadCallback,
-					CoreChart.PACKAGE);
+			VisualizationUtils.loadVisualizationApi(onLoadCallback, CoreChart.PACKAGE);
 			break;
 		default:
 			this.clear();
@@ -358,15 +360,15 @@ public class ChartWidget extends FlowPanel {
 
 	private void setData(Map<Double, List<Double>> values) {
 		int row = 0;
-		for (Entry<Double, List<Double>> entry : values.entrySet()){
+		for (Entry<Double, List<Double>> entry : values.entrySet()) {
 			int col = 0;
-			for (Double d : entry.getValue()){
+			for (Double d : entry.getValue()) {
 				dataTable.addRow();
-				int index = col+row*entry.getValue().size();
+				int index = col + row * entry.getValue().size();
 				switch (visualization.getOptions().getType()) {
 				case PIECHART:
 				case BARCHART:
-					dataTable.setValue(index, 0, ""+entry.getKey());
+					dataTable.setValue(index, 0, "" + entry.getKey());
 					break;
 				default:
 					dataTable.setValue(index, 0, entry.getKey());
@@ -374,69 +376,68 @@ public class ChartWidget extends FlowPanel {
 				dataTable.setValue(index, 1, d);
 				col++;
 			}
-			
+
 			row++;
 		}
 	}
-	
+
 	private void addRegression(Map<Double, List<Double>> values, String name) {
 		dataTable.addColumn(ColumnType.NUMBER, name);
-		int nr = dataTable.getNumberOfColumns()-1;
+		int nr = dataTable.getNumberOfColumns() - 1;
 		int k = 0;
-		int n = dataTable.getNumberOfRows()/values.size();
-		for (Entry<Double, List<Double>> entry : values.entrySet()){
-			for (int i = 0; i < n; i++){
-				dataTable.setValue(k*n+i, nr, entry.getValue().get(0));
+		int n = dataTable.getNumberOfRows() / values.size();
+		for (Entry<Double, List<Double>> entry : values.entrySet()) {
+			for (int i = 0; i < n; i++) {
+				dataTable.setValue(k * n + i, nr, entry.getValue().get(0));
 			}
 			k++;
 		}
 	}
 
-	private void calculateData(ChartData data, Map<Double, List<Double>> values,
-			final Map<Double, Integer> total) {
+	private void calculateData(ChartData data, Map<Double, List<Double>> values, final Map<Double, Integer> total) {
 		List<List<Double>> dataList = data.getDatarows();
 		List<ChartRowKey> names = data.getxAxis();
-		for (int row = 0; row < dataList.size(); row++){
+		for (int row = 0; row < dataList.size(); row++) {
 			Double key = names.get(row).getKeyValue(data.getInputParameter());
-			if (values.get(key) == null){
+			if (values.get(key) == null) {
 				values.put(key, new ArrayList<Double>());
 			}
-			if (total.get(key) == null){
+			if (total.get(key) == null) {
 				total.put(key, 0);
 			}
-			switch (AggregationOutputType.valueOf(aggregation.getText())){
+			switch (AggregationOutputType.valueOf(aggregation.getText())) {
 			case AVERAGE:
 			case SUM:
-				if (values.get(key).size() <= 0){
+				if (values.get(key).size() <= 0) {
 					values.get(key).add(0.0);
 				}
-				for (int column = 0; column < dataList.get(row).size(); column++){
+				for (int column = 0; column < dataList.get(row).size(); column++) {
 					values.get(key).set(0, dataList.get(row).get(column) + values.get(key).get(0));
-					total.put(key, total.get(key)+1);
+					total.put(key, total.get(key) + 1);
 				}
 				break;
 			default:
-				for (int column = 0; column < dataList.get(row).size(); column++){
+				for (int column = 0; column < dataList.get(row).size(); column++) {
 					values.get(key).add(dataList.get(row).get(column));
 				}
 			}
-			
+
 		}
-		switch (AggregationOutputType.valueOf(aggregation.getText())){
+		switch (AggregationOutputType.valueOf(aggregation.getText())) {
 		case AVERAGE:
-			for (Entry<Double, List<Double>> entry : values.entrySet()){
-				entry.getValue().set(0, entry.getValue().get(0)/total.get(entry.getKey()));
+			for (Entry<Double, List<Double>> entry : values.entrySet()) {
+				entry.getValue().set(0, entry.getValue().get(0) / total.get(entry.getKey()));
 			}
 			break;
 		case MEDIAN:
-			for (Entry<Double, List<Double>> entry : values.entrySet()){
+			for (Entry<Double, List<Double>> entry : values.entrySet()) {
 				int n = entry.getValue().size();
 				Collections.sort(entry.getValue());
 				double d = 0.0;
-				if (n%2 == 0){
-					d = (entry.getValue().get(n/2-1)+entry.getValue().get(n/2))/2;
+				if (n % 2 == 0) {
+					d = (entry.getValue().get(n / 2 - 1) + entry.getValue().get(n / 2)) / 2;
 				} else {
-					d = entry.getValue().get((n+1)/2-1);
+					d = entry.getValue().get((n + 1) / 2 - 1);
 				}
 				entry.getValue().clear();
 				entry.getValue().add(d);
@@ -444,33 +445,33 @@ public class ChartWidget extends FlowPanel {
 			break;
 		default:
 		}
-		if (showRegression.getValue()){
+		if (showRegression.getValue()) {
 			RPC.getVisualizationRPC().applySimpleRegression(values, new AsyncCallback<RegressionInfo>() {
 
 				@Override
 				public void onSuccess(RegressionInfo result) {
 					addRegression(result.getData(), R.lang.regression());
-					if (chart != null){
+					if (chart != null) {
 						chart.draw(dataTable, options);
 					}
 				}
-				
+
 				@Override
 				public void onFailure(Throwable caught) {
-					GWT.log("Could not apply simple regression.",caught);
+					GWT.log("Could not apply simple regression.", caught);
 				}
 			});
 		}
 	}
-	
+
 	public static enum DataProcessing {
 		NONE, INTERPOLATION;
 	}
-	
+
 	public static enum Interpolation {
 		SPLINE;
 	}
-	
+
 	public static enum Regression {
 		SIMPLE_REGRESSION;
 	}

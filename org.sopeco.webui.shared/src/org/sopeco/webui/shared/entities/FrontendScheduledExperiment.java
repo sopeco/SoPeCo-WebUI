@@ -27,7 +27,6 @@
 package org.sopeco.webui.shared.entities;
 
 import java.util.List;
-import java.util.Map;
 
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 import org.sopeco.webui.shared.push.PushSerializable;

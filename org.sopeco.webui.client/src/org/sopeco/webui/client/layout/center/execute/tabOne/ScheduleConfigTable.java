@@ -70,7 +70,7 @@ public class ScheduleConfigTable extends FlowPanel implements FocusHandler, Valu
 		addStyleName(CONFIG_TABLE_CLASS);
 
 		htmlStartTime = new HTML("Start Time/Date:");
-		htmlRepeat = new HTML(R.get("Repeat") + ":");
+		htmlRepeat = new HTML(R.lang.Repeat() + ":");
 
 		Date date = new Date(System.currentTimeMillis() + 1000 * 60 * 60);
 		editStartTime = new EditableText(DateTimeFormat.getFormat("H").format(date) + ":00");
@@ -141,6 +141,5 @@ public class ScheduleConfigTable extends FlowPanel implements FocusHandler, Valu
 	public EditableText getEditStartDate() {
 		return editStartDate;
 	}
-	
-	
+
 }

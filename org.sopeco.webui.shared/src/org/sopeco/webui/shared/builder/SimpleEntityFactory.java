@@ -64,10 +64,10 @@ public class SimpleEntityFactory {
 	}
 
 	public static ExperimentSeriesDefinition createExperimentSeriesDefinition(String name
-		/*	,ExperimentTerminationCondition terminationCondition*/) {
+	/* ,ExperimentTerminationCondition terminationCondition */) {
 		ExperimentSeriesDefinition esd = new ExperimentSeriesDefinition();
 		esd.setName(name);
-		//esd.setExperimentTerminationCondition(terminationCondition);
+		// esd.setExperimentTerminationCondition(terminationCondition);
 		return esd;
 	}
 
@@ -85,14 +85,16 @@ public class SimpleEntityFactory {
 		return pd;
 	}
 
-//	public static ExperimentTerminationCondition createTerminationCondition(String name, Map<String, String> config) {
-//		ExperimentTerminationCondition etc = new ExperimentTerminationCondition();
-//		etc.setName(name);
-//		if (config != null) {
-//			etc.getConfiguration().putAll(config);
-//		}
-//		return etc;
-//	}
+	// public static ExperimentTerminationCondition
+	// createTerminationCondition(String name, Map<String, String> config) {
+	// ExperimentTerminationCondition etc = new
+	// ExperimentTerminationCondition();
+	// etc.setName(name);
+	// if (config != null) {
+	// etc.getConfiguration().putAll(config);
+	// }
+	// return etc;
+	// }
 
 	public static ExplorationStrategy createExplorationStrategy(String name, Map<String, String> config) {
 		ExplorationStrategy es = new ExplorationStrategy();
@@ -104,11 +106,12 @@ public class SimpleEntityFactory {
 	}
 
 	public static ExplorationStrategy createExplorationStrategy(String explorationName,
-			Map<String, String> explorationConfig, String analysisName, Map<String, String> analysisConfig, ParameterDefinition dependentParameter, List<ParameterDefinition> independentParameters) {
+			Map<String, String> explorationConfig, String analysisName, Map<String, String> analysisConfig,
+			ParameterDefinition dependentParameter, List<ParameterDefinition> independentParameters) {
 		ExplorationStrategy es = createExplorationStrategy(explorationName, explorationConfig);
 		AnalysisConfiguration ac = new AnalysisConfiguration();
 		ac.setName(analysisName);
-		if(analysisConfig != null){
+		if (analysisConfig != null) {
 			ac.getConfiguration().putAll(analysisConfig);
 		}
 		ac.getDependentParameters().add(dependentParameter);

@@ -21,7 +21,7 @@ public class Heading extends Widget {
 		setElement(uiBinder.createAndBindUi(this));
 	}
 
-	public void setTitle (String title) {
+	public void setTitle(String title) {
 		element.setInnerHTML(title);
 	}
 }

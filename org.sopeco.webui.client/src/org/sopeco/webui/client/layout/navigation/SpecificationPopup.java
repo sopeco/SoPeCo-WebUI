@@ -61,7 +61,7 @@ public class SpecificationPopup extends VerticalPanel implements ClickHandler {
 
 		itemMap = new HashMap<String, HTML>();
 
-		addSpecificationHTML = new HTML(R.get("addSpecification"));
+		addSpecificationHTML = new HTML(R.lang.AddSpecification());
 
 		addPanel = new FlowPanel();
 		addPanel.addStyleName(CSS_CLASS_ADD);

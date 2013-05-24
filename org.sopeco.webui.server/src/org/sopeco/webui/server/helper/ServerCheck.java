@@ -100,7 +100,7 @@ public final class ServerCheck {
 		try {
 			return Arrays.asList(RestMEConnector.getAvailableMEController("http://" + host + ":" + port + "/"));
 		} catch (Exception x) {
-			//TODO Exception handling
+			// TODO Exception handling
 			x.printStackTrace();
 			return new ArrayList<String>();
 		}

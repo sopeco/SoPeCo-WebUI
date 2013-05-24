@@ -84,8 +84,8 @@ public final class ExportCsvDialog extends DialogBox implements ClickHandler {
 		contentWrapper = new FlowPanel();
 		contentWrapper.getElement().setId("exportCsvDialog");
 
-		headline = new Headline(R.get("exportToCsv"));
-		infoText = new Paragraph(R.get("csvExportDesc"));
+		headline = new Headline(R.lang.exportToCsv());
+		infoText = new Paragraph(R.lang.csvExportDesc());
 
 		tbValueSeparator = new ExtendedTextBox(";", false);
 		tbQuoteChar = new ExtendedTextBox("'", false);
@@ -107,7 +107,7 @@ public final class ExportCsvDialog extends DialogBox implements ClickHandler {
 		table.setWidget(1, 2, tbDecimalDeimiter);
 
 		btnExport = new Button("Export");
-		btnCancel = new Button(R.get("Cancel"));
+		btnCancel = new Button(R.lang.Close());
 		btnExport.addClickHandler(this);
 		btnCancel.addClickHandler(this);
 

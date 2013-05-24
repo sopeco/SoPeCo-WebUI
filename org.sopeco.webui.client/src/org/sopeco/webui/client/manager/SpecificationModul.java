@@ -97,7 +97,7 @@ public class SpecificationModul {
 		manager.storeScenario();
 
 		MainLayoutPanel.get().getNaviController().refreshSpecificationPopup();
-		
+
 		changeSpecification(name);
 	}
 

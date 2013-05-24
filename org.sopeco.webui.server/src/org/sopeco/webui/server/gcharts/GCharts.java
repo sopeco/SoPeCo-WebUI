@@ -35,7 +35,7 @@ import org.sopeco.webui.shared.entities.Visualization;
 import org.sopeco.webui.shared.entities.Visualization.Type;
 
 public class GCharts implements IChartCreator {
-	
+
 	public GCharts() {
 	}
 
@@ -45,9 +45,8 @@ public class GCharts implements IChartCreator {
 	}
 
 	@Override
-	public synchronized Visualization createVisualization(String experimentName,
-			ChartData data, ChartParameter inputParameter, ChartParameter outputParameter,
-			ChartOptions options) {
+	public synchronized Visualization createVisualization(String experimentName, ChartData data,
+			ChartParameter inputParameter, ChartParameter outputParameter, ChartOptions options) {
 		Visualization visualization = new Visualization();
 		visualization.setLink("");
 		visualization.setName(experimentName);

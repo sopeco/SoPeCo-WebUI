@@ -68,6 +68,5 @@ public interface MEControllerRPCAsync {
 
 	void isPortReachable(String host, int port, AsyncCallback<Boolean> callback);
 
-	void getController(MEControllerProtocol protocol, String host, int port,
-			AsyncCallback<List<String>> callback);
+	void getController(MEControllerProtocol protocol, String host, int port, AsyncCallback<List<String>> callback);
 }

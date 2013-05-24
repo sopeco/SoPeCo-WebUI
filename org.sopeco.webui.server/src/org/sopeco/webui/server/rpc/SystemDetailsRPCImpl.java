@@ -45,7 +45,8 @@ public class SystemDetailsRPCImpl extends SuperRemoteServlet implements SystemDe
 	public HashMap<String, String> getMetaDatabaseDetails() {
 		HashMap<String, String> map = new HashMap<String, String>();
 
-		PersistenceConfiguration conf = PersistenceConfiguration.getSessionSingleton(Configuration.getGlobalSessionId());
+		PersistenceConfiguration conf = PersistenceConfiguration
+				.getSessionSingleton(Configuration.getGlobalSessionId());
 
 		map.put("host", conf.getMetaDataHost());
 		map.put("port", conf.getMetaDataPort());

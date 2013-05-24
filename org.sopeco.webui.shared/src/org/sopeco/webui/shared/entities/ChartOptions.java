@@ -29,12 +29,12 @@ package org.sopeco.webui.shared.entities;
 import java.io.Serializable;
 
 public class ChartOptions implements Serializable {
-	
+
 	private ChartType type = ChartType.LINECHART;
 	private String xAxisLabel;
-	
-	public ChartOptions(){
-		
+
+	public ChartOptions() {
+
 	}
 
 	public ChartType getType() {

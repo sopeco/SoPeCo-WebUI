@@ -38,9 +38,9 @@ import org.sopeco.webui.client.layout.center.ICenterController;
 import org.sopeco.webui.client.layout.center.experiment.ExperimentController;
 import org.sopeco.webui.client.layout.center.specification.SpecificationController;
 import org.sopeco.webui.client.layout.popups.InputDialog;
+import org.sopeco.webui.client.layout.popups.InputDialog.Icon;
 import org.sopeco.webui.client.layout.popups.InputDialogHandler;
 import org.sopeco.webui.client.layout.popups.InputDialogValidator;
-import org.sopeco.webui.client.layout.popups.InputDialog.Icon;
 import org.sopeco.webui.client.manager.Manager;
 import org.sopeco.webui.client.manager.ScenarioManager;
 import org.sopeco.webui.client.resources.R;
@@ -122,7 +122,7 @@ public class NaviController implements ClickHandler, InputDialogHandler, InputDi
 
 	private void addSpecification() {
 		if (inputAddSpecification == null) {
-			inputAddSpecification = new InputDialog(R.get("AddSpecification"), R.get("addSpecText") + ":", false,
+			inputAddSpecification = new InputDialog(R.lang.AddSpecification(), R.lang.addSpecText() + ":", false,
 					Icon.Add);
 			inputAddSpecification.addHandler(this);
 			inputAddSpecification.setValidator(this);
@@ -221,7 +221,7 @@ public class NaviController implements ClickHandler, InputDialogHandler, InputDi
 	//
 	public void addExperimentSeries() {
 		if (inputAddExperiment == null) {
-			inputAddExperiment = new InputDialog(R.get("addExperiment"), R.get("addExpText") + ":", false, Icon.Add);
+			inputAddExperiment = new InputDialog(R.lang.addExperiment(), R.lang.addExpText() + ":", false, Icon.Add);
 			inputAddExperiment.addHandler(this);
 			inputAddExperiment.setValidator(this);
 		}

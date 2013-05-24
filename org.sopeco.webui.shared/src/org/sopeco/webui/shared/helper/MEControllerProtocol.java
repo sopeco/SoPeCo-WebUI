@@ -32,9 +32,9 @@ package org.sopeco.webui.shared.helper;
  */
 public enum MEControllerProtocol {
 	/** Connection to the MEController via RMI. */
-	RMI, 
+	RMI,
 	/** REST Connection to the MEController via HTTP. */
 	REST_HTTP,
-	/**Connection to the MEController via Socket. */
+	/** Connection to the MEController via Socket. */
 	SOCKET
 }

@@ -62,7 +62,7 @@ public class ConstantParameterPanel extends ParameterPanel implements ValueChang
 	private void initialize(String value) {
 		getElement().getStyle().setDisplay(Display.BLOCK);
 
-		label = new HTML(R.get("constantValue") + ":");
+		label = new HTML(R.lang.constantValue() + ":");
 		label.getElement().getStyle().setDisplay(Display.INLINE_BLOCK);
 		label.getElement().getStyle().setProperty("whiteSpace", "nowrap");
 

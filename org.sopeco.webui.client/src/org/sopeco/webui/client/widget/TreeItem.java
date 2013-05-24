@@ -29,6 +29,7 @@ package org.sopeco.webui.client.widget;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.sopeco.gwt.widgets.ImageHover;
 import org.sopeco.webui.client.resources.R;
 
 import com.google.gwt.dom.client.Element;
@@ -37,7 +38,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Image;
 
 /**
  * 
@@ -48,15 +48,12 @@ public class TreeItem extends FlowPanel implements ClickHandler {
 
 	private static final String CSS_CONTENT_CLASS = "content";
 	private static final String CSS_TREE_ITEM_CLASS = "sopeco-TreeItem";
-	private static final String IMG_COLLAPSE = "images/tree_minus.png";
-	private static final String IMG_EXPAND = "images/tree_plus.png";
-	private static final String IMG_NO_CHILDREN = "images/tree_minus_inactive.png";
 	private static final String CSS_TRANSPARENT = "transparent-50";
 
 	private static final String PATH_SEPERATOR = "/";
 
 	private String text;
-	private Image image;
+	private ImageHover image;
 	private Element textElement;
 	private FlowPanel contentWrapper;
 	private boolean expanded;
@@ -87,7 +84,7 @@ public class TreeItem extends FlowPanel implements ClickHandler {
 		contentWrapper = new FlowPanel();
 		contentWrapper.addStyleName(CSS_CONTENT_CLASS);
 
-		image = new Image(IMG_NO_CHILDREN);
+		image = new ImageHover(R.img.icoMinus(), null);
 		image.addStyleName(CSS_TRANSPARENT);
 		image.addClickHandler(this);
 
@@ -141,17 +138,17 @@ public class TreeItem extends FlowPanel implements ClickHandler {
 	 */
 	private void updateImage() {
 		if (childrenItems.isEmpty()) {
-			image.setUrl(IMG_NO_CHILDREN);
+			image.setResource(R.img.icoMinus(), null);
 			image.addStyleName(CSS_TRANSPARENT);
 			image.getElement().getStyle().setCursor(Cursor.DEFAULT);
 		} else {
 			image.getElement().getStyle().setCursor(Cursor.POINTER);
 			image.removeStyleName(CSS_TRANSPARENT);
-			
+
 			if (expanded) {
-				image.setUrlAndVisibleRect(R.img.iconSet().getSafeUri(), 120, 60, 16, 16);
+				image.setResource(R.img.icoMinus(), R.img.icoMinusHover());
 			} else {
-				image.setUrlAndVisibleRect(R.img.iconSet().getSafeUri(), 90, 60, 16, 16);
+				image.setResource(R.img.icoPlus(), R.img.icoPlusHover());
 			}
 		}
 	}

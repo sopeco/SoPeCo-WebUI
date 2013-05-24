@@ -40,10 +40,10 @@ import org.sopeco.webui.client.resources.R;
 public class ExperimentEnvironmentTree extends EnvironmentTree {
 
 	public ExperimentEnvironmentTree() {
-		super(true, R.get("envParameter"));
+		super(true, R.lang.envParameter());
 
-		getView().setFirstInfoText(R.get("addToExpAssignments"));
-		getView().setSecondInfoText(R.get("addToPrepAssignments"));
+		getView().setFirstInfoText(R.lang.addToExpAssignments());
+		getView().setSecondInfoText(R.lang.addToPrepAssignments());
 
 	}
 

@@ -27,8 +27,6 @@
 package org.sopeco.webui.shared.entities;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -38,70 +36,67 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Transient;
 
-import com.google.gwt.safehtml.shared.SafeHtml;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-
 /**
  * 
  * @author Benjamin Ebling
- *
+ * 
  */
 @Entity
 @NamedQueries({
-	@NamedQuery(name = "getAllVisualizations", query = "SELECT u FROM Visualization u"),
-	@NamedQuery(name = "getVisualizationsByAccount", query = "SELECT s FROM Visualization s WHERE s.accountId = :accountId") })
+		@NamedQuery(name = "getAllVisualizations", query = "SELECT u FROM Visualization u"),
+		@NamedQuery(name = "getVisualizationsByAccount", query = "SELECT s FROM Visualization s WHERE s.accountId = :accountId") })
 public class Visualization implements Serializable {
-	
+
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 2591904277445541753L;
-	
+
 	@Id
 	@Column(name = "id")
 	private long id;
-	
+
 	@Column(name = "accountId")
-	private String accountId;
-	
+	private long accountId;
+
 	@Column(name = "name")
 	private String name;
-	
+
 	@Column(name = "link")
 	private String link;
-	
+
 	@Column(name = "type")
 	private Type type = Type.LINK;
-	
+
 	@Transient
 	private ChartData data;
-	
+
 	@Lob
 	@Column(name = "chartOptions")
 	private ChartOptions options;
-	
+
 	@Lob
 	@Column(name = "inputParameter")
 	private ChartParameter inputParameter;
-	
+
 	@Lob
 	@Column(name = "outputParameter")
 	private ChartParameter outputParameter;
-	
+
 	@Column(name = "scenarioName")
 	private String scenarioName;
-	
+
 	@Column(name = "measurementEnvironmentUrl")
 	private String measurementEnvironmentUrl;
-	
+
 	@Column(name = "timestamp")
 	private Long timestamp;
-	
+
 	@Column(name = "experimentName")
 	private String experimentName;
 
-	public Visualization(){
-		
+	public Visualization() {
+
 	}
 
 	public String getName() {
@@ -121,7 +116,7 @@ public class Visualization implements Serializable {
 	public void setLink(String link) {
 		this.link = link;
 	}
-	
+
 	public Type getType() {
 		return type;
 	}
@@ -190,17 +185,17 @@ public class Visualization implements Serializable {
 		this.experimentName = experimentName;
 	}
 
-	public String getAccountId() {
+	public long getAccountId() {
 		return accountId;
 	}
 
-	public void setAccountId(String accountId) {
+	public void setAccountId(long accountId) {
 		this.accountId = accountId;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj.getClass() != Visualization.class){
+		if (obj.getClass() != Visualization.class) {
 			return false;
 		}
 		return this.getId() == ((Visualization) obj).getId();
@@ -221,5 +216,5 @@ public class Visualization implements Serializable {
 	public void setOutputParameter(ChartParameter outputParameter) {
 		this.outputParameter = outputParameter;
 	}
-	
+
 }

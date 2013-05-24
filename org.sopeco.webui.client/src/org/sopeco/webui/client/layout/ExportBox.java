@@ -70,11 +70,11 @@ public final class ExportBox extends DialogBox implements ClickHandler {
 
 		HTML headline = new HTML("<h3 style=\"margin-top:0;\">Export</h3>");
 
-		exportXML = new Button(R.get("exportInFile"));
+		exportXML = new Button(R.lang.exportInFile());
 		exportXML.getElement().getStyle().setFloat(Float.RIGHT);
 		exportXML.addClickHandler(this);
 
-		btnClose = new Button(R.get("Close"));
+		btnClose = new Button(R.lang.Close());
 		btnClose.getElement().getStyle().setMarginLeft(1, Unit.EM);
 		btnClose.getElement().getStyle().setFloat(Float.RIGHT);
 		btnClose.addClickHandler(this);

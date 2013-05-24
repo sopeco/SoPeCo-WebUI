@@ -57,8 +57,6 @@ import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 
 public class VisualizationController implements ICenterController {
-	private static final String STATUS_READY_IMAGE = "images/status-green.png";
-	private static final String STATUS_UNKOWN_IMAGE = "images/status-gray.png";
 
 	private DockLayoutPanel rootWidget;
 	private FlowPanel controlWidget;
@@ -85,15 +83,13 @@ public class VisualizationController implements ICenterController {
 		visualizationSelection = new SingleSelectionModel<Visualization>(KEY_PROVIDER);
 		chartDataProvider = new ChartsDataProvider(this);
 		controlWidget.addStyleName("visualizationControl");
-		statusImage = new Image(STATUS_UNKOWN_IMAGE);
-		statusImage.setUrl(STATUS_READY_IMAGE);
+		statusImage = new Image(R.img.icoDotGreen());
 		statusImage.getElement().getStyle().setMarginLeft(1, Unit.EM);
 		statusImage.getElement().getStyle().setMarginTop(1, Unit.EM);
 		controlWidget.add(statusImage);
-		Image addVisualization = new ImageHover(R.img.iconSet().getSafeUri(), 0, 120, 13, 13, R.img.iconSet()
-				.getSafeUri(), 210, 150, 13, 13);
+		Image addVisualization = new ImageHover(R.img.icoAdd(), R.img.icoAddHover());
 		addVisualization.addClickHandler(new ClickHandler() {
-			
+
 			@Override
 			public void onClick(ClickEvent event) {
 				MainLayoutPanel.get().switchView(ResultController.class);
@@ -105,8 +101,7 @@ public class VisualizationController implements ICenterController {
 		addVisualization.getElement().getStyle().setCursor(Cursor.POINTER);
 		controlWidget.add(addVisualization);
 
-		Image remove = new ImageHover(R.img.iconSet().getSafeUri(), 0, 60, 16, 18,
-				R.img.iconSet().getSafeUri(), 0, 90, 16, 18);
+		Image remove = new ImageHover(R.img.icoTrash(), R.img.icoTrashHover());
 		remove.setTitle(R.lang.removeChart());
 		remove.getElement().getStyle().setMarginLeft(1, Unit.EM);
 		remove.getElement().getStyle().setMarginTop(1, Unit.EM);
@@ -115,17 +110,18 @@ public class VisualizationController implements ICenterController {
 
 			@Override
 			public void onClick(ClickEvent event) {
-				RPC.getVisualizationRPC().deleteVisualization(visualizationSelection.getSelectedObject(), new AsyncCallback<Void>() {
+				RPC.getVisualizationRPC().deleteVisualization(visualizationSelection.getSelectedObject(),
+						new AsyncCallback<Void>() {
 
-					@Override
-					public void onFailure(Throwable caught) {
-					}
+							@Override
+							public void onFailure(Throwable caught) {
+							}
 
-					@Override
-					public void onSuccess(Void result) {
-						refreshVisualizations();
-					}
-				});
+							@Override
+							public void onSuccess(Void result) {
+								refreshVisualizations();
+							}
+						});
 			}
 		});
 		controlWidget.add(remove);
@@ -183,16 +179,16 @@ public class VisualizationController implements ICenterController {
 		this.status = status;
 		switch (status) {
 		case READY:
-			statusImage.setUrlAndVisibleRect(R.img.iconSet().getSafeUri(), 60, 150, 10, 10);
+			statusImage.setResource(R.img.icoDotGreen());
 			break;
 		case BUSY:
-			statusImage.setUrlAndVisibleRect(R.img.iconSet().getSafeUri(), 30, 150, 10, 10);
+			statusImage.setResource(R.img.icoDotRed());
 			break;
 		case LOADING:
-			statusImage.setUrlAndVisibleRect(R.img.iconSet().getSafeUri(), 90, 150, 10, 10);
+			statusImage.setResource(R.img.icoDotYellow());
 			break;
 		default:
-			statusImage.setUrlAndVisibleRect(R.img.iconSet().getSafeUri(), 0, 150, 10, 10);
+			statusImage.setResource(R.img.icoDotGray());
 		}
 	}
 
@@ -221,14 +217,14 @@ public class VisualizationController implements ICenterController {
 		Range range = visualizationList.getVisibleRange();
 		visualizationList.setVisibleRangeAndClearData(range, true);
 	}
-	
+
 	public void refreshVisualizationsAndSelect(final Visualization visualization) {
 		if (getStatus() != Status.BUSY) {
 			setStatus(Status.LOADING);
 		}
 		Range range = visualizationList.getVisibleRange();
 		visualizationList.setVisibleRangeAndClearData(range, true);
-		pager.setPage(pager.getPageCount()-1);
+		pager.setPage(pager.getPageCount() - 1);
 		visualizationSelection.setSelected(visualization, true);
 	}
 
@@ -246,7 +242,7 @@ public class VisualizationController implements ICenterController {
 			sb.appendHtmlConstant("<table>");
 
 			sb.appendHtmlConstant("<tr><td rowspan='3'>");
-			switch(value.getOptions().getType()){
+			switch (value.getOptions().getType()) {
 			case BARCHART:
 				sb.appendHtmlConstant(ChartSelectionPanel.BAR_CHART_IMAGE.toString());
 				break;

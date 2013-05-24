@@ -39,8 +39,7 @@ import com.google.gwt.user.client.ui.TextBox;
  * @author Marius Oehler
  * 
  */
-public class ExtendedTextBox extends TextBox implements FocusHandler,
-		BlurHandler, ValueChangeHandler<String> {
+public class ExtendedTextBox extends TextBox implements FocusHandler, BlurHandler, ValueChangeHandler<String> {
 
 	private static final String DEFAULT_COLOR = "#AAAAAA";
 
@@ -99,8 +98,7 @@ public class ExtendedTextBox extends TextBox implements FocusHandler,
 		if (defaultValue == null) {
 			return;
 		}
-		if (getText().equals(defaultValue)
-				|| (!allowEmptyText && getText().isEmpty())) {
+		if (getText().equals(defaultValue) || (!allowEmptyText && getText().isEmpty())) {
 			setDefaultValue();
 		}
 	}

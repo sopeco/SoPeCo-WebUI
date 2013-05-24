@@ -131,7 +131,7 @@ public class MEControllerRPCImpl extends SuperRemoteServlet implements MEControl
 		PushPackage push = new PushPackage(Type.NEW_MEC_AVAILABLE);
 		// push.setPiggyback(controllerUrl);
 
-		String dbId = getUser().getCurrentDatabaseId();
+		long accountId = getUser().getCurrentAccount().getId();
 
 		// PushRPCImpl.pushToCODB(dbId, push);
 	}
