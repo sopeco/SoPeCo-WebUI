@@ -40,6 +40,7 @@ import org.sopeco.persistence.entities.ExperimentSeriesRun;
 import org.sopeco.persistence.entities.ScenarioInstance;
 import org.sopeco.persistence.exceptions.DataNotFoundException;
 import org.sopeco.persistence.util.DataSetCsvHandler;
+import org.sopeco.webui.server.rpc.servlet.SPCRemoteServlet;
 import org.sopeco.webui.server.user.User;
 import org.sopeco.webui.server.user.UserManager;
 import org.sopeco.webui.shared.definitions.result.SharedExperimentRuns;
@@ -52,14 +53,14 @@ import org.sopeco.webui.shared.rpc.ResultRPC;
  * @author Marius Oehler
  * 
  */
-public class ResultRPCImpl extends SuperRemoteServlet implements ResultRPC {
+public class ResultRPCImpl extends SPCRemoteServlet implements ResultRPC {
 
 	/**	 */
 	private static final long serialVersionUID = 1L;
 
 	@Override
 	public void getResults() {
-		// getUser().getCurrentPersistenceProvider().loadAllScenarioInstances().get(0).getExperimentSeriesList().get(0).getLatestExperimentSeriesRun().getSuccessfulResultDataSet().
+		requiredLoggedIn();
 
 		try {
 			List<ScenarioInstance> instances = getUser().getCurrentPersistenceProvider().loadAllScenarioInstances();
@@ -80,6 +81,8 @@ public class ResultRPCImpl extends SuperRemoteServlet implements ResultRPC {
 
 	@Override
 	public List<SharedScenarioInstance> getInstances(String scenarioName) {
+		requiredLoggedIn();
+		
 		try {
 			List<ScenarioInstance> scenarioList = getUser().getCurrentPersistenceProvider().loadScenarioInstances(
 					scenarioName);
@@ -102,6 +105,8 @@ public class ResultRPCImpl extends SuperRemoteServlet implements ResultRPC {
 	 * @return
 	 */
 	private SharedScenarioInstance convertInstance(ScenarioInstance instance) {
+		requiredLoggedIn();
+		
 		SharedScenarioInstance retInstance = new SharedScenarioInstance();
 
 		retInstance.setScenarioName(instance.getName());
@@ -127,6 +132,8 @@ public class ResultRPCImpl extends SuperRemoteServlet implements ResultRPC {
 
 	@Override
 	public String getResultAsR(String scenario, String exoerimentSeries, String url, long timestamp) {
+		requiredLoggedIn();
+		
 		try {
 			ScenarioInstance instance = getScenarioInstance(getSessionId(), scenario, url);
 			ExperimentSeries series = getSeries(instance, exoerimentSeries);
@@ -227,6 +234,8 @@ public class ResultRPCImpl extends SuperRemoteServlet implements ResultRPC {
 	 *
 	 */
 	private ExperimentSeriesRun getRun(ExperimentSeries series, Long timestamp) throws DataNotFoundException {
+		requiredLoggedIn();
+		
 		for (ExperimentSeriesRun run : series.getExperimentSeriesRuns()) {
 			System.out.println(run.getTimestamp() + " " + timestamp);
 			if (timestamp.equals(run.getTimestamp())) {
@@ -241,6 +250,8 @@ public class ResultRPCImpl extends SuperRemoteServlet implements ResultRPC {
 	 * 
 	 */
 	private ExperimentSeries getSeries(ScenarioInstance instance, String name) throws DataNotFoundException {
+		requiredLoggedIn();
+		
 		for (ExperimentSeries series : instance.getExperimentSeriesList()) {
 			if (series.getName().equals(name)) {
 				return series;
@@ -255,7 +266,9 @@ public class ResultRPCImpl extends SuperRemoteServlet implements ResultRPC {
 	 */
 	private ScenarioInstance getScenarioInstance(String sId, String scenarioName, String url)
 			throws DataNotFoundException {
-		User user = UserManager.getUser(sId);
+		requiredLoggedIn();
+		
+		User user = UserManager.instance().getUser(sId);
 		if (user == null) {
 			throw new DataNotFoundException("No user at session '" + sId + "' found..");
 		}

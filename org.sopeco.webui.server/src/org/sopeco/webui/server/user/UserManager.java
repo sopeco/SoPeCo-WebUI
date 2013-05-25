@@ -29,6 +29,7 @@ package org.sopeco.webui.server.user;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,48 +43,30 @@ public final class UserManager {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(UserManager.class);
 
+	private static UserManager singleton;
+
+	public static UserManager instance() {
+		if (singleton == null) {
+			singleton = new UserManager();
+		}
+		return singleton;
+	}
+
+	private Map<String, User> userMap = new HashMap<String, User>();
+
 	private UserManager() {
 	}
 
-	private static HashMap<String, User> userMap = new HashMap<String, User>();
-
 	/**
-	 * Stores the given user in the userMap under the given key.
-	 * 
-	 * @param sessionId
-	 * @param user
-	 */
-	public static void setUser(User user) {
-		LOGGER.debug("stored new user under the id '{}'", user.getSessionId());
-		userMap.put(user.getSessionId(), user);
-	}
-
-	/**
-	 * Returns the user, which has the given session id.
-	 * 
-	 * @param sessionId
-	 * @return user
-	 */
-	public static User getUser(String sessionId) {
-		synchronized (userMap) {
-			if (!userMap.containsKey(sessionId)) {
-				User newUser = new User(sessionId);
-				setUser(newUser);
-			}
-		}
-
-		return userMap.get(sessionId);
-	}
-
-	/**
-	 * Returns whether a user with the given session id exists in the userMap.
+	 * Returns whether a (not expired) user with the given session id exists in
+	 * the userMap.
 	 * 
 	 * @param sessionId
 	 * @return user with the given session exists
 	 */
-	public static boolean existSession(String sessionId) {
+	public boolean existUser(String sessionId) {
 		synchronized (userMap) {
-			return userMap.containsKey(sessionId);
+			return getUser(sessionId) != null;
 		}
 	}
 
@@ -93,24 +76,74 @@ public final class UserManager {
 	 * @param databaseId
 	 * @return
 	 */
-	public static List<User> getAllUserOnDatabase(long accountId) {
+	public List<User> getAllUserOnAccount(long accountId) {
 		List<User> userList = new ArrayList<User>();
-
 		for (User u : userMap.values()) {
-			if (u.getCurrentAccount().getId() == accountId) {
+			if (u.isExpired()) {
+				destroyUser(u);
+			} else if (u.getCurrentAccount().getId() == accountId) {
 				userList.add(u);
 			}
 		}
-
 		return userList;
 	}
 
-	public static HashMap<String, User> getAllUsers() {
-		return new HashMap<String, User>(userMap);
+	/**
+	 * Returns a list with all valid users.
+	 * 
+	 * @return
+	 */
+	public List<User> getAllUsers() {
+		List<User> userList = new ArrayList<User>();
+		for (User u : userMap.values()) {
+			if (u.isExpired()) {
+				destroyUser(u);
+			} else {
+				userList.add(u);
+			}
+		}
+		return userList;
 	}
 
-	public static void removeUser(User u) {
+	/**
+	 * Returns the user, which has the given session id. If there is no user
+	 * with the given session key, it returns null.
+	 * 
+	 * @param sessionId
+	 * @return user
+	 */
+	public User getUser(String sessionId) {
+		synchronized (userMap) {
+			User user = userMap.get(sessionId);
+			if (user != null && user.isExpired()) {
+				destroyUser(user);
+				user = null;
+			}
+			return user;
+		}
+	}
+
+	public User registerUser(String sessionId) {
+		LOGGER.debug("Store new user with the session id '{}'", sessionId);
+		User newUser = new User(sessionId);
+		userMap.put(sessionId, newUser);
+		return newUser;
+	}
+
+	/**
+	 * Destroys the given user.
+	 * 
+	 * @param user
+	 *            to destroy
+	 */
+	public void destroyUser(User u) {
+		LOGGER.debug("Destroy user with the session id '{}'", u.getSessionId());
+
 		userMap.remove(u.getSessionId());
-		u.kill();
+
+		if (u.getCurrentPersistenceProvider() != null) {
+			u.getCurrentPersistenceProvider().closeProvider();
+			u.setCurrentPersistenceProvider(null);
+		}
 	}
 }

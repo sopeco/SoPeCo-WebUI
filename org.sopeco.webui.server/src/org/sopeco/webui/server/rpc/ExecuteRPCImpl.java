@@ -34,6 +34,7 @@ import org.sopeco.webui.server.execute.ControllerQueueManager;
 import org.sopeco.webui.server.helper.ScheduleExpression;
 import org.sopeco.webui.server.persistence.UiPersistence;
 import org.sopeco.webui.server.persistence.entities.ScheduledExperiment;
+import org.sopeco.webui.server.rpc.servlet.SPCRemoteServlet;
 import org.sopeco.webui.shared.entities.ExecutedExperimentDetails;
 import org.sopeco.webui.shared.entities.FrontendScheduledExperiment;
 import org.sopeco.webui.shared.entities.MECLog;
@@ -45,7 +46,7 @@ import org.sopeco.webui.shared.rpc.ExecuteRPC;
  * @author Marius Oehler
  * 
  */
-public class ExecuteRPCImpl extends SuperRemoteServlet implements ExecuteRPC {
+public class ExecuteRPCImpl extends SPCRemoteServlet implements ExecuteRPC {
 
 	/** */
 	private static final long serialVersionUID = 1L;
@@ -55,6 +56,8 @@ public class ExecuteRPCImpl extends SuperRemoteServlet implements ExecuteRPC {
 
 	@Override
 	public void scheduleExperiment(FrontendScheduledExperiment rawScheduledExperiment) {
+		requiredLoggedIn();
+		
 		ScheduledExperiment scheduledExperiment = new ScheduledExperiment(rawScheduledExperiment);
 		scheduledExperiment.setActive(true);
 		scheduledExperiment.setLastExecutionTime(-1);
@@ -74,6 +77,8 @@ public class ExecuteRPCImpl extends SuperRemoteServlet implements ExecuteRPC {
 
 	@Override
 	public List<FrontendScheduledExperiment> getScheduledExperiments() {
+		requiredLoggedIn();
+		
 		long accountId = getUser().getCurrentAccount().getId();
 		List<ScheduledExperiment> resultList = UiPersistence.getUiProvider().loadScheduledExperimentsByAccount(
 				accountId);
@@ -91,6 +96,8 @@ public class ExecuteRPCImpl extends SuperRemoteServlet implements ExecuteRPC {
 
 	@Override
 	public boolean removeScheduledExperiment(long id) {
+		requiredLoggedIn();
+		
 		ScheduledExperiment exp = UiPersistence.getUiProvider().loadScheduledExperiment(id);
 		if (exp != null && exp.getAccountId() == getUser().getCurrentAccount().getId()) {
 			UiPersistence.getUiProvider().removeScheduledExperiment(exp);
@@ -101,6 +108,8 @@ public class ExecuteRPCImpl extends SuperRemoteServlet implements ExecuteRPC {
 
 	@Override
 	public boolean setScheduledExperimentEnabled(long id, boolean enabled) {
+		requiredLoggedIn();
+		
 		ScheduledExperiment exp = UiPersistence.getUiProvider().loadScheduledExperiment(id);
 		if (exp != null && exp.getAccountId() == getUser().getCurrentAccount().getId()) {
 			exp.setActive(enabled);
@@ -112,7 +121,8 @@ public class ExecuteRPCImpl extends SuperRemoteServlet implements ExecuteRPC {
 
 	@Override
 	public List<ExecutedExperimentDetails> getExecutedExperimentDetails() {
-		// String accountId = getUser().getCurrentDatabase().getId();
+		requiredLoggedIn();
+		
 		long accountId = getUser().getCurrentAccount().getId();
 		String scenarioName = getUser().getAccountDetails().getSelectedScenario();
 
@@ -121,17 +131,23 @@ public class ExecuteRPCImpl extends SuperRemoteServlet implements ExecuteRPC {
 
 	@Override
 	public MECLog getMECLog(long id) {
+		requiredLoggedIn();
+		
 		return UiPersistence.getUiProvider().loadMECLog(id);
 	}
 
 	@Override
 	public RunningControllerStatus getControllerLog() {
+		requiredLoggedIn();
+		
 		return ControllerQueueManager.get(getUser().getAccountDetails().getControllerUrl())
 				.createControllerStatusPackage();
 	}
 
 	@Override
 	public void abortCurrentExperiment() {
+		requiredLoggedIn();
+		
 		ControllerQueueManager.get(getUser().getAccountDetails().getControllerUrl()).abortExperiment();
 	}
 }

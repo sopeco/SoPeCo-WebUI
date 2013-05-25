@@ -24,10 +24,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sopeco.webui.server.rpc;
+package org.sopeco.webui.server.rpc.servlet;
 
 import javax.servlet.http.HttpSession;
 
+import org.sopeco.webui.server.security.Security;
 import org.sopeco.webui.server.user.User;
 import org.sopeco.webui.server.user.UserManager;
 
@@ -38,7 +39,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
  * @author Marius Oehler
  * 
  */
-public class SuperRemoteServlet extends RemoteServiceServlet {
+public class SPCRemoteServlet extends RemoteServiceServlet {
 
 	/**
 	 * Returns the current session id.
@@ -54,11 +55,19 @@ public class SuperRemoteServlet extends RemoteServiceServlet {
 	}
 
 	protected User getUser() {
-		return UserManager.getUser(getSessionId());
+		return UserManager.instance().getUser(getSessionId());
+	}
+
+	protected void requiredLoggedIn() {
+		Security.requiredLoggedIn(getSessionId());
 	}
 
 	@Override
 	protected void onAfterResponseSerialized(String serializedResponse) {
-		getUser().setLastRequestTime(System.currentTimeMillis());
+		User user = getUser();
+		if (user != null) {
+			user.setLastRequestTime(System.currentTimeMillis());
+		}
 	}
+
 }

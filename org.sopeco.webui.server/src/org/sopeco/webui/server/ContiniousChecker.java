@@ -55,10 +55,10 @@ public final class ContiniousChecker {
 			userTimeout = config.getPropertyAsInteger(UiConfiguration.USER_TIMEOUT, DEFAULT_USER_TIMEOUT);
 		}
 
-		for (User u : UserManager.getAllUsers().values()) {
+		for (User u : UserManager.instance().getAllUsers()) {
 			if (System.currentTimeMillis() - u.getLastRequestTime() > userTimeout) {
 				LOGGER.fine("Removing user: " + u.getSessionId());
-				UserManager.removeUser(u);
+				UserManager.instance().destroyUser(u);
 			}
 		}
 	}

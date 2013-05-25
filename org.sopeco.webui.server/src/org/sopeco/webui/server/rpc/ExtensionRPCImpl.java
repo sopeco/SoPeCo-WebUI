@@ -36,6 +36,7 @@ import org.sopeco.engine.experimentseries.IParameterVariationExtension;
 import org.sopeco.engine.processing.IProcessingStrategyExtension;
 import org.sopeco.engine.registry.ExtensionRegistry;
 import org.sopeco.engine.registry.ISoPeCoExtension;
+import org.sopeco.webui.server.rpc.servlet.SPCRemoteServlet;
 import org.sopeco.webui.shared.helper.ExtensionContainer;
 import org.sopeco.webui.shared.helper.ExtensionTypes;
 import org.sopeco.webui.shared.rpc.ExtensionRPC;
@@ -45,12 +46,14 @@ import org.sopeco.webui.shared.rpc.ExtensionRPC;
  * @author Marius Oehler
  * 
  */
-public class ExtensionRPCImpl extends SuperRemoteServlet implements ExtensionRPC {
+public class ExtensionRPCImpl extends SPCRemoteServlet implements ExtensionRPC {
 
 	private static final long serialVersionUID = 1L;
 
 	@Override
 	public ExtensionContainer getExtensions() {
+		//requiredLoggedIn();
+		
 		ExtensionContainer container = new ExtensionContainer();
 
 		for (ExtensionTypes type : ExtensionTypes.values()) {
@@ -96,6 +99,8 @@ public class ExtensionRPCImpl extends SuperRemoteServlet implements ExtensionRPC
 	 * @return
 	 */
 	<E extends ISoPeCoExtension<?>> Map<String, Map<String, String>> createExtension(Class<E> c) {
+		//requiredLoggedIn();
+		
 		Map<String, Map<String, String>> extensions = new HashMap<String, Map<String, String>>();
 
 		for (E ext : ExtensionRegistry.getSingleton().getExtensions(c).getList()) {

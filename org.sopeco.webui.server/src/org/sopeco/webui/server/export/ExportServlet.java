@@ -36,6 +36,7 @@ import javax.servlet.http.HttpSession;
 
 import org.sopeco.engine.model.ScenarioDefinitionWriter;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
+import org.sopeco.webui.server.security.Security;
 import org.sopeco.webui.server.user.UserManager;
 
 /**
@@ -56,6 +57,7 @@ public class ExportServlet extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		Security.requiredLoggedIn(req);
 
 		session = req.getSession();
 
@@ -72,13 +74,13 @@ public class ExportServlet extends HttpServlet {
 	 * @throws IOException
 	 */
 	private void sendScenarioAsXML(HttpServletResponse resp, String sessionId) throws IOException {
-		if (!UserManager.existSession(session.getId())) {
+		if (!UserManager.instance().existUser(session.getId())) {
 			resp.sendError(204);
 			return;
 		}
 
-		ScenarioDefinition definition = UserManager.getUser(session.getId()).getCurrentScenarioDefinitionBuilder()
-				.getBuiltScenario();
+		ScenarioDefinition definition = UserManager.instance().getUser(session.getId())
+				.getCurrentScenarioDefinitionBuilder().getBuiltScenario();
 
 		if (definition != null) {
 			ScenarioDefinitionWriter writer = new ScenarioDefinitionWriter(sessionId);

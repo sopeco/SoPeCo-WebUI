@@ -29,4 +29,6 @@ public interface AccountManagementRPC extends RemoteService {
 	AccountDetails getAccountDetails();
 
 	void storeAccountDetails(AccountDetails accountDetails);
+	
+	void logout();
 }

@@ -40,7 +40,7 @@ import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.entities.definition.ParameterNamespace;
 import org.sopeco.persistence.entities.definition.ParameterRole;
 import org.sopeco.webui.server.helper.ServerCheck;
-import org.sopeco.webui.server.rpc.SuperRemoteServlet;
+import org.sopeco.webui.server.rpc.servlet.SPCRemoteServlet;
 import org.sopeco.webui.shared.builder.MeasurementEnvironmentBuilder;
 import org.sopeco.webui.shared.helper.MEControllerProtocol;
 import org.sopeco.webui.shared.push.PushPackage;
@@ -52,7 +52,7 @@ import org.sopeco.webui.shared.rpc.PushRPC.Type;
  * @author Marius Oehler
  * 
  */
-public class MEControllerRPCImpl extends SuperRemoteServlet implements MEControllerRPC {
+public class MEControllerRPCImpl extends SPCRemoteServlet implements MEControllerRPC {
 
 	/**
 	 * 
@@ -83,6 +83,8 @@ public class MEControllerRPCImpl extends SuperRemoteServlet implements MEControl
 
 	@Override
 	public int checkControllerStatus(String url) {
+		requiredLoggedIn();
+		
 		if (!checkUrlIsValid(url) || url == null) {
 			LOGGER.debug("Controller-Status: NO_VALID_MEC_URL");
 			return MEControllerRPC.NO_VALID_MEC_URL;
@@ -154,11 +156,15 @@ public class MEControllerRPCImpl extends SuperRemoteServlet implements MEControl
 
 	@Override
 	public String[] getValidUrlPattern() {
+		requiredLoggedIn();
+		
 		return CONTROLLER_URL_PATTERN;
 	}
 
 	@Override
 	public MeasurementEnvironmentDefinition getMEDefinitionFromMEC(String controllerUrl) {
+		requiredLoggedIn();
+		
 		try {
 			IMeasurementEnvironmentController meCotnroller = MEConnectorFactory.connectTo(new URI(controllerUrl));
 
@@ -182,6 +188,8 @@ public class MEControllerRPCImpl extends SuperRemoteServlet implements MEControl
 
 	@Override
 	public MeasurementEnvironmentDefinition getBlankMEDefinition() {
+		requiredLoggedIn();
+		
 		MeasurementEnvironmentDefinition meDefinition = MeasurementEnvironmentBuilder
 				.createBlankEnvironmentDefinition();
 
@@ -199,12 +207,16 @@ public class MEControllerRPCImpl extends SuperRemoteServlet implements MEControl
 
 	@Override
 	public MeasurementEnvironmentDefinition getCurrentMEDefinition() {
+		requiredLoggedIn();
+		
 		LOGGER.debug("getCurrentMEDefinition");
 		return getUser().getCurrentScenarioDefinitionBuilder().getMEDefinition();
 	}
 
 	@Override
 	public boolean addNamespace(String path) {
+		requiredLoggedIn();
+		
 		LOGGER.debug("rpc: addNamespace: {}", path);
 
 		ParameterNamespace ns = getUser().getCurrentScenarioDefinitionBuilder().getEnvironmentBuilder()
@@ -222,6 +234,8 @@ public class MEControllerRPCImpl extends SuperRemoteServlet implements MEControl
 
 	@Override
 	public boolean removeNamespace(String path) {
+		requiredLoggedIn();
+		
 		LOGGER.debug("rpc: removeNamespace: {}", path);
 
 		ParameterNamespace ns = getUser().getCurrentScenarioDefinitionBuilder().getEnvironmentBuilder()
@@ -247,6 +261,8 @@ public class MEControllerRPCImpl extends SuperRemoteServlet implements MEControl
 
 	@Override
 	public boolean renameNamespace(String namespacePath, String newName) {
+		requiredLoggedIn();
+		
 		LOGGER.debug("rpc: renameNamespace: {}", namespacePath);
 
 		ParameterNamespace ns = getUser().getCurrentScenarioDefinitionBuilder().getEnvironmentBuilder()
@@ -267,6 +283,8 @@ public class MEControllerRPCImpl extends SuperRemoteServlet implements MEControl
 
 	@Override
 	public boolean addParameter(String path, String name, String type, ParameterRole role) {
+		requiredLoggedIn();
+		
 		LOGGER.debug("rpc: addParameter: {} to '{}'", name, path);
 
 		ParameterNamespace ns = getUser().getCurrentScenarioDefinitionBuilder().getEnvironmentBuilder()
@@ -287,6 +305,8 @@ public class MEControllerRPCImpl extends SuperRemoteServlet implements MEControl
 
 	@Override
 	public boolean removeParameter(String path, String name) {
+		requiredLoggedIn();
+		
 		LOGGER.debug("rpc: removeParameter: {} from '{}'", name, path);
 
 		ParameterNamespace ns = getUser().getCurrentScenarioDefinitionBuilder().getEnvironmentBuilder()
@@ -307,6 +327,8 @@ public class MEControllerRPCImpl extends SuperRemoteServlet implements MEControl
 
 	@Override
 	public boolean updateParameter(String path, String oldName, String newName, String type, ParameterRole role) {
+		requiredLoggedIn();
+		
 		LOGGER.debug("rpc: updateParameter: {} from '{}'", oldName, path);
 
 		ParameterNamespace ns = getUser().getCurrentScenarioDefinitionBuilder().getEnvironmentBuilder()
@@ -375,11 +397,15 @@ public class MEControllerRPCImpl extends SuperRemoteServlet implements MEControl
 
 	@Override
 	public boolean isPortReachable(String host, int port) {
+		requiredLoggedIn();
+		
 		return ServerCheck.isPortReachable(host, port);
 	}
 
 	@Override
 	public List<String> getController(MEControllerProtocol protocol, String host, int port) {
+		requiredLoggedIn();
+		
 		if (isPortReachable(host, port)) {
 			return ServerCheck.getController(protocol, host, port);
 		} else {

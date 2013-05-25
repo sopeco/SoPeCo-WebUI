@@ -49,6 +49,7 @@ import org.sopeco.runner.SoPeCoRunner;
 import org.sopeco.webui.server.persistence.UiPersistence;
 import org.sopeco.webui.server.persistence.entities.ScheduledExperiment;
 import org.sopeco.webui.server.rpc.PushRPCImpl;
+import org.sopeco.webui.server.user.User;
 import org.sopeco.webui.server.user.UserManager;
 import org.sopeco.webui.shared.entities.ExecutedExperimentDetails;
 import org.sopeco.webui.shared.entities.MECLog;
@@ -425,10 +426,10 @@ public class ControllerQueue implements IStatusListener {
 		listPackage.setType(Type.PUSH_SCHEDULED_EXPERIMENT);
 		listPackage.setAttachment(fseList);
 
-		for (String sId : UserManager.getAllUsers().keySet()) {
-			Account account = UserManager.getUser(sId).getCurrentAccount();
+		for (User user : UserManager.instance().getAllUsers()) {
+			Account account = user.getCurrentAccount();
 			if (account != null && account.getId() == runningExperiment.getScheduledExperiment().getAccountId()) {
-				PushRPCImpl.push(sId, listPackage);
+				PushRPCImpl.push(user.getSessionId(), listPackage);
 			}
 		}
 	}
