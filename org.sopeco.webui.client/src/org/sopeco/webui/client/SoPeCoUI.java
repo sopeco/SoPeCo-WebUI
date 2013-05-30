@@ -175,6 +175,10 @@ public class SoPeCoUI implements EntryPoint, UncaughtExceptionHandler {
 	public void logout() {
 		Cookies.removeCookie(LoginPanel.COOKIE_RM_ACCOUNT);
 		Cookies.removeCookie(LoginPanel.COOKIE_RM_TOKEN);
+		
+		ServerPush.stop();
+		ServerPush.clear();
+		
 		changeDatabase();
 	}
 

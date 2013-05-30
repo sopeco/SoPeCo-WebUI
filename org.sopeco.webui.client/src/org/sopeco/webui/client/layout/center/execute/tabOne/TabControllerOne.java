@@ -144,8 +144,8 @@ public class TabControllerOne extends TabController implements ClickHandler, MEC
 
 		for (String spec : view.getSelectionPanel().getTreeItems().keySet()) {
 			for (String esd : view.getSelectionPanel().getTreeItems().get(spec).keySet()) {
-				if (view.getSelectionPanel().getTreeItems().get(spec).get(esd).getCheckBox().getValue()) {
-					selectedExperimentSeries.add(esd);
+				if (!view.getSelectionPanel().getTreeItems().get(spec).get(esd).getCheckBox().getValue()) {
+					selectedExperimentSeries.add(spec+"."+esd);
 				}
 			}
 		}

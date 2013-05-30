@@ -105,14 +105,6 @@ public final class ServerPush implements AsyncCallback<List<PushPackage>> {
 
 	@Override
 	public void onFailure(Throwable caught) {
-
-		// if (errorCount < 3) {
-		// waiting = false;
-		// LOGGER.severe("ServerPush failed..");
-		// sendRequest();
-		// } else {
-		// Message.error("Server has been shut down.");
-		// }
 		throw new RuntimeException(caught);
 	}
 
@@ -136,7 +128,7 @@ public final class ServerPush implements AsyncCallback<List<PushPackage>> {
 		sendRequest();
 	}
 
-	public synchronized void sendRequest() {
+	private synchronized void sendRequest() {
 		if (waiting || !running) {
 			return;
 		} else {
