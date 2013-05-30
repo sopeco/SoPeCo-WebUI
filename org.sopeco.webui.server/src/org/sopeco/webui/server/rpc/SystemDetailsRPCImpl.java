@@ -30,6 +30,7 @@ import java.util.HashMap;
 
 import org.sopeco.config.Configuration;
 import org.sopeco.persistence.config.PersistenceConfiguration;
+import org.sopeco.webui.server.rpc.servlet.SPCRemoteServlet;
 import org.sopeco.webui.shared.rpc.SystemDetailsRPC;
 
 /**
@@ -37,7 +38,7 @@ import org.sopeco.webui.shared.rpc.SystemDetailsRPC;
  * @author Marius Oehler
  * 
  */
-public class SystemDetailsRPCImpl extends SuperRemoteServlet implements SystemDetailsRPC {
+public class SystemDetailsRPCImpl extends SPCRemoteServlet implements SystemDetailsRPC {
 
 	private static final long serialVersionUID = 1L;
 

@@ -34,6 +34,7 @@ import java.util.Map;
 import org.sopeco.engine.measurementenvironment.socket.SocketAppWrapper;
 import org.sopeco.engine.measurementenvironment.socket.SocketManager;
 import org.sopeco.webui.server.helper.ServerCheck;
+import org.sopeco.webui.server.rpc.servlet.SPCRemoteServlet;
 import org.sopeco.webui.shared.helper.MEControllerProtocol;
 import org.sopeco.webui.shared.rpc.GetRPC;
 
@@ -42,7 +43,7 @@ import org.sopeco.webui.shared.rpc.GetRPC;
  * @author Marius Oehler
  * 
  */
-public class GetRPCImpl extends SuperRemoteServlet implements GetRPC {
+public class GetRPCImpl extends SPCRemoteServlet implements GetRPC {
 
 	/**
 	 * 
@@ -51,6 +52,8 @@ public class GetRPCImpl extends SuperRemoteServlet implements GetRPC {
 
 	@Override
 	public Map<String, String[]> getConnectedSocketController() {
+		requiredLoggedIn();
+		
 		Map<String, String[]> map = new HashMap<String, String[]>();
 		for (SocketAppWrapper app : SocketManager.getAllSocketApps()) {
 			String address = app.getSocket().getInetAddress().getHostAddress();
@@ -61,6 +64,8 @@ public class GetRPCImpl extends SuperRemoteServlet implements GetRPC {
 
 	@Override
 	public List<String> getControllerFromMEC(MEControllerProtocol protocol, String host, int port) {
+		requiredLoggedIn();
+		
 		if (protocol == MEControllerProtocol.SOCKET) {
 			SocketAppWrapper app = SocketManager.getSocketApp(host);
 			if (app == null) {

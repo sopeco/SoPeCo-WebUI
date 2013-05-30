@@ -39,6 +39,7 @@ import org.sopeco.persistence.entities.ExperimentSeriesRun;
 import org.sopeco.persistence.entities.ScenarioInstance;
 import org.sopeco.persistence.exceptions.DataNotFoundException;
 import org.sopeco.persistence.util.DataSetCsvHandler;
+import org.sopeco.webui.server.security.Security;
 import org.sopeco.webui.server.user.User;
 import org.sopeco.webui.server.user.UserManager;
 
@@ -49,8 +50,12 @@ import org.sopeco.webui.server.user.UserManager;
  */
 public class DataSetExportServlet extends HttpServlet {
 
+	/**	 */
+	private static final long serialVersionUID = 1L;
+
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		Security.requiredLoggedIn(req);
 
 		String seperator = req.getParameter("seperator");
 		String pTimestamp = req.getParameter("timestamp");
@@ -126,7 +131,7 @@ public class DataSetExportServlet extends HttpServlet {
 	 */
 	private ScenarioInstance getScenarioInstance(String sId, String scenarioName, String url)
 			throws DataNotFoundException {
-		User user = UserManager.getUser(sId);
+		User user = UserManager.instance().getUser(sId);
 		if (user == null) {
 			throw new DataNotFoundException("No user at session '" + sId + "' found..");
 		}

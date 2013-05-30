@@ -6,9 +6,11 @@ import org.sopeco.config.Configuration;
 import org.sopeco.persistence.IPersistenceProvider;
 import org.sopeco.persistence.config.PersistenceConfiguration;
 import org.sopeco.persistence.exceptions.WrongCredentialsException;
-import org.sopeco.webui.server.helper.Security;
 import org.sopeco.webui.server.persistence.FlexiblePersistenceProviderFactory;
 import org.sopeco.webui.server.persistence.UiPersistence;
+import org.sopeco.webui.server.rpc.servlet.SPCRemoteServlet;
+import org.sopeco.webui.server.security.Crypto;
+import org.sopeco.webui.server.user.UserManager;
 import org.sopeco.webui.shared.entities.account.Account;
 import org.sopeco.webui.shared.entities.account.AccountDetails;
 import org.sopeco.webui.shared.entities.account.RememberMeToken;
@@ -20,7 +22,7 @@ import org.sopeco.webui.shared.rpc.AccountManagementRPC;
  * @author Marius Oehler
  * 
  */
-public class AccountManagementRPCImpl extends SuperRemoteServlet implements AccountManagementRPC {
+public class AccountManagementRPCImpl extends SPCRemoteServlet implements AccountManagementRPC {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AccountManagementRPCImpl.class);
 
@@ -42,12 +44,12 @@ public class AccountManagementRPCImpl extends SuperRemoteServlet implements Acco
 
 		Account account = new Account();
 		account.setName(accountName);
-		account.setPaswordHash(Security.sha256(password));
+		account.setPaswordHash(Crypto.sha256(password));
 
 		account.setDbHost(dbHost);
 		account.setDbPort(dbPort);
 		account.setDbName(accountName);
-		account.setDbPassword(Security.encrypt(password, password));
+		account.setDbPassword(Crypto.encrypt(password, password));
 
 		account.setLastInteraction(-1);
 
@@ -78,7 +80,7 @@ public class AccountManagementRPCImpl extends SuperRemoteServlet implements Acco
 			return false;
 		}
 
-		String hash = Security.sha256(password);
+		String hash = Crypto.sha256(password);
 		if (account.getPaswordHash().equals(hash)) {
 			return true;
 		} else {
@@ -96,14 +98,14 @@ public class AccountManagementRPCImpl extends SuperRemoteServlet implements Acco
 			LOGGER.debug("Account '{}' doesn't exist.", accountName);
 			return response;
 		}
-		if (!account.getPaswordHash().equals(Security.sha256(password))) {
+		if (!account.getPaswordHash().equals(Crypto.sha256(password))) {
 			LOGGER.debug("Wrong password. Password hashes are not equal!");
 			return response;
 		}
 
 		IPersistenceProvider persistence = null;
 		try {
-			String databasePassword = Security.decrypt(password, account.getDbPassword());
+			String databasePassword = Crypto.decrypt(password, account.getDbPassword());
 			if (databasePassword.isEmpty()) {
 				persistence = FlexiblePersistenceProviderFactory.createPersistenceProvider(getSession(),
 						account.getDbHost(), account.getDbPort() + "", account.getDbName());
@@ -125,17 +127,20 @@ public class AccountManagementRPCImpl extends SuperRemoteServlet implements Acco
 		response.setSuccessful(true);
 
 		if (persistentLogin) {
-			String secretToken = Security.sha256(System.currentTimeMillis() + getSessionId() + accountName);
+			String secretToken = Crypto.sha256(System.currentTimeMillis() + getSessionId() + accountName);
 			response.setRememberMeToken(secretToken);
 
 			RememberMeToken rememberMeToken = new RememberMeToken();
-			rememberMeToken.setTokenHash(Security.sha256(secretToken));
+			rememberMeToken.setTokenHash(Crypto.sha256(secretToken));
 			rememberMeToken.setAccountId(account.getId());
 			rememberMeToken.setExpireTimestamp(System.currentTimeMillis() + 1000 * 3600 * 24 * 7);
-			rememberMeToken.setEncrypted(Security.encrypt(secretToken, password));
+			rememberMeToken.setEncrypted(Crypto.encrypt(secretToken, password));
 
 			UiPersistence.getUiProvider().storeRememberMeToken(rememberMeToken);
 		}
+
+		UserManager.instance().getAllUsers();
+		UserManager.instance().registerUser(getSessionId());
 
 		getUser().setCurrentAccount(account);
 		getUser().setCurrentPersistenceProvider(persistence);
@@ -156,7 +161,7 @@ public class AccountManagementRPCImpl extends SuperRemoteServlet implements Acco
 		UiPersistence.getUiProvider().deleteExpiredRememberMeToken();
 		LoginResponse response = new LoginResponse(false, null);
 
-		String tokenHash = Security.sha256(rememberMeToken);
+		String tokenHash = Crypto.sha256(rememberMeToken);
 		RememberMeToken rmToken = UiPersistence.getUiProvider().loadRememberMeToken(tokenHash);
 
 		if (rmToken == null) {
@@ -166,7 +171,7 @@ public class AccountManagementRPCImpl extends SuperRemoteServlet implements Acco
 		UiPersistence.getUiProvider().removeRememberMeToken(rmToken);
 
 		try {
-			String password = Security.decrypt(rememberMeToken, rmToken.getEncrypted());
+			String password = Crypto.decrypt(rememberMeToken, rmToken.getEncrypted());
 
 			return login(accountName, password, true);
 		} catch (Exception e) {
@@ -176,11 +181,22 @@ public class AccountManagementRPCImpl extends SuperRemoteServlet implements Acco
 
 	@Override
 	public AccountDetails getAccountDetails() {
+		requiredLoggedIn();
+		
 		return getUser().getAccountDetails();
 	}
 
 	@Override
 	public void storeAccountDetails(AccountDetails accountDetails) {
+		requiredLoggedIn();
+		
 		UiPersistence.getUiProvider().storeAccountDetails(accountDetails);
+	}
+
+	@Override
+	public void logout() {
+		requiredLoggedIn();
+		
+		UserManager.instance().destroyUser(getUser());
 	}
 }

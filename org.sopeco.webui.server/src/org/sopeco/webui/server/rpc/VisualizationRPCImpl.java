@@ -53,6 +53,7 @@ import org.sopeco.webui.server.chartconnector.IChartCreator;
 import org.sopeco.webui.server.chartconnector.IChartCreatorExtension;
 import org.sopeco.webui.server.gcharts.GCharts;
 import org.sopeco.webui.server.persistence.UiPersistence;
+import org.sopeco.webui.server.rpc.servlet.SPCRemoteServlet;
 import org.sopeco.webui.server.user.User;
 import org.sopeco.webui.server.user.UserManager;
 import org.sopeco.webui.shared.definitions.result.SharedExperimentRuns;
@@ -65,7 +66,7 @@ import org.sopeco.webui.shared.entities.Visualization;
 import org.sopeco.webui.shared.entities.VisualizationBundle;
 import org.sopeco.webui.shared.rpc.VisualizationRPC;
 
-public class VisualizationRPCImpl extends SuperRemoteServlet implements VisualizationRPC {
+public class VisualizationRPCImpl extends SPCRemoteServlet implements VisualizationRPC {
 	private IChartCreator chartCreator;
 	private List<IChartCreatorExtension> extensions;
 	public static final String G_CHARTS = "Google Charts";
@@ -78,6 +79,8 @@ public class VisualizationRPCImpl extends SuperRemoteServlet implements Visualiz
 	@Override
 	public Visualization createVisualization(SharedExperimentRuns experiementRun, ChartParameter inputParameter,
 			ChartParameter outputParameterd, ChartOptions options, String extension) {
+		requiredLoggedIn();
+		
 		ChartData data;
 		loadExtension(extension);
 		String scenarioName = experiementRun.getParentSeries().getParentInstance().getScenarioName();
@@ -102,6 +105,8 @@ public class VisualizationRPCImpl extends SuperRemoteServlet implements Visualiz
 
 	@Override
 	public VisualizationBundle getVisualizations(int start, int length) {
+		requiredLoggedIn();
+		
 		VisualizationBundle visualizationBundle = new VisualizationBundle();
 		List<Visualization> visualizations = new ArrayList<Visualization>();
 		long accountId = getUser().getCurrentAccount().getId();
@@ -192,7 +197,7 @@ public class VisualizationRPCImpl extends SuperRemoteServlet implements Visualiz
 			Long timestamp) {
 		ScenarioInstance instance;
 		try {
-			User user = UserManager.getUser(getSessionId());
+			User user = UserManager.instance().getUser(getSessionId());
 			if (user == null) {
 				throw new DataNotFoundException("No user at session found..");
 			}
@@ -235,6 +240,8 @@ public class VisualizationRPCImpl extends SuperRemoteServlet implements Visualiz
 
 	@Override
 	public Void deleteVisualization(Visualization visualization) {
+		requiredLoggedIn();
+		
 		UiPersistence.getUiProvider().removeVisualization(visualization);
 		return null;
 	}
@@ -254,6 +261,8 @@ public class VisualizationRPCImpl extends SuperRemoteServlet implements Visualiz
 
 	@Override
 	public List<String> getExtensions() {
+		requiredLoggedIn();
+		
 		List<String> extensionNames = new ArrayList<String>();
 		extensionNames.add(G_CHARTS);
 		for (IChartCreatorExtension ex : extensions) {
@@ -265,6 +274,8 @@ public class VisualizationRPCImpl extends SuperRemoteServlet implements Visualiz
 	@Override
 	public Map<Double, List<Double>> applySplineInterpolation(Map<Double, List<Double>> values, double min, double max,
 			double step) {
+		requiredLoggedIn();
+		
 		List<Double> xValues = new ArrayList<Double>();
 		List<Double> yValues = new ArrayList<Double>();
 		min = values.entrySet().iterator().next().getKey();

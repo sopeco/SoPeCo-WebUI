@@ -32,7 +32,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sopeco.persistence.entities.definition.MeasurementSpecification;
-import org.sopeco.webui.server.rpc.SuperRemoteServlet;
+import org.sopeco.webui.server.rpc.servlet.SPCRemoteServlet;
 import org.sopeco.webui.shared.builder.MeasurementSpecificationBuilder;
 import org.sopeco.webui.shared.helper.Metering;
 import org.sopeco.webui.shared.rpc.MSpecificationRPC;
@@ -42,13 +42,15 @@ import org.sopeco.webui.shared.rpc.MSpecificationRPC;
  * @author Marius Oehler
  * 
  */
-public class MSpecificationRPCImpl extends SuperRemoteServlet implements MSpecificationRPC {
+public class MSpecificationRPCImpl extends SPCRemoteServlet implements MSpecificationRPC {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(MSpecificationRPCImpl.class);
 	private static final long serialVersionUID = 1L;
 
 	@Override
 	public List<String> getAllSpecificationNames() {
+		requiredLoggedIn();
+		
 		double metering = Metering.start();
 
 		List<String> returnList = new ArrayList<String>();
@@ -65,6 +67,8 @@ public class MSpecificationRPCImpl extends SuperRemoteServlet implements MSpecif
 
 	@Override
 	public List<MeasurementSpecification> getAllSpecifications() {
+		requiredLoggedIn();
+		
 		double metering = Metering.start();
 
 		List<MeasurementSpecification> returnList = new ArrayList<MeasurementSpecification>();
@@ -79,6 +83,8 @@ public class MSpecificationRPCImpl extends SuperRemoteServlet implements MSpecif
 
 	@Override
 	public boolean setWorkingSpecification(String specificationName) {
+		requiredLoggedIn();
+		
 		double metering = Metering.start();
 
 		LOGGER.debug("Set working specification on: " + specificationName);
@@ -115,6 +121,8 @@ public class MSpecificationRPCImpl extends SuperRemoteServlet implements MSpecif
 
 	@Override
 	public boolean createSpecification(String name) {
+		requiredLoggedIn();
+		
 		double metering = Metering.start();
 
 		if (existSpecification(name)) {
@@ -138,6 +146,8 @@ public class MSpecificationRPCImpl extends SuperRemoteServlet implements MSpecif
 
 	@Override
 	public boolean renameWorkingSpecification(String newName) {
+		requiredLoggedIn();
+		
 		double metering = Metering.start();
 
 		if (existSpecification(newName)) {
