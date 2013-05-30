@@ -41,7 +41,7 @@ import org.sopeco.persistence.entities.ScenarioInstance;
 import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 import org.sopeco.persistence.exceptions.DataNotFoundException;
-import org.sopeco.webui.server.rpc.SuperRemoteServlet;
+import org.sopeco.webui.server.rpc.servlet.SPCRemoteServlet;
 import org.sopeco.webui.shared.builder.ScenarioDefinitionBuilder;
 import org.sopeco.webui.shared.rpc.ScenarioManagerRPC;
 
@@ -52,13 +52,14 @@ import org.sopeco.webui.shared.rpc.ScenarioManagerRPC;
  * @author Marius Oehler
  * 
  */
-public class ScenarioManagerRPCImpl extends SuperRemoteServlet implements ScenarioManagerRPC {
+public class ScenarioManagerRPCImpl extends SPCRemoteServlet implements ScenarioManagerRPC {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ScenarioManagerRPCImpl.class);
 	private static final long serialVersionUID = 1L;
 
 	@Override
 	public String[] getScenarioNames() {
+		requiredLoggedIn();
 
 		IPersistenceProvider dbCon = getUser().getCurrentPersistenceProvider();
 
@@ -85,6 +86,8 @@ public class ScenarioManagerRPCImpl extends SuperRemoteServlet implements Scenar
 
 	@Override
 	public boolean addScenario(String scenarioName, String specificationName, ExperimentSeriesDefinition experiment) {
+		requiredLoggedIn();
+		
 		scenarioName = scenarioName.replaceAll("[^a-zA-Z0-9_]", "_");
 
 		ScenarioDefinition emptyScenario = ScenarioDefinitionBuilder.buildEmptyScenario(scenarioName);
@@ -111,6 +114,8 @@ public class ScenarioManagerRPCImpl extends SuperRemoteServlet implements Scenar
 
 	@Override
 	public boolean addScenario(ScenarioDefinition scenario) {
+		requiredLoggedIn();
+		
 		IPersistenceProvider dbCon = getUser().getCurrentPersistenceProvider();
 
 		if (dbCon == null) {
@@ -126,6 +131,8 @@ public class ScenarioManagerRPCImpl extends SuperRemoteServlet implements Scenar
 
 	@Override
 	public boolean removeScenario(String name) {
+		requiredLoggedIn();
+		
 		if (!name.matches("[a-zA-Z0-9_]+")) {
 			return false;
 		}
@@ -146,6 +153,8 @@ public class ScenarioManagerRPCImpl extends SuperRemoteServlet implements Scenar
 
 	@Override
 	public boolean switchScenario(String name) {
+		requiredLoggedIn();
+		
 		ScenarioDefinition definition = loadScenarioDefinition(name);
 		if (definition == null) {
 			return false;
@@ -171,11 +180,15 @@ public class ScenarioManagerRPCImpl extends SuperRemoteServlet implements Scenar
 
 	@Override
 	public ScenarioDefinition getCurrentScenarioDefinition() {
+		requiredLoggedIn();
+		
 		return getUser().getCurrentScenarioDefinitionBuilder().getBuiltScenario();
 	}
 
 	@Override
 	public boolean storeScenarioDefinition(ScenarioDefinition definition) {
+		requiredLoggedIn();
+		
 		ScenarioDefinition current = getUser().getCurrentScenarioDefinitionBuilder().getBuiltScenario();
 		try {
 			for (ScenarioInstance instance : getUser().getCurrentPersistenceProvider().loadScenarioInstances(
@@ -204,6 +217,8 @@ public class ScenarioManagerRPCImpl extends SuperRemoteServlet implements Scenar
 
 	@Override
 	public String getScenarioAsXML() {
+		requiredLoggedIn();
+		
 		ScenarioDefinition definition = getUser().getCurrentScenarioDefinitionBuilder().getBuiltScenario();
 
 		if (definition != null) {

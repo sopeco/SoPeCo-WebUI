@@ -1,4 +1,4 @@
-package org.sopeco.webui.server.helper;
+package org.sopeco.webui.server.security;
 
 import java.io.UnsupportedEncodingException;
 import java.security.AlgorithmParameters;
@@ -20,12 +20,12 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
-public final class Security {
+public final class Crypto {
 
 	/** 8 random bytes */
 	private static final byte[] SALT = { 'S', 'O', 'F', 'T', 'W', 'A', 'R', 'E' };
 
-	private Security() {
+	private Crypto() {
 	}
 
 	/**

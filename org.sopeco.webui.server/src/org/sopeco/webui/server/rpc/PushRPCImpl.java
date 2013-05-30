@@ -29,7 +29,10 @@ package org.sopeco.webui.server.rpc;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.sopeco.webui.server.rpc.servlet.SPCRemoteServlet;
+import org.sopeco.webui.server.user.User;
 import org.sopeco.webui.server.user.UserManager;
 import org.sopeco.webui.shared.push.PushPackage;
 import org.sopeco.webui.shared.rpc.PushRPC;
@@ -39,28 +42,29 @@ import org.sopeco.webui.shared.rpc.PushRPC;
  * @author Marius Oehler
  * 
  */
-public class PushRPCImpl extends SuperRemoteServlet implements PushRPC {
+public class PushRPCImpl extends SPCRemoteServlet implements PushRPC {
 
 	private static final long serialVersionUID = 1L;
 	private static final int TIMEOUT = 30000;
 
-	private static HashMap<String, List<PushPackage>> packageListMap = new HashMap<String, List<PushPackage>>();
+	private static Map<String, List<PushPackage>> packageListMap = new HashMap<String, List<PushPackage>>();
 
-	public PushPackage push() {
+	public List<PushPackage> push() {
 		try {
 			initList(getSessionId());
 
-			PushPackage sendingPackage = new PushPackage(Type.IDLE);
+			List<PushPackage> returnList = new ArrayList<PushPackage>();
 			synchronized (packageListMap.get(getSessionId())) {
-				if (packageListMap.get(getSessionId()).isEmpty()) {
-					packageListMap.get(getSessionId()).wait(TIMEOUT);
+				List<PushPackage> list = packageListMap.get(getSessionId());
+				if (list.isEmpty()) {
+					list.wait(TIMEOUT);
 				}
-				if (!packageListMap.get(getSessionId()).isEmpty()) {
-					sendingPackage = packageListMap.get(getSessionId()).get(0);
-					packageListMap.get(getSessionId()).remove(0);
+				if (!list.isEmpty()) {
+					returnList.addAll(list);
+					list.clear();
 				}
 			}
-			return sendingPackage;
+			return returnList;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -98,11 +102,11 @@ public class PushRPCImpl extends SuperRemoteServlet implements PushRPC {
 	}
 
 	public static void pushToAllOnController(String controllerUrl, PushPackage pushPackage) {
-		for (String sId : UserManager.getAllUsers().keySet()) {
+		for (User user : UserManager.instance().getAllUsers() ) {
 			try {
-				String cUrl = UserManager.getUser(sId).getAccountDetails().getControllerUrl();
+				String cUrl = user.getAccountDetails().getControllerUrl();
 				if (cUrl != null && cUrl.equals(controllerUrl)) {
-					PushRPCImpl.push(sId, pushPackage);
+					PushRPCImpl.push(user.getSessionId(), pushPackage);
 				}
 			} catch (NullPointerException x) {
 				// TODO

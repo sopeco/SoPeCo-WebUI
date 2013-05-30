@@ -45,16 +45,14 @@ public class UserTest {
 	public void addAndRemoveUser() {
 		String id = "testId";
 
-		User user = new User(id);
+		User user = UserManager.instance().registerUser(id);
 
-		UserManager.setUser(user);
+		assertEquals(UserManager.instance().getUser(id), user);
+		assertTrue(UserManager.instance().existUser(id));
 
-		assertEquals(UserManager.getUser(id), user);
-		assertTrue(UserManager.existSession(id));
+		UserManager.instance().destroyUser(user);
 
-		UserManager.removeUser(user);
-
-		assertTrue(UserManager.getAllUsers().isEmpty());
-		assertFalse(UserManager.existSession(id));
+		assertTrue(UserManager.instance().getAllUsers().isEmpty());
+		assertFalse(UserManager.instance().existUser(id));
 	}
 }

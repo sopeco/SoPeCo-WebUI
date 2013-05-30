@@ -24,49 +24,50 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sopeco.webui.shared.push;
+package org.sopeco.webui.server.rpc.servlet;
 
-import java.util.ArrayList;
+import javax.servlet.http.HttpSession;
+
+import org.sopeco.webui.server.security.Security;
+import org.sopeco.webui.server.user.User;
+import org.sopeco.webui.server.user.UserManager;
+
+import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 /**
  * 
  * @author Marius Oehler
  * 
  */
-public class PushListPackage extends PushPackage {
+public class SPCRemoteServlet extends RemoteServiceServlet {
+
 	/**
-	 * 
+	 * Returns the current session id.
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private ArrayList<PushSerializable> attachment = new ArrayList<PushSerializable>();
-
-	/**
-	 * Returns the attachment.
-	 * 
-	 * @return the attachment
-	 */
-	public ArrayList<PushSerializable> getAttachment() {
-		return attachment;
+	protected String getSessionId() {
+		return getThreadLocalRequest().getSession().getId();
 	}
 
-	/**
-	 * Returns the attached list. The elements are cast to the given class.
-	 * 
-	 * @return the attachment
-	 */
-	@SuppressWarnings("unchecked")
-	public <T> ArrayList<T> getAttachment(Class<T> clazz) {
-		return (ArrayList<T>) attachment;
+	protected HttpSession getSession() {
+		return getThreadLocalRequest().getSession();
 	}
 
-	/**
-	 * Sets the given ArrayList as the attached list.
-	 * 
-	 * @param pAttachment
-	 *            the attachment to set
-	 */
-	public void setAttachment(ArrayList<PushSerializable> pAttachment) {
-		attachment = pAttachment;
+	protected User getUser() {
+		return UserManager.instance().getUser(getSessionId());
 	}
+
+	protected void requiredLoggedIn() {
+		Security.requiredLoggedIn(getSessionId());
+	}
+
+	@Override
+	protected void onAfterResponseSerialized(String serializedResponse) {
+		User user = getUser();
+		if (user != null) {
+			user.setLastRequestTime(System.currentTimeMillis());
+		}
+	}
+
 }

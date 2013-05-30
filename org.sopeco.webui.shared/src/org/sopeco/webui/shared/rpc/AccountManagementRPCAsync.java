@@ -27,4 +27,6 @@ public interface AccountManagementRPCAsync {
 	void getAccountDetails(AsyncCallback<AccountDetails> callback);
 
 	void storeAccountDetails(AccountDetails accountDetails, AsyncCallback<Void> callback);
+	
+	void logout(AsyncCallback<Void> callback);
 }

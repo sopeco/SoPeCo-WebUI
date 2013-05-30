@@ -29,6 +29,8 @@ package org.sopeco.webui.client.layout.center.execute.tabThree;
 import java.util.Date;
 import java.util.List;
 
+import org.sopeco.webui.client.helper.push.PushListener;
+import org.sopeco.webui.client.helper.push.ServerPush;
 import org.sopeco.webui.client.layout.center.execute.ExecuteController;
 import org.sopeco.webui.client.layout.center.execute.ExecuteTabPanel;
 import org.sopeco.webui.client.layout.center.execute.TabController;
@@ -38,6 +40,10 @@ import org.sopeco.webui.shared.entities.FrontendScheduledExperiment;
 import org.sopeco.webui.shared.entities.RunningControllerStatus;
 import org.sopeco.webui.shared.helper.MECLogEntry;
 import org.sopeco.webui.shared.helper.Metering;
+import org.sopeco.webui.shared.push.PushDomain;
+import org.sopeco.webui.shared.push.PushPackage;
+import org.sopeco.webui.shared.push.packages.PushControllerStatus;
+import org.sopeco.webui.shared.push.packages.PushScheduledExperiments;
 import org.sopeco.webui.shared.rpc.RPC;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -54,7 +60,7 @@ import com.google.gwt.user.client.ui.HTML;
  * @author Marius Oehler
  * 
  */
-public class TabControllerThree extends TabController implements ClickHandler {
+public class TabControllerThree extends TabController implements ClickHandler, PushListener {
 
 	private TabView tabView;
 	private RunningControllerStatus controllerExperiment;
@@ -76,6 +82,8 @@ public class TabControllerThree extends TabController implements ClickHandler {
 				updateTimes();
 			}
 		};
+
+		ServerPush.registerListener(PushDomain.TAB_CONTROLLER_THREE, this);
 	}
 
 	@Override
@@ -242,5 +250,14 @@ public class TabControllerThree extends TabController implements ClickHandler {
 			}
 		});
 
+	}
+
+	@Override
+	public void receive(PushPackage pushPackage) {
+		if (pushPackage instanceof PushScheduledExperiments) {
+			setControllerQueue(((PushScheduledExperiments) pushPackage).getList());
+		} else if (pushPackage instanceof PushControllerStatus) {
+			setCurrentControllerExperiment(((PushControllerStatus) pushPackage).getCcExperiment());
+		}
 	}
 }

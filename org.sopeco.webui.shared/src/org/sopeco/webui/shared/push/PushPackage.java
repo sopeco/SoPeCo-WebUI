@@ -28,8 +28,6 @@ package org.sopeco.webui.shared.push;
 
 import java.io.Serializable;
 
-import org.sopeco.webui.shared.rpc.PushRPC.Type;
-
 /**
  * 
  * @author Marius Oehler
@@ -38,21 +36,18 @@ import org.sopeco.webui.shared.rpc.PushRPC.Type;
 public class PushPackage implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	private Type type;
 
-	public PushPackage() {
-		type = Type.IDLE;
+	private PushDomain domain;
+
+	protected PushPackage() {
 	}
 
-	public PushPackage(Type pType) {
-		type = pType;
+	public PushPackage(PushDomain pDomain) {
+		domain = pDomain;
 	}
 
-	public Type getType() {
-		return type;
+	public PushDomain getDomain() {
+		return domain;
 	}
 
-	public void setType(Type pType) {
-		type = pType;
-	}
 }

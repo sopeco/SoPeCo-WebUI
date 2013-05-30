@@ -26,6 +26,8 @@
  */
 package org.sopeco.webui.shared.rpc;
 
+import java.util.List;
+
 import org.sopeco.webui.shared.push.PushPackage;
 
 import com.google.gwt.user.client.rpc.RemoteService;
@@ -47,5 +49,5 @@ public interface PushRPC extends RemoteService {
 		PUSH_SCHEDULED_EXPERIMENT, PUSH_CURRENT_CONTROLLER_EXPERIMENT, PUSH_CURRENT_CONTROLLER_QUEUE, PUSH_SERVER_SHUTTING_DOWN
 	}
 
-	PushPackage push();
+	List<PushPackage> push();
 }

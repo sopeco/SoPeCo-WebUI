@@ -31,6 +31,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.sopeco.webui.client.helper.push.PushListener;
+import org.sopeco.webui.client.helper.push.ServerPush;
 import org.sopeco.webui.client.layout.center.execute.ExecuteController;
 import org.sopeco.webui.client.layout.center.execute.ExecuteTabPanel;
 import org.sopeco.webui.client.layout.center.execute.TabController;
@@ -40,6 +42,9 @@ import org.sopeco.webui.client.manager.Manager;
 import org.sopeco.webui.client.resources.R;
 import org.sopeco.webui.shared.entities.FrontendScheduledExperiment;
 import org.sopeco.webui.shared.helper.Metering;
+import org.sopeco.webui.shared.push.PushDomain;
+import org.sopeco.webui.shared.push.PushPackage;
+import org.sopeco.webui.shared.push.packages.PushScheduledExperiments;
 import org.sopeco.webui.shared.rpc.RPC;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -52,7 +57,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
  * @author Marius Oehler
  * 
  */
-public class TabControllerTwo extends TabController {
+public class TabControllerTwo extends TabController implements PushListener {
 
 	private static final Logger LOGGER = Logger.getLogger(TabControllerTwo.class.getName());
 
@@ -75,6 +80,8 @@ public class TabControllerTwo extends TabController {
 	 */
 	private void initialize() {
 		view = new ScheduleTab();
+		
+		ServerPush.registerListener(PushDomain.TAB_CONTROLLER_TWO, this);
 	}
 
 	/**
@@ -238,5 +245,13 @@ public class TabControllerTwo extends TabController {
 	public void updateExperimentCount(int count) {
 		((ExecuteTabPanel) getParentController().getView()).getTabBar().setTabText(1,
 				R.lang.ScheduledExperiments() + " [" + count + "]");
+	}
+
+	@Override
+	public void receive(PushPackage pushPackage) {
+		if (pushPackage instanceof PushScheduledExperiments) {
+			PushScheduledExperiments push = (PushScheduledExperiments) pushPackage;
+			setScheduledExperiments(push.getList());
+		}
 	}
 }

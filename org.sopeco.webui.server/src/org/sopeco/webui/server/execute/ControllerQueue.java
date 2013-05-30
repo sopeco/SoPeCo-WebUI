@@ -49,15 +49,17 @@ import org.sopeco.runner.SoPeCoRunner;
 import org.sopeco.webui.server.persistence.UiPersistence;
 import org.sopeco.webui.server.persistence.entities.ScheduledExperiment;
 import org.sopeco.webui.server.rpc.PushRPCImpl;
+import org.sopeco.webui.server.user.User;
 import org.sopeco.webui.server.user.UserManager;
 import org.sopeco.webui.shared.entities.ExecutedExperimentDetails;
+import org.sopeco.webui.shared.entities.FrontendScheduledExperiment;
 import org.sopeco.webui.shared.entities.MECLog;
 import org.sopeco.webui.shared.entities.RunningControllerStatus;
 import org.sopeco.webui.shared.entities.account.Account;
-import org.sopeco.webui.shared.push.PushListPackage;
-import org.sopeco.webui.shared.push.PushObjectPackage;
+import org.sopeco.webui.shared.push.PushDomain;
 import org.sopeco.webui.shared.push.PushSerializable;
-import org.sopeco.webui.shared.rpc.PushRPC.Type;
+import org.sopeco.webui.shared.push.packages.PushControllerStatus;
+import org.sopeco.webui.shared.push.packages.PushScheduledExperiments;
 
 /**
  * 
@@ -259,11 +261,10 @@ public class ControllerQueue implements IStatusListener {
 	 * users, which use this MEController.
 	 */
 	private void pushRunningExperimentStatus() {
-		PushObjectPackage objectPackage = new PushObjectPackage();
-		objectPackage.setType(Type.PUSH_CURRENT_CONTROLLER_EXPERIMENT);
-		objectPackage.setAttachment(createControllerStatusPackage());
+		PushControllerStatus pcs = new PushControllerStatus(PushDomain.TAB_CONTROLLER_THREE);
+		pcs.setCcExperiment(createControllerStatusPackage());
 
-		PushRPCImpl.pushToAllOnController(runningExperiment.getScheduledExperiment().getControllerUrl(), objectPackage);
+		PushRPCImpl.pushToAllOnController(runningExperiment.getScheduledExperiment().getControllerUrl(), pcs);
 	}
 
 	/**
@@ -275,16 +276,15 @@ public class ControllerQueue implements IStatusListener {
 			return;
 		}
 
-		ArrayList<PushSerializable> list = new ArrayList<PushSerializable>();
+		ArrayList<FrontendScheduledExperiment> list = new ArrayList<FrontendScheduledExperiment>();
 		for (QueuedExperiment experiment : experimentQueue) {
 			list.add(experiment.getScheduledExperiment().createFrontendScheduledExperiment());
 		}
 
-		PushListPackage listPackage = new PushListPackage();
-		listPackage.setType(Type.PUSH_CURRENT_CONTROLLER_QUEUE);
-		listPackage.setAttachment(list);
+		PushScheduledExperiments pse = new PushScheduledExperiments(PushDomain.TAB_CONTROLLER_THREE);
+		pse.setList(list);
 
-		PushRPCImpl.pushToAllOnController(runningExperiment.getScheduledExperiment().getControllerUrl(), listPackage);
+		PushRPCImpl.pushToAllOnController(runningExperiment.getScheduledExperiment().getControllerUrl(), pse);
 	}
 
 	//
@@ -416,19 +416,18 @@ public class ControllerQueue implements IStatusListener {
 		List<ScheduledExperiment> resultList = UiPersistence.getUiProvider().loadScheduledExperimentsByAccount(
 				runningExperiment.getScheduledExperiment().getAccountId());
 
-		ArrayList<PushSerializable> fseList = new ArrayList<PushSerializable>();
+		ArrayList<FrontendScheduledExperiment> fseList = new ArrayList<FrontendScheduledExperiment>();
 		for (ScheduledExperiment experiment : resultList) {
 			fseList.add(experiment.createFrontendScheduledExperiment());
 		}
 
-		PushListPackage listPackage = new PushListPackage();
-		listPackage.setType(Type.PUSH_SCHEDULED_EXPERIMENT);
-		listPackage.setAttachment(fseList);
+		PushScheduledExperiments pse = new PushScheduledExperiments(PushDomain.TAB_CONTROLLER_TWO);
+		pse.setList(fseList);
 
-		for (String sId : UserManager.getAllUsers().keySet()) {
-			Account account = UserManager.getUser(sId).getCurrentAccount();
+		for (User user : UserManager.instance().getAllUsers()) {
+			Account account = user.getCurrentAccount();
 			if (account != null && account.getId() == runningExperiment.getScheduledExperiment().getAccountId()) {
-				PushRPCImpl.push(sId, listPackage);
+				PushRPCImpl.push(user.getSessionId(), pse);
 			}
 		}
 	}

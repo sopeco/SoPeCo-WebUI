@@ -28,9 +28,12 @@ package org.sopeco.webui.server.user;
 
 import java.util.logging.Logger;
 
+import org.sopeco.config.Configuration;
+import org.sopeco.config.IConfiguration;
 import org.sopeco.persistence.IPersistenceProvider;
 import org.sopeco.persistence.entities.definition.MeasurementSpecification;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
+import org.sopeco.webui.server.UiConfiguration;
 import org.sopeco.webui.server.persistence.UiPersistence;
 import org.sopeco.webui.shared.builder.MeasurementSpecificationBuilder;
 import org.sopeco.webui.shared.builder.ScenarioDefinitionBuilder;
@@ -56,6 +59,7 @@ public class User {
 
 	public User(String sId) {
 		sessionId = sId;
+		lastRequestTime = System.currentTimeMillis();
 
 		currentScenarioDefinitionBuilder = new ScenarioDefinitionBuilder();
 	}
@@ -102,10 +106,13 @@ public class User {
 
 	// *******************************************************************************************************
 
-	public void kill() {
-		if (currentPersistenceProvider != null) {
-			currentPersistenceProvider.closeProvider();
-			currentPersistenceProvider = null;
+	public boolean isExpired() {
+		IConfiguration config = Configuration.getSessionSingleton(Configuration.getGlobalSessionId());
+		int userTimeout = config.getPropertyAsInteger(UiConfiguration.USER_TIMEOUT, 0);
+		if (userTimeout == 0 || System.currentTimeMillis() < lastRequestTime + userTimeout) {
+			return false;
+		} else {
+			return true;
 		}
 	}
 
