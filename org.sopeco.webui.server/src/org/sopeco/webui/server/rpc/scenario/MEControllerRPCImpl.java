@@ -124,19 +124,6 @@ public class MEControllerRPCImpl extends SPCRemoteServlet implements MEControlle
 		}
 	}
 
-	/**
-	 * Sending the given url to the connected clients.
-	 * 
-	 * @param controllerUrl
-	 */
-	private void pushNewMECToClients(String controllerUrl) {
-		PushPackage push = new PushPackage(Type.NEW_MEC_AVAILABLE);
-		// push.setPiggyback(controllerUrl);
-
-		long accountId = getUser().getCurrentAccount().getId();
-
-		// PushRPCImpl.pushToCODB(dbId, push);
-	}
 
 	/**
 	 * Checks if the given url is like a valid pattern.

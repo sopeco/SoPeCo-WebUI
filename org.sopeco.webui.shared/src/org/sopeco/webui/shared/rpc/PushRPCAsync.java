@@ -26,12 +26,14 @@
  */
 package org.sopeco.webui.shared.rpc;
 
+import java.util.List;
+
 import org.sopeco.webui.shared.push.PushPackage;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public interface PushRPCAsync {
 
-	void push(AsyncCallback<PushPackage> callback);
+	void push(AsyncCallback<List<PushPackage>> callback);
 
 }

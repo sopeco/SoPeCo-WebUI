@@ -34,10 +34,10 @@ import java.util.logging.Logger;
 import org.sopeco.persistence.metadata.entities.DatabaseInstance;
 import org.sopeco.webui.client.event.EventControl;
 import org.sopeco.webui.client.extensions.Extensions;
-import org.sopeco.webui.client.helper.ServerPush;
 import org.sopeco.webui.client.helper.SystemDetails;
 import org.sopeco.webui.client.helper.callback.CallbackBatch;
 import org.sopeco.webui.client.helper.callback.ParallelCallback;
+import org.sopeco.webui.client.helper.push.ServerPush;
 import org.sopeco.webui.client.layout.MainLayoutPanel;
 import org.sopeco.webui.client.layout.login.LoginPanel;
 import org.sopeco.webui.client.log.LogHandler;
@@ -151,7 +151,7 @@ public class SoPeCoUI implements EntryPoint, UncaughtExceptionHandler {
 			protected void onSuccess() {
 				// All stuff was loaded
 				changeDatabase();
-				ServerPush.get().startRequest();
+				ServerPush.start();
 			}
 		};
 
