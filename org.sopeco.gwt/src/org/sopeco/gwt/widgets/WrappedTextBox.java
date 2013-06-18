@@ -26,6 +26,8 @@
  */
 package org.sopeco.gwt.widgets;
 
+import org.sopeco.gwt.widgets.resources.WidgetResources;
+
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
@@ -41,6 +43,8 @@ public class WrappedTextBox extends SimplePanel {
 	private TextBox textbox;
 
 	public WrappedTextBox() {
+		WidgetResources.resc.wrappedTextBoxCss().ensureInjected();
+		
 		addStyleName(CSS_CLASS);
 		addStyleName("gwt-TextBox");
 		textbox = new TextBox();

@@ -299,6 +299,15 @@ public class ComboBox extends FlowPanel implements HasValueChangeHandlers<String
 	}
 
 	/**
+	 * Returns the number of elements in this combobox.
+	 *  
+	 * @return
+	 */
+	public int getElementCount() {
+		return itemList.size();
+	}
+	
+	/**
 	 * Return the handler (click, mouseover, mouseout, blur) of the items in the
 	 * dropdown list.
 	 * 
