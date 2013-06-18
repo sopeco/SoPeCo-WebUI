@@ -179,4 +179,11 @@ public final class RPC {
 		return accountManagementRPC;
 	}
 
+	/**
+	 * @param getRPC the getRPC to set
+	 */
+	public static void setGetRPC(GetRPCAsync getRPC) {
+		RPC.getRPC = getRPC;
+	}
+
 }

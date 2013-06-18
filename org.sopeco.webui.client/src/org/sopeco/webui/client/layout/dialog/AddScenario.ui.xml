@@ -1,0 +1,56 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:spc="urn:import:org.sopeco.webui.client.ui"
+	xmlns:mec="urn:import:org.sopeco.webui.client.mec" xmlns:sgw="urn:import:org.sopeco.gwt.widgets">
+
+    <ui:with field='lang' type='org.sopeco.webui.client.resources.LanguageConstants' />
+	<ui:with field='img' type='org.sopeco.webui.client.resources.ImageBundle' />
+    
+	<ui:style>
+	.dialog {
+		margin-top: 5em;
+	}
+
+	.label {
+		font-size: .85em;
+		color: #666666;
+		margin:0;
+		margin-top: 6px;
+	}
+	.button {
+		float: right;
+		margin-left: 0.5em;
+	}
+	.infoText {
+		margin-top: 1em;
+	}
+	.mecMargin {
+		margin-bottom: 1em;
+	}
+	</ui:style>
+
+	<!-- <spc:Dialog addStyleNames="{style.dialog}" title="{lang.CreateScenario}" widthPX="360"> -->
+	<g:FlowPanel>
+	    <g:Label ui:field="infoText" styleName="{style.infoText}">
+	    	<ui:text from='{lang.addScenarioInfoText}' />
+	    </g:Label>
+	    
+	    <g:Label styleName="{style.label}">
+			<ui:text from='{lang.scenarioName}' />
+		</g:Label>
+		<sgw:ExtendedTextBox ui:field="tbAccount" width="350px" pDefaultValue="MyScenario"  />
+	    
+		<spc:HorizontalRuler />
+		
+		<mec:MECSettings ui:field="mecSettings" addStyleNames="{style.mecMargin}" />
+		
+		<!-- 
+		<spc:HorizontalRuler />
+		
+		<g:Button ui:field="btnCancel" text="{lang.create}" addStyleNames="{style.button}" enabled="false" />
+		-->
+		<spc:ClearFloating />
+		
+	</g:FlowPanel>
+	<!--</spc:Dialog> -->
+</ui:UiBinder> 

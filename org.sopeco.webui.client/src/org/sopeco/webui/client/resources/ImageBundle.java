@@ -163,4 +163,10 @@ public interface ImageBundle extends ClientBundle {
 
 	@Source("images/ico_dot_yellow.png")
 	ImageResource icoDotYellow();
+	
+	@Source("images/ico_refresh.png")
+	ImageResource icoRefresh();
+	
+	@Source("images/ico_hourglass.png")
+	ImageResource icoHourglass();
 }

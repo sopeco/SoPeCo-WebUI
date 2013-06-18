@@ -291,7 +291,7 @@ public class SoPeCoDialog extends PopupPanel implements ResizeHandler, MouseDown
 			}
 			wrapper.add(dragPanel);
 		} else {
-			if (dragPanel.isAttached()) {
+			if (dragPanel != null && dragPanel.isAttached()) {
 				dragPanel.removeFromParent();
 			}
 		}

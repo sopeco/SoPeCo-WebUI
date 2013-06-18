@@ -26,148 +26,61 @@
  */
 package org.sopeco.webui.client.layout.center;
 
-import org.sopeco.gwt.widgets.Headline;
-import org.sopeco.gwt.widgets.SlidePanel;
+import org.sopeco.gwt.widgets.ClearDiv;
 import org.sopeco.webui.client.helper.SimpleCallback;
-import org.sopeco.webui.client.layout.MainLayoutPanel;
-import org.sopeco.webui.client.layout.ScenarioAddController;
-import org.sopeco.webui.client.manager.Manager;
-import org.sopeco.webui.client.manager.ScenarioManager;
-import org.sopeco.webui.client.mec.MEControllerSettings;
+import org.sopeco.webui.client.layout.dialog.AddScenario;
 import org.sopeco.webui.client.resources.R;
+import org.sopeco.webui.client.ui.Dialog;
+import org.sopeco.webui.client.ui.HorizontalRuler;
 
 import com.google.gwt.dom.client.Style.Float;
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.dom.client.BlurEvent;
-import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.FlowPanel;
 
 /**
  * 
  * @author Marius Oehler
  * 
  */
-public class NoScenario extends CenterPanel implements ClickHandler, BlurHandler, KeyUpHandler,
-		ValueChangeHandler<Boolean>, SimpleCallback {
+public class NoScenario extends CenterPanel implements SimpleCallback<Boolean>, ClickHandler {
 
-	private static final String ADD_SCENARIO_BOX = "noScenarioBox";
-	private static final int SLIDER_HEIGHT = 250, SLIDER_WIDTH = 410;
-
-	private static final String FOOTER_CSS_CLASS = "noscFooterPanel";
-
-	private SlidePanel slidePanel;
-	private Button btnNext, btnPrevious;
-	private ScenarioAddController sac;
-	private MEControllerSettings mecController;
-	private FlowPanel mecPanel;
-
+	private AddScenario adder;
+	private Button createButton;
+	
 	public NoScenario() {
-		slidePanel = new SlidePanel(SLIDER_WIDTH, SLIDER_HEIGHT);
-		slidePanel.addStyleName(ADD_SCENARIO_BOX);
+		adder = new AddScenario();
+		adder.setStateHandler(this);
 
-		slidePanel.getFooterPanel().addStyleName(FOOTER_CSS_CLASS);
+		createButton = new Button(R.lang.create());
+		createButton.getElement().getStyle().setFloat(Float.RIGHT);
+		createButton.setEnabled(false);
+		createButton.addClickHandler(this);
 
-		btnNext = new Button(R.lang.Next());
-		btnNext.addClickHandler(this);
-		btnNext.getElement().getStyle().setFloat(Float.RIGHT);
+		Dialog dialog = new Dialog();
+		dialog.setWidthPX(360);
+		dialog.getElement().getStyle().setMarginTop(5, Unit.EM);
 
-		btnPrevious = new Button(R.lang.Previous());
-		btnPrevious.addClickHandler(this);
+		dialog.add(adder);
+		dialog.add(new HorizontalRuler());
+		dialog.add(createButton);
+		dialog.add(new ClearDiv());
 
-		slidePanel.addFooterWidget(btnPrevious);
-		slidePanel.addFooterWidget(btnNext);
-
-		sac = new ScenarioAddController(true, false, false);
-		sac.addBlurHandlerSName(this);
-		sac.addKeyUpHandlerSName(this);
-
-		mecController = new MEControllerSettings();
-		mecController.addValueChangeHandler(this);
-
-		mecPanel = new FlowPanel();
-		Headline headline = new Headline(R.lang.measurementEnvironmentController());
-		headline.getElement().getStyle().setMarginTop(0, Unit.PX);
-		mecPanel.add(headline);
-		mecPanel.add(mecController.getView());
-		mecPanel.getElement().getStyle().setPadding(1, Unit.EM);
-
-		slidePanel.addWidget(sac.getView());
-		slidePanel.addWidget(mecPanel);
-
-		add(slidePanel);
-
-		updateButtons();
+		add(dialog);
 	}
 
 	@Override
-	public void onBlur(BlurEvent event) {
-		btnNext.setEnabled(sac.checkForm());
-	}
-
-	@Override
-	public void onKeyUp(KeyUpEvent event) {
-		btnNext.setEnabled(sac.checkForm());
+	public void callback(Boolean object) {
+		createButton.setEnabled(object);
 	}
 
 	@Override
 	public void onClick(ClickEvent event) {
-		if (event.getSource() == btnNext) {
-			if (slidePanel.getSlidePosition() == 0) {
-				slidePanel.next();
-			} else {
-				addScenario();
-			}
-		} else if (event.getSource() == btnPrevious) {
-			slidePanel.previous();
-		}
-		updateButtons();
-	}
-
-	/**
-	 * 
-	 */
-	private void addScenario() {
-		sac.createAndAddScenario(this);
-	}
-
-	@Override
-	public void callback(Object object) {
-		addMEController();
-		MainLayoutPanel.get().getNorthPanel().updateScenarioList();
-		ScenarioManager.get().switchScenario(Manager.get().getAccountDetails().getSelectedScenario());
-	}
-
-	/**
-	 * 
-	 */
-	private void addMEController() {
-		mecController.saveControllerSettings();
-	}
-
-	/**
-	 * 
-	 */
-	private void updateButtons() {
-		btnPrevious.setEnabled(slidePanel.hasPrevious());
-
-		if (!slidePanel.hasNext()) {
-			btnNext.setText(R.lang.AddScenario());
-			btnNext.setEnabled(mecController.getLastValue());
-		} else {
-			btnNext.setText(R.lang.Next());
-			btnNext.setEnabled(true);
-		}
-	}
-
-	@Override
-	public void onValueChange(ValueChangeEvent<Boolean> event) {
-		updateButtons();
+		adder.setEnabled(false);
+		createButton.setEnabled(false);
+		createButton.setText(R.lang.creatingScenario());
+		
+		adder.createScenario();
 	}
 }

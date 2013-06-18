@@ -32,6 +32,7 @@ import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.uibinder.client.UiConstructor;
 import com.google.gwt.user.client.ui.TextBox;
 
 /**
@@ -56,9 +57,13 @@ public class ExtendedTextBox extends TextBox implements FocusHandler, BlurHandle
 		addValueChangeHandler(this);
 		addFocusHandler(this);
 
-		setDefaultValue();
+		setToDefaultValue();
 	}
 
+	public @UiConstructor ExtendedTextBox(String pDefaultValue) {
+		this(pDefaultValue, false);
+	}
+	
 	public ExtendedTextBox() {
 		super();
 	}
@@ -67,7 +72,7 @@ public class ExtendedTextBox extends TextBox implements FocusHandler, BlurHandle
 	 * Set the value of the textBox to the default value and the color to the
 	 * default color.
 	 */
-	private void setDefaultValue() {
+	private void setToDefaultValue() {
 		setText(defaultValue);
 		getElement().getStyle().setColor(DEFAULT_COLOR);
 	}
@@ -99,7 +104,7 @@ public class ExtendedTextBox extends TextBox implements FocusHandler, BlurHandle
 			return;
 		}
 		if (getText().equals(defaultValue) || (!allowEmptyText && getText().isEmpty())) {
-			setDefaultValue();
+			setToDefaultValue();
 		}
 	}
 

@@ -43,6 +43,7 @@ public class MECLogEntry implements PushSerializable {
 	private long time;
 	private String message;
 	private boolean error;
+	private boolean exception;
 	private String errorMessage;
 
 	public String getErrorMessage() {
@@ -96,6 +97,21 @@ public class MECLogEntry implements PushSerializable {
 	 */
 	public void setError(boolean pError) {
 		this.error = pError;
+	}
+
+	/**
+	 * @return the exception
+	 */
+	public boolean isException() {
+		return exception;
+	}
+
+	/**
+	 * @param exception
+	 *            the exception to set
+	 */
+	public void setException(boolean exception) {
+		this.exception = exception;
 	}
 
 }
