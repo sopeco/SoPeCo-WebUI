@@ -39,7 +39,7 @@ import com.google.gwt.user.client.ui.Image;
  * @author Marius Oehler
  * 
  */
-public class NaviView extends FlowPanel implements SimpleCallback {
+public class NaviView extends FlowPanel implements SimpleCallback<Boolean> {
 	private static final String CSS_CLASS = "navigation";
 	private static final String CSS_CLASS_LOGO_PANEL = "logoPanel";
 
@@ -62,7 +62,7 @@ public class NaviView extends FlowPanel implements SimpleCallback {
 	}
 
 	@Override
-	public void callback(Object object) {
+	public void callback(Boolean object) {
 		if ((Boolean) object) {
 			logo = new Image("/branding.png");
 			logoPanel.addStyleName(CSS_CLASS_LOGO_PANEL);

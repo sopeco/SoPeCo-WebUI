@@ -40,7 +40,6 @@ import org.sopeco.webui.client.helper.SimpleCallback;
 import org.sopeco.webui.client.layout.MainLayoutPanel;
 import org.sopeco.webui.client.layout.center.experiment.ExperimentController;
 import org.sopeco.webui.client.layout.center.specification.SpecificationController;
-import org.sopeco.webui.client.layout.popups.Message;
 import org.sopeco.webui.client.manager.helper.Duplicator;
 import org.sopeco.webui.shared.builder.ScenarioDefinitionBuilder;
 import org.sopeco.webui.shared.entities.ScenarioDetails;
@@ -155,8 +154,15 @@ public final class ScenarioManager {
 	 * @param simpleNotify
 	 */
 	public void createScenario(String scenarioName, String specificationName, ExperimentSeriesDefinition experiment,
-			final SimpleCallback simpleNotify) {
-		final String cleanedScenarioName = Utilities.cleanString(scenarioName);
+			final SimpleCallback<Object> simpleNotify) {
+		String cleanedScenarioName = Utilities.cleanString(scenarioName);
+
+		String tempName = cleanedScenarioName;
+		int c = 2;
+		while (ScenarioManager.get().existScenario(tempName)) {
+			tempName = cleanedScenarioName + "_" + (c++);
+		}
+		final String newScenarioName = tempName;
 
 		RPC.getScenarioManager().addScenario(cleanedScenarioName, specificationName, experiment,
 				new AsyncCallback<Boolean>() {
@@ -167,15 +173,15 @@ public final class ScenarioManager {
 
 					@Override
 					public void onSuccess(Boolean result) {
-						Manager.get().getAccountDetails().addScenarioDetails(cleanedScenarioName);
-						Manager.get().getAccountDetails().setSelectedScenario(cleanedScenarioName);
+						Manager.get().getAccountDetails().addScenarioDetails(newScenarioName);
+						Manager.get().getAccountDetails().setSelectedScenario(newScenarioName);
 						Manager.get().storeAccountDetails();
 
 						if (simpleNotify != null) {
 							simpleNotify.callback(null);
 						} else {
 							MainLayoutPanel.get().getNorthPanel().updateScenarioList();
-							switchScenario(cleanedScenarioName);
+							switchScenario(newScenarioName);
 						}
 					}
 				});
@@ -261,7 +267,6 @@ public final class ScenarioManager {
 			public void onSuccess(ScenarioDefinition result) {
 				if (result == null) {
 					LOGGER.severe("Error while loading scenario definition.");
-					Message.error("Error while loading scenario definition.");
 					return;
 				}
 

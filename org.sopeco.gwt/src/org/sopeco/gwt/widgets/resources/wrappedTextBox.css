@@ -1,0 +1,5 @@
+.sopeco-WrappedTextBox input[disabled] {
+	background-color: white;
+	color: #aaa;
+	font-style: italic;
+}

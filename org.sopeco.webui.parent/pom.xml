@@ -142,9 +142,7 @@
 			<artifactId>org.sopeco.plugin.std.processing</artifactId>
 			<version>${sopeco.dependency}</version>
 		</dependency>
-		<!-- <dependency> <groupId>org.sopeco.core</groupId> <artifactId>org.sopeco.plugin.std.termination</artifactId> 
-			<version>3.2.0-SNAPSHOT</version> </dependency> -->
-
+		
 		<dependency>
 			<groupId>org.sopeco.core</groupId>
 			<artifactId>org.sopeco.runner</artifactId>
@@ -161,6 +159,20 @@
 			<artifactId>commons-lang</artifactId>
 			<version>2.4</version>
 		</dependency>
+		
+		<dependency>
+		   <groupId>org.easymock</groupId>
+		   <artifactId>easymock</artifactId>
+		   <version>3.0</version>
+		   <scope>test</scope>
+		</dependency>
+		
+		<dependency>
+		  <groupId>com.googlecode.gwt-test-utils</groupId>
+		  <artifactId>gwt-test-utils</artifactId>
+		  <version>0.44</version>
+		</dependency>
+		
 	</dependencies>
 
 
@@ -178,8 +190,14 @@
 			</resource>
 		</resources>
 		<testResources>
+		    <testResource>
+				<directory>src</directory>
+			</testResource>
 			<testResource>
 				<directory>rsc</directory>
+			</testResource>
+			<testResource>
+				<directory>test</directory>
 			</testResource>
 		</testResources>
 
@@ -301,6 +319,16 @@
 				</configuration>
 			</plugin>
 
+			<plugin>
+		        <groupId>org.apache.maven.plugins</groupId>
+		        <artifactId>maven-surefire-plugin</artifactId>
+		        <configuration>
+		          <additionalClasspathElements>
+		             <additionalClasspathElement>${basedir}/test/META-INF/**</additionalClasspathElement> 
+		          </additionalClasspathElements>
+		        </configuration>
+		      </plugin>
+			
 		</plugins>
 	</build>
 

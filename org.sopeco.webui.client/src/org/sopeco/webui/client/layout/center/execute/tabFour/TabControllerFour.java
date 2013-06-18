@@ -210,9 +210,11 @@ public class TabControllerFour extends TabController {
 
 				for (MECLogEntry log : result.getEntries()) {
 					HTML html = new HTML(dtf.format(new Date(log.getTime())) + ": " + log.getMessage());
-					if (log.isError()) {
+					if (log.isException()) {
 						html.addStyleName("errorMessage");
 						html.setHTML("<b>" + html.getHTML() + "</b><br>" + log.getErrorMessage());
+					} else if (log.isError()) {
+						html.addStyleName("errorMessage");
 					}
 					tabView.getDetailPanel().add(html);
 				}

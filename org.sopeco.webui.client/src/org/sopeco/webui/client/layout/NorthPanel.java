@@ -31,20 +31,24 @@ import java.util.logging.Logger;
 import org.sopeco.gwt.widgets.ComboBox;
 import org.sopeco.gwt.widgets.ImageHover;
 import org.sopeco.webui.client.SoPeCoUI;
-import org.sopeco.webui.client.layout.dialog.AddScenarioDialog;
+import org.sopeco.webui.client.helper.SimpleCallback;
+import org.sopeco.webui.client.layout.dialog.AddScenario;
 import org.sopeco.webui.client.layout.dialog.LogDialog;
 import org.sopeco.webui.client.layout.popups.Confirmation;
 import org.sopeco.webui.client.layout.popups.InputDialog;
 import org.sopeco.webui.client.layout.popups.InputDialogHandler;
 import org.sopeco.webui.client.manager.Manager;
 import org.sopeco.webui.client.manager.ScenarioManager;
-import org.sopeco.webui.client.mec.MECSettingsDialog;
+import org.sopeco.webui.client.mec.MECSettings;
 import org.sopeco.webui.client.resources.R;
+import org.sopeco.webui.client.widget.SoPeCoDialog;
 
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
@@ -97,13 +101,11 @@ public class NorthPanel extends FlowPanel implements ClickHandler, InputDialogHa
 	@Override
 	public void onClick(ClickEvent event) {
 		if (event.getSource() == imageSatellite && isEnabled(imageSatellite)) {
-			// MEControllerBox.showBox();
-			MECSettingsDialog.showDialog();
+			showMECSettings();
 		} else if (event.getSource() == imageExport && isEnabled(imageExport)) {
 			ExportBox.showExportBox();
 		} else if (event.getSource() == imageScenarioAdd && isEnabled(imageScenarioAdd)) {
-			AddScenarioDialog addScenarioDialog = new AddScenarioDialog();
-			addScenarioDialog.center();
+			addScenario();
 		} else if (event.getSource() == imageScenarioClone && isEnabled(imageScenarioClone)) {
 			cloneScenario();
 		} else if (event.getSource() == imageScenarioRemove && isEnabled(imageScenarioRemove)) {
@@ -113,6 +115,78 @@ public class NorthPanel extends FlowPanel implements ClickHandler, InputDialogHa
 		} else if (event.getSource() == imageLog) {
 			LogDialog.show();
 		}
+	}
+	
+	private void showMECSettings () {
+		final MECSettings settings = new MECSettings();
+		settings.getElement().getStyle().setMarginBottom(1, Unit.EM);
+		settings.removeHeadline();
+
+		final SoPeCoDialog dialog = new SoPeCoDialog(false);
+		dialog.setContentWidget(settings);
+		dialog.setWidth("360px");
+		dialog.setHeadline(R.lang.mecontrollerSettings());
+		
+		dialog.addButton(R.lang.cancel(), new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				dialog.hide();
+			}
+		});
+		
+		final Button createButton = dialog.addButton(R.lang.ok(), new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				settings.saveControllerSettings();
+				dialog.hide();
+			}
+		});		
+		createButton.setEnabled(false);
+		
+		settings.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+			@Override
+			public void onValueChange(ValueChangeEvent<Boolean> event) {
+				createButton.setEnabled(event.getValue());
+			}
+		});
+		
+		settings.loadCurrentControllerSettings();
+		
+		dialog.center();
+	}
+
+	private void addScenario() {
+		final SoPeCoDialog dialog = new SoPeCoDialog(false);
+		final AddScenario adder = new AddScenario();
+		dialog.setWidth("360px");
+		dialog.setDraggable(true);
+		dialog.setHeadline(R.lang.CreateScenario());
+		dialog.setContentWidget(adder);
+		dialog.setGlassEnabled(true);
+		adder.setText(R.lang.enterScenarioDetails());
+
+		dialog.addButton(R.lang.cancel(), new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				dialog.hide();
+			}
+		});
+		final Button createButton = dialog.addButton(R.lang.create(), new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				adder.createScenario();
+				dialog.hide();
+			}
+		});
+		createButton.setEnabled(false);
+		adder.setStateHandler(new SimpleCallback<Boolean>() {
+			@Override
+			public void callback(Boolean object) {
+				createButton.setEnabled(object);
+			}
+		});
+
+		dialog.center();
 	}
 
 	@Override

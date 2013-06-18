@@ -26,7 +26,7 @@ public class BrandingChecker {
 	 * 
 	 * @param callback
 	 */
-	public static void checkBranding(final SimpleCallback callback) {
+	public static void checkBranding(final SimpleCallback<Boolean> callback) {
 		if (checked) {
 			callback.callback(branded);
 		} else {

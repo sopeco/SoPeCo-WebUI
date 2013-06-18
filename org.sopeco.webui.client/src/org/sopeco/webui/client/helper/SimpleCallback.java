@@ -31,6 +31,6 @@ package org.sopeco.webui.client.helper;
  * @author Marius Oehler
  * 
  */
-public interface SimpleCallback {
-	void callback(Object object);
+public interface SimpleCallback<T> {
+	void callback(T object);
 }

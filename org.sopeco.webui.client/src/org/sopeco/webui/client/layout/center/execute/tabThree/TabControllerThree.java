@@ -154,10 +154,12 @@ public class TabControllerThree extends TabController implements ClickHandler, P
 		tabView.getStatusPanel().addLogText(new HTML("<b>Executing '" + experiment.getLabel() + "'</b>"));
 
 		for (MECLogEntry log : experiment.getEventLogList()) {
-			HTML html = new HTML(dft.format(new Date(log.getTime())) + ": " + log.getMessage());
-			if (log.isError()) {
+			HTML html = new HTML("[" + dft.format(new Date(log.getTime())) + "] " + log.getMessage());
+			if (log.isException()) {
 				html.addStyleName("errorMessage");
 				html.setHTML("<b>" + html.getHTML() + "</b><br>" + log.getErrorMessage());
+			} else if (log.isError()) {
+				html.addStyleName("errorMessage");
 			}
 			tabView.getStatusPanel().addLogText(html);
 		}

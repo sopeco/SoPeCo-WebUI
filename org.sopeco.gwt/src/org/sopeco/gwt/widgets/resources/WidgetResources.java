@@ -62,6 +62,10 @@ public final class WidgetResources {
 		@Source("toggleSeparator.css")
 		@CssResource.NotStrict
 		CssResource toggleSeparatorCss();
+		
+		@Source("wrappedTextBox.css")
+		@CssResource.NotStrict
+		CssResource wrappedTextBoxCss();
 
 		/** IMAGES. */
 
