@@ -73,7 +73,7 @@ public class MECSettingsTest extends GwtTestWithEasyMock {
 		assertThat(flowController).isNotVisible();
 		assertThat(flowControllerStatus).isVisible();
 
-		Assert.assertEquals("No controller selected.", labelControllerStatus.getText());
+		Assert.assertEquals(R.lang.controllerStateUnchecked(), labelControllerStatus.getText());
 	}
 	
 	@Test
