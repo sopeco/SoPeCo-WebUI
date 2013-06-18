@@ -1,0 +1,74 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:spc="urn:import:org.sopeco.webui.client.ui"
+	xmlns:sgw="urn:import:org.sopeco.gwt.widgets">
+
+	<ui:with field='lang' type='org.sopeco.webui.client.resources.LanguageConstants' />
+	<ui:with field='img' type='org.sopeco.webui.client.resources.ImageBundle' />
+
+	<ui:style>
+	.label {
+		font-size: .85em;
+		color: #666666;
+		margin:0;
+		margin-top: 6px;
+	}
+
+	.boldAndGray {
+		font-weight: bold;
+		color: #333;
+	}
+	.floatLeft {
+		float:left;
+		line-height: 26px;
+	}
+	.controllerStatus {
+		margin-right: 0.5em;
+	}
+	.controllerStatusPanel {
+		margin-top: 0.5em;
+	}
+	.pushBtn {
+		display: block;
+		padding: 4px 4px 0px 4px;
+		float: right;
+	}
+	.cbController {
+		margin-top: 1px;
+		float: left;
+	}
+	</ui:style>
+
+	<g:HTMLPanel>
+		<g:Label ui:field="headline" styleName="{style.boldAndGray}">
+	    	<ui:text from='{lang.mecontrollerSettings}' />
+	    </g:Label>
+
+	    
+		<g:FlexTable ui:field="connectionTable" borderWidth="0" cellPadding="0" cellSpacing="0" width="100%"/>
+		
+		<g:FlowPanel styleName="{style.controllerStatusPanel}" >
+		    <g:FlowPanel ui:field="flowControllerStatus">
+				<g:Label styleName="{style.boldAndGray} {style.floatLeft} {style.controllerStatus}">
+			    	Status:
+			    </g:Label>
+			    <g:Label ui:field="labelControllerStatus" styleName="{style.floatLeft}" >
+			        <ui:text from='{lang.controllerStateUnchecked}' />
+			    </g:Label>
+		    </g:FlowPanel>
+		    
+		    <g:FlowPanel ui:field="flowController" visible="false">
+				<g:Label styleName="{style.label}">
+					<ui:text from='{lang.controller}' />
+				</g:Label>
+				<sgw:ComboBox width="320px" ui:field="cbController" addStyleNames="{style.cbController}" editable="false" />
+			</g:FlowPanel>
+		    
+		    <g:PushButton addStyleNames="{style.pushBtn}" title="Reload" ui:field="btnRefresh">
+	            <g:upFace image="{img.icoRefresh}"></g:upFace>
+	        </g:PushButton>
+		    <spc:ClearFloating />
+	    </g:FlowPanel>
+				
+	</g:HTMLPanel>
+</ui:UiBinder> 

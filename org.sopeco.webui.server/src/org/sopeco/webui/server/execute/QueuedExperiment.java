@@ -108,13 +108,22 @@ public class QueuedExperiment {
 			logLite.setTime(log.getTimestamp());
 
 			String message = getStatusString(log.getEventType());
-			if (log.getDescription() != null && !log.getDescription().isEmpty()) {
+			;
+
+			if (log.getEventType() != null
+					&& (log.getEventType() == EventType.ERROR || log.getEventType() == EventType.INFORMATION)) {
+				message = log.getDescription();
+			} else if (log.getDescription() != null && !log.getDescription().isEmpty()) {
 				message += " - " + log.getDescription();
 			}
 			logLite.setMessage(message);
 
-			if (log.getStatusInfo() != null && log.getStatusInfo() instanceof ErrorInfo) {
+			if (log.getEventType() != null && log.getEventType() == EventType.ERROR) {
 				logLite.setError(true);
+				logLite.setException(false);
+			} else if (log.getStatusInfo() != null && log.getStatusInfo() instanceof ErrorInfo) {
+				logLite.setException(true);
+				logLite.setError(false);
 				logLite.setErrorMessage(((ErrorInfo) log.getStatusInfo()).getThrowable().getMessage());
 
 				StringWriter sw = new StringWriter();
@@ -124,6 +133,7 @@ public class QueuedExperiment {
 				logLite.setErrorMessage(errorStack);
 			} else {
 				logLite.setError(false);
+				logLite.setException(false);
 			}
 
 			list.add(logLite);
@@ -160,6 +170,8 @@ public class QueuedExperiment {
 			return "Error";
 		case INFORMATION:
 			return "Information";
+		case EXCEPTION:
+			return "Exception";
 		default:
 			throw new IllegalStateException("No eventType " + type + " expected.");
 		}

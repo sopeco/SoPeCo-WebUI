@@ -88,7 +88,7 @@ public final class ExportCsvDialog extends DialogBox implements ClickHandler {
 		infoText = new Paragraph(R.lang.csvExportDesc());
 
 		tbValueSeparator = new ExtendedTextBox(";", false);
-		tbQuoteChar = new ExtendedTextBox("'", false);
+		tbQuoteChar = new ExtendedTextBox("\"", false);
 		tbDecimalDeimiter = new ExtendedTextBox(".", false);
 
 		tbValueSeparator.setMaxLength(1);

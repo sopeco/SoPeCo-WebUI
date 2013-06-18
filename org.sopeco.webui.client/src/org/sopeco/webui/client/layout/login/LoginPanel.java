@@ -54,7 +54,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
  * @author Marius Oehler
  * 
  */
-public class LoginPanel extends FlowPanel implements SimpleCallback {
+public class LoginPanel extends FlowPanel implements SimpleCallback<Boolean> {
 
 	public static final String COOKIE_DATABASE = "selected_database";
 
@@ -117,7 +117,7 @@ public class LoginPanel extends FlowPanel implements SimpleCallback {
 	}
 
 	@Override
-	public void callback(Object object) {
+	public void callback(Boolean object) {
 		if ((Boolean) object) {
 			Image imgLogo = new Image("/branding.png");
 			logoPanel.addStyleName("imgSapResearch");
