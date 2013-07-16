@@ -27,8 +27,10 @@
 package org.sopeco.webui.client.layout;
 
 import org.sopeco.webui.client.resources.R;
+import org.sopeco.webui.client.widget.SoPeCoDialog;
 import org.sopeco.webui.shared.rpc.RPC;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Float;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -36,9 +38,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -47,32 +47,39 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  * @author Marius Oehler
  * 
  */
-public final class ExportBox extends DialogBox implements ClickHandler {
+public final class ExportBox extends SoPeCoDialog implements ClickHandler {
 
-	private static ExportBox exportBox;
+	private static final int WIDTH_PX = 700;
+	private static final String EXPORT_XML_URL = "export?scenario";
 
-	private static final String EXPORT_XML_URL = "sopeco_frontend/export?scenario";
-	private static final double BOX_MARGIN = 0.5D;
+	/**
+	 * Displays this dialog.
+	 */
+	public static void showExportScenarioDialog() {
+		new ExportBox().loadXMLandShow();
+	}
 
-	private Button exportXML, btnClose;
+	private Button btnExportXML, btnClose;
+	private FlowPanel btnPanel;
+	private VerticalPanel panel;
 	private TextArea textarea;
 
-	private VerticalPanel panel;
-	private FlowPanel btnPanel;
-
+	/**
+	 * Constructor.
+	 */
 	private ExportBox() {
-		setModal(true);
-		setAutoHideEnabled(true);
-		setGlassEnabled(true);
+		super(false);
 
 		panel = new VerticalPanel();
-		panel.getElement().getStyle().setMargin(BOX_MARGIN, Unit.EM);
+		panel.getElement().getStyle().setMarginTop(1, Unit.EM);
 
-		HTML headline = new HTML("<h3 style=\"margin-top:0;\">Export</h3>");
+		setHeadline(R.lang.Export());
+		setDraggable(true);
+		setWidth(WIDTH_PX + "px");
 
-		exportXML = new Button(R.lang.exportInFile());
-		exportXML.getElement().getStyle().setFloat(Float.RIGHT);
-		exportXML.addClickHandler(this);
+		btnExportXML = new Button(R.lang.exportInFile());
+		btnExportXML.getElement().getStyle().setFloat(Float.RIGHT);
+		btnExportXML.addClickHandler(this);
 
 		btnClose = new Button(R.lang.Close());
 		btnClose.getElement().getStyle().setMarginLeft(1, Unit.EM);
@@ -80,66 +87,52 @@ public final class ExportBox extends DialogBox implements ClickHandler {
 		btnClose.addClickHandler(this);
 
 		textarea = new TextArea();
-		textarea.setWidth("700px");
+		textarea.setWidth((WIDTH_PX - 10) + "px");
 		textarea.setHeight("200px");
 
 		btnPanel = new FlowPanel();
 		btnPanel.add(btnClose);
-		btnPanel.add(exportXML);
+		btnPanel.add(btnExportXML);
 
-		panel.add(headline);
 		panel.add(textarea);
 		panel.add(btnPanel);
 
-		add(panel);
+		setContentWidget(panel);
 	}
 
 	/**
-	 * @return the textarea
+	 * Loads a XML representation of the current scenario.
 	 */
-	public TextArea getTextarea() {
-		return textarea;
-	}
-
-	@Override
-	public void onClick(ClickEvent event) {
-		if (event.getSource() == exportXML) {
-			Window.open(EXPORT_XML_URL, "_self", "");
-			hide();
-		} else if (event.getSource() == btnClose) {
-			hide();
-		}
-	}
-
-	public static void showExportBox() {
-		if (exportBox == null) {
-			exportBox = new ExportBox();
-		}
-
-		loadCurrentAsXML();
-
-		exportBox.center();
-	}
-
-	private static void loadCurrentAsXML() {
+	private void loadCurrentAsXML() {
 		RPC.getScenarioManager().getScenarioAsXML(new AsyncCallback<String>() {
 			@Override
-			public void onSuccess(String result) {
-				exportBox.getTextarea().setText(result);
+			public void onFailure(Throwable caught) {
+				throw new RuntimeException(caught);
 			}
 
 			@Override
-			public void onFailure(Throwable caught) {
-
+			public void onSuccess(String result) {
+				textarea.setText(result);
 			}
 		});
 	}
 
-	public static void closeExportBox() {
-		if (exportBox == null) {
-			return;
-		}
+	/**
+	 * Calls the {@link #loadCurrentAsXML()} method to load the XML
+	 * representation of the scenario and display the data in the textarea of
+	 * this dialog.
+	 */
+	private void loadXMLandShow() {
+		loadCurrentAsXML();
+		center();
+	}
 
-		exportBox.hide();
+	@Override
+	public void onClick(ClickEvent event) {
+		if (event.getSource() == btnExportXML) {
+			String url = GWT.getModuleBaseURL() + EXPORT_XML_URL;
+			Window.open(url, "_blank", "");
+		}
+		hide();
 	}
 }
