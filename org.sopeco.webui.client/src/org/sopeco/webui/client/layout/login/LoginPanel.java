@@ -60,6 +60,7 @@ public class LoginPanel extends FlowPanel implements SimpleCallback<Boolean> {
 
 	public static final String COOKIE_RM_ACCOUNT = "RMAccount";
 	public static final String COOKIE_RM_TOKEN = "RMToken";
+	public static final String COOKIE_RM_PERSIST = "RMPersist";
 
 	/** Number of milliseconds in seven days. */
 	private static final long COOKIE_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7;
@@ -131,12 +132,13 @@ public class LoginPanel extends FlowPanel implements SimpleCallback<Boolean> {
 	private boolean rememberMe() {
 		final String accountName = Cookies.getCookie(COOKIE_RM_ACCOUNT);
 		final String token = Cookies.getCookie(COOKIE_RM_TOKEN);
-
+		final boolean rmPersist = Cookies.getCookie(COOKIE_RM_PERSIST) != null;
+		
 		if (accountName != null && token != null) {
-			RPC.getAccountManagementRPC().login(accountName, token, new AsyncCallback<LoginResponse>() {
+			RPC.getAccountManagementRPC().loginWithToken(accountName, token, new AsyncCallback<LoginResponse>() {
 				@Override
 				public void onSuccess(LoginResponse result) {
-					handleLoginResponse(result, accountName, true);
+					handleLoginResponse(result, accountName, rmPersist);
 				}
 
 				@Override
@@ -159,6 +161,10 @@ public class LoginPanel extends FlowPanel implements SimpleCallback<Boolean> {
 			if (persistentLogin) {
 				Cookies.setCookie(COOKIE_RM_ACCOUNT, accountName, expireDate);
 				Cookies.setCookie(COOKIE_RM_TOKEN, response.getRememberMeToken(), expireDate);
+				Cookies.setCookie(COOKIE_RM_PERSIST, "1", expireDate);
+			} else {
+				Cookies.setCookie(COOKIE_RM_ACCOUNT, accountName);
+				Cookies.setCookie(COOKIE_RM_TOKEN, response.getRememberMeToken());
 			}
 
 			getAccountSettings();
@@ -209,18 +215,17 @@ public class LoginPanel extends FlowPanel implements SimpleCallback<Boolean> {
 
 			@Override
 			public void onSuccess() {
-				RPC.getAccountManagementRPC().login(accountName, password, persistentLogin,
-						new AsyncCallback<LoginResponse>() {
-							@Override
-							public void onFailure(Throwable caught) {
-								throw new RuntimeException(caught);
-							}
+				RPC.getAccountManagementRPC().loginWithPassword(accountName, password, new AsyncCallback<LoginResponse>() {
+					@Override
+					public void onFailure(Throwable caught) {
+						throw new RuntimeException(caught);
+					}
 
-							@Override
-							public void onSuccess(LoginResponse result) {
-								handleLoginResponse(result, accountName, persistentLogin);
-							}
-						});
+					@Override
+					public void onSuccess(LoginResponse result) {
+						handleLoginResponse(result, accountName, persistentLogin);
+					}
+				});
 			}
 		});
 	}
