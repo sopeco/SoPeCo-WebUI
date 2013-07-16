@@ -22,9 +22,9 @@ public interface AccountManagementRPC extends RemoteService {
 
 	boolean checkPassword(String accountName, String password);
 
-	LoginResponse login(String accountName, String password, boolean persistentLogin);
+	LoginResponse loginWithPassword(String accountName, String password);
 
-	LoginResponse login(String accountName, String rememberMeToken);
+	LoginResponse loginWithToken(String accountName, String rememberMeToken);
 
 	AccountDetails getAccountDetails();
 

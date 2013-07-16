@@ -90,7 +90,7 @@ public class AccountManagementRPCImpl extends SPCRemoteServlet implements Accoun
 	}
 
 	@Override
-	public LoginResponse login(String accountName, String password, boolean persistentLogin) {
+	public LoginResponse loginWithPassword(String accountName, String password) {
 		LoginResponse response = new LoginResponse(false, null);
 		Account account = UiPersistence.getUiProvider().loadAccount(accountName);
 
@@ -126,19 +126,19 @@ public class AccountManagementRPCImpl extends SPCRemoteServlet implements Accoun
 		// Login successfull
 		response.setSuccessful(true);
 
-		if (persistentLogin) {
-			String secretToken = Crypto.sha256(System.currentTimeMillis() + getSessionId() + accountName);
-			response.setRememberMeToken(secretToken);
+		// Create token to remeber login for later sessions
+		String secretToken = Crypto.sha256(System.currentTimeMillis() + getSessionId() + accountName);
+		response.setRememberMeToken(secretToken);
 
-			RememberMeToken rememberMeToken = new RememberMeToken();
-			rememberMeToken.setTokenHash(Crypto.sha256(secretToken));
-			rememberMeToken.setAccountId(account.getId());
-			rememberMeToken.setExpireTimestamp(System.currentTimeMillis() + 1000 * 3600 * 24 * 7);
-			rememberMeToken.setEncrypted(Crypto.encrypt(secretToken, password));
+		RememberMeToken rememberMeToken = new RememberMeToken();
+		rememberMeToken.setTokenHash(Crypto.sha256(secretToken));
+		rememberMeToken.setAccountId(account.getId());
+		rememberMeToken.setExpireTimestamp(System.currentTimeMillis() + 1000 * 3600 * 24 * 7);
+		rememberMeToken.setEncrypted(Crypto.encrypt(secretToken, password));
 
-			UiPersistence.getUiProvider().storeRememberMeToken(rememberMeToken);
-		}
+		UiPersistence.getUiProvider().storeRememberMeToken(rememberMeToken);
 
+		// store loged in user
 		UserManager.instance().getAllUsers();
 		UserManager.instance().registerUser(getSessionId());
 
@@ -157,7 +157,7 @@ public class AccountManagementRPCImpl extends SPCRemoteServlet implements Accoun
 	}
 
 	@Override
-	public LoginResponse login(String accountName, String rememberMeToken) {
+	public LoginResponse loginWithToken(String accountName, String rememberMeToken) {
 		UiPersistence.getUiProvider().deleteExpiredRememberMeToken();
 		LoginResponse response = new LoginResponse(false, null);
 
@@ -173,7 +173,7 @@ public class AccountManagementRPCImpl extends SPCRemoteServlet implements Accoun
 		try {
 			String password = Crypto.decrypt(rememberMeToken, rmToken.getEncrypted());
 
-			return login(accountName, password, true);
+			return loginWithPassword(accountName, password);
 		} catch (Exception e) {
 			return response;
 		}
@@ -182,21 +182,21 @@ public class AccountManagementRPCImpl extends SPCRemoteServlet implements Accoun
 	@Override
 	public AccountDetails getAccountDetails() {
 		requiredLoggedIn();
-		
+
 		return getUser().getAccountDetails();
 	}
 
 	@Override
 	public void storeAccountDetails(AccountDetails accountDetails) {
 		requiredLoggedIn();
-		
+
 		UiPersistence.getUiProvider().storeAccountDetails(accountDetails);
 	}
 
 	@Override
 	public void logout() {
 		requiredLoggedIn();
-		
+
 		UserManager.instance().destroyUser(getUser());
 	}
 }

@@ -20,9 +20,9 @@ public interface AccountManagementRPCAsync {
 
 	void checkPassword(String accountName, String password, AsyncCallback<Boolean> callback);
 
-	void login(String accountName, String password, boolean persistentLogin, AsyncCallback<LoginResponse> callback);
+	void loginWithPassword(String accountName, String password, AsyncCallback<LoginResponse> callback);
 
-	void login(String accountName, String rememberMeToken, AsyncCallback<LoginResponse> callback);
+	void loginWithToken(String accountName, String rememberMeToken, AsyncCallback<LoginResponse> callback);
 
 	void getAccountDetails(AsyncCallback<AccountDetails> callback);
 

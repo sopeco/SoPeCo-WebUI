@@ -106,5 +106,6 @@ public class ExportServlet extends HttpServlet {
 		resp.setContentLength((int) xmlContent.length());
 
 		resp.getWriter().write(xmlContent);
+		resp.flushBuffer();
 	}
 }

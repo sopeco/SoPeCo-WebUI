@@ -49,6 +49,7 @@ public class PushRPCImpl extends SPCRemoteServlet implements PushRPC {
 
 	private static Map<String, List<PushPackage>> packageListMap = new HashMap<String, List<PushPackage>>();
 
+	@Override
 	public List<PushPackage> push() {
 		try {
 			initList(getSessionId());
