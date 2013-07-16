@@ -105,6 +105,11 @@ public final class ServerPush implements AsyncCallback<List<PushPackage>> {
 
 	@Override
 	public void onFailure(Throwable caught) {
+		synchronized (this) {
+			waiting = false;
+			sendRequest();
+		}
+		
 		throw new RuntimeException(caught);
 	}
 
@@ -124,8 +129,10 @@ public final class ServerPush implements AsyncCallback<List<PushPackage>> {
 			}
 		}
 
-		waiting = false;
-		sendRequest();
+		synchronized (this) {
+			waiting = false;
+			sendRequest();
+		}
 	}
 
 	private synchronized void sendRequest() {

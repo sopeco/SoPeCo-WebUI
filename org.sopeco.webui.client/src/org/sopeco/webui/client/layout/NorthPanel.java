@@ -103,7 +103,7 @@ public class NorthPanel extends FlowPanel implements ClickHandler, InputDialogHa
 		if (event.getSource() == imageSatellite && isEnabled(imageSatellite)) {
 			showMECSettings();
 		} else if (event.getSource() == imageExport && isEnabled(imageExport)) {
-			ExportBox.showExportBox();
+			ExportBox.showExportScenarioDialog();
 		} else if (event.getSource() == imageScenarioAdd && isEnabled(imageScenarioAdd)) {
 			addScenario();
 		} else if (event.getSource() == imageScenarioClone && isEnabled(imageScenarioClone)) {

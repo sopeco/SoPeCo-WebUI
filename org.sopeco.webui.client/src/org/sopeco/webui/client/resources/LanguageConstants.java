@@ -160,6 +160,15 @@ public interface LanguageConstants extends com.google.gwt.i18n.client.Constants 
   String Experiments();
 
   /**
+   * Translated "Export".
+   * 
+   * @return translated "Export"
+   */
+  @DefaultStringValue("Export")
+  @Key("Export")
+  String Export();
+
+  /**
    * Translated "First repeat after start".
    * 
    * @return translated "First repeat after start"

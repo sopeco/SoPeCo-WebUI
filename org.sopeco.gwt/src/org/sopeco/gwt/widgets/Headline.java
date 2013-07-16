@@ -46,8 +46,8 @@ public class Headline extends SimplePanel {
 		this(text, DEFAULT_TYPE);
 	}
 
-	public Headline(String text, int type) {
-		super(Document.get().createElement("h" + type));
+	public Headline(String text, int headlineType) {
+		super(Document.get().createElement("h" + headlineType));
 
 		getElement().setInnerHTML(text);
 	}
