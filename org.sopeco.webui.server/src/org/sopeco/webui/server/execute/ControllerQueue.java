@@ -57,7 +57,6 @@ import org.sopeco.webui.shared.entities.MECLog;
 import org.sopeco.webui.shared.entities.RunningControllerStatus;
 import org.sopeco.webui.shared.entities.account.Account;
 import org.sopeco.webui.shared.push.PushDomain;
-import org.sopeco.webui.shared.push.PushSerializable;
 import org.sopeco.webui.shared.push.packages.PushControllerStatus;
 import org.sopeco.webui.shared.push.packages.PushScheduledExperiments;
 
@@ -197,14 +196,15 @@ public class ControllerQueue implements IStatusListener {
 
 			executionProperties.put(IConfiguration.CONF_SCENARIO_DESCRIPTION, runningExperiment
 					.getScheduledExperiment().getScenarioDefinition());
-			executionProperties.put(IConfiguration.CONF_EXPERIMENT_EXECUTION_SELECTION, runningExperiment
-					.getScheduledExperiment().getSelectedExperiments());
+//			executionProperties.put(IConfiguration.CONF_EXPERIMENT_EXECUTION_SELECTION, runningExperiment
+//					.getScheduledExperiment().getSelectedExperiments());
 		} catch (URISyntaxException e) {
 			throw new RuntimeException(e);
 		}
 
 		generatedSessionId = "RANDOMID" + (long) (Long.MAX_VALUE * Math.random());
-		SoPeCoRunner runner = new SoPeCoRunner(generatedSessionId, executionProperties);
+		SoPeCoRunner runner = new SoPeCoRunner(generatedSessionId, executionProperties, runningExperiment
+				.getScheduledExperiment().getSelectedExperiments());
 		executeStatus = getThreadPool().submit(runner);
 
 		runningExperiment.setTimeStarted(System.currentTimeMillis());
