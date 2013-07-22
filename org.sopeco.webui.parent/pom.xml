@@ -23,9 +23,9 @@
 	<repositories>
 
 		<repository>
-			<id>Harvard</id>
-			<name>Harvard</name>
-			<url>http://repo.open.med.harvard.edu/nexus/content/repositories/thirdparty</url>
+			<id>Eclipse</id>
+			<name>Eclipse</name>
+			<url>http://maven.eclipse.org/nexus/content/groups/build/</url>
 		</repository>
 		<repository>
 			<id>LPE Releases</id>
@@ -148,8 +148,9 @@
 			<artifactId>org.sopeco.runner</artifactId>
 			<version>${sopeco.dependency}</version>
 		</dependency>
+		
 		<dependency>
-			<groupId>gwt-visualization</groupId>
+			<groupId>com.google.gwt.google-apis</groupId>
 			<artifactId>gwt-visualization</artifactId>
 			<version>1.1.1</version>
 		</dependency>
