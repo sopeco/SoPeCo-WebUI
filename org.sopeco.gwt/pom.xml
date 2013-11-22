@@ -5,10 +5,10 @@
 	<name>SoPeCo GWT Widgets</name>
 
 	<parent>
-		<groupId>org.sopeco.frontend</groupId>
-		<artifactId>org.sopeco.frontend.parent</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
-		<relativePath>../org.sopeco.frontend.parent</relativePath>
+		<groupId>org.sopeco.webui</groupId>
+		<artifactId>org.sopeco.webui.parent</artifactId>
+		<version>1.0-SNAPSHOT</version>
+		<relativePath>../org.sopeco.webui.parent</relativePath>
 	</parent>
 
 	<build>

@@ -3,10 +3,13 @@
 /*/.settings
 /*/gwt-unitCache
 
-/*/war/sopeco_frontend
+/*/war/sopeco_webui
 
 /*/war/WEB-INF/lib
-
+/*/.gwt
 /*/war/WEB-INF/deploy
 
 *.class
+/*/.project
+/*/.classpath
+/*/.checkstyle

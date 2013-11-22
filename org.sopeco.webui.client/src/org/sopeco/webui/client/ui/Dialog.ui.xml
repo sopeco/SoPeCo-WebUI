@@ -1,0 +1,26 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:spc="urn:import:org.sopeco.webui.client.ui">
+	<ui:style>
+		.style {
+			margin-left: auto;
+			margin-right: auto;
+
+			border: 1px solid #ccc;
+			border-radius: 8px;
+			box-shadow: 0 0 13px 0 #bcd;
+			background-color: #fff;
+			z-index: 9999;
+	
+			padding: 1em;
+
+			text-align: left;
+		}
+	</ui:style>
+
+	<g:FlowPanel ui:field="contentPanel" addStyleNames="{style.style}">
+ 		<spc:Heading ui:field="heading" />
+	</g:FlowPanel>
+
+</ui:UiBinder> 

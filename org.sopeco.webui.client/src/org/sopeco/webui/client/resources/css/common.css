@@ -1,0 +1,105 @@
+/**
+ * Copyright (c) 2013 SAP
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *     * Redistributions of source code must retain the above copyright
+ *       notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above copyright
+ *       notice, this list of conditions and the following disclaimer in the
+ *       documentation and/or other materials provided with the distribution.
+ *     * Neither the name of the SAP nor the
+ *       names of its contributors may be used to endorse or promote products
+ *       derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL SAP BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+ @url noise image.backgroundNoise2;
+ 
+.rootPanel {
+	min-width: 1000px;
+	min-height: 400px;
+}
+
+.dialogBox {
+	border: 1px solid #ccc;
+	border-radius: 8px;
+	box-shadow: 0 0 13px 0 #bcd;
+	background-color: #fff;
+	z-index: 9999;
+}
+
+.dialogBox-padding {
+	padding: 1em;
+}
+
+.sopeco-Dialog {
+	border: 1px solid #ccc;
+	border-radius: 8px;
+	box-shadow: 0 0 13px 0 #bcd;
+	background-color: #fff;
+	z-index: 9999;
+	padding: 0;
+}
+
+.sopeco-Dialog>div {
+	padding: .8em;
+}
+
+.sopeco-Dialog h3 {
+	margin: 0;
+}
+
+.sopeco-Dialog .dragPanel {
+	position: absolute;
+	width: 100%;
+	height: 1em;
+	top: 0;
+	left: 0;
+	cursor: move;
+}
+
+.sopeco-Dialog-Glass {
+	background-image: noise;
+	background-repeat: repeat;
+	z-index: 9999;
+	opacity: 0.1;
+}
+
+.sopeco-Dialog-ButtonPanel {
+	padding-top: .5em;
+	border-top: 1px solid #ccc;
+}
+
+.sopeco-Dialog-ButtonPanel>button {
+	float: right;
+	margin-left: 10px;
+	min-width: 4em;
+}
+
+.sopeco-ExceptionDialog-Exception {
+	color: rgb(255, 0, 0);
+	font-size: 0.9em;
+	margin: .5em 0;
+	border-left: 2px solid;
+	padding: .5em 0em .5em 1em;
+	background-color: rgb(255, 247, 247);
+}
+
+.horizontalLine {
+	display: block;
+	height: 1px;
+	width: 100%;
+	background-color: #ccc;
+	margin: 1em 0 .5em;
+}

@@ -1,0 +1,829 @@
+/**
+ * Copyright (c) 2013 SAP
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *     * Redistributions of source code must retain the above copyright
+ *       notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above copyright
+ *       notice, this list of conditions and the following disclaimer in the
+ *       documentation and/or other materials provided with the distribution.
+ *     * Neither the name of the SAP nor the
+ *       names of its contributors may be used to endorse or promote products
+ *       derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL SAP BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+.gwt-PopupPanelGlass {
+	z-index: 1000;
+}
+
+.gwt-DialogBox {
+	z-index: 1001;
+}
+
+.transparent-50 {
+	opacity: 0.5;
+	filter: alpha(opacity =                    
+		                                                         
+		                      50);
+}
+
+.spc-seperator {
+	width: 0px;
+	display: block;
+	margin: 0 12px;
+	overflow: hidden;
+}
+
+.spc-TextBox {
+	padding: 4px;
+}
+
+.spc-Label {
+	font-weight: bold;
+	color: #333;
+}
+
+.hDefaultMargin {
+	margin-left: 1em;
+}
+
+.bold {
+	font-weight: bold;
+	color: #333;
+}
+
+/* ******************************************* */
+/* SOPECO - COMBOBOX */
+.sopeco-Tree {
+	
+}
+
+.sopeco-TreeItem>.sopeco-TreeItem {
+	margin-left: 1em;
+}
+
+.sopeco-TreeItem>.content>img {
+	display: inline-block;
+	margin-right: 10px;
+	position: relative;
+	vertical-align: text-bottom;
+}
+
+.sopeco-TreeItem>.content>span {
+	display: inline-block;
+	line-height: 26px;
+	position: relative;
+}
+
+/* ******************************************* */
+/* ******************************************* */
+.allowOverflow {
+	overflow: visible !important;
+}
+
+#topWarning {
+	background-color: #E65;
+	text-align: center;
+	padding: 0.5em;
+	color: white;
+	font-weight: bold;
+	position: fixed;
+	width: 100%;
+	border-bottom: 1px solid;
+	z-index: 999;
+}
+
+#loadingIndicator {
+	position: fixed;
+	bottom: 6px;
+	right: 6px;
+	z-index: 999;
+	display: none;
+}
+
+#refreshIndicator {
+	position: fixed;
+	bottom: 6px;
+	right: 6px;
+	z-index: 999;
+	display: none;
+}
+
+h3 {
+	border-bottom: 1px solid #CCC;
+	padding: 0.1em;
+	color: #333;
+}
+
+p {
+	font-weight: bold;
+	color: #333;
+}
+
+.nPanel {
+	background-color: #234;
+	border-bottom: 1px solid black;
+	margin-top: -1px;
+	padding-top: 0.2em;
+	height: 2.8em;
+}
+
+#sapResearchLogo {
+	float: right;
+	margin: 9px 12px;
+	width: 91px;
+	height: 18px;
+}
+
+.north_hPanel .tabStyle {
+	vertical-align: middle;
+	/*background-color: #EEE;
+	border-radius: 0 0 .5em .5em;*/
+	padding: 0 1em;
+	/*border: 1px solid lightgray;
+	border-top: 0;
+	box-shadow: 0px 0px 6px lightBlue;*/
+	color: #AAA;
+	position: relative;
+}
+
+.north_hPanel .tabStyle b {
+	color: white;
+}
+
+.north_hPanel .tabStyle td {
+	height: 3em;
+}
+
+.north_hPanel .gwt-Anchor {
+	color: #ACF;
+	font-weight: bold;
+}
+
+.north_hPanel .disabled {
+	color: #789 !important;
+	text-decoration: none !important;
+}
+
+#mainNavigation {
+	border-right: 1px solid #CCC;
+	background-color: #fafafa;
+	overflow: visible !important;
+	box-shadow: #9AB 0px 3px 8px 0px;
+	z-index: 500;
+}
+
+#mainNavigation .tlEntry {
+	padding: 0.8em 2em;
+	display: block;
+	font-weight: bold;
+	text-decoration: none;
+	position: relative;
+	color: #666;
+	cursor: pointer;
+	margin: 0.2em 0;
+}
+
+#mainNavigation .tlEntry:hover {
+	color: #222;
+}
+
+#mainNavigation .tlEntry.marked {
+	color: #06C;
+	cursor: default;
+}
+
+#mainNavigation .tlEntry .marker {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 5px;
+	background-color: transparent;
+	display: block;
+	height: 100%;
+}
+
+#mainNavigation .tlEntry.marked .marker {
+	background-color: #06C !important;
+}
+
+#mainNavigation .tlEntry:hover .marker {
+	background-color: #BBB;
+}
+
+#mainNavigation .tlEntry .subText {
+	color: #AAA;
+	font-size: 0.8em;
+	width: 160px;
+	display: block;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	line-height: 1.8em;
+	white-space: nowrap;
+}
+
+#mainNavigation .slEntry {
+	padding: 0.8em 1em 0.8em 3.5em;
+	color: #666;
+	font-weight: bold;
+	position: relative;
+	overflow: hidden;
+	margin: 0.2em 0;
+}
+
+#mainNavigation .slEntry .gwt-HTML:first-child {
+	text-overflow: ellipsis;
+	overflow: hidden;
+	line-height: 1.8em;
+	white-space: nowrap;
+}
+
+#mainNavigation .slEntry:hover {
+	color: #222;
+	cursor: pointer;
+}
+
+#mainNavigation .slEntry.marked {
+	color: #06C;
+	cursor: default;
+}
+
+#mainNavigation .slEntry .marker {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 5px;
+	background-color: transparent;
+	display: block;
+	height: 100%;
+}
+
+#mainNavigation .slEntry .marker.second {
+	left: 10px;
+}
+
+#mainNavigation .slEntry:hover .marker {
+	background-color: #BBB;
+}
+
+#mainNavigation .slEntry:hover .marker.second {
+	background-color: #EEE;
+}
+
+#mainNavigation .slEntry.marked .marker {
+	background-color: #06C;
+}
+
+#mainNavigation .slEntry.marked .marker.second {
+	background-color: #68F;
+}
+
+/*  ********************  */
+/*    environmentPanel    */
+/*  ********************  */
+#controllerPanel {
+	display: block;
+	overflow: hidden;
+}
+
+#controllerPanel>#contentWrapper {
+	padding: 1em;
+}
+
+#controllerPanel>#contentWrapper>.headline {
+	padding: 0.5em;
+	border-bottom: 1px solid #CCC;
+	color: #333;
+	font-weight: bold;
+}
+
+#controllerPanel>#contentWrapper .gwt-Button {
+	padding: 2px 25px;
+	float: right;
+}
+
+#controllerPanel>#contentWrapper .spc-ComboBox.invalid {
+	background-color: #FFF6F6;
+}
+
+#controllerPanel>#contentWrapper .spc-ComboBox.invalid .gwt-TextBox {
+	color: #A00;
+}
+
+#controllerPanel>#contentWrapper .positive {
+	color: #3A5;
+}
+
+#controllerPanel>#contentWrapper .negative {
+	color: #933;
+}
+
+#controllerPanel>#contentWrapper .warning {
+	color: #C70;
+}
+
+#controllerPanel>#contentWrapper .loadingIndicator {
+	margin: 0 5px 0 10px;
+}
+
+/*  ********************  */
+#mecSliderPanel {
+	background-color: #fafafa;
+	border-left: 1px solid #CCC;
+	border-bottom: 1px solid #CCC;
+	text-align: center;
+	padding: 0.5em 0 0;
+}
+
+#mecSliderPanel {
+	background-color: #eee;
+	cursor: pointer;
+}
+
+#mecSliderPanel.down {
+	border-top: 1px solid #CCC;
+}
+
+#mecSliderPanel .slideText {
+	color: #666;
+	padding-bottom: 0.4em;
+}
+
+#mecSliderPanel .slideText {
+	color: #333;
+}
+
+#medTreePanel {
+	display: block;
+	height: 100%;
+}
+
+.frontendTree {
+	
+}
+
+.frontendTree .treeItem {
+	margin-left: 1.5em;
+	position: relative;
+	margin-top: 3px;
+}
+
+.frontendTree>.treeItem {
+	margin-left: 1px;
+}
+
+.frontendTree .treeItem .linePanel {
+	padding: 0.5em 1em;
+	color: #333;
+	font-weight: bold;
+	height: 22px;
+}
+
+.frontendTree .treeItem .linePanel:hover {
+	background-color: #f8f8f8;
+}
+
+.frontendTree .treeItem .linePanel>.leftDiv {
+	margin-left: 1.5em;
+	float: left;
+	padding-top: 2px;
+	cursor: pointer;
+}
+
+.frontendTree .treeItem .linePanel>.typeSeperator {
+	margin-left: 1em;
+	cursor: default;
+}
+
+.frontendTree .treeItem .linePanel>.listboxType {
+	display: none;
+	float: left;
+	border: 1px solid #AAA;
+	color: #333;
+	padding: 0 0 0 .5em;
+	margin: 0 0 0 1em;
+}
+
+.frontendTree .treeItem .linePanel>input {
+	float: left;
+	display: none;
+	margin: 0;
+	margin-left: 1.5em;
+	padding: 0 0.5em;
+}
+
+.frontendTree .treeItem .linePanel>img {
+	cursor: pointer;
+	/* float: left; */
+	position: absolute;
+	left: 0.5em;
+}
+
+.frontendTree .treeItem .linePanel>.parameterImg {
+	margin-top: 2px;
+	cursor: default;
+}
+
+.frontendTree .treeItem .linePanel>.actionPanel {
+	display: none;
+	float: right;
+	margin-top: 2px;
+}
+
+.frontendTree .treeItem .linePanel:hover>.actionPanel {
+	display: block;
+}
+
+.frontendTree .treeItem .linePanel>.actionPanel>img {
+	vertical-align: sub;
+	cursor: pointer;
+	margin-right: 0.7em;
+}
+
+.frontendTree .treeItem .linePanel>.editableParameter {
+	color: #aaa;
+	font-weight: normal;
+}
+
+.tlEntry #changeSpecImage {
+	display: none;
+}
+
+.tlEntry.marked #changeSpecImage {
+	position: absolute;
+	display: block;
+	top: 9px;
+	right: 6px;
+	border: 1px solid #AAA;
+	border-radius: 3px;
+	background-color: #EEE;
+	padding: 1px;
+	cursor: pointer;
+}
+
+.tlEntry.marked #changeSpecImage:hover {
+	background-color: #FFF;
+}
+
+#changeSpecPanel {
+	background-color: #FAFAFA;
+	position: absolute;
+	left: 15em;
+	top: 2px;
+	border: 1px solid #CCC;
+	border-left: 1px dotted #E1E1E1;
+	z-index: 2;
+	box-shadow: 3px 5px 11px -5px #CCC;
+}
+
+#changeSpecPanel td {
+	padding: 8px;
+	color: #666;
+}
+
+#changeSpecPanel td:hover {
+	padding: 8px;
+	color: #333;
+	cursor: pointer;
+}
+
+#changeSpecPanel td>div.marked {
+	color: #06C;
+	cursor: default;
+}
+
+#changeSpecPanel td>div {
+	white-space: nowrap;
+}
+
+#changeSpecPanel #addSpecification {
+	color: #333;
+	opacity: 0.5;
+	filter: alpha(opacity =                                               
+		                                                         
+		                                                 50);
+}
+
+#changeSpecPanel #addSpecification:hover {
+	opacity: 1;
+	filter: alpha(opacity =                                              
+		                                                         
+		                                                  100);
+}
+
+#changeSpecPanel #addSpecification>img {
+	vertical-align: middle;
+	margin-right: 1em;
+	margin-bottom: 3px;
+}
+
+#specificationTopPanel {
+	border-bottom: 2px solid #ccc;
+	width: 100%;
+	padding: 1em;
+}
+
+.clear {
+	float: none !important;
+	clear: both !important;
+}
+
+#assignmentListPanelWrapper {
+	right: 0;
+	bottom: 0;
+}
+
+#selectionViewPanelWrapper {
+	border-right: 3px solid #ccc;
+	bottom: 0;
+}
+
+#selectionViewPanel {
+	padding: 1em;
+}
+
+.selectionTreeItemLeaf {
+	margin-left: 2em;
+	padding-left: 1em;
+	position: relative;
+}
+
+.selectionTreeItemLeaf:hover {
+	background-color: #E1E7EB;
+}
+
+.selectionTreeItemLeaf>span {
+	line-height: 26px;
+	color: #333;
+	font-weight: bold;
+}
+
+.selectionTreeItemLeaf>.gwt-CheckBox,.selectionTreeItemLeaf>.gwt-RadioButton
+	{
+	float: right;
+	margin: 4px 4px 0px 0;
+	line-height: 0;
+}
+
+#toggleSelectionPanel {
+	position: absolute;
+	display: block;
+	background-color: #EEE;
+	border: 1px solid #BBB;
+	top: 40%;
+	cursor: pointer;
+	border-radius: 10px 10px 0px 0;
+	color: #888;
+	-webkit-transform: rotate(90deg);
+	-moz-transform: rotate(90deg);
+	filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3 );
+	-webkit-transform-origin: 0 100%;
+	-moz-transform-origin: 0 100%;
+	height: 20px;
+	width: 200px;
+	text-align: center;
+}
+
+#toggleSelectionPanel:hover {
+	background-color: #f8f8f8;
+}
+
+#assignmentListPanelWrapper h3,#selectionViewPanelWrapper h3 {
+	margin: 0 0 1em;
+}
+
+#assignmentItemTable {
+	display: table;
+	margin-left: 2em;
+}
+
+#assignmentItemTable>div {
+	display: table-cell;
+}
+
+#assignmentItemTable>div>div {
+	line-height: 28px;
+	border-bottom: 1px dashed #CCC;
+	padding-right: 1em;
+	white-space: nowrap;
+}
+
+#assignmentItemTable>div>div>.gwt-TextBox {
+	padding: 2px 4px;
+	margin-left: 2em;
+}
+
+#assignmentItemTable>.columnFirst {
+	color: #333;
+}
+
+#assignmentItemTable>.columnSecond {
+	color: #333;
+	font-weight: bold;
+}
+
+#assignmentItemTable>.columnThird {
+	color: #999;
+}
+
+.addExperimentNaviItem {
+	opacity: 0.5;
+	filter: alpha(opacity =   
+		                                                         
+		     50);
+	padding-left: 23px !important;
+	padding-right: 0 !important;
+	font-weight: normal !important;
+}
+
+.addExperimentNaviItem:hover {
+	opacity: 1;
+	filter: alpha(opacity =   
+		                                                         
+		      100);
+}
+
+.addExperimentNaviItem img {
+	vertical-align: middle;
+	margin-bottom: 3px;
+	margin-right: 6px;
+}
+
+.resultTreeItem:hover {
+	color: #468;
+}
+
+.gradient-blue {
+	background: #223344;
+	background: -moz-linear-gradient(top, #223344 5%, #838ead 50%, #223344 95%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(5%, #223344),
+		color-stop(50%, #838ead), color-stop(95%, #223344) );
+	background: -webkit-linear-gradient(top, #223344 5%, #838ead 50%, #223344 95%);
+	background: -o-linear-gradient(top, #223344 5%, #838ead 50%, #223344 95%);
+	background: -ms-linear-gradient(top, #223344 5%, #838ead 50%, #223344 95%);
+	background: linear-gradient(to bottom, #223344 5%, #838ead 50%, #223344 95%);
+	filter: progid:DXImageTransform.Microsoft.gradient(                    
+		                     startColorstr='#223344', endColorstr='#223344',
+		GradientType=0 );
+}
+
+#exportCsvDialog {
+	padding: 0.5em;
+}
+
+#exportCsvDialog>h3 {
+	margin: 0;
+}
+
+#exportCsvDialog>p {
+	font-weight: normal;
+	width: 325px;
+}
+
+#exportCsvDialog table td {
+	text-align: center;
+	padding: 0 10px;
+}
+
+#exportCsvDialog table .gwt-TextBox {
+	text-align: center;
+	width: 50px;
+}
+
+#exportCsvDialog>div {
+	text-align: right;
+	margin-top: 10px;
+}
+
+#exportCsvDialog .gwt-Button {
+	width: 80px;
+	margin-left: 0.5em;
+}
+
+.noscFooterPanel {
+	border-top: 1px solid #ccc;
+	padding: 1em;
+}
+
+.noscFooterPanel .gwt-Button {
+	width: 100px;
+}
+
+.envTreeView {
+	overflow-y: auto;
+}
+
+.envTreeView>.envTreeHeadline {
+	margin: 1em 1em 0.5em;
+	border-bottom: 1px solid #ccc;
+}
+
+.envTreeView>.envTreeHeadline>.gwt-HTML {
+	color: #333;
+	font-weight: bold;
+	float: left;
+	font-size: 1.17em;
+}
+
+.envTreeView>.envTreeHeadline>.gwt-ToggleButton {
+	float: right;
+	width: 16px;
+	height: 14px;
+	padding: 1px 0;
+	margin-left: 5px;
+}
+
+.envTreeView>.envTreeHeadline>.gwt-ToggleButton>.gwt-Image {
+	height: 11px !important;
+}
+
+.envTreeView .sopeco-Tree {
+	margin: 0 1em;
+}
+
+.envTreeItemLeaf .gwt-CheckBox {
+	float: right;
+	margin: 4px 0px 0px 0;
+	line-height: 0;
+}
+
+.envTreeItemLeaf {
+	margin-left: 2em;
+	padding-left: 1em;
+	position: relative;
+}
+
+.envTreeItemLeaf:hover {
+	background-color: #E1E7EB;
+}
+
+.envTreeItemLeaf>span {
+	line-height: 26px;
+	color: #333;
+	font-weight: bold;
+}
+
+.envTreeItemLeaf>span.text {
+	left: 10px;
+	right: 40px;
+	overflow: hidden;
+	position: absolute;
+	text-overflow: ellipsis;
+}
+
+.envTreeView .rMarker {
+	display: block;
+	width: 15px;
+	top: 39px;
+	bottom: 4px;
+	background-color: #F4F6F8;
+	position: absolute;
+	right: 15px;
+	text-align: center;
+	padding-top: 3px;
+}
+
+.envTreeView .rMarker2 {
+	display: block;
+	width: 15px;
+	background-color: #F4F6F8;
+	position: relative;
+	right: 15px;
+	text-align: center;
+	padding-top: 3px;
+}
+
+.envTreeView .rMarker img {
+	width: 14px;
+	height: 14px;
+	cursor: pointer;
+}
+
+.sapResearch {
+	font-family: arial;
+	font-weight: bold;
+	text-transform: capitalize;
+	font-size: 3em;
+	right: 0.2em !important;
+	left: auto !important;
+}
+
+.sapResearch span:first-child {
+	color: #f0a800;
+}
+
+.sapResearch span:last-child {
+	color: #999;
+}
