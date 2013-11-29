@@ -30,9 +30,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import javax.ws.rs.core.MediaType;
+
 import org.junit.Test;
 import org.sopeco.webui.server.user.User;
 import org.sopeco.webui.server.user.UserManager;
+
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
 
 /**
  * 
@@ -55,4 +60,20 @@ public class UserTest {
 		assertTrue(UserManager.instance().getAllUsers().isEmpty());
 		assertFalse(UserManager.instance().existUser(id));
 	}
+	
+	@Test
+	public void setServiceSessionIdUser() {
+		String id = "testId";
+
+		User user = UserManager.instance().registerUser(id);
+		// connect to server and get session id
+		ClientResponse c = Client.create().resource("http://localhost:8080/login").type(MediaType.TEXT_PLAIN).get(ClientResponse.class);
+		String serviceSessionId = c.getEntity(String.class);
+		user.setServiceSessionID(serviceSessionId);
+		
+		assertEquals(UserManager.instance().getUser(id).getServiceSessionID(), "6A1337B7");
+
+		UserManager.instance().destroyUser(user);
+	}
+	
 }

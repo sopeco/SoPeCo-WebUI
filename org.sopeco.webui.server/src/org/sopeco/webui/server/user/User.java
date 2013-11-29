@@ -48,6 +48,12 @@ import org.sopeco.webui.shared.entities.account.AccountDetails;
 public class User {
 
 	private String sessionId;
+	
+	/**
+	 * Stores the SessionID to the SoPeCo Service. The user get a session id,
+	 * when first time requesting the SoPeCo Service.
+	 */
+	private String serviceSessionId;
 
 	private ScenarioDefinitionBuilder currentScenarioDefinitionBuilder;
 
@@ -92,6 +98,14 @@ public class User {
 		return sessionId;
 	}
 
+	public void setServiceSessionID(String serviceSessionId) {
+		this.serviceSessionId = serviceSessionId;
+	}
+
+	public String getServiceSessionID() {
+		return serviceSessionId;
+	}
+	
 	public ScenarioDefinitionBuilder getCurrentScenarioDefinitionBuilder() {
 		return currentScenarioDefinitionBuilder;
 	}
