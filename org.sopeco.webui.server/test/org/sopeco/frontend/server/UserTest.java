@@ -61,19 +61,4 @@ public class UserTest {
 		assertFalse(UserManager.instance().existUser(id));
 	}
 	
-	@Test
-	public void setServiceSessionIdUser() {
-		String id = "testId";
-
-		User user = UserManager.instance().registerUser(id);
-		// connect to server and get session id
-		ClientResponse c = Client.create().resource("http://localhost:8080/login").type(MediaType.TEXT_PLAIN).get(ClientResponse.class);
-		String serviceSessionId = c.getEntity(String.class);
-		user.setServiceSessionID(serviceSessionId);
-		
-		assertEquals(UserManager.instance().getUser(id).getServiceSessionID(), "6A1337B7");
-
-		UserManager.instance().destroyUser(user);
-	}
-	
 }
