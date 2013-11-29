@@ -30,6 +30,7 @@ import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Enumeration;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -46,6 +47,8 @@ import org.sopeco.engine.measurementenvironment.socket.SocketAcception;
  */
 public final class StartUp implements ServletContextListener {
 
+	private static final Logger LOGGER = Logger.getLogger(StartUp.class.getName());
+	
 	private final String configurationFile = "sopeco-gui.conf";
 
 	public StartUp() {
@@ -60,7 +63,7 @@ public final class StartUp implements ServletContextListener {
 
 	@Override
 	public void contextDestroyed(ServletContextEvent arg0) {
-		System.out.println(">> Destroying webapp..");
+		LOGGER.info("Destroying webapp..");
 
 		Enumeration<Driver> drivers = DriverManager.getDrivers();
 		while (drivers.hasMoreElements()) {
@@ -69,7 +72,7 @@ public final class StartUp implements ServletContextListener {
 			ClassLoader thisClassLoader = this.getClass().getClassLoader();
 			if (driverclassLoader != null && thisClassLoader != null && driverclassLoader.equals(thisClassLoader)) {
 				try {
-					System.out.println("Deregistering: " + driver);
+					LOGGER.info("Deregistering: " + driver);
 					DriverManager.deregisterDriver(driver);
 				} catch (SQLException e) {
 					e.printStackTrace();
@@ -81,7 +84,7 @@ public final class StartUp implements ServletContextListener {
 
 	@Override
 	public void contextInitialized(ServletContextEvent arg0) {
-		System.out.println(">> Starting webapp..");
+		LOGGER.info("Starting webapp..");
 		try {
 			loadConfiguration();
 
