@@ -55,4 +55,5 @@ public class UserTest {
 		assertTrue(UserManager.instance().getAllUsers().isEmpty());
 		assertFalse(UserManager.instance().existUser(id));
 	}
+
 }

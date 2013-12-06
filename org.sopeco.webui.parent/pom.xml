@@ -25,7 +25,7 @@
 		<repository>
 			<id>Eclipse</id>
 			<name>Eclipse</name>
-			<url>http://maven.eclipse.org/nexus/content/groups/build/</url>
+			<url>http://repo.eclipse.org/nexus/content/groups/build/</url>
 		</repository>
 		<repository>
 			<id>LPE Releases</id>
@@ -222,6 +222,14 @@
 				<configuration>
 					<webXml>war/WEB-INF/web.xml</webXml>
 					<webResources>
+					    
+					    <resource>
+							<directory>rsc</directory>
+							<includes>
+								<include>**/*.txt</include>
+							</includes>
+						</resource>
+					    
 						<resource>
 							<directory>war</directory>
 
@@ -231,8 +239,10 @@
 								<include>**/*.html</include>
 								<include>**/*.jsp</include>
 								<include>**/*.ico</include>
+								<include>**/*.txt</include>
 							</includes>
 						</resource>
+						
 						<resource>
 							<directory>persistence</directory>
 							<targetPath>/</targetPath>
@@ -243,7 +253,7 @@
 					</webResources>
 				</configuration>
 			</plugin>
-
+			
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>gwt-maven-plugin</artifactId>
