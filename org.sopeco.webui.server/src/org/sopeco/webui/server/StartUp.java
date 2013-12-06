@@ -85,6 +85,7 @@ public final class StartUp implements ServletContextListener {
 	@Override
 	public void contextInitialized(ServletContextEvent arg0) {
 		LOGGER.info("Starting webapp..");
+		
 		try {
 			loadConfiguration();
 

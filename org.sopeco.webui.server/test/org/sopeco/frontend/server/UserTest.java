@@ -30,14 +30,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import javax.ws.rs.core.MediaType;
-
 import org.junit.Test;
 import org.sopeco.webui.server.user.User;
 import org.sopeco.webui.server.user.UserManager;
-
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
 
 /**
  * 
@@ -60,5 +55,5 @@ public class UserTest {
 		assertTrue(UserManager.instance().getAllUsers().isEmpty());
 		assertFalse(UserManager.instance().existUser(id));
 	}
-	
+
 }
