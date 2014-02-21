@@ -58,7 +58,11 @@ public class ResultRPCImpl extends SPCRemoteServlet implements ResultRPC {
 	/**	 */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * This method is useless?
+	 */
 	@Override
+	@Deprecated
 	public void getResults() {
 		requiredLoggedIn();
 
@@ -226,7 +230,7 @@ public class ResultRPCImpl extends SPCRemoteServlet implements ResultRPC {
 	}
 
 	/**
-	 * 
+	 * Service: /scenario/instance
 	 */
 	private ScenarioInstance getScenarioInstance(String sId, String scenarioName, String url)
 			throws DataNotFoundException {

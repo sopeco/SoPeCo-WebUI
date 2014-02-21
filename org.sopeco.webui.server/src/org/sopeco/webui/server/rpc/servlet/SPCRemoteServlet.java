@@ -29,15 +29,20 @@ package org.sopeco.webui.server.rpc.servlet;
 import javax.servlet.http.HttpSession;
 
 import org.sopeco.webui.server.security.Security;
+import org.sopeco.webui.server.user.TokenManager;
 import org.sopeco.webui.server.user.User;
 import org.sopeco.webui.server.user.UserManager;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 /**
+ * This class is used to handle the session of the current thread
+ * and:<br />
+ * - deliver the token to the session ID<br />
+ * - checks if the current session ID is logged into the service
  * 
  * @author Marius Oehler
- * 
+ * @author Peter Merkert
  */
 public class SPCRemoteServlet extends RemoteServiceServlet {
 
@@ -46,28 +51,46 @@ public class SPCRemoteServlet extends RemoteServiceServlet {
 	 */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Returns the session ID corresponding to the current thread.
+	 * 
+	 * @return the session ID
+	 */
 	protected String getSessionId() {
 		return getThreadLocalRequest().getSession().getId();
 	}
 
+	/**
+	 * Returns the {@link HttpSession} correspding to the current thread.
+	 * @return the {@link HttpSession}
+	 */
 	protected HttpSession getSession() {
 		return getThreadLocalRequest().getSession();
 	}
 
+	/**
+	 * @deprecated this method will be deleted during the service layer migration 
+	 */
+	@Deprecated
 	protected User getUser() {
 		return UserManager.instance().getUser(getSessionId());
 	}
-
-	protected void requiredLoggedIn() {
-		Security.requiredLoggedIn(getSessionId());
+	
+	/**
+	 * Returns the token corresponding to the current session.
+	 * 
+	 * @return the token
+	 */
+	protected String getToken() {
+		return TokenManager.instance().getToken(getSessionId());
 	}
 
-	@Override
-	protected void onAfterResponseSerialized(String serializedResponse) {
-		User user = getUser();
-		if (user != null) {
-			user.setLastRequestTime(System.currentTimeMillis());
-		}
+	/**
+	 * Checks if the current session ID has a valid token (and therefore
+	 * is logged in).
+	 */
+	protected void requiredLoggedIn() {
+		Security.requiredLoggedIn(getSessionId());
 	}
 
 }

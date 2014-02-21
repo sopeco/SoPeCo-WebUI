@@ -54,6 +54,10 @@ public class ExecuteRPCImpl extends SPCRemoteServlet implements ExecuteRPC {
 	// private static final Logger LOGGER =
 	// Logger.getLogger(ExecuteRPCImpl.class.getName());
 
+	/*
+	 * service /execution/schedule (POST)
+	 * In the RESTful serivce, the scheduled experiment is NOT set active!
+	 */
 	@Override
 	public void scheduleExperiment(FrontendScheduledExperiment rawScheduledExperiment) {
 		requiredLoggedIn();
@@ -75,6 +79,9 @@ public class ExecuteRPCImpl extends SPCRemoteServlet implements ExecuteRPC {
 		UiPersistence.getUiProvider().storeScheduledExperiment(scheduledExperiment);
 	}
 
+	/*
+	 * service /execution/schedule (GET)
+	 */
 	@Override
 	public List<FrontendScheduledExperiment> getScheduledExperiments() {
 		requiredLoggedIn();
@@ -94,6 +101,9 @@ public class ExecuteRPCImpl extends SPCRemoteServlet implements ExecuteRPC {
 		return fseList;
 	}
 
+	/*
+	 * service /execution/schedule (DELETE)
+	 */
 	@Override
 	public boolean removeScheduledExperiment(long id) {
 		requiredLoggedIn();
@@ -106,6 +116,9 @@ public class ExecuteRPCImpl extends SPCRemoteServlet implements ExecuteRPC {
 		return false;
 	}
 
+	/**
+	 * service /execution/{id}/enable and /execution/{id}/disable 
+	 */
 	@Override
 	public boolean setScheduledExperimentEnabled(long id, boolean enabled) {
 		requiredLoggedIn();
@@ -119,6 +132,9 @@ public class ExecuteRPCImpl extends SPCRemoteServlet implements ExecuteRPC {
 		return false;
 	}
 
+	/**
+	 * service /execution/details
+	 */
 	@Override
 	public List<ExecutedExperimentDetails> getExecutedExperimentDetails() {
 		requiredLoggedIn();

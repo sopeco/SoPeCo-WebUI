@@ -50,7 +50,12 @@ public class GetRPCImpl extends SPCRemoteServlet implements GetRPC {
 	 */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * @deprecated Method is not used in current build and not implemented in RESTful
+	 * service interface for SoPeCo.
+	 */
 	@Override
+	@Deprecated
 	public Map<String, String[]> getConnectedSocketController() {
 		requiredLoggedIn();
 		
@@ -62,6 +67,9 @@ public class GetRPCImpl extends SPCRemoteServlet implements GetRPC {
 		return map;
 	}
 
+	/**
+	 * RESTful service at /mec/list
+	 */
 	@Override
 	public List<String> getControllerFromMEC(MEControllerProtocol protocol, String host, int port) {
 		requiredLoggedIn();

@@ -39,23 +39,30 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.sopeco.engine.measurementenvironment.IMeasurementEnvironmentController;
 import org.sopeco.engine.measurementenvironment.connector.RestMEConnector;
 import org.sopeco.webui.shared.helper.MEControllerProtocol;
 
 /**
+ * The class {@code ServerCheck} is a utility class to handle the connection string
+ * to controllers.
  * 
  * @author Marius Oehler
- * 
+ * @author Peter Merkert
  */
 public final class ServerCheck {
 
-	private static final Logger LOGGER = Logger.getLogger(ServerCheck.class.getName());
+	private static final Logger LOGGER = LoggerFactory.getLogger(ServerCheck.class.getName());
 
 	private static final int SOCKET_TIMEOUT = 10000;
 
+	/**
+	 * As a utility class with helper methods, the constructor is private.
+	 */
 	private ServerCheck() {
 	}
 
@@ -63,11 +70,9 @@ public final class ServerCheck {
 	 * Tries to connect to the specified host and port. If that is successful,
 	 * it will return true.
 	 * 
-	 * @param host
-	 *            target host
-	 * @param port
-	 *            taget port
-	 * @return connection to given port possible
+	 * @param host target host
+	 * @param port target port
+	 * @return true, if a connection to given port is possible
 	 */
 	public static boolean isPortReachable(String host, int port) {
 		try {
@@ -85,14 +90,25 @@ public final class ServerCheck {
 		return false;
 	}
 
+	/**
+	 * Lists all avaialble controller with the given protocol to given host and port.
+	 * 
+	 * @Todo why no check of Socket protocol??
+	 * 
+	 * @param protocol the protocol type {@code MEControllerProtocol}
+	 * @param host the target host
+	 * @param port the target port
+	 * @return a list of all available controllers, null if the protocol is invalid
+	 */
 	public static List<String> getController(MEControllerProtocol protocol, String host, int port) {
 		switch (protocol) {
-		case REST_HTTP:
-			return getRestMEController(host, port);
-		case RMI:
-			return getRmiMEController(host, port);
-		default:
-			throw new IllegalStateException(protocol + " is not valid.");
+			case REST_HTTP:
+				return getRestMEController(host, port);
+			case RMI:
+				return getRmiMEController(host, port);
+			default:
+				LOGGER.info("The given protocol is not valid");
+				return null;
 		}
 	}
 
@@ -108,16 +124,16 @@ public final class ServerCheck {
 
 	/**
 	 * Returns a String Array which contains all available RMI-controller on the
-	 * given host.
+	 * given host:port.
 	 * 
-	 * @param host
-	 *            target host
-	 * @param port
-	 *            target port
-	 * @return
+	 * @param host target host
+	 * @param port target port
+	 * @return a list of all the controller on host:port with RMI protocol
 	 */
 	private static List<String> getRmiMEController(String host, int port) {
+		
 		try {
+			
 			String prefix = "rmi://";
 			if (host.length() <= prefix.length() || !host.substring(0, prefix.length()).equals(prefix)) {
 				host = prefix + host;
@@ -135,19 +151,22 @@ public final class ServerCheck {
 							String controllerName = name.substring(name.lastIndexOf("/") + 1);
 							retList.add(controllerName);
 						} else {
-							LOGGER.info(name + " is not a MEC-RMI");
+							LOGGER.debug(name + " is not a MEC-RMI");
 						}
 					} catch (NotBoundException e) {
 						e.printStackTrace();
 					}
 				}
 			}
+			
 			return retList;
+			
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
-		return null;
+		
+		return new ArrayList<String>();
 	}
 }

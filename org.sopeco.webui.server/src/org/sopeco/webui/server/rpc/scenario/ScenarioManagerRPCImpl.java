@@ -112,6 +112,9 @@ public class ScenarioManagerRPCImpl extends SPCRemoteServlet implements Scenario
 		return true;
 	}
 
+	/**
+	 * In SVC, this method does not switch the scenario.
+	 */
 	@Override
 	public boolean addScenario(ScenarioDefinition scenario) {
 		requiredLoggedIn();
@@ -167,6 +170,12 @@ public class ScenarioManagerRPCImpl extends SPCRemoteServlet implements Scenario
 
 	}
 
+	/**
+	 * Deprecated in SVC: Use switch service.
+	 * 
+	 * @param sceName
+	 * @return
+	 */
 	private ScenarioDefinition loadScenarioDefinition(String sceName) {
 		try {
 			ScenarioDefinition definition = getUser().getCurrentPersistenceProvider().loadScenarioDefinition(sceName);
@@ -185,6 +194,9 @@ public class ScenarioManagerRPCImpl extends SPCRemoteServlet implements Scenario
 		return getUser().getCurrentScenarioDefinitionBuilder().getBuiltScenario();
 	}
 
+	/**
+	 * SVC: method ARCHIVE does the service. The scenario is not switched in the service.
+	 */
 	@Override
 	public boolean storeScenarioDefinition(ScenarioDefinition definition) {
 		requiredLoggedIn();
@@ -208,7 +220,8 @@ public class ScenarioManagerRPCImpl extends SPCRemoteServlet implements Scenario
 			LOGGER.debug("No scenario instance with name {} available. Skip archiving old results!",
 					current.getScenarioName());
 		}
-
+		
+		// SVC does not switch here
 		getUser().setCurrentScenarioDefinitionBuilder(ScenarioDefinitionBuilder.load(definition));
 
 		getUser().storeCurrentScenarioDefinition();

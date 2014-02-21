@@ -150,8 +150,11 @@ public class User {
 	}
 
 	/**
-	 * 
+	 * @deprecated This method must not be used, as a {@code User} has no
+	 * 			   persistence provider any more. The storage has be directly done with
+	 * 			   the UserPersistenceProvider.
 	 */
+	@Deprecated
 	public void storeCurrentScenarioDefinition() {
 		LOGGER.info("store current ScenarioDefinition");
 

@@ -7,11 +7,15 @@
 	<packaging>pom</packaging>
 	<name>SoPeCo Web-UI</name>
 
+	<!-- ================PROPERTIES================= -->
 	<properties>
+		<sopeco.service.version>0.0.1-SNAPSHOT</sopeco.service.version>
+		<com.jersey.client.version>1.8</com.jersey.client.version>
 		<sopeco.dependency>5.0.2-SNAPSHOT</sopeco.dependency>
 		<gwt.version>2.5.1</gwt.version>
 	</properties>
 
+	
 	<modules>
 		<module>../org.sopeco.webui.shared</module>
 		<module>../org.sopeco.webui.server</module>
@@ -19,7 +23,7 @@
 		<module>../org.sopeco.webui.client</module>
 	</modules>
 
-
+	
 	<repositories>
 
 		<repository>
@@ -53,6 +57,7 @@
 	</repositories>
 
 
+	<!-- ================DEPENDENCIES================= -->
 	<dependencies>
 		<dependency>
 			<groupId>com.google.gwt</groupId>
@@ -173,6 +178,19 @@
 		  <artifactId>gwt-test-utils</artifactId>
 		  <version>0.44</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-client</artifactId>
+			<version>${com.jersey.client.version}</version>
+		</dependency>
+	
+		<dependency>
+			<groupId>org.sopeco.service</groupId>
+			<artifactId>org.sopeco.service</artifactId>
+			<version>${sopeco.service.version}</version>
+		</dependency>
+		
 		
 	</dependencies>
 
