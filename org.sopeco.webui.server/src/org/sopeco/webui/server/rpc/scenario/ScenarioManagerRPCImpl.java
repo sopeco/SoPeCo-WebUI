@@ -35,20 +35,11 @@ import javax.ws.rs.core.Response.Status;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sopeco.config.Configuration;
-import org.sopeco.config.IConfiguration;
-import org.sopeco.engine.model.ScenarioDefinitionWriter;
-import org.sopeco.persistence.entities.ArchiveEntry;
-import org.sopeco.persistence.entities.ExperimentSeries;
-import org.sopeco.persistence.entities.ExperimentSeriesRun;
-import org.sopeco.persistence.entities.ScenarioInstance;
 import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
-import org.sopeco.persistence.exceptions.DataNotFoundException;
 import org.sopeco.service.configuration.ServiceConfiguration;
 import org.sopeco.webui.server.rest.ClientFactory;
 import org.sopeco.webui.server.rpc.servlet.SPCRemoteServlet;
-import org.sopeco.webui.shared.builder.ScenarioDefinitionBuilder;
 import org.sopeco.webui.shared.rpc.ScenarioManagerRPC;
 
 /**
@@ -218,18 +209,5 @@ public class ScenarioManagerRPCImpl extends SPCRemoteServlet implements Scenario
 		}
 		
 		return xml;
-	}
-
-	private void archiveOldResults(ScenarioInstance scenarioInstance) {
-		ScenarioDefinitionWriter writer = new ScenarioDefinitionWriter(getSessionId());
-		String scenarioDefinitionXML = writer.convertToXMLString(scenarioInstance.getScenarioDefinition());
-		for (ExperimentSeries es : scenarioInstance.getExperimentSeriesList()) {
-			for (ExperimentSeriesRun run : es.getExperimentSeriesRuns()) {
-				ArchiveEntry entry = new ArchiveEntry(getUser().getCurrentPersistenceProvider(), run.getTimestamp(),
-						scenarioInstance.getName(), scenarioInstance.getMeasurementEnvironmentUrl(), es.getName(),
-						run.getLabel(), scenarioDefinitionXML, run.getDatasetId());
-				getUser().getCurrentPersistenceProvider().store(entry);
-			}
-		}
 	}
 }
