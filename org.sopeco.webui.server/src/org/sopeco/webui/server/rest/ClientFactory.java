@@ -1,11 +1,13 @@
-package org.sopeco.webui.server.rpc;
+package org.sopeco.webui.server.rest;
 
-import org.sopeco.service.rest.json.CustomObjectWrapper;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.WebTarget;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.config.ClientConfig;
-import com.sun.jersey.api.client.config.DefaultClientConfig;
+import org.glassfish.jersey.client.ClientConfig;
+import org.sopeco.service.rest.json.CustomObjectMapper;
+
+import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 
 /**
  * This class is used to create {@link WebResource} with the Jersey {@link Client}.
@@ -25,7 +27,7 @@ public class ClientFactory {
 	 * Private constructor for singleton.
 	 */
 	private ClientFactory() {
-    	client = Client.create(createClientConfig());
+    	client = ClientBuilder.newClient(createClientConfig());
 	}
 	
 	/**
@@ -51,14 +53,14 @@ public class ClientFactory {
 	 * @param URL 	the URL where the service is
 	 * @return		the {@link WebResource} to do requests
 	 */
-	public WebResource getClient(String... url) {
+	public WebTarget getClient(String... url) {
 		String myurl = "";
 		
 		for (String suburl : url) {
 			myurl += URLsplitter + suburl;
 		}
 		
-		return client.resource(URLprefix + myurl);
+		return client.target(URLprefix + myurl);
 	}
 	
 	/////////////////////////////////////////////////////////////////////////////////////////////////
@@ -73,11 +75,10 @@ public class ClientFactory {
 	 * @return ClientConfig to work with JSON
 	 */
 	private ClientConfig createClientConfig() {
-		ClientConfig config = new DefaultClientConfig();
-	    // the CustomObjectWrapper from SPC SL has configuration
-		// which allows to (de)serialize all the interface objects
-		// from and to JSON
-	    config.getClasses().add(CustomObjectWrapper.class);
+		ClientConfig config = new ClientConfig();
+		JacksonJaxbJsonProvider provider = new JacksonJaxbJsonProvider();
+        provider.setMapper(new CustomObjectMapper());
+        config.register(provider);
 	    return config;
 	}
 }

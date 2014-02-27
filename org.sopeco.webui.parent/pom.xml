@@ -178,12 +178,6 @@
 		  <artifactId>gwt-test-utils</artifactId>
 		  <version>0.44</version>
 		</dependency>
-		
-		<dependency>
-			<groupId>com.sun.jersey</groupId>
-			<artifactId>jersey-client</artifactId>
-			<version>${com.jersey.client.version}</version>
-		</dependency>
 	
 		<dependency>
 			<groupId>org.sopeco.service</groupId>
@@ -191,6 +185,11 @@
 			<version>${sopeco.service.version}</version>
 		</dependency>
 		
+		<dependency>
+		    <groupId>org.glassfish.jersey.core</groupId>
+		    <artifactId>jersey-client</artifactId>
+		    <version>2.6</version>
+		</dependency>
 		
 	</dependencies>
 

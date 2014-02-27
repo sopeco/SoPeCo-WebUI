@@ -35,8 +35,6 @@ public class Security {
 	 */
 	public static void requiredLoggedIn(String sessionId) {
 		
-		System.out.println("sessionid: " + sessionId);
-		
 		if (!TokenManager.instance().hasValidToken(sessionId)) {
 
 			throw new IllegalAccessError("Access denied. You have to be logged in.");

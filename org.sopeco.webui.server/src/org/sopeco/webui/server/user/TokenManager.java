@@ -29,16 +29,15 @@ package org.sopeco.webui.server.user;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sopeco.service.configuration.ServiceConfiguration;
-import org.sopeco.service.rest.exchange.ServiceResponse;
-import org.sopeco.webui.server.rpc.ClientFactory;
-
-import com.sun.jersey.api.client.GenericType;
-import com.sun.jersey.api.client.WebResource;
+import org.sopeco.webui.server.rest.ClientFactory;
 
 /**
  * Maps session ID to token.<br />
@@ -106,16 +105,16 @@ public final class TokenManager {
 		LOGGER.debug("Checking token '{}' on SPC SL for validity.", token, sessionId);
 			
 		// now check if the token is still valid at the service interface
-		WebResource wr = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_ACCOUNT,
-																ServiceConfiguration.SVC_ACCOUNT_CHECK,
-																ServiceConfiguration.SVC_ACCOUNT_TOKEN);
+		WebTarget wr = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_ACCOUNT,
+														     ServiceConfiguration.SVC_ACCOUNT_CHECK,
+															 ServiceConfiguration.SVC_ACCOUNT_TOKEN);
 
 		wr = wr.queryParam(ServiceConfiguration.SVCP_ACCOUNT_TOKEN, token);
 		
-		ServiceResponse<Boolean> sr_b = wr.accept(MediaType.APPLICATION_JSON)
-									      .get(new GenericType<ServiceResponse<Boolean>>() { });
+		Response r = wr.request(MediaType.APPLICATION_JSON)
+					   .get();
 		
-		return sr_b.getObject();
+		return r.getStatus() == Status.OK.getStatusCode();
 	}
 	
 	/**

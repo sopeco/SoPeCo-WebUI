@@ -1,20 +1,21 @@
 package org.sopeco.webui.server.rpc;
 
+import javax.validation.constraints.Null;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sopeco.service.configuration.ServiceConfiguration;
-import org.sopeco.service.rest.exchange.ServiceResponse;
+import org.sopeco.webui.server.rest.ClientFactory;
 import org.sopeco.webui.server.rpc.servlet.SPCRemoteServlet;
 import org.sopeco.webui.server.user.TokenManager;
 import org.sopeco.webui.shared.entities.account.AccountDetails;
 import org.sopeco.webui.shared.helper.LoginResponse;
 import org.sopeco.webui.shared.rpc.AccountManagementRPC;
-
-import com.sun.jersey.api.client.GenericType;
-import com.sun.jersey.api.client.WebResource;
 
 /**
  * 
@@ -31,16 +32,16 @@ public class AccountManagementRPCImpl extends SPCRemoteServlet implements Accoun
 	@Override
 	public boolean createAccount(String accountName, String password) {
 		
-		WebResource wr = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_ACCOUNT,
-				   										       ServiceConfiguration.SVC_ACCOUNT_CREATE);
+		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_ACCOUNT,
+				   										     ServiceConfiguration.SVC_ACCOUNT_CREATE);
 
-		wr = wr.queryParam(ServiceConfiguration.SVCP_ACCOUNT_NAME, accountName);
-		wr = wr.queryParam(ServiceConfiguration.SVCP_ACCOUNT_PASSWORD, password);
+		wt = wt.queryParam(ServiceConfiguration.SVCP_ACCOUNT_NAME, accountName);
+		wt = wt.queryParam(ServiceConfiguration.SVCP_ACCOUNT_PASSWORD, password);
 		
-		ServiceResponse<Boolean> sr_b = wr.accept(MediaType.APPLICATION_JSON)
-										  .post(new GenericType<ServiceResponse<Boolean>>() { });
+		Response r = wt.request(MediaType.APPLICATION_JSON)
+					   .post(Entity.entity(Null.class, MediaType.APPLICATION_JSON));
 		
-		return sr_b.getObject();
+		return r.getStatus() == Status.OK.getStatusCode();
 	}
 
 	@Override
@@ -50,77 +51,78 @@ public class AccountManagementRPCImpl extends SPCRemoteServlet implements Accoun
 			return false;
 		}
 		
-		WebResource wr = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_ACCOUNT,
-					       									   ServiceConfiguration.SVC_ACCOUNT_CREATE,
-					       									   ServiceConfiguration.SVC_ACCOUNT_CUSTOMIZE);
+		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_ACCOUNT,
+					       									 ServiceConfiguration.SVC_ACCOUNT_CREATE,
+					       									 ServiceConfiguration.SVC_ACCOUNT_CUSTOMIZE);
 		
-		wr = wr.queryParam(ServiceConfiguration.SVCP_ACCOUNT_NAME, accountName);
-		wr = wr.queryParam(ServiceConfiguration.SVCP_ACCOUNT_PASSWORD, password);
-		wr = wr.queryParam(ServiceConfiguration.SVCP_ACCOUNT_DATABASENAME, dbHost);
-		wr = wr.queryParam(ServiceConfiguration.SVCP_ACCOUNT_DATABASEPORT, String.valueOf(dbPort));
+		wt = wt.queryParam(ServiceConfiguration.SVCP_ACCOUNT_NAME, accountName);
+		wt = wt.queryParam(ServiceConfiguration.SVCP_ACCOUNT_PASSWORD, password);
+		wt = wt.queryParam(ServiceConfiguration.SVCP_ACCOUNT_DATABASENAME, dbHost);
+		wt = wt.queryParam(ServiceConfiguration.SVCP_ACCOUNT_DATABASEPORT, String.valueOf(dbPort));
 		
-		ServiceResponse<Boolean> sr_b = wr.accept(MediaType.APPLICATION_JSON).post(new GenericType<ServiceResponse<Boolean>>() { });
+		Response r = wt.request(MediaType.APPLICATION_JSON)
+				       .post(Entity.entity(Null.class, MediaType.APPLICATION_JSON));
 
-		return sr_b.getObject();
+		return r.getStatus() == Status.OK.getStatusCode();
 	}
 
 	@Override
 	public boolean accountExist(String accountName) {
 		
-		WebResource wr = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_ACCOUNT,
-															   ServiceConfiguration.SVC_ACCOUNT_EXISTS);
+		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_ACCOUNT,
+															 ServiceConfiguration.SVC_ACCOUNT_EXISTS);
 
-		wr = wr.queryParam(ServiceConfiguration.SVCP_ACCOUNT_NAME, accountName);
+		wt = wt.queryParam(ServiceConfiguration.SVCP_ACCOUNT_NAME, accountName);
 		
-		ServiceResponse<Boolean> sr_b = wr.accept(MediaType.APPLICATION_JSON)
-										  .get(new GenericType<ServiceResponse<Boolean>>() { });
+		Response r = wt.request(MediaType.APPLICATION_JSON).get();
 		
-		return sr_b.getObject();
+		if (r.getStatus() != Status.OK.getStatusCode()) {
+			return false;
+		}
+		
+		boolean b = r.readEntity(Boolean.class);
+		
+		return b;
 	}
 
 	@Override
 	public boolean checkPassword(String accountName, String password) {
 		
-		WebResource wr = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_ACCOUNT,
-														       ServiceConfiguration.SVC_ACCOUNT_CHECK,
-														       ServiceConfiguration.SVC_ACCOUNT_PASSWORD);
+		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_ACCOUNT,
+														     ServiceConfiguration.SVC_ACCOUNT_CHECK,
+														     ServiceConfiguration.SVC_ACCOUNT_PASSWORD);
 		
-		wr = wr.queryParam(ServiceConfiguration.SVCP_ACCOUNT_NAME, accountName);
-		wr = wr.queryParam(ServiceConfiguration.SVCP_ACCOUNT_PASSWORD, password);
+		wt = wt.queryParam(ServiceConfiguration.SVCP_ACCOUNT_NAME, accountName);
+		wt = wt.queryParam(ServiceConfiguration.SVCP_ACCOUNT_PASSWORD, password);
 		
-		ServiceResponse<Boolean> sr_b = wr.accept(MediaType.APPLICATION_JSON)
-										  .get(new GenericType<ServiceResponse<Boolean>>() { });
-		
-		return sr_b.getObject();
+		Response r = wt.request(MediaType.APPLICATION_JSON).get();
+
+		return r.getStatus() == Status.OK.getStatusCode();
 	}
 
 	@Override
 	public LoginResponse loginWithPassword(String accountName, String password) {
 		
-		WebResource wr = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_ACCOUNT,
+		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_ACCOUNT,
 				       										   ServiceConfiguration.SVC_ACCOUNT_LOGIN);
 		
-		wr = wr.queryParam(ServiceConfiguration.SVCP_ACCOUNT_NAME, accountName);
-		wr = wr.queryParam(ServiceConfiguration.SVCP_ACCOUNT_PASSWORD, password);
-		
-		ServiceResponse<String> sr_s = wr.accept(MediaType.APPLICATION_JSON)
-										 .get(new GenericType<ServiceResponse<String>>() { });
-		
+		wt = wt.queryParam(ServiceConfiguration.SVCP_ACCOUNT_NAME, accountName);
+		wt = wt.queryParam(ServiceConfiguration.SVCP_ACCOUNT_PASSWORD, password);
 
-		System.out.println(sr_s.getStatus().getStatusCode());
-		System.out.println(sr_s.getMessage());
-		System.out.println(sr_s);
+		Response r = wt.request(MediaType.APPLICATION_JSON).get();
 		
 		// if the status is not OK, then something has failed
-		if (sr_s.getStatus() != Status.OK) {
+		if (r.getStatus() != Status.OK.getStatusCode()) {
 			
 			return new LoginResponse(false, null);
 		}
 
-		// add the token to the tokenmanager
-		TokenManager.instance().registerToken(getSessionId(), sr_s.getObject());
+		String token = r.readEntity(String.class);
 		
-		return new LoginResponse(true, sr_s.getObject());
+		// add the token to the tokenmanager
+		TokenManager.instance().registerToken(getSessionId(), token);
+		
+		return new LoginResponse(true, token);
 	}
 
 	/**
@@ -132,17 +134,16 @@ public class AccountManagementRPCImpl extends SPCRemoteServlet implements Accoun
 	@Override
 	public LoginResponse loginWithToken(String accountName, String rememberMeToken) {
 		
-		WebResource wr = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_ACCOUNT,
-				   											   ServiceConfiguration.SVC_ACCOUNT_CHECK,
-				   											   ServiceConfiguration.SVC_ACCOUNT_TOKEN);
+		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_ACCOUNT,
+				   											 ServiceConfiguration.SVC_ACCOUNT_CHECK,
+				   											 ServiceConfiguration.SVC_ACCOUNT_TOKEN);
 
-		wr = wr.queryParam(ServiceConfiguration.SVCP_ACCOUNT_TOKEN, rememberMeToken);
-		
-		ServiceResponse<Boolean> sr_b = wr.accept(MediaType.APPLICATION_JSON)
-										  .get(new GenericType<ServiceResponse<Boolean>>() { });
+		wt = wt.queryParam(ServiceConfiguration.SVCP_ACCOUNT_TOKEN, rememberMeToken);
+
+		Response r = wt.request(MediaType.APPLICATION_JSON).get();
 		
 		// if the status is not OK, then something has failed
-		if (sr_b.getStatus() != Status.OK) {
+		if (r.getStatus() != Status.OK.getStatusCode()) {
 			
 			return new LoginResponse(false, null);
 		}
@@ -157,47 +158,46 @@ public class AccountManagementRPCImpl extends SPCRemoteServlet implements Accoun
 	public AccountDetails getAccountDetails() {
 		requiredLoggedIn();
 
-		WebResource wr = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_ACCOUNT,
-					ServiceConfiguration.SVC_ACCOUNT_INFO);
+		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_ACCOUNT,
+															 ServiceConfiguration.SVC_ACCOUNT_INFO);
 		
-		wr = wr.queryParam(ServiceConfiguration.SVCP_ACCOUNT_TOKEN, getToken());
-		
-		ServiceResponse<AccountDetails> sr_b = wr.accept(MediaType.APPLICATION_JSON)
-												.get(new GenericType<ServiceResponse<AccountDetails>>() { });
-		
-		if (sr_b.getStatus() != Status.OK) {
+		wt = wt.queryParam(ServiceConfiguration.SVCP_ACCOUNT_TOKEN, getToken());
+
+		Response r = wt.request(MediaType.APPLICATION_JSON).get();
+
+		if (r.getStatus() != Status.OK.getStatusCode()) {
 			return null;
 		}
 
-		return sr_b.getObject();
+		return r.readEntity(AccountDetails.class);
 	}
 
 	@Override
 	public void storeAccountDetails(AccountDetails accountDetails) {
 		requiredLoggedIn();
 
-		WebResource wr = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_ACCOUNT,
-				   										ServiceConfiguration.SVC_ACCOUNT_INFO);
+		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_ACCOUNT,
+				   										     ServiceConfiguration.SVC_ACCOUNT_INFO);
 
-		wr = wr.queryParam(ServiceConfiguration.SVCP_ACCOUNT_TOKEN, getToken());
+		wt = wt.queryParam(ServiceConfiguration.SVCP_ACCOUNT_TOKEN, getToken());
 		
-		wr.accept(MediaType.APPLICATION_JSON)
-		  .put(new GenericType<ServiceResponse<Boolean>>() { }, accountDetails);
+		wt.request(MediaType.APPLICATION_JSON)
+		  .put(Entity.entity(accountDetails, MediaType.APPLICATION_JSON));
 	}
 
 	@Override
 	public void logout() {
 		requiredLoggedIn();
 		
-		WebResource wr = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_ACCOUNT,
-			   												   ServiceConfiguration.SVC_ACCOUNT_LOGOUT);
+		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_ACCOUNT,
+			   												 ServiceConfiguration.SVC_ACCOUNT_LOGOUT);
 
-		wr = wr.queryParam(ServiceConfiguration.SVCP_ACCOUNT_TOKEN, getToken());
+		wt = wt.queryParam(ServiceConfiguration.SVCP_ACCOUNT_TOKEN, getToken());
 		
-		ServiceResponse<Boolean> sr_b = wr.accept(MediaType.APPLICATION_JSON)
-										  .put(new GenericType<ServiceResponse<Boolean>>() { });
+		Response r = wt.request(MediaType.APPLICATION_JSON)
+					   .put(Entity.entity(Null.class, MediaType.APPLICATION_JSON));
 		
-		if (sr_b.getStatus() == Status.OK) {
+		if (r.getStatus() == Status.OK.getStatusCode()) {
 
 			// deregister the token in the TokenManager
 			TokenManager.instance().deleteToken(getToken());
