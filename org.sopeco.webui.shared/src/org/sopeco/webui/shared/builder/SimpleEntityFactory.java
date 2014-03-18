@@ -63,9 +63,11 @@ public class SimpleEntityFactory {
 		return cva;
 	}
 
-	public static ExperimentSeriesDefinition createExperimentSeriesDefinition(String name) {
+	public static ExperimentSeriesDefinition createExperimentSeriesDefinition(String name
+	/* ,ExperimentTerminationCondition terminationCondition */) {
 		ExperimentSeriesDefinition esd = new ExperimentSeriesDefinition();
 		esd.setName(name);
+		// esd.setExperimentTerminationCondition(terminationCondition);
 		return esd;
 	}
 
@@ -82,6 +84,17 @@ public class SimpleEntityFactory {
 		pd.setType(type);
 		return pd;
 	}
+
+	// public static ExperimentTerminationCondition
+	// createTerminationCondition(String name, Map<String, String> config) {
+	// ExperimentTerminationCondition etc = new
+	// ExperimentTerminationCondition();
+	// etc.setName(name);
+	// if (config != null) {
+	// etc.getConfiguration().putAll(config);
+	// }
+	// return etc;
+	// }
 
 	public static ExplorationStrategy createExplorationStrategy(String name, Map<String, String> config) {
 		ExplorationStrategy es = new ExplorationStrategy();

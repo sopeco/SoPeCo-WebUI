@@ -26,84 +26,56 @@
  */
 package org.sopeco.webui.shared.builder;
 
-import java.io.Serializable;
+import java.util.logging.Logger;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.sopeco.persistence.entities.definition.ConstantValueAssignment;
 import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
 import org.sopeco.persistence.entities.definition.MeasurementSpecification;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
-import org.sopeco.service.configuration.ServiceConfiguration;
+import org.sopeco.webui.shared.helper.Metering;
 
 /**
- * Builder for a {@code MeasurementSpecification} from SoPeCo Core.
+ * Builder for the measurement specification.
  * 
  * @author Marius Oehler
- * @author Peter Merkert
+ * 
  */
-public class MeasurementSpecificationBuilder implements Serializable {
+public class MeasurementSpecificationBuilder {
 
-	private static final long serialVersionUID = -564030537820840352L;
-	
-	private static final Logger LOGGER = LoggerFactory.getLogger(MeasurementSpecificationBuilder.class.getName());
-	
-	/**
-	 * The {@code MeasurementSpecification} this builder manipulates.
-	 */
-	private MeasurementSpecification measurementSpecification;
+	private static final Logger LOGGER = Logger.getLogger(MeasurementSpecificationBuilder.class.getName());
+	private MeasurementSpecification specification;
 
-	/**
-	 * The {@code ScenarioDefinitionBuilder} this builder is connected to.
-	 */
-	private ScenarioDefinitionBuilder scenarioDefinitionBuilder;
-	
-	/**
-	 * Creates a new MeasurementSpecificationBuilder with the given {@code ScenarioDefinitionBuilder}.
-	 * 
-	 * @param scenarioDefinitionBuilder the connected {@code ScenarioDefinitionBuilder}
-	 */
-	public MeasurementSpecificationBuilder(ScenarioDefinitionBuilder scenarioDefinitionBuilder) {
-		this(scenarioDefinitionBuilder, ServiceConfiguration.DEFAULT_MEASUREMENTSPECIFICATION_NAME);
+	public MeasurementSpecificationBuilder(ScenarioDefinitionBuilder sBuilder) {
+		this(sBuilder, "MeasurementSpecification");
 	}
 
-	/**
-	 * Creates a new MeasurementSpecificationBuilder with the given {@link ScenarioDefinitionBuilder}
-	 * and the name for the {@link MeasurementSpecification}.
-	 * 
-	 * @param scenarioDefinitionBuilder		a ScenarioDefinitionBuilder
-	 * @param measurementSpecificationName	the name of the measurementSpecificationName
-	 */
-	public MeasurementSpecificationBuilder(ScenarioDefinitionBuilder scenarioDefinitionBuilder,
-										   String measurementSpecificationName) {
-		LOGGER.debug("Creating MeasurementSpecificationBuilder with name '" + measurementSpecificationName + "'");
+	public MeasurementSpecificationBuilder(ScenarioDefinitionBuilder sBuilder, String specName) {
+		double metering = Metering.start();
+		LOGGER.info("Creating MeasurementSpecificationBuilder '" + specName + "'");
 
-		this.scenarioDefinitionBuilder = scenarioDefinitionBuilder;
-		measurementSpecification = SimpleEntityFactory.createMeasurementSpecification(measurementSpecificationName);
-		// add the MS to the ScenarioDefinition
-		this.scenarioDefinitionBuilder.getScenarioDefinition().getMeasurementSpecifications().add(measurementSpecification);
+		specification = SimpleEntityFactory.createMeasurementSpecification(specName);
+		sBuilder.getBuiltScenario().getMeasurementSpecifications().add(specification);
+
+		Metering.stop(metering);
 	}
 
-	/**
-	 * Creates a new MeasurementSpecificationBuilder with the given {@link MeasurementSpecification}.
-	 * 
-	 * @param measurementSpecification the <code>MeasurementSpecification</code>
-	 */
-	public MeasurementSpecificationBuilder(MeasurementSpecification measurementSpecification) {
-		LOGGER.info("Creating MeasurementSpecificationBuilder for the "
-					+ "MeasurementSpecification with name "
-					+ "'" + measurementSpecification.getName() + "'");
+	public MeasurementSpecificationBuilder(MeasurementSpecification spec) {
+		double metering = Metering.start();
+		LOGGER.info("Creating MeasurementSpecificationBuilder for Spec. '" + spec.getName() + "'");
 
-		this.measurementSpecification = measurementSpecification;
-		scenarioDefinitionBuilder = null;
+		specification = spec;
+
+		Metering.stop(metering);
 	}
 
 	/**
 	 * Adding a parameter as initial assignment.
 	 * 
-	 * @param parameter	definition of the parameter
-	 * @param value		value of the given parameter
-	 * @return 			true, if the adding was successful
+	 * @param parameter
+	 *            definition of the parameter
+	 * @param value
+	 *            value of the given parameter
+	 * @return was the adding successful
 	 */
 	public boolean addInitAssignment(ParameterDefinition parameter, String value) {
 		ConstantValueAssignment cva = SimpleEntityFactory.createConstantValueAssignment(parameter, value);
@@ -114,30 +86,31 @@ public class MeasurementSpecificationBuilder implements Serializable {
 	/**
 	 * Adding a const value assignment as initial assignment.
 	 * 
-	 * @param cva 	const value assignment being added
-	 * @return		true, if the adding was successful
+	 * @param cva
+	 *            const value assignment being added
+	 * @return was the adding successful
 	 */
 	public boolean addInitAssignment(ConstantValueAssignment cva) {
 		LOGGER.info("adding parameter '" + cva.getParameter().getFullName() + "' as init assignment");
 
-		for (ConstantValueAssignment assignment : measurementSpecification.getInitializationAssignemts()) {
+		for (ConstantValueAssignment assignment : specification.getInitializationAssignemts()) {
 			if (assignment.getParameter().getFullName().equals(cva.getParameter().getFullName())) {
-				LOGGER.warn("parameter '" + cva.getParameter().getFullName() + "' already in init assignments list!");
+				LOGGER.warning("parameter '" + cva.getParameter().getFullName() + "' already in init assignments list!");
 				return false;
 			}
 		}
 
-		return measurementSpecification.getInitializationAssignemts().add(cva);
+		return specification.getInitializationAssignemts().add(cva);
 	}
 
 	/**
-	 * Returns true, if an assignment with the given fullname (namespace + name) exists.
+	 * Returns whetherr an assignment with the given fullname (namespace + name)
+	 * exists.
 	 * 
-	 * @param parameter	the {@link ParameterDefinition}
-	 * @return 			true, if an assignment with the given fullname (namespace + name) exists
+	 * @return
 	 */
 	public boolean containsInitialAssignment(ParameterDefinition parameter) {
-		for (ConstantValueAssignment assignment : measurementSpecification.getInitializationAssignemts()) {
+		for (ConstantValueAssignment assignment : specification.getInitializationAssignemts()) {
 			if (assignment.getParameter().getFullName().equals(parameter.getFullName())) {
 				return true;
 			}
@@ -148,28 +121,30 @@ public class MeasurementSpecificationBuilder implements Serializable {
 	/**
 	 * Removes the given assignment.
 	 * 
-	 * @param cva	ConstantValueAssignment being removed
-	 * @return 		true, if the removal was successful
+	 * @param cva
+	 *            ConstantValueAssignment being removed
+	 * @return was the removal successful
 	 */
 	public boolean removeInitialAssignment(ConstantValueAssignment cva) {
 		LOGGER.info("Removing ConstantValueAssignment '" + cva.getParameter().getFullName()
 				+ "' from init assignment list");
 
-		return measurementSpecification.getInitializationAssignemts().remove(cva);
+		return specification.getInitializationAssignemts().remove(cva);
 	}
 
 	/**
 	 * Removes the given assignment.
 	 * 
-	 * @param parameter	parameter of cva being removed
-	 * @return 			true, if the removal was successful
+	 * @param parameter
+	 *            parameter of cva being removed
+	 * @return was the removal successful
 	 */
 	public boolean removeInitialAssignment(ParameterDefinition parameter) {
 		LOGGER.info("Removing parameter '" + parameter.getFullName() + "' from init assignment list");
 
-		for (ConstantValueAssignment cva : measurementSpecification.getInitializationAssignemts()) {
+		for (ConstantValueAssignment cva : specification.getInitializationAssignemts()) {
 			if (cva.getParameter().getFullName().equals(parameter.getFullName())) {
-				if (measurementSpecification.getInitializationAssignemts().remove(cva)) {
+				if (specification.getInitializationAssignemts().remove(cva)) {
 
 					return true;
 				}
@@ -183,12 +158,22 @@ public class MeasurementSpecificationBuilder implements Serializable {
 	/**
 	 * Adds a new experiment series definition to the specification.
 	 * 
-	 * @param name	experiment name
-	 * @return 		if adding was successful: the created experimentSeriesDefinition
-	 *         		object else null
+	 * @param name
+	 *            experiment name
+	 * @param termination
+	 *            terminition condition
+	 * @return if adding was successful: the created experimentSeriesDefinition
+	 *         object else null
 	 */
-	public ExperimentSeriesDefinition addExperimentSeries(String name) {
-		ExperimentSeriesDefinition experiment = SimpleEntityFactory.createExperimentSeriesDefinition(name);
+	public ExperimentSeriesDefinition addExperimentSeries(String name/*
+																	 * ,
+																	 * ExperimentTerminationCondition
+																	 * termination
+																	 */) {
+		ExperimentSeriesDefinition experiment = SimpleEntityFactory.createExperimentSeriesDefinition(name/*
+																										 * ,
+																										 * termination
+																										 */);
 
 		if (addExperimentSeries(experiment)) {
 			return experiment;
@@ -200,44 +185,46 @@ public class MeasurementSpecificationBuilder implements Serializable {
 	/**
 	 * Adds the given exp. series def. object to the specification.
 	 * 
-	 * @param experiment	esd object which will be added
-	 * @return 				true if the adding was successful; false if a experiment with the
-	 *         				given name already exists
+	 * @param experiment
+	 *            esd object which will be added
+	 * @return true if the adding was successful; false if a experiment with the
+	 *         given name already exists
 	 */
 	public boolean addExperimentSeries(ExperimentSeriesDefinition experiment) {
 		LOGGER.info("adding new experiementSeriesDefinition '" + experiment.getName() + "' to specification '"
-				+ measurementSpecification.getName() + "'");
+				+ specification.getName() + "'");
 
-		for (ExperimentSeriesDefinition expDefinition : measurementSpecification.getExperimentSeriesDefinitions()) {
+		for (ExperimentSeriesDefinition expDefinition : specification.getExperimentSeriesDefinitions()) {
 			if (expDefinition.getName().equals(experiment.getName())) {
-				LOGGER.warn("adding failed. there is already a experiementSeriesDefinition called '"
-						+ experiment.getName() + " in specification '" + measurementSpecification.getName() + "'");
+				LOGGER.warning("adding failed. there is already a experiementSeriesDefinition called '"
+						+ experiment.getName() + " in specification '" + specification.getName() + "'");
 
 				return false;
 			}
 		}
 
-		return measurementSpecification.getExperimentSeriesDefinitions().add(experiment);
+		return specification.getExperimentSeriesDefinitions().add(experiment);
 	}
 
 	/**
 	 * Return the ExpSeriesDef with the given name.
 	 * 
-	 * @param name	name of the ExpSeries
-	 * @return 		the found experimentSeries. if no expSeries with the given name
-	 *         		was found, it returns null
+	 * @param name
+	 *            name of the ExpSeries
+	 * @return the found experimentSeries. if no expSeries with the given name
+	 *         was found, it returns null
 	 */
 	public ExperimentSeriesDefinition getExperimentSeries(String name) {
-		for (ExperimentSeriesDefinition expDefinition : measurementSpecification.getExperimentSeriesDefinitions()) {
+		for (ExperimentSeriesDefinition expDefinition : specification.getExperimentSeriesDefinitions()) {
 			if (expDefinition.getName().equals(name)) {
-				LOGGER.info("experiment called '" + name + " was found in specification '" + measurementSpecification.getName()
+				LOGGER.info("experiment called '" + name + " was found in specification '" + specification.getName()
 						+ "'");
 
 				return expDefinition;
 			}
 		}
 
-		LOGGER.warn("specification '" + measurementSpecification.getName() + "' has no experiment called '" + name + "'");
+		LOGGER.warning("specification '" + specification.getName() + "' has no experiment called '" + name + "'");
 
 		return null;
 	}
@@ -245,8 +232,9 @@ public class MeasurementSpecificationBuilder implements Serializable {
 	/**
 	 * Removes the given experiment from the specification.
 	 * 
-	 * @param expDefinition	experimentSeries which will be removed
-	 * @return 				true if the removal was successful
+	 * @param expDefinition
+	 *            experimentSeries which will be removed
+	 * @return true if the removal was successful
 	 */
 	public boolean removeExperimentSeries(ExperimentSeriesDefinition expDefinition) {
 		return removeExperimentSeries(expDefinition.getName());
@@ -255,20 +243,21 @@ public class MeasurementSpecificationBuilder implements Serializable {
 	/**
 	 * Removes the experiment, which has the given name, from the specification.
 	 * 
-	 * @param name	name of the experimentSeries which will be removed
-	 * @return 		true if the removal was successful
+	 * @param name
+	 *            name of the experimentSeries which will be removed
+	 * @return true if the removal was successful
 	 */
 	public boolean removeExperimentSeries(String name) {
-		LOGGER.info("removing the experiment '" + name + "' from the specification '" + measurementSpecification.getName() + "'");
+		LOGGER.info("removing the experiment '" + name + "' from the specification '" + specification.getName() + "'");
 
-		for (ExperimentSeriesDefinition expDefinition : measurementSpecification.getExperimentSeriesDefinitions()) {
+		for (ExperimentSeriesDefinition expDefinition : specification.getExperimentSeriesDefinitions()) {
 			if (expDefinition.getName().equals(name)) {
-				return measurementSpecification.getExperimentSeriesDefinitions().remove(expDefinition);
+				return specification.getExperimentSeriesDefinitions().remove(expDefinition);
 			}
 		}
 
-		LOGGER.warn("can't remove exp. '" + name + "' because nothing was found in spec. '"
-				+ measurementSpecification.getName() + "'");
+		LOGGER.warning("can't remove exp. '" + name + "' because nothing was found in spec. '"
+				+ specification.getName() + "'");
 
 		return false;
 	}
@@ -276,12 +265,13 @@ public class MeasurementSpecificationBuilder implements Serializable {
 	/**
 	 * Set a new specification name.
 	 * 
-	 * @param name	the new spec. name
+	 * @param name
+	 *            the new spec. name
 	 */
 	public void setName(String name) {
-		LOGGER.info("Setting new specification name: '" + measurementSpecification.getName() + "' -> '" + name + "'");
+		LOGGER.info("Setting new specification name: '" + specification.getName() + "' -> '" + name + "'");
 
-		measurementSpecification.setName(name);
+		specification.setName(name);
 	}
 
 	/**
@@ -290,6 +280,6 @@ public class MeasurementSpecificationBuilder implements Serializable {
 	 * @return the built specification
 	 */
 	public MeasurementSpecification getBuiltSpecification() {
-		return measurementSpecification;
+		return specification;
 	}
 }
