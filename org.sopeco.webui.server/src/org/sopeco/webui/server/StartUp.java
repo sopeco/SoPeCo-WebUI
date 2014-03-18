@@ -38,7 +38,6 @@ import javax.servlet.ServletContextListener;
 import org.sopeco.config.Configuration;
 import org.sopeco.config.IConfiguration;
 import org.sopeco.config.exception.ConfigurationException;
-import org.sopeco.engine.measurementenvironment.socket.SocketAcception;
 
 /**
  * 
@@ -88,14 +87,6 @@ public final class StartUp implements ServletContextListener {
 		
 		try {
 			loadConfiguration();
-
-			//Scheduler.startScheduler();
-
-			int port = Configuration.getSessionSingleton(Configuration.getGlobalSessionId()).getPropertyAsInteger(
-					UiConfiguration.SOPECO_CONFIG_MEC_LISTENER_PORT, 11300);
-			if (port > 0) {
-				//SocketAcception.open(port);
-			}
 		} catch (ConfigurationException e) {
 			throw new RuntimeException(e);
 		}

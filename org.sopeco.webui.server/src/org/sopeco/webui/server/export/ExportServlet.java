@@ -33,11 +33,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
-import org.sopeco.engine.model.ScenarioDefinitionWriter;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
+import org.sopeco.service.configuration.ServiceConfiguration;
+import org.sopeco.webui.server.rest.ClientFactory;
 import org.sopeco.webui.server.security.Security;
-import org.sopeco.webui.server.user.UserManager;
+import org.sopeco.webui.server.user.TokenManager;
 
 /**
  * 
@@ -46,9 +51,6 @@ import org.sopeco.webui.server.user.UserManager;
  */
 public class ExportServlet extends HttpServlet {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	private static final String SCNEARIO_EXPORT = "scenario";
@@ -74,23 +76,40 @@ public class ExportServlet extends HttpServlet {
 	 * @throws IOException
 	 */
 	private void sendScenarioAsXML(HttpServletResponse resp, String sessionId) throws IOException {
-		if (!UserManager.instance().existUser(session.getId())) {
+		
+
+		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_SCENARIO,
+				     										 ServiceConfiguration.SVC_SCENARIO_CURRENT);
+
+		wt = wt.queryParam(ServiceConfiguration.SVCP_SCENARIO_TOKEN, TokenManager.instance().getToken(sessionId));
+		
+		Response r = wt.request(MediaType.APPLICATION_JSON).get();
+		
+		ScenarioDefinition sd = r.readEntity(ScenarioDefinition.class);
+		
+		if (sd == null) {
 			resp.sendError(204);
 			return;
 		}
+		
+		wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_SCENARIO,
+				     										 ServiceConfiguration.SVC_SCENARIO_XML);
 
-		ScenarioDefinition definition = UserManager.instance().getUser(session.getId())
-				.getCurrentScenarioDefinitionBuilder().getBuiltScenario();
-
-		if (definition != null) {
-			ScenarioDefinitionWriter writer = new ScenarioDefinitionWriter(sessionId);
-			String definitionXML = writer.convertToXMLString(definition);
-			String fileName = "scenario-" + definition.getScenarioName() + ".xml";
-
-			sendXML(resp, definitionXML, fileName);
-		} else {
+		wt = wt.queryParam(ServiceConfiguration.SVCP_SCENARIO_TOKEN, TokenManager.instance().getToken(sessionId));
+		
+		r = wt.request(MediaType.APPLICATION_JSON).get();
+		
+		if (r.getStatus() != Status.OK.getStatusCode()) {
 			resp.sendError(204);
+			return;
 		}
+		
+		String definitionXML = r.readEntity(String.class);
+
+		String fileName = "scenario-" + sd.getScenarioName() + ".xml";
+
+		sendXML(resp, definitionXML, fileName);
+
 	}
 
 	/**

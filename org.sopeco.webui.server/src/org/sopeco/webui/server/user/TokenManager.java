@@ -26,7 +26,9 @@
  */
 package org.sopeco.webui.server.user;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.client.WebTarget;
@@ -163,6 +165,22 @@ public final class TokenManager {
 			}
 			
 		}
+		
+	}
+
+	/**
+	 * Returns a list with all tokens currently registered.
+	 * 
+	 * @return list with all tokens
+	 */
+	public List<String> getAllToken() {
+		
+		List<String> tokenList = new ArrayList<String>();
+		for (String token : tokenMap.values()) {
+			tokenList.add(token);
+		}
+		
+		return tokenList;
 		
 	}
 

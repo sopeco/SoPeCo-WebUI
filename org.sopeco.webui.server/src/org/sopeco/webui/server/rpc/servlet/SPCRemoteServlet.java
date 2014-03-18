@@ -30,8 +30,6 @@ import javax.servlet.http.HttpSession;
 
 import org.sopeco.webui.server.security.Security;
 import org.sopeco.webui.server.user.TokenManager;
-import org.sopeco.webui.server.user.User;
-import org.sopeco.webui.server.user.UserManager;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
@@ -66,14 +64,6 @@ public class SPCRemoteServlet extends RemoteServiceServlet {
 	 */
 	protected HttpSession getSession() {
 		return getThreadLocalRequest().getSession();
-	}
-
-	/**
-	 * @deprecated this method will be deleted during the service layer migration 
-	 */
-	@Deprecated
-	protected User getUser() {
-		return UserManager.instance().getUser(getSessionId());
 	}
 	
 	/**

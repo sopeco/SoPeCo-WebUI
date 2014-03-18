@@ -38,13 +38,7 @@ import javax.persistence.TypedQuery;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sopeco.persistence.exceptions.DataNotFoundException;
-import org.sopeco.webui.server.persistence.entities.ScheduledExperiment;
-import org.sopeco.webui.shared.entities.ExecutedExperimentDetails;
-import org.sopeco.webui.shared.entities.MECLog;
 import org.sopeco.webui.shared.entities.Visualization;
-import org.sopeco.webui.shared.entities.account.Account;
-import org.sopeco.webui.shared.entities.account.AccountDetails;
 import org.sopeco.webui.shared.entities.account.RememberMeToken;
 
 /**
@@ -65,60 +59,6 @@ public class UiPersistenceProvider {
 		emf = factory;
 	}
 
-	public AccountDetails loadAccountDetails(long accountId) {
-		return loadSingleById(AccountDetails.class, accountId);
-	}
-
-	public List<AccountDetails> loadAllAccountDetails() throws DataNotFoundException {
-		return loadByQuery(AccountDetails.class, "getAllAccountDetails");
-	}
-
-	public void removeAccountDetails(AccountDetails accountDetails) {
-		remove(accountDetails);
-	}
-
-	public void storeAccountDetails(AccountDetails accountDetails) {
-		store(accountDetails);
-	}
-
-	public void storeScheduledExperiment(ScheduledExperiment scheduledExperiment) {
-		store(scheduledExperiment);
-	}
-
-	public List<ScheduledExperiment> loadAllScheduledExperiments() {
-		return loadByQuery(ScheduledExperiment.class, "getAllExperiments");
-	}
-
-	public List<ScheduledExperiment> loadScheduledExperimentsByAccount(long accountId) {
-		return loadByQuery(ScheduledExperiment.class, "getExperimentsByAccount", "account", accountId);
-	}
-
-	public List<ExecutedExperimentDetails> loadExecutedExperimentDetails(long accountId, String scenarioName) {
-		return loadByQuery(ExecutedExperimentDetails.class, "getExperiments", "accountId", accountId, "scenarioName",
-				scenarioName);
-	}
-
-	public long storeExecutedExperimentDetails(ExecutedExperimentDetails experimentDetails) {
-		ExecutedExperimentDetails entity = store(experimentDetails);
-		return entity == null ? -1 : entity.getId();
-	}
-
-	public void storeMECLog(MECLog mecLog) {
-		store(mecLog);
-	}
-
-	public MECLog loadMECLog(long id) {
-		return loadSingleById(MECLog.class, id);
-	}
-
-	public ScheduledExperiment loadScheduledExperiment(long id) {
-		return loadSingleById(ScheduledExperiment.class, id);
-	}
-
-	public void removeScheduledExperiment(ScheduledExperiment experiment) {
-		remove(experiment);
-	}
-
 	public List<Visualization> loadAllVisualizations() {
 		return loadByQuery(Visualization.class, "getAllVisualizations");
 	}
@@ -133,22 +73,6 @@ public class UiPersistenceProvider {
 
 	public void removeVisualization(Visualization visualization) {
 		remove(visualization);
-	}
-
-	public Account storeAccount(Account account) {
-		return store(account);
-	}
-
-	public void removeAccount(Account account) {
-		remove(account);
-	}
-
-	public Account loadAccount(String accountName) {
-		return loadSingleByQuery(Account.class, "getAccountByName", "accountName", accountName);
-	}
-
-	public Account loadAccount(long primaryKey) {
-		return loadSingleById(Account.class, primaryKey);
 	}
 
 	public void storeRememberMeToken(RememberMeToken token) {

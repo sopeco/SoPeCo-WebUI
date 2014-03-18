@@ -24,69 +24,94 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sopeco.webui.server;
+package org.sopeco.webui.shared.helper;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
-
-import org.sopeco.webui.server.execute.ExecuteScheduler;
+import org.sopeco.webui.shared.push.PushSerializable;
 
 /**
  * 
  * @author Marius Oehler
  * 
  */
-public final class Scheduler {
+public class FrontendMECLogEntry implements PushSerializable {
 
-	private static final Logger LOGGER = Logger.getLogger(Scheduler.class.getName());
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
-	private Scheduler() {
+	private long time;
+	private String message;
+	private boolean error;
+	private boolean exception;
+	private String errorMessage;
+
+	public String getErrorMessage() {
+		return errorMessage;
 	}
 
-	private static final int REPEATE_INTERVAL = 5;
-	private static SchedulerAction schedulerAction;
-	private static ScheduledExecutorService scheduler;
-
-	public static synchronized void startScheduler() {
-		if (schedulerAction == null) {
-			LOGGER.info("Starting SchedulerThread.");
-			scheduler = Executors.newScheduledThreadPool(1);
-			schedulerAction = new SchedulerAction();
-			scheduler.scheduleAtFixedRate(schedulerAction, REPEATE_INTERVAL, REPEATE_INTERVAL, TimeUnit.SECONDS);
-		}
-	}
-
-	public static synchronized void stopScheduler() {
-		if (schedulerAction != null) {
-			LOGGER.info("Stopping SchedulerThread.");
-			scheduler.shutdown();
-			schedulerAction = null;
-		}
+	public void setErrorMessage(String pErrorMessage) {
+		this.errorMessage = pErrorMessage;
 	}
 
 	/**
-	 *
+	 * @return the time
 	 */
-	private static class SchedulerAction implements Runnable {
-
-		public SchedulerAction() {
-		}
-
-		@Override
-		public void run() {
-			LOGGER.finer("SchedulerAction starts..");
-
-			try {
-				ContiniousChecker.checkUserTimeout();
-				ExecuteScheduler.get().checkExperiments();
-				ContiniousChecker.checkSocketMEController();
-			} catch (Exception e) {
-				LOGGER.severe(e.getLocalizedMessage());
-			}
-
-			LOGGER.finer("SchedulerAction is finished");
-		}
+	public long getTime() {
+		return time;
 	}
+
+	/**
+	 * @param pTime
+	 *            the time to set
+	 */
+	public void setTime(long pTime) {
+		this.time = pTime;
+	}
+
+	/**
+	 * @return the message
+	 */
+	public String getMessage() {
+		return message;
+	}
+
+	/**
+	 * @param pMessage
+	 *            the message to set
+	 */
+	public void setMessage(String pMessage) {
+		this.message = pMessage;
+	}
+
+	/**
+	 * @return the error
+	 */
+	public boolean isError() {
+		return error;
+	}
+
+	/**
+	 * @param pError
+	 *            the error to set
+	 */
+	public void setError(boolean pError) {
+		this.error = pError;
+	}
+
+	/**
+	 * @return the exception
+	 */
+	public boolean isException() {
+		return exception;
+	}
+
+	/**
+	 * @param exception
+	 *            the exception to set
+	 */
+	public void setException(boolean exception) {
+		this.exception = exception;
+	}
+
 }

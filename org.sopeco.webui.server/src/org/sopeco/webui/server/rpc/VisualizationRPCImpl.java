@@ -32,6 +32,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
@@ -47,15 +51,15 @@ import org.sopeco.persistence.entities.ExperimentSeriesRun;
 import org.sopeco.persistence.entities.ScenarioInstance;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.entities.definition.ParameterRole;
-import org.sopeco.persistence.exceptions.DataNotFoundException;
+import org.sopeco.service.configuration.ServiceConfiguration;
+import org.sopeco.service.persistence.entities.AccountDetails;
 import org.sopeco.util.Tools;
 import org.sopeco.webui.server.chartconnector.IChartCreator;
 import org.sopeco.webui.server.chartconnector.IChartCreatorExtension;
 import org.sopeco.webui.server.gcharts.GCharts;
 import org.sopeco.webui.server.persistence.UiPersistence;
+import org.sopeco.webui.server.rest.ClientFactory;
 import org.sopeco.webui.server.rpc.servlet.SPCRemoteServlet;
-import org.sopeco.webui.server.user.User;
-import org.sopeco.webui.server.user.UserManager;
 import org.sopeco.webui.shared.definitions.result.SharedExperimentRuns;
 import org.sopeco.webui.shared.entities.ChartData;
 import org.sopeco.webui.shared.entities.ChartOptions;
@@ -67,6 +71,9 @@ import org.sopeco.webui.shared.entities.VisualizationBundle;
 import org.sopeco.webui.shared.rpc.VisualizationRPC;
 
 public class VisualizationRPCImpl extends SPCRemoteServlet implements VisualizationRPC {
+
+	private static final long serialVersionUID = 1L;
+	
 	private IChartCreator chartCreator;
 	private List<IChartCreatorExtension> extensions;
 	public static final String G_CHARTS = "Google Charts";
@@ -87,7 +94,20 @@ public class VisualizationRPCImpl extends SPCRemoteServlet implements Visualizat
 		String measurementEnvironmentUrl = experiementRun.getParentSeries().getParentInstance().getControllerUrl();
 		String experimentName = experiementRun.getParentSeries().getExperimentName();
 		Long timestamp = experiementRun.getTimestamp();
-		long accountId = getUser().getCurrentAccount().getId();
+		
+		
+		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_ACCOUNT,
+					 										 ServiceConfiguration.SVC_ACCOUNT_INFO);
+		
+		wt = wt.queryParam(ServiceConfiguration.SVCP_SCENARIO_TOKEN, getToken());
+		
+		AccountDetails ad = wt.request(MediaType.APPLICATION_JSON).get().readEntity(AccountDetails.class);
+		
+		if (ad == null) {
+			return null;
+		}
+		
+		long accountId = ad.getId();
 		ExperimentSeriesRun run = getRun(scenarioName, measurementEnvironmentUrl, experimentName, timestamp);
 		data = loadData(run, inputParameter, outputParameterd, options);
 		Visualization visualization = chartCreator.createVisualization(run.getLabel(), data, inputParameter,
@@ -109,7 +129,19 @@ public class VisualizationRPCImpl extends SPCRemoteServlet implements Visualizat
 		
 		VisualizationBundle visualizationBundle = new VisualizationBundle();
 		List<Visualization> visualizations = new ArrayList<Visualization>();
-		long accountId = getUser().getCurrentAccount().getId();
+		
+		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_ACCOUNT,
+						 									 ServiceConfiguration.SVC_ACCOUNT_INFO);
+		
+		wt = wt.queryParam(ServiceConfiguration.SVCP_SCENARIO_TOKEN, getToken());
+		
+		AccountDetails ad = wt.request(MediaType.APPLICATION_JSON).get().readEntity(AccountDetails.class);
+
+		if (ad == null) {
+			return null;
+		}
+		
+		long accountId = ad.getId();
 		System.out.println("loading charts...");
 		visualizations.addAll(UiPersistence.getUiProvider().loadVisualizationsByAccount(accountId));
 		visualizationBundle.setTotalNumberOfVisualizations(visualizations.size());
@@ -195,23 +227,25 @@ public class VisualizationRPCImpl extends SPCRemoteServlet implements Visualizat
 
 	public ExperimentSeriesRun getRun(String scenarioName, String measurementEnvironmentUrl, String experimentName,
 			Long timestamp) {
-		ScenarioInstance instance;
-		try {
-			User user = UserManager.instance().getUser(getSessionId());
-			if (user == null) {
-				throw new DataNotFoundException("No user at session found..");
+			
+		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_SCENARIO,
+							 								 ServiceConfiguration.SVC_SCENARIO_INSTANCE);
+		
+		wt = wt.queryParam(ServiceConfiguration.SVCP_SCENARIO_TOKEN, getToken());
+		wt = wt.queryParam(ServiceConfiguration.SVCP_SCENARIO_NAME, scenarioName);
+		wt = wt.queryParam(ServiceConfiguration.SVCP_SCENARIO_URL, measurementEnvironmentUrl);
+		
+		Response response = wt.request(MediaType.APPLICATION_JSON).get();
+		
+		ScenarioInstance instance = response.readEntity(ScenarioInstance.class);
+
+		ExperimentSeries series = instance.getExperimentSeries(experimentName);
+		for (ExperimentSeriesRun r : series.getExperimentSeriesRuns()) {
+			if (timestamp.equals(r.getTimestamp())) {
+				return r;
 			}
-			instance = user.getCurrentPersistenceProvider().loadScenarioInstance(scenarioName,
-					measurementEnvironmentUrl);
-			ExperimentSeries series = instance.getExperimentSeries(experimentName);
-			for (ExperimentSeriesRun r : series.getExperimentSeriesRuns()) {
-				if (timestamp.equals(r.getTimestamp())) {
-					return r;
-				}
-			}
-		} catch (DataNotFoundException e) {
-			e.printStackTrace();
 		}
+		
 		return null;
 
 	}

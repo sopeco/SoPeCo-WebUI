@@ -28,12 +28,12 @@ package org.sopeco.webui.client.layout.login;
 
 import java.util.Date;
 
+import org.sopeco.service.persistence.entities.AccountDetails;
 import org.sopeco.webui.client.SoPeCoUI;
 import org.sopeco.webui.client.helper.BrandingChecker;
 import org.sopeco.webui.client.helper.SimpleCallback;
 import org.sopeco.webui.client.manager.Manager;
 import org.sopeco.webui.client.resources.R;
-import org.sopeco.webui.shared.entities.account.AccountDetails;
 import org.sopeco.webui.shared.helper.LoginResponse;
 import org.sopeco.webui.shared.rpc.RPC;
 

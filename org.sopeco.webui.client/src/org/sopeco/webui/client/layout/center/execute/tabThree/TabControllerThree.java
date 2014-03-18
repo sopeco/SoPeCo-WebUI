@@ -29,6 +29,7 @@ package org.sopeco.webui.client.layout.center.execute.tabThree;
 import java.util.Date;
 import java.util.List;
 
+import org.sopeco.service.execute.MECLogEntry;
 import org.sopeco.webui.client.helper.push.PushListener;
 import org.sopeco.webui.client.helper.push.ServerPush;
 import org.sopeco.webui.client.layout.center.execute.ExecuteController;
@@ -38,7 +39,6 @@ import org.sopeco.webui.client.layout.popups.Message;
 import org.sopeco.webui.client.resources.R;
 import org.sopeco.webui.shared.entities.FrontendScheduledExperiment;
 import org.sopeco.webui.shared.entities.RunningControllerStatus;
-import org.sopeco.webui.shared.helper.MECLogEntry;
 import org.sopeco.webui.shared.helper.Metering;
 import org.sopeco.webui.shared.push.PushDomain;
 import org.sopeco.webui.shared.push.PushPackage;

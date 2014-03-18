@@ -33,6 +33,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,8 +45,6 @@ import org.sopeco.webui.server.rest.ClientFactory;
 import org.sopeco.webui.server.rpc.servlet.SPCRemoteServlet;
 import org.sopeco.webui.shared.helper.MEControllerProtocol;
 import org.sopeco.webui.shared.rpc.MEControllerRPC;
-
-import com.sun.jersey.api.client.ClientResponse.Status;
 
 /**
  * 
@@ -75,25 +74,6 @@ public class MEControllerRPCImpl extends SPCRemoteServlet implements MEControlle
 		}
 		
 		return r.readEntity(MECStatus.class).getStatus();
-	}
-
-
-	/**
-	 * Checks if the given url is like a valid pattern.
-	 * 
-	 * @param url
-	 * @return
-	 */
-	private boolean checkUrlIsValid(String url) {
-		String[] patterns = getValidUrlPattern();
-		
-		for (String pattern : patterns) {
-			if (url.matches(pattern)) {
-				return true;
-			}
-		}
-
-		return false;
 	}
 
 	@Override
@@ -149,17 +129,6 @@ public class MEControllerRPCImpl extends SPCRemoteServlet implements MEControlle
 		}
 
 		return r.readEntity(MeasurementEnvironmentDefinition.class);
-	}
-
-	private void setNewMEDefinition(MeasurementEnvironmentDefinition definition) {
-		LOGGER.debug("Set a new environment definition.");
-		
-		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_MED,
-															 ServiceConfiguration.SVC_MED_SET);
-		
-		wt = wt.queryParam(ServiceConfiguration.SVCP_MEC_TOKEN, getToken());
-		
-		wt.request(MediaType.APPLICATION_JSON).post(Entity.entity(definition, MediaType.APPLICATION_JSON));
 	}
 
 	@Override

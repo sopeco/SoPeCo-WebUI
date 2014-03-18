@@ -28,7 +28,7 @@ package org.sopeco.webui.shared.entities;
 
 import java.util.List;
 
-import org.sopeco.webui.shared.helper.MECLogEntry;
+import org.sopeco.service.execute.MECLogEntry;
 import org.sopeco.webui.shared.push.PushSerializable;
 
 /**

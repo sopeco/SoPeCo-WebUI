@@ -24,36 +24,46 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sopeco.frontend.server;
+package org.sopeco.webui.shared.entities;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import java.io.Serializable;
+import java.util.List;
 
-import org.junit.Test;
-import org.sopeco.webui.server.user.User;
-import org.sopeco.webui.server.user.UserManager;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Lob;
+
+import org.sopeco.webui.shared.helper.FrontendMECLogEntry;
 
 /**
  * 
  * @author Marius Oehler
  * 
  */
-public class UserTest {
+@Entity
+public class FrontendMECLog implements Serializable {
 
-	@Test
-	public void addAndRemoveUser() {
-		String id = "testId";
+	@Id
+	private long id;
 
-		User user = UserManager.instance().registerUser(id);
+	@Lob
+	@Column(name = "entries")
+	private List<FrontendMECLogEntry> entries;
 
-		assertEquals(UserManager.instance().getUser(id), user);
-		assertTrue(UserManager.instance().existUser(id));
-
-		UserManager.instance().destroyUser(user);
-
-		assertTrue(UserManager.instance().getAllUsers().isEmpty());
-		assertFalse(UserManager.instance().existUser(id));
+	public long getId() {
+		return id;
 	}
 
+	public void setId(long pId) {
+		this.id = pId;
+	}
+
+	public List<FrontendMECLogEntry> getEntries() {
+		return entries;
+	}
+
+	public void setEntries(List<FrontendMECLogEntry> pEntries) {
+		this.entries = pEntries;
+	}
 }
