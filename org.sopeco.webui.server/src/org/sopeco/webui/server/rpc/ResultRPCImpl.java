@@ -73,8 +73,6 @@ public class ResultRPCImpl extends SPCRemoteServlet implements ResultRPC {
 		wt = wt.queryParam(ServiceConfiguration.SVCP_SCENARIO_NAME, getToken());
 		
 		Response r = wt.request(MediaType.APPLICATION_JSON).get();
-		
-		r.readEntity(new GenericType<List<ScenarioInstance>>() { });
 			
 		// now convert the scenario instances to the appropriate type
 		List<ScenarioInstance> scenarioList = r.readEntity(new GenericType<List<ScenarioInstance>>() { });
