@@ -26,125 +26,249 @@
  */
 package org.sopeco.webui.shared.builder;
 
+import java.io.Serializable;
+
 import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
 import org.sopeco.persistence.entities.definition.MeasurementSpecification;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 
 /**
- * Builds a scenario.
+ * Builds a {@code ScenarioDefinition}. This class handles the two {@code ScenarioDefinition}
+ * properties: {@code MeasurementEnvironmentDefinition} and {@code List<MeasurementSpecification>}.
+ * <br />
+ * Both properties are updates via so called builder classes ({@code MeasurementEnvironmentDefinitionBuilder}
+ * and {@code MeasurementSpecificationBuilder}).
  * 
  * @author Marius Oehler
- * 
+ * @author Peter Merkert
  */
-public class ScenarioDefinitionBuilder {
+public class ScenarioDefinitionBuilder implements Serializable {
 
-	private ScenarioDefinition currentBuild;
-	private MeasurementEnvironmentBuilder meBuilder;
+	private static final long serialVersionUID = 1L;
+
+	/**
+	 * The {@code ScenarioDefinition}
+	 */
+	private ScenarioDefinition scenarioDefinition;
+	
+	/**
+	 * The {@code MeasurementEnvironmentDefinitionBuilder} to handle the {@code MeasurementEnvironmentDefinition}
+	 * of the connected {@code ScenarioDefinition}.
+	 */
+	private MeasurementEnvironmentDefinitionBuilder meBuilder;
+	
+	/**
+	 * The {@code MeasurementSpecificationBuilder} to handle an {@code MeasurementSpecification}
+	 * in the connected {@code ScenarioDefinition}.
+	 */
 	private MeasurementSpecificationBuilder msBuilder;
 
+	/**
+	 * Creates an empty {@code ScenarioDefinition}.
+	 */
 	public ScenarioDefinitionBuilder() {
-		currentBuild = new ScenarioDefinition();
-		meBuilder = new MeasurementEnvironmentBuilder(this);
+		scenarioDefinition = new ScenarioDefinition();
+		meBuilder = new MeasurementEnvironmentDefinitionBuilder(this);
+		msBuilder = new MeasurementSpecificationBuilder(this);
+	}
+	
+	/**
+	 * Creates an empty {@code ScenarioDefinition} with the given name.
+	 * 
+	 * @param name name of the new {@code ScenarioDefinition}
+	 */
+	public ScenarioDefinitionBuilder(String name) {
+		scenarioDefinition = new ScenarioDefinition();
+		meBuilder = new MeasurementEnvironmentDefinitionBuilder(this);
+		msBuilder = new MeasurementSpecificationBuilder(this);
+		
+		scenarioDefinition.setScenarioName(name);
+	}
+	
+	/**
+	 * Creates a new {@code ScenarioDefinitionBuilder} with the given
+	 * {@code ScenarioDefinition}. 
+	 * 
+	 * @param definition the {@code ScenarioDefinition}
+	 */
+	public ScenarioDefinitionBuilder(ScenarioDefinition definition) {
+		scenarioDefinition = definition;
+		meBuilder = new MeasurementEnvironmentDefinitionBuilder(this);
 		msBuilder = new MeasurementSpecificationBuilder(this);
 	}
 
 	/**
-	 * Set the scenario name.
+	 * Sets the name of the {@code ScenarioDefinition}.
 	 * 
-	 * @param name
-	 *            New scenario name
+	 * @param name new scenario name
 	 */
 	public void setScenarioName(String name) {
-		currentBuild.setScenarioName(name);
+		scenarioDefinition.setScenarioName(name);
 	}
 
+	/**
+	 * @return a MeasurementEnvironmentDefinitionBuilder
+	 * 
+	 * @Deprecated Use the method getMeasurementEnvironmentBuilder().
+	 */
+	@Deprecated
+	public MeasurementEnvironmentDefinitionBuilder getEnvironmentBuilder() {
+		return getMeasurementEnvironmentBuilder();
+	}
+	
 	/**
 	 * Returns the builder for the measurement environemnt.
 	 * 
 	 * @return the measurement environment builder
 	 */
-	public MeasurementEnvironmentBuilder getEnvironmentBuilder() {
+	public MeasurementEnvironmentDefinitionBuilder getMeasurementEnvironmentBuilder() {
 		return meBuilder;
 	}
 
 	/**
-	 * Sets the current MeasurementEnvironmentDefiniton of the builder.
+	 * @param meDefinition the MeasurementEnvironmentDefinition
 	 * 
-	 * @param meDefinition
+	 * @deprecated Use setMeasurementEnvironmentDefinition().
 	 */
+	@Deprecated
 	public void setMEDefinition(MeasurementEnvironmentDefinition meDefinition) {
-		currentBuild.setMeasurementEnvironmentDefinition(meDefinition);
+		setMeasurementEnvironmentDefinition(meDefinition);
+	}
+	
+	/**
+	 * Sets the MeasurementEnvironmentDefiniton for the Scenario.
+	 * 
+	 * @param meDefinition the new MeasurementEnvironmentDefinition
+	 */
+	public void setMeasurementEnvironmentDefinition(MeasurementEnvironmentDefinition meDefinition) {
+		scenarioDefinition.setMeasurementEnvironmentDefinition(meDefinition);
 	}
 
 	/**
-	 * Returns the current MeasurementEnvironmentDefinition of the builder.
+	 * @return a MeasurementEnvironmentDefinition 
 	 * 
-	 * @return MeasurementEnvironmentDefinition
+	 * @Deprecated Use getMeasurementEnvironmentDefinition()
 	 */
+	@Deprecated
 	public MeasurementEnvironmentDefinition getMEDefinition() {
-		return currentBuild.getMeasurementEnvironmentDefinition();
+		return getMeasurementEnvironmentDefinition();
 	}
 
 	/**
-	 * Adds a new MeasurementSpecification to the current scenario.
+	 * Returns the current MeasurementEnvironmentDefinition.
 	 * 
-	 * @return
+	 * @return the current MeasurementEnvironmentDefinition
 	 */
+	public MeasurementEnvironmentDefinition getMeasurementEnvironmentDefinition() {
+		return scenarioDefinition.getMeasurementEnvironmentDefinition();
+	}
+	
+	/**
+	 * @return a MeasurementSpecificationBuilder
+	 * 
+	 * @Deprecated Use getNewMeasurementSpecification()
+	 */
+	@Deprecated
 	public MeasurementSpecificationBuilder addNewMeasurementSpecification() {
-		return new MeasurementSpecificationBuilder(this);
+		return getNewMeasurementSpecification();
 	}
 
 	/**
-	 * Returns the specification with the given name.
+	 * Returns an empty fresh created MeasurementSpecification.
+	 * New feature: This ScenarioDefinitionBuilder can only have
+	 * one MeasurementSpecificationBuilder.
 	 * 
-	 * @param name
-	 *            name of the specification
-	 * @return MeasurementSpecification
+	 * @return empty created MeasurementSpecification
+	 */
+	public MeasurementSpecificationBuilder getNewMeasurementSpecification() {
+		MeasurementSpecificationBuilder msb = new MeasurementSpecificationBuilder(this);
+		// the MSB is the new one for this ScenarioDefinition
+		setMeasurementSpecificationBuilder(msb);
+		return msb;
+	}
+	
+	/**
+	 * Returns the {@code MeasurementSpecification} with the given name.
+	 * 
+	 * @param name name of the specification
+	 * @return MeasurementSpecification for the given name
 	 */
 	public MeasurementSpecification getMeasurementSpecification(String name) {
-		for (MeasurementSpecification ms : getBuiltScenario().getMeasurementSpecifications()) {
+		for (MeasurementSpecification ms : getScenarioDefinition().getMeasurementSpecifications()) {
 			if (ms.getName().equals(name)) {
 				return ms;
 			}
 		}
+		
 		return null;
 	}
 
 	/**
-	 * Replacing the current builder with the given builder.
+	 * @param builder the MeasurementSpecificationBuilder
 	 * 
-	 * @param builder
+	 * @Deprecated Use setMeasurementSpecificationBuilder().
 	 */
+	@Deprecated
 	public void setSpecificationBuilder(MeasurementSpecificationBuilder builder) {
+		setMeasurementSpecificationBuilder(builder);
+	}
+	
+	/**
+	 * Replaces the current {@Code MeasurementSpecificationBuilder} with the given
+	 * new one.
+	 * 
+	 * @param builder the new {@Code MeasurementSpecificationBuilder}
+	 */
+	public void setMeasurementSpecificationBuilder(MeasurementSpecificationBuilder builder) {
 		msBuilder = builder;
 	}
 
 	/**
-	 * Returns the builder for the default measurement specification.
+	 * @return a MeasurementSpecificationBuilder 
+	 * 
+	 * @Deprecated Use getMeasurementSpecificationBuilder().
+	 */
+	@Deprecated
+	public MeasurementSpecificationBuilder getSpecificationBuilder() {
+		return getMeasurementSpecificationBuilder();
+	}
+
+	/**
+	 * Returns the builder for the default {@Code MeasurementSpecification}.
 	 * 
 	 * @return the measurement specification builder
 	 */
-	public MeasurementSpecificationBuilder getSpecificationBuilder() {
+	public MeasurementSpecificationBuilder getMeasurementSpecificationBuilder() {
 		return msBuilder;
 	}
-
+	
 	/**
-	 * Returns the created scenario.
+	 * @return a ScenarioDefinition
 	 * 
-	 * @return Created scenario
+	 * @Deprecated Use getScenarioDefinition().
 	 */
+	@Deprecated
 	public ScenarioDefinition getBuiltScenario() {
-
-		return currentBuild;
+		return getScenarioDefinition();
+	}
+	
+	/**
+	 * Returns the {@code ScenarioDefinition} which this ScenarioDefinitionBuilder
+	 * is handling.
+	 * 
+	 * @return the {@code ScenarioDefinition}
+	 */
+	public ScenarioDefinition getScenarioDefinition() {
+		return scenarioDefinition;
 	}
 
 	/**
-	 * Creates an empty scenario.
+	 * @param name the name
+	 * @return a ScenarioDefinition
 	 * 
-	 * @param name
-	 *            Name of the scenario
-	 * @return Build scenario
+	 * @Deprecated Use constructor and getScenarioDefinition().
 	 */
+	@Deprecated
 	public static ScenarioDefinition buildEmptyScenario(String name) {
 		ScenarioDefinitionBuilder builder = new ScenarioDefinitionBuilder();
 
@@ -153,11 +277,16 @@ public class ScenarioDefinitionBuilder {
 		return builder.getBuiltScenario();
 	}
 
+	/**
+	 * @param definition a ScenarioDefinition
+	 * @return a ScenarioDefinitionBuilder
+	 * 
+	 * @Deprecated Use constructor.
+	 */
+	@Deprecated
 	public static ScenarioDefinitionBuilder load(ScenarioDefinition definition) {
 		ScenarioDefinitionBuilder builder = new ScenarioDefinitionBuilder();
-
-		builder.currentBuild = definition;
-
+		builder.scenarioDefinition = definition;
 		return builder;
 	}
 }
