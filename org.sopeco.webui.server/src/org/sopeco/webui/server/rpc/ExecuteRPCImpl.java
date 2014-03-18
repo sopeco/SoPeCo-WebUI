@@ -171,7 +171,7 @@ public class ExecuteRPCImpl extends SPCRemoteServlet implements ExecuteRPC {
 		
 		r = wt.request(MediaType.APPLICATION_JSON).get();
 		
-		return null; // TODO r.readEntity(new GenericType<List<ExecutedExperimentDetails>>() { });
+		return r.readEntity(new GenericType<List<ExecutedExperimentDetails>>() { });
 	}
 
 	@Override
@@ -186,7 +186,7 @@ public class ExecuteRPCImpl extends SPCRemoteServlet implements ExecuteRPC {
 		
 		Response r = wt.request(MediaType.APPLICATION_JSON).get();
 		
-		return null;// TODO r.readEntity(MECLog.class);
+		return r.readEntity(MECLog.class);
 	}
 
 	@Override

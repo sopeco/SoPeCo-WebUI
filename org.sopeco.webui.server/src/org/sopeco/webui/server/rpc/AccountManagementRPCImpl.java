@@ -1,5 +1,8 @@
 package org.sopeco.webui.server.rpc;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.validation.constraints.Null;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
@@ -10,10 +13,13 @@ import javax.ws.rs.core.Response.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sopeco.service.configuration.ServiceConfiguration;
-import org.sopeco.service.persistence.entities.AccountDetails;
+import org.sopeco.service.persistence.entities.ScheduledExperiment;
 import org.sopeco.webui.server.rest.ClientFactory;
 import org.sopeco.webui.server.rpc.servlet.SPCRemoteServlet;
 import org.sopeco.webui.server.user.TokenManager;
+import org.sopeco.webui.shared.entities.FrontendScheduledExperiment;
+import org.sopeco.webui.shared.entities.ScenarioDetails;
+import org.sopeco.webui.shared.entities.account.AccountDetails;
 import org.sopeco.webui.shared.helper.LoginResponse;
 import org.sopeco.webui.shared.rpc.AccountManagementRPC;
 
@@ -169,20 +175,32 @@ public class AccountManagementRPCImpl extends SPCRemoteServlet implements Accoun
 			return null;
 		}
 
-		return r.readEntity(AccountDetails.class);
+		org.sopeco.service.persistence.entities.AccountDetails ad = r.readEntity(org.sopeco.service.persistence.entities.AccountDetails.class);
+		
+		if (ad != null) {
+			return this.convertToAccountDetails(ad);
+		}
+		
+		return null;
 	}
 
 	@Override
 	public void storeAccountDetails(AccountDetails accountDetails) {
 		requiredLoggedIn();
 
+		if (accountDetails == null) {
+			return;
+		}
+		
+		org.sopeco.service.persistence.entities.AccountDetails ad = this.convertToServiceAccountDetails(accountDetails);
+		
 		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_ACCOUNT,
 				   										     ServiceConfiguration.SVC_ACCOUNT_INFO);
 
 		wt = wt.queryParam(ServiceConfiguration.SVCP_ACCOUNT_TOKEN, getToken());
 		
 		wt.request(MediaType.APPLICATION_JSON)
-		  .put(Entity.entity(accountDetails, MediaType.APPLICATION_JSON));
+		  .put(Entity.entity(ad, MediaType.APPLICATION_JSON));
 	}
 
 	@Override
@@ -203,5 +221,71 @@ public class AccountManagementRPCImpl extends SPCRemoteServlet implements Accoun
 			TokenManager.instance().deleteToken(getToken());
 			
 		}
+	}
+		
+	///////////////////////////////////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////// HELPER ///////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	private AccountDetails convertToAccountDetails(org.sopeco.service.persistence.entities.AccountDetails accountDetails) {
+		AccountDetails ad = new AccountDetails();
+		ad.setAccountName(accountDetails.getAccountName());
+		ad.setCsvCommentSeparator(accountDetails.getCsvCommentSeparator());
+		ad.setCsvDecimalDelimiter(accountDetails.getCsvDecimalDelimiter());
+		ad.setCsvValueSeparator(accountDetails.getCsvValueSeparator());
+		ad.setId(accountDetails.getId());
+		ad.setSelectedScenario(accountDetails.getSelectedScenario());
+		
+		List<ScenarioDetails> list = new ArrayList<ScenarioDetails>();
+		for (org.sopeco.service.persistence.entities.ScenarioDetails sd : accountDetails.getScenarioDetails()) {
+			
+		}
+		ad.setScenarioDetails(list);
+		
+		return ad;
+	}
+	
+	private org.sopeco.service.persistence.entities.AccountDetails convertToServiceAccountDetails(AccountDetails accountDetails) {
+		org.sopeco.service.persistence.entities.AccountDetails ad = new org.sopeco.service.persistence.entities.AccountDetails();
+		ad.setAccountName(accountDetails.getAccountName());
+		ad.setCsvCommentSeparator(accountDetails.getCsvQuoteChar());
+		ad.setCsvDecimalDelimiter(accountDetails.getCsvDecimalDelimiter());
+		ad.setCsvValueSeparator(accountDetails.getCsvValueSeparator());
+		ad.setId(accountDetails.getId());
+		ad.setSelectedScenario(accountDetails.getSelectedScenario());
+		
+		List<org.sopeco.service.persistence.entities.ScenarioDetails> list = new ArrayList<org.sopeco.service.persistence.entities.ScenarioDetails>();
+		for (ScenarioDetails sd : accountDetails.getScenarioDetails()) {
+			list.add(convertToServiceScenarioDetails(sd));
+		}
+		ad.setScenarioDetails(list);
+		
+		return ad;
+	}
+	
+	private org.sopeco.service.persistence.entities.ScenarioDetails convertToServiceScenarioDetails(ScenarioDetails scenarioDetails) {
+		org.sopeco.service.persistence.entities.ScenarioDetails sd = new org.sopeco.service.persistence.entities.ScenarioDetails();
+		sd.setControllerHost(scenarioDetails.getControllerHost());
+		sd.setControllerName(scenarioDetails.getControllerName());
+		sd.setControllerPort(scenarioDetails.getControllerPort());
+		sd.setControllerProtocol(scenarioDetails.getControllerProtocol());
+		sd.setScenarioName(scenarioDetails.getScenarioName());
+		sd.setSelectedExperiment(scenarioDetails.getSelectedExperiment());
+		sd.setSelectedSpecification(scenarioDetails.getSelectedSpecification());
+		
+		return sd;
+	}
+	
+	private ScenarioDetails convertToScenarioDetails(org.sopeco.service.persistence.entities.ScenarioDetails scenarioDetails) {
+		ScenarioDetails sd = new ScenarioDetails();
+		sd.setControllerHost(scenarioDetails.getControllerHost());
+		sd.setControllerName(scenarioDetails.getControllerName());
+		sd.setControllerPort(scenarioDetails.getControllerPort());
+		sd.setControllerProtocol(scenarioDetails.getControllerProtocol());
+		sd.setScenarioName(scenarioDetails.getScenarioName());
+		sd.setSelectedExperiment(scenarioDetails.getSelectedExperiment());
+		sd.setSelectedSpecification(scenarioDetails.getSelectedSpecification());
+		
+		return sd;
 	}
 }
