@@ -63,12 +63,20 @@ public class MSpecificationRPCImpl extends SPCRemoteServlet implements MSpecific
 		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_MEASUREMENT,
 					     									 ServiceConfiguration.SVC_MEASUREMENT_LIST);
 		
+		
 		wt = wt.queryParam(ServiceConfiguration.SVCP_MEASUREMENT_TOKEN, getToken());
 		
 		Response r = wt.request(MediaType.APPLICATION_JSON).get();
 		
 		List<String> list = r.readEntity(new GenericType<List<String>>() { });
 
+		System.out.println("+++++++++++++++++++++++++++++++++++++++++1");
+		System.out.println("size: " + list.size());
+		
+		for (String s : list) {
+			System.out.println("s: " + s);
+		}
+		
 		return list;
 	}
 
@@ -84,6 +92,13 @@ public class MSpecificationRPCImpl extends SPCRemoteServlet implements MSpecific
 		Response r = wt.request(MediaType.APPLICATION_JSON).get();
 		
 		List<MeasurementSpecification> list = r.readEntity(new GenericType<List<MeasurementSpecification>>() { });
+		
+		System.out.println("+++++++++++++++++++++++++++++++++++++++++1");
+		System.out.println("size: " + list.size());
+		
+		for (MeasurementSpecification s : list) {
+			System.out.println("s: " + s.getName());
+		}
 		
 		return list;
 	}
