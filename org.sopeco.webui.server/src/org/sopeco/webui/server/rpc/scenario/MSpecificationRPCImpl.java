@@ -36,8 +36,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.logging.Logger;
 import org.sopeco.persistence.entities.definition.MeasurementSpecification;
 import org.sopeco.service.configuration.ServiceConfiguration;
 import org.sopeco.webui.server.rest.ClientFactory;
@@ -51,14 +50,14 @@ import org.sopeco.webui.shared.rpc.MSpecificationRPC;
  */
 public class MSpecificationRPCImpl extends SPCRemoteServlet implements MSpecificationRPC {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(MSpecificationRPCImpl.class);
+	private static final Logger LOGGER = Logger.getLogger(MSpecificationRPCImpl.class.getName());
 	private static final long serialVersionUID = 1L;
 
 	@Override
 	public List<String> getAllSpecificationNames() {
 		requiredLoggedIn();
 		
-		LOGGER.debug("Try to fetch all measurement specification names from SPC SL.");
+		LOGGER.finer("Try to fetch all measurement specification names from SPC SL.");
 		
 		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_MEASUREMENT,
 					     									 ServiceConfiguration.SVC_MEASUREMENT_LIST);
@@ -93,11 +92,11 @@ public class MSpecificationRPCImpl extends SPCRemoteServlet implements MSpecific
 		
 		List<MeasurementSpecification> list = r.readEntity(new GenericType<List<MeasurementSpecification>>() { });
 		
-		System.out.println("+++++++++++++++++++++++++++++++++++++++++1");
-		System.out.println("size: " + list.size());
+		LOGGER.finest("+++++++++++++++++++++++++++++++++++++++++1");
+		LOGGER.finest("size: " + list.size());
 		
 		for (MeasurementSpecification s : list) {
-			System.out.println("s: " + s.getName());
+			LOGGER.finest("s: " + s.getName());
 		}
 		
 		return list;

@@ -28,6 +28,7 @@ package org.sopeco.webui.server.rpc;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.validation.constraints.Null;
 import javax.ws.rs.client.Entity;
@@ -37,8 +38,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.sopeco.service.configuration.ServiceConfiguration;
 import org.sopeco.service.persistence.entities.ScheduledExperiment;
 import org.sopeco.service.rest.exchange.ExperimentStatus;
@@ -61,7 +60,7 @@ public class ExecuteRPCImpl extends SPCRemoteServlet implements ExecuteRPC {
 	/** */
 	private static final long serialVersionUID = 1L;
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(ExecuteRPCImpl.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(ExecuteRPCImpl.class.getName());
 
 	/*
 	 * service /execution/schedule (POST)
@@ -147,6 +146,8 @@ public class ExecuteRPCImpl extends SPCRemoteServlet implements ExecuteRPC {
 	@Override
 	public List<ExecutedExperimentDetails> getExecutedExperimentDetails() {
 		requiredLoggedIn();
+
+		System.out.println("Fetching list of ExecutedExperimentDetails.");
 		
 		// first fetch the current selected scenario name
 		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_ACCOUNT,
@@ -175,15 +176,15 @@ public class ExecuteRPCImpl extends SPCRemoteServlet implements ExecuteRPC {
 				r.readEntity(new GenericType<List<org.sopeco.service.persistence.entities.ExecutedExperimentDetails>>() { });
 		
 		if (list != null) {
+			
 			List<ExecutedExperimentDetails> eedlist = new ArrayList<ExecutedExperimentDetails>();
 			for (org.sopeco.service.persistence.entities.ExecutedExperimentDetails eed : list) {
 				eedlist.add(ServiceConverter.convertToExecutedExperimentDetails(eed));
 			}
 			
-			if (eedlist.isEmpty()) {
-				return null;
-			}
 		}
+
+		System.out.println("Returning null, when fetching ExecutedExperimentDetails.");
 		
 		return null;
 	}
