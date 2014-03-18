@@ -38,7 +38,6 @@ import org.sopeco.persistence.entities.definition.ExplorationStrategy;
 import org.sopeco.persistence.entities.definition.MeasurementSpecification;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.entities.definition.ParameterValueAssignment;
-import org.sopeco.service.builder.SimpleEntityFactory;
 import org.sopeco.webui.client.event.EventControl;
 import org.sopeco.webui.client.event.ExperimentAssignmentsChangedEvent;
 import org.sopeco.webui.client.event.PreperationAssignmentsChangedEvent;
@@ -46,6 +45,7 @@ import org.sopeco.webui.client.extensions.Extensions;
 import org.sopeco.webui.client.layout.MainLayoutPanel;
 import org.sopeco.webui.client.layout.center.experiment.ExperimentController;
 import org.sopeco.webui.client.manager.helper.Duplicator;
+import org.sopeco.webui.shared.builder.SimpleEntityFactory;
 import org.sopeco.webui.shared.helper.ExtensionTypes;
 import org.sopeco.webui.shared.helper.Metering;
 

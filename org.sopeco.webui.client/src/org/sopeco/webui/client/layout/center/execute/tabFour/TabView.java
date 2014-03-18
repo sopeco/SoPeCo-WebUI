@@ -26,7 +26,7 @@
  */
 package org.sopeco.webui.client.layout.center.execute.tabFour;
 
-import org.sopeco.service.persistence.entities.ExecutedExperimentDetails;
+import org.sopeco.webui.shared.entities.ExecutedExperimentDetails;
 
 import com.google.gwt.user.cellview.client.DataGrid;
 import com.google.gwt.user.client.ui.FlowPanel;

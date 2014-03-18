@@ -29,10 +29,10 @@ package org.sopeco.webui.client.manager;
 import java.util.logging.Logger;
 
 import org.sopeco.persistence.entities.definition.MeasurementSpecification;
-import org.sopeco.service.builder.MeasurementSpecificationBuilder;
 import org.sopeco.webui.client.helper.INotifyHandler;
 import org.sopeco.webui.client.helper.INotifyHandler.Result;
 import org.sopeco.webui.client.layout.MainLayoutPanel;
+import org.sopeco.webui.shared.builder.MeasurementSpecificationBuilder;
 
 /**
  * Contains all necessary methods for specification manipulation to quickly

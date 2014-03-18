@@ -40,15 +40,15 @@ import javax.ws.rs.core.Response.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sopeco.service.configuration.ServiceConfiguration;
-import org.sopeco.service.persistence.entities.AccountDetails;
-import org.sopeco.service.persistence.entities.ExecutedExperimentDetails;
-import org.sopeco.service.persistence.entities.MECLog;
 import org.sopeco.service.persistence.entities.ScheduledExperiment;
 import org.sopeco.service.rest.exchange.ExperimentStatus;
 import org.sopeco.webui.server.rest.ClientFactory;
 import org.sopeco.webui.server.rpc.servlet.SPCRemoteServlet;
+import org.sopeco.webui.shared.entities.ExecutedExperimentDetails;
 import org.sopeco.webui.shared.entities.FrontendScheduledExperiment;
+import org.sopeco.webui.shared.entities.MECLog;
 import org.sopeco.webui.shared.entities.RunningControllerStatus;
+import org.sopeco.webui.shared.helper.MECLogEntry;
 import org.sopeco.webui.shared.rpc.ExecuteRPC;
 
 /**
@@ -76,7 +76,7 @@ public class ExecuteRPCImpl extends SPCRemoteServlet implements ExecuteRPC {
 		
 		wt = wt.queryParam(ServiceConfiguration.SVCP_ACCOUNT_TOKEN, getToken());
 		
-		ScheduledExperiment scheduledExperiment = convertFrontendScheduledExperiment(rawScheduledExperiment);
+		ScheduledExperiment scheduledExperiment = ServiceConverter.convertFrontendScheduledExperiment(rawScheduledExperiment);
 		scheduledExperiment.setActive(true);
 		
 		Response r = wt.request(MediaType.APPLICATION_JSON).post(Entity.entity(scheduledExperiment, MediaType.APPLICATION_JSON));
@@ -101,7 +101,7 @@ public class ExecuteRPCImpl extends SPCRemoteServlet implements ExecuteRPC {
 		List<FrontendScheduledExperiment> listFSE = new ArrayList<FrontendScheduledExperiment>();
 		
 		for (ScheduledExperiment se : listSE) {
-			listFSE.add(convertScheduledExperiment(se));
+			listFSE.add(ServiceConverter.convertScheduledExperiment(se));
 		}
 		
 		return listFSE;
@@ -156,7 +156,7 @@ public class ExecuteRPCImpl extends SPCRemoteServlet implements ExecuteRPC {
 		
 		Response r = wt.request(MediaType.APPLICATION_JSON).get();
 		
-		AccountDetails ad = r.readEntity(AccountDetails.class);
+		org.sopeco.service.persistence.entities.AccountDetails ad = r.readEntity(org.sopeco.service.persistence.entities.AccountDetails.class);
 		
 		if (ad == null) {
 			return new ArrayList<ExecutedExperimentDetails>();
@@ -171,7 +171,21 @@ public class ExecuteRPCImpl extends SPCRemoteServlet implements ExecuteRPC {
 		
 		r = wt.request(MediaType.APPLICATION_JSON).get();
 		
-		return r.readEntity(new GenericType<List<ExecutedExperimentDetails>>() { });
+		List<org.sopeco.service.persistence.entities.ExecutedExperimentDetails> list =
+				r.readEntity(new GenericType<List<org.sopeco.service.persistence.entities.ExecutedExperimentDetails>>() { });
+		
+		if (list != null) {
+			List<ExecutedExperimentDetails> eedlist = new ArrayList<ExecutedExperimentDetails>();
+			for (org.sopeco.service.persistence.entities.ExecutedExperimentDetails eed : list) {
+				eedlist.add(ServiceConverter.convertToExecutedExperimentDetails(eed));
+			}
+			
+			if (eedlist.isEmpty()) {
+				return null;
+			}
+		}
+		
+		return null;
 	}
 
 	@Override
@@ -186,7 +200,7 @@ public class ExecuteRPCImpl extends SPCRemoteServlet implements ExecuteRPC {
 		
 		Response r = wt.request(MediaType.APPLICATION_JSON).get();
 		
-		return r.readEntity(MECLog.class);
+		return ServiceConverter.convertToMECLog(r.readEntity(org.sopeco.service.persistence.entities.MECLog.class));
 	}
 
 	@Override
@@ -201,7 +215,7 @@ public class ExecuteRPCImpl extends SPCRemoteServlet implements ExecuteRPC {
 		
 		Response r = wt.request(MediaType.APPLICATION_JSON).get();
 		
-		AccountDetails ad = r.readEntity(AccountDetails.class);
+		org.sopeco.service.persistence.entities.AccountDetails ad = r.readEntity(org.sopeco.service.persistence.entities.AccountDetails.class);
 		
 		if (ad == null) {
 			return null;
@@ -221,13 +235,17 @@ public class ExecuteRPCImpl extends SPCRemoteServlet implements ExecuteRPC {
 			// now convert the ExperimentStatus object into a RunningControllerStatus object
 			RunningControllerStatus rcs = new RunningControllerStatus();
 			rcs.setAccount(es.getAccountId());
-			rcs.setEventLogList(es.getEventLogList());
 			rcs.setHasFinished(es.isFinished());
 			rcs.setLabel(es.getLabel());
 			rcs.setProgress(es.getProgress());
 			rcs.setScenario(es.getScenarioName());
 			rcs.setTimeRemaining(es.getTimeRemaining());
 			rcs.setTimeStart(es.getTimeStart());
+			
+			rcs.setEventLogList(new ArrayList<MECLogEntry>());
+			for (org.sopeco.service.execute.MECLogEntry meclogentry : es.getEventLogList()) {
+				rcs.getEventLogList().add(ServiceConverter.convertToMECLogEntry(meclogentry));
+			}
 			
 			return rcs;
 		}
@@ -247,7 +265,7 @@ public class ExecuteRPCImpl extends SPCRemoteServlet implements ExecuteRPC {
 		
 		Response r = wt.request(MediaType.APPLICATION_JSON).get();
 		
-		AccountDetails ad = r.readEntity(AccountDetails.class);
+		org.sopeco.service.persistence.entities.AccountDetails ad = r.readEntity(org.sopeco.service.persistence.entities.AccountDetails.class);
 		
 		if (ad == null) {
 			return;
@@ -261,61 +279,4 @@ public class ExecuteRPCImpl extends SPCRemoteServlet implements ExecuteRPC {
 		
 		r = wt.request(MediaType.APPLICATION_JSON).put(Entity.entity(Null.class, MediaType.APPLICATION_JSON));
 	}
-	
-	
-
-	///////////////////////////////////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////////// HELPER ///////////////////////////////////////////////////
-	///////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	/**
-	 * Converts a {@link ScheduledExperiment} into a {@link FrontendScheduledExperiment}.
-	 * 
-	 * @param se	the {@link ScheduledExperiment}
-	 * @return		the {@link FrontendScheduledExperiment}
-	 */
-	private FrontendScheduledExperiment convertScheduledExperiment(ScheduledExperiment se) {
-		FrontendScheduledExperiment fse = convertScheduledExperiment(se);
-		fse.setAccount(se.getAccountId());
-		fse.setControllerUrl(se.getControllerUrl());
-		fse.setId(se.getAccountId());
-		fse.setLabel(se.getLabel());
-		fse.setLastExecutionTime(se.getLastExecutionTime());
-		fse.setNextExecutionTime(se.getNextExecutionTime());
-		fse.setRepeatDays(se.getRepeatDays());
-		fse.setRepeatHours(se.getRepeatHours());
-		fse.setRepeating(se.isRepeating());
-		fse.setRepeatMinutes(se.getRepeatMinutes());
-		fse.setStartTime(se.getStartTime());
-		fse.setAddTime(se.getAddedTime());
-		fse.setEnabled(se.isActive());
-		fse.setDurations(se.getDurations());
-		fse.setScenarioDefinition(se.getScenarioDefinition());
-		fse.setSelectedExperiments(se.getSelectedExperiments());
-		return fse;
-	}
-	
-	/**
-	 * Converts a {@link FrontendScheduledExperiment} into a {@link ScheduledExperiment}.
-	 * 
-	 * @param fse	the {@link FrontendScheduledExperiment}
-	 * @return		the {@link ScheduledExperiment}
-	 */
-	private ScheduledExperiment convertFrontendScheduledExperiment(FrontendScheduledExperiment fse) {
-		ScheduledExperiment se = new ScheduledExperiment();
-		se.setAccountId(fse.getAccount());
-		se.setControllerUrl(fse.getControllerUrl());
-		se.setLabel(fse.getLabel());
-		se.setRepeatDays(fse.getRepeatDays());
-		se.setRepeatHours(fse.getRepeatHours());
-		se.setRepeating(fse.isRepeating());
-		se.setRepeatMinutes(fse.getRepeatMinutes());
-		se.setScenarioDefinition(fse.getScenarioDefinition());
-		se.setStartTime(fse.getStartTime());
-		se.setAddedTime(System.currentTimeMillis());
-		se.setDurations(new ArrayList<Long>());
-		se.setSelectedExperiments(fse.getSelectedExperiments());
-		return se;
-	}
-	
 }

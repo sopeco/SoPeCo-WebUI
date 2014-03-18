@@ -30,8 +30,6 @@ import java.io.Serializable;
 
 import javax.persistence.Entity;
 
-import org.sopeco.service.persistence.entities.ScenarioDetails;
-
 /**
  * 
  * @author Marius Oehler
@@ -61,16 +59,6 @@ public class FrontendScenarioDetails implements Serializable {
 
 	public FrontendScenarioDetails() {
 		
-	}
-	
-	public FrontendScenarioDetails(ScenarioDetails sd) {
-		this.controllerHost = sd.getControllerHost();
-		this.controllerName = sd.getControllerName();
-		this.controllerPort = sd.getControllerPort();
-		this.controllerProtocol = sd.getControllerProtocol();
-		this.scenarioName = sd.getScenarioName();
-		this.selectedExperiment = sd.getSelectedExperiment();
-		this.selectedSpecification = sd.getSelectedSpecification();
 	}
 	
 	/**
@@ -176,18 +164,5 @@ public class FrontendScenarioDetails implements Serializable {
 	 */
 	public void setSelectedSpecification(String pSelectedSpecification) {
 		this.selectedSpecification = pSelectedSpecification;
-	}
-
-	public ScenarioDetails toScenarioDetails() {
-		ScenarioDetails sd = new ScenarioDetails();
-		sd.setControllerHost(this.controllerHost);
-		sd.setControllerName(this.controllerName);
-		sd.setControllerPort(this.controllerPort);
-		sd.setControllerProtocol(this.controllerProtocol);
-		sd.setScenarioName(this.scenarioName);
-		sd.setSelectedExperiment(this.selectedExperiment);
-		sd.setSelectedSpecification(this.selectedSpecification);
-		
-		return sd;
 	}
 }
