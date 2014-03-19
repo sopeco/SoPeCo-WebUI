@@ -107,15 +107,6 @@
 	</servlet-mapping>
 
 	<servlet>
-		<servlet-name>visualizationRPC</servlet-name>
-		<servlet-class>org.sopeco.webui.server.rpc.VisualizationRPCImpl</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>visualizationRPC</servlet-name>
-		<url-pattern>/sopeco_webui/visualizationRPC</url-pattern>
-	</servlet-mapping>
-
-	<servlet>
 		<servlet-name>getRPC</servlet-name>
 		<servlet-class>org.sopeco.webui.server.rpc.GetRPCImpl</servlet-class>
 	</servlet>
