@@ -33,6 +33,10 @@ import org.sopeco.service.builder.MeasurementSpecificationBuilder;
 import org.sopeco.webui.client.helper.INotifyHandler;
 import org.sopeco.webui.client.helper.INotifyHandler.Result;
 import org.sopeco.webui.client.layout.MainLayoutPanel;
+import org.sopeco.webui.shared.rpc.RPC;
+
+import com.google.gwt.core.shared.GWT;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * Contains all necessary methods for specification manipulation to quickly
@@ -67,18 +71,33 @@ public class SpecificationModul {
 	public void changeSpecification(String newWorkingSpecification) {
 		LOGGER.fine("Change specification to: " + newWorkingSpecification);
 
-		Manager.get().getCurrentScenarioDetails().setSelectedSpecification(newWorkingSpecification);
-		Manager.get().storeAccountDetails();
+		final String workingSpecificationName = newWorkingSpecification;
+		
+		RPC.getMSpecificationRPC().setWorkingSpecification(newWorkingSpecification, new AsyncCallback<Boolean>() {
+			@Override
+			public void onSuccess(Boolean result) {
+				
+				Manager.get().getCurrentScenarioDetails().setSelectedSpecification(workingSpecificationName);
+				Manager.get().storeAccountDetails();
 
-		MeasurementSpecificationBuilder specificationBuilder = new MeasurementSpecificationBuilder(getSpecification());
-		manager.getScenarioDefinitionBuilder().setSpecificationBuilder(specificationBuilder);
+				MeasurementSpecificationBuilder specificationBuilder = new MeasurementSpecificationBuilder(getSpecification());
+				// TODO SET call!
+				manager.getScenarioDefinitionBuilder().setSpecificationBuilder(specificationBuilder);
 
-		MainLayoutPanel.get().setSpecification(newWorkingSpecification);
+				MainLayoutPanel.get().setSpecification(workingSpecificationName);
+			
+			}
+
+			@Override
+			public void onFailure(Throwable caught) {
+			}
+		});
 	}
 
 	/**
 	 * Adding a new specification to the scenario and set it to the working
 	 * specification.
+	 * TODO REST call
 	 * 
 	 * @param name
 	 */
@@ -87,7 +106,7 @@ public class SpecificationModul {
 			LOGGER.warning("Specification with the name '" + name + "' already exists.");
 			return;
 		}
-
+		
 		MeasurementSpecificationBuilder newBuilder = manager.getScenarioDefinitionBuilder().addNewMeasurementSpecification();
 		if (newBuilder == null) {
 			return;
@@ -127,7 +146,6 @@ public class SpecificationModul {
 	 * 
 	 * @return
 	 */
-	@Deprecated
 	public String getSpecificationName() {
 		return Manager.get().getCurrentScenarioDetails().getSelectedSpecification();
 	}
@@ -143,14 +161,37 @@ public class SpecificationModul {
 		if (msSize <= 1) {
 			return false;
 		}
-
+		
+		// TODO The manager should not easily remove items!
 		manager.getCurrentScenarioDefinition().getMeasurementSpecifications().remove(getSpecification());
 
 		manager.storeScenario();
-		String name = manager.getCurrentScenarioDefinition().getMeasurementSpecifications().get(0).getName();
+
+		String selectedMesSpec = getSpecification().getName();
+		String newSelectedMesSpec = "";
+		
+		for (MeasurementSpecification ms : manager.getCurrentScenarioDefinition().getMeasurementSpecifications()) {
+			if (!ms.getName().equals(selectedMesSpec)) {
+				newSelectedMesSpec = ms.getName();
+				break;
+			}
+		}
 
 		MainLayoutPanel.get().getNaviController().refreshSpecificationPopup();
-		changeSpecification(name);
+		changeSpecification(newSelectedMesSpec);
+		
+		// now the "old" specification can be removed
+		RPC.getMSpecificationRPC().removeWorkingSpecification(selectedMesSpec, new AsyncCallback<Boolean>() {
+			@Override
+			public void onSuccess(Boolean result) {
+				GWT.log("WorkingSpecification removal call was successfull - Good chance that it's deleted now.");
+			}
+
+			@Override
+			public void onFailure(Throwable caught) {
+				GWT.log("WorkingSpecification could not be removed. Call failed.");
+			}
+		}); 
 
 		return true;
 	}

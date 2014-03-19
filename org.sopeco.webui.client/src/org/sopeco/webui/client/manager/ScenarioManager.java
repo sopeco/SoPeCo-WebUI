@@ -47,6 +47,7 @@ import org.sopeco.webui.shared.helper.Helper;
 import org.sopeco.webui.shared.helper.Utilities;
 import org.sopeco.webui.shared.rpc.RPC;
 
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -97,6 +98,7 @@ public final class ScenarioManager {
 
 	/**
 	 * Changes the value of the given InitAssignment Parameter.
+	 * TODO REST interface manipulation!
 	 * 
 	 * @param path
 	 * @param name
@@ -104,9 +106,6 @@ public final class ScenarioManager {
 	 * @return
 	 */
 	public boolean changeInitAssignmentValue(String path, String name, String newValue) {
-		
-		
-		
 		ParameterNamespace namespace = getScenarioDefinitionBuilder().getEnvironmentBuilder().getNamespace(path, "\\.");
 		ParameterDefinition parameter = getScenarioDefinitionBuilder().getEnvironmentBuilder().getParameter(name, namespace);
 
@@ -234,7 +233,7 @@ public final class ScenarioManager {
 	 * @return ScenarioDefinition
 	 */
 	public ScenarioDefinition getCurrentScenarioDefinition() {
-		return builder.getBuiltScenario();
+		return builder.getScenarioDefinition();
 	}
 
 	/**
@@ -273,13 +272,13 @@ public final class ScenarioManager {
 					return;
 				}
 
-				builder = ScenarioDefinitionBuilder.load(result);
+				builder = new ScenarioDefinitionBuilder(result);
 				scenarioLoaded = true;
 
 				if (Manager.get().getCurrentScenarioDetails() != null) {
 					String specification = Manager.get().getCurrentScenarioDetails().getSelectedSpecification();
 					if (specification == null || !specification().existSpecification(specification)) {
-						specification = builder.getBuiltScenario().getMeasurementSpecifications().get(0).getName();
+						specification = builder.getScenarioDefinition().getMeasurementSpecifications().get(0).getName();
 					}
 					MainLayoutPanel.get().reloadPanels();
 

@@ -70,16 +70,6 @@ public class SpecificationController implements ICenterController, ClickHandler,
 			reload();
 		}
 
-		// EventControl.get().addHandler(SpecificationChangedEvent.TYPE, new
-		// SpecificationChangedEventHandler() {
-		// @Override
-		// public void onSpecificationChangedEvent(SpecificationChangedEvent
-		// event) {
-		// setCurrentSpecificationName(event.getSelectedSpecification());
-		// addExistingAssignments(event.getSelectedSpecification());
-		// }
-		// });
-
 		EventControl.get().addHandler(InitialAssignmentChangedEvent.TYPE, new InitialAssignmentChangedEventHandler() {
 			@Override
 			public void onInitialAssignmentChanged(InitialAssignmentChangedEvent event) {
@@ -165,11 +155,6 @@ public class SpecificationController implements ICenterController, ClickHandler,
 			assignmentController.reset();
 		}
 
-		// if (selectionController == null) {
-		// selectionController = new SelectionController();
-		// } else {
-		// selectionController.reset();
-		// }
 		envTree = new SpecificationEnvironmentTree();
 		envTree.getView().addStyleName(TREE_CSS_CLASS);
 
@@ -179,7 +164,6 @@ public class SpecificationController implements ICenterController, ClickHandler,
 		view.getImgRemove().addClickHandler(this);
 
 		addExistingAssignments();
-		// addRenameSpecificationHandler();
 		changeSpecification(Manager.get().getCurrentScenarioDetails().getSelectedSpecification());
 	}
 
