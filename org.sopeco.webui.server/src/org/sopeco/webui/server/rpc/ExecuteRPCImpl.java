@@ -39,15 +39,15 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.sopeco.service.configuration.ServiceConfiguration;
+import org.sopeco.service.execute.MECLogEntry;
+import org.sopeco.service.persistence.entities.ExecutedExperimentDetails;
+import org.sopeco.service.persistence.entities.MECLog;
 import org.sopeco.service.persistence.entities.ScheduledExperiment;
 import org.sopeco.service.rest.exchange.ExperimentStatus;
 import org.sopeco.webui.server.rest.ClientFactory;
 import org.sopeco.webui.server.rpc.servlet.SPCRemoteServlet;
-import org.sopeco.webui.shared.entities.ExecutedExperimentDetails;
 import org.sopeco.webui.shared.entities.FrontendScheduledExperiment;
-import org.sopeco.webui.shared.entities.MECLog;
 import org.sopeco.webui.shared.entities.RunningControllerStatus;
-import org.sopeco.webui.shared.helper.MECLogEntry;
 import org.sopeco.webui.shared.rpc.ExecuteRPC;
 
 import com.google.gwt.core.shared.GWT;
@@ -186,7 +186,7 @@ public class ExecuteRPCImpl extends SPCRemoteServlet implements ExecuteRPC {
 			if (list != null) {
 				
 				for (org.sopeco.service.persistence.entities.ExecutedExperimentDetails eed : list) {
-					eedlist.add(ServiceConverter.convertToExecutedExperimentDetails(eed));
+					eedlist.add(eed);
 				}
 				
 			}
@@ -211,7 +211,7 @@ public class ExecuteRPCImpl extends SPCRemoteServlet implements ExecuteRPC {
 		
 		Response r = wt.request(MediaType.APPLICATION_JSON).get();
 		
-		return ServiceConverter.convertToMECLog(r.readEntity(org.sopeco.service.persistence.entities.MECLog.class));
+		return r.readEntity(org.sopeco.service.persistence.entities.MECLog.class);
 	}
 
 	@Override
@@ -255,7 +255,7 @@ public class ExecuteRPCImpl extends SPCRemoteServlet implements ExecuteRPC {
 			
 			rcs.setEventLogList(new ArrayList<MECLogEntry>());
 			for (org.sopeco.service.execute.MECLogEntry meclogentry : es.getEventLogList()) {
-				rcs.getEventLogList().add(ServiceConverter.convertToMECLogEntry(meclogentry));
+				rcs.getEventLogList().add(meclogentry);
 			}
 			
 			return rcs;

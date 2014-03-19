@@ -1,8 +1,5 @@
 package org.sopeco.webui.server.rpc;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.validation.constraints.Null;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
@@ -13,13 +10,10 @@ import javax.ws.rs.core.Response.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sopeco.service.configuration.ServiceConfiguration;
-import org.sopeco.service.persistence.entities.ScheduledExperiment;
+import org.sopeco.service.persistence.entities.AccountDetails;
 import org.sopeco.webui.server.rest.ClientFactory;
 import org.sopeco.webui.server.rpc.servlet.SPCRemoteServlet;
 import org.sopeco.webui.server.user.TokenManager;
-import org.sopeco.webui.shared.entities.FrontendScheduledExperiment;
-import org.sopeco.webui.shared.entities.ScenarioDetails;
-import org.sopeco.webui.shared.entities.account.AccountDetails;
 import org.sopeco.webui.shared.helper.LoginResponse;
 import org.sopeco.webui.shared.rpc.AccountManagementRPC;
 
@@ -177,7 +171,7 @@ public class AccountManagementRPCImpl extends SPCRemoteServlet implements Accoun
 
 		org.sopeco.service.persistence.entities.AccountDetails ad = r.readEntity(org.sopeco.service.persistence.entities.AccountDetails.class);
 		
-		return ServiceConverter.convertToAccountDetails(ad);
+		return ad;
 	}
 
 	@Override
@@ -188,7 +182,7 @@ public class AccountManagementRPCImpl extends SPCRemoteServlet implements Accoun
 			return;
 		}
 		
-		org.sopeco.service.persistence.entities.AccountDetails ad = ServiceConverter.convertToServiceAccountDetails(accountDetails);
+		org.sopeco.service.persistence.entities.AccountDetails ad = accountDetails;
 		
 		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_ACCOUNT,
 				   										     ServiceConfiguration.SVC_ACCOUNT_INFO);

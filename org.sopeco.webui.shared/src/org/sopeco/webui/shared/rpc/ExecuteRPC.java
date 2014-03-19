@@ -28,9 +28,9 @@ package org.sopeco.webui.shared.rpc;
 
 import java.util.List;
 
-import org.sopeco.webui.shared.entities.ExecutedExperimentDetails;
+import org.sopeco.service.persistence.entities.ExecutedExperimentDetails;
+import org.sopeco.service.persistence.entities.MECLog;
 import org.sopeco.webui.shared.entities.FrontendScheduledExperiment;
-import org.sopeco.webui.shared.entities.MECLog;
 import org.sopeco.webui.shared.entities.RunningControllerStatus;
 
 import com.google.gwt.user.client.rpc.RemoteService;

@@ -34,6 +34,8 @@
 
 	<!-- Other module inherits -->
 	<inherits name='org.sopeco.persistence' />
+	<inherits name='org.sopeco.service.service' />
+	<inherits name='org.sopeco.service.persistence.service2' />
 	<inherits name='org.sopeco.gwt' />
 	<inherits name="com.google.gwt.resources.Resources" />
 	<inherits name='com.google.gwt.visualization.Visualization' />

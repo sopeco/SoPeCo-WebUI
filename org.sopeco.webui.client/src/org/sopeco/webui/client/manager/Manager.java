@@ -29,8 +29,8 @@ package org.sopeco.webui.client.manager;
 import java.util.logging.Logger;
 
 import org.sopeco.persistence.metadata.entities.DatabaseInstance;
-import org.sopeco.webui.shared.entities.ScenarioDetails;
-import org.sopeco.webui.shared.entities.account.AccountDetails;
+import org.sopeco.service.persistence.entities.AccountDetails;
+import org.sopeco.service.persistence.entities.ScenarioDetails;
 import org.sopeco.webui.shared.rpc.RPC;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
