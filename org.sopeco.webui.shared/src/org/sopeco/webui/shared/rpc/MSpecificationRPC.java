@@ -30,6 +30,7 @@ import java.util.List;
 
 import org.sopeco.persistence.entities.definition.MeasurementSpecification;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -79,4 +80,13 @@ public interface MSpecificationRPC extends RemoteService {
 	 * @return
 	 */
 	boolean renameWorkingSpecification(String newName);
+	
+	/**
+	 * Removes the working specification of the given name.
+	 * 
+	 * @param selectedMesSpec
+	 * 				the spec to remove
+	 * @return 
+	 */
+	boolean removeWorkingSpecification(String selectedMesSpec);
 }

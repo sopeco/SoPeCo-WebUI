@@ -37,6 +37,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import java.util.logging.Logger;
+
 import org.sopeco.persistence.entities.definition.MeasurementSpecification;
 import org.sopeco.service.configuration.ServiceConfiguration;
 import org.sopeco.webui.server.rest.ClientFactory;
@@ -129,6 +130,20 @@ public class MSpecificationRPCImpl extends SPCRemoteServlet implements MSpecific
 		wt = wt.queryParam(ServiceConfiguration.SVCP_MEASUREMENT_SPECNAME, newName);
 		
 		Response r = wt.request(MediaType.APPLICATION_JSON).put(Entity.entity(Null.class, MediaType.APPLICATION_JSON));
+
+		return r.getStatus() == Status.OK.getStatusCode();
+	}
+
+	@Override
+	public boolean removeWorkingSpecification(String selectedMesSpec) {
+		requiredLoggedIn();
+		
+		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_MEASUREMENT);
+		
+		wt = wt.queryParam(ServiceConfiguration.SVCP_MEASUREMENT_TOKEN, getToken());
+		wt = wt.queryParam(ServiceConfiguration.SVCP_MEASUREMENT_SPECNAME, selectedMesSpec);
+		
+		Response r = wt.request(MediaType.APPLICATION_JSON).delete();
 
 		return r.getStatus() == Status.OK.getStatusCode();
 	}
