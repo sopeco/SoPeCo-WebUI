@@ -78,7 +78,7 @@ public class NaviController implements ClickHandler, InputDialogHandler, InputDi
 	}
 
 	public void addExperiments() {
-		for (ExperimentSeriesDefinition experiment : ScenarioManager.get().experiment()
+		for (ExperimentSeriesDefinition experiment : ScenarioManager.get().getExperimentModul()
 				.getExperimentsOfCurrentSpecififcation()) {
 			addItem(ExperimentController.class, experiment.getName(), null).setAsExperiment();
 		}
@@ -232,7 +232,7 @@ public class NaviController implements ClickHandler, InputDialogHandler, InputDi
 	@Override
 	public void onInput(InputDialog source, String value) {
 		if (source == inputAddExperiment) {
-			ScenarioManager.get().experiment().createExperimentSeries(value);
+			ScenarioManager.get().getExperimentModul().createExperimentSeries(value);
 		} else if (source == inputAddSpecification) {
 			ScenarioManager.get().specification().createNewSpecification(value);
 		}
@@ -258,7 +258,7 @@ public class NaviController implements ClickHandler, InputDialogHandler, InputDi
 				source.showWarning("The name of a Specification must not be empty.");
 				return false;
 			}
-			if (ScenarioManager.get().getBuilder().getMeasurementSpecification(text) != null) {
+			if (ScenarioManager.get().getScenarioDefinitionBuilder().getMeasurementSpecification(text) != null) {
 				source.showWarning("There is already a Specification with this name.");
 				return false;
 			}

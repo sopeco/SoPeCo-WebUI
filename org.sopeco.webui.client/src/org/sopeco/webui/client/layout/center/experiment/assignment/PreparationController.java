@@ -70,14 +70,14 @@ public class PreparationController implements EditGridHandler {
 	}
 
 	public void addExistingAssignments() {
-		if (ScenarioManager.get().experiment().getCurrentExperiment() == null) {
+		if (ScenarioManager.get().getExperimentModul().getCurrentExperiment() == null) {
 			return;
 		}
 
 		assignmentMap.clear();
 
 		Map<String, ParameterValueAssignment> sortedMap = new TreeMap<String, ParameterValueAssignment>();
-		for (ConstantValueAssignment cva : ScenarioManager.get().experiment().getCurrentExperiment()
+		for (ConstantValueAssignment cva : ScenarioManager.get().getExperimentModul().getCurrentExperiment()
 				.getPreperationAssignments()) {
 			sortedMap.put(cva.getParameter().getFullName(), cva);
 		}
@@ -135,6 +135,6 @@ public class PreparationController implements EditGridHandler {
 
 	@Override
 	public void onValueChange(EditGridItem item) {
-		ScenarioManager.get().experiment().setPreperationAssignmentValue(item.getParameter(), item.getValue());
+		ScenarioManager.get().getExperimentModul().setPreperationAssignmentValue(item.getParameter(), item.getValue());
 	}
 }

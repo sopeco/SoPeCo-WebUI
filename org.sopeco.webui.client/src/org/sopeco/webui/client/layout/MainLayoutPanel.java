@@ -264,7 +264,7 @@ public final class MainLayoutPanel extends DockLayoutPanel {
 	 *            of the next experiment
 	 */
 	public void switchToExperiment(String experimentName) {
-		ScenarioManager.get().experiment().setCurrentExperiment(experimentName);
+		ScenarioManager.get().getExperimentModul().setCurrentExperiment(experimentName);
 		switchView(ExperimentController.class);
 	}
 
@@ -300,7 +300,7 @@ public final class MainLayoutPanel extends DockLayoutPanel {
 		registerCenterController(new ExecuteController());
 		registerCenterController(new ResultController());
 		registerCenterController(new VisualizationController());
-
+		
 		refreshView();
 
 	}

@@ -71,7 +71,7 @@ public class SpecificationModul {
 		Manager.get().storeAccountDetails();
 
 		MeasurementSpecificationBuilder specificationBuilder = new MeasurementSpecificationBuilder(getSpecification());
-		manager.getBuilder().setSpecificationBuilder(specificationBuilder);
+		manager.getScenarioDefinitionBuilder().setSpecificationBuilder(specificationBuilder);
 
 		MainLayoutPanel.get().setSpecification(newWorkingSpecification);
 	}
@@ -88,7 +88,7 @@ public class SpecificationModul {
 			return;
 		}
 
-		MeasurementSpecificationBuilder newBuilder = manager.getBuilder().addNewMeasurementSpecification();
+		MeasurementSpecificationBuilder newBuilder = manager.getScenarioDefinitionBuilder().addNewMeasurementSpecification();
 		if (newBuilder == null) {
 			return;
 		}
@@ -109,7 +109,7 @@ public class SpecificationModul {
 	 * @return specification exists
 	 */
 	public boolean existSpecification(String specification) {
-		for (MeasurementSpecification ms : manager.getBuilder().getBuiltScenario().getMeasurementSpecifications()) {
+		for (MeasurementSpecification ms : manager.getScenarioDefinitionBuilder().getBuiltScenario().getMeasurementSpecifications()) {
 			if (specification.equals(ms.getName())) {
 				return true;
 			}
@@ -118,7 +118,7 @@ public class SpecificationModul {
 	}
 
 	public MeasurementSpecification getSpecification() {
-		return manager.getBuilder().getMeasurementSpecification(
+		return manager.getScenarioDefinitionBuilder().getMeasurementSpecification(
 				Manager.get().getCurrentScenarioDetails().getSelectedSpecification());
 	}
 
@@ -166,7 +166,7 @@ public class SpecificationModul {
 	 * Renames the current workingSpecification to the given name.
 	 */
 	public void renameWorkingSpecification(String newName, INotifyHandler<Boolean> handler) {
-		manager.getBuilder().getSpecificationBuilder().setName(newName);
+		manager.getScenarioDefinitionBuilder().getSpecificationBuilder().setName(newName);
 
 		MainLayoutPanel.get().getNaviController().refreshSpecificationPopup();
 		changeSpecification(newName);

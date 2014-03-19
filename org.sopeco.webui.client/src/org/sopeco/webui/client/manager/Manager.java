@@ -102,10 +102,6 @@ public final class Manager {
 		return accountDetails.getScenarioDetail(accountDetails.getSelectedScenario());
 	}
 
-	public void setSelectedDatabaseIndex(int selectedDatabaseIndex) {
-		this.selectedDatabaseIndex = selectedDatabaseIndex;
-	}
-
 	/**
 	 * @return the accountDetails
 	 */

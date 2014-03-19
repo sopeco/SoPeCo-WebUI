@@ -49,27 +49,27 @@ public class ExperimentEnvironmentTree extends EnvironmentTree {
 
 	@Override
 	public boolean isFirstChecked(ParameterDefinition parameter) {
-		return ScenarioManager.get().experiment().isExperimentAssignment(parameter);
+		return ScenarioManager.get().getExperimentModul().isExperimentAssignment(parameter);
 	}
 
 	@Override
 	public boolean isSecondChecked(ParameterDefinition parameter) {
-		return ScenarioManager.get().experiment().isPreperationAssignment(parameter);
+		return ScenarioManager.get().getExperimentModul().isPreperationAssignment(parameter);
 	}
 
 	@Override
 	public void onClick(ECheckBox checkbox, EnvTreeItem item, boolean value) {
 		if (checkbox == ECheckBox.FIRST) {
 			if (value) {
-				ScenarioManager.get().experiment().addExperimentAssignment(item.getParameter());
+				ScenarioManager.get().getExperimentModul().addExperimentAssignment(item.getParameter());
 			} else {
-				ScenarioManager.get().experiment().removeExperimentAssignment(item.getParameter());
+				ScenarioManager.get().getExperimentModul().removeExperimentAssignment(item.getParameter());
 			}
 		} else {
 			if (value) {
-				ScenarioManager.get().experiment().addPreperationAssignment(item.getParameter());
+				ScenarioManager.get().getExperimentModul().addPreperationAssignment(item.getParameter());
 			} else {
-				ScenarioManager.get().experiment().removePreperationAssignment(item.getParameter());
+				ScenarioManager.get().getExperimentModul().removePreperationAssignment(item.getParameter());
 			}
 		}
 	}

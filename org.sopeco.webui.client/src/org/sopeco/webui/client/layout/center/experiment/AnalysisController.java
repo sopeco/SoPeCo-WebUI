@@ -51,7 +51,7 @@ public class AnalysisController implements ValueChangeHandler<String> {
 				changeConfig();
 
 				updateConfigTable();
-				ScenarioManager.get().experiment().saveExperimentConfig(getParentController());
+				ScenarioManager.get().getExperimentModul().saveExperimentConfig(getParentController());
 
 				Metering.stop(metering);
 			}
@@ -62,7 +62,7 @@ public class AnalysisController implements ValueChangeHandler<String> {
 			@Override
 			public void onValueChange(ValueChangeEvent<String> event) {
 
-				for (ParameterDefinition pDef : ScenarioManager.get().getBuilder().getMEDefinition().getRoot()
+				for (ParameterDefinition pDef : ScenarioManager.get().getScenarioDefinitionBuilder().getMEDefinition().getRoot()
 						.getAllParameters()) {
 					if (view.getCbDependentParameter().getText().equalsIgnoreCase(pDef.getFullName())) {
 						dependentParameter = pDef;
@@ -70,7 +70,7 @@ public class AnalysisController implements ValueChangeHandler<String> {
 					}
 				}
 
-				ScenarioManager.get().experiment().saveExperimentConfig(getParentController());
+				ScenarioManager.get().getExperimentModul().saveExperimentConfig(getParentController());
 
 			}
 		});
@@ -132,13 +132,13 @@ public class AnalysisController implements ValueChangeHandler<String> {
 
 	protected void updateParameterSelectionWidgets() {
 		view.getCbDependentParameter().clear();
-		for (ParameterDefinition parDef : ScenarioManager.get().getBuilder().getMEDefinition().getRoot()
+		for (ParameterDefinition parDef : ScenarioManager.get().getScenarioDefinitionBuilder().getMEDefinition().getRoot()
 				.getObservationParameters()) {
 			view.getCbDependentParameter().addItem(parDef.getFullName());
 
 		}
 
-		for (ParameterDefinition pDef : ScenarioManager.get().getBuilder().getMEDefinition().getRoot()
+		for (ParameterDefinition pDef : ScenarioManager.get().getScenarioDefinitionBuilder().getMEDefinition().getRoot()
 				.getAllParameters()) {
 			if (view.getCbDependentParameter().getText().equalsIgnoreCase(pDef.getFullName())) {
 				dependentParameter = pDef;
@@ -194,7 +194,7 @@ public class AnalysisController implements ValueChangeHandler<String> {
 
 		currentConfig.put(key, event.getValue());
 
-		ScenarioManager.get().experiment().saveExperimentConfig(getParentController());
+		ScenarioManager.get().getExperimentModul().saveExperimentConfig(getParentController());
 
 		Metering.stop(metering);
 	}

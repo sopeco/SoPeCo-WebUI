@@ -48,6 +48,9 @@ import org.sopeco.webui.client.manager.helper.Duplicator;
 import org.sopeco.webui.shared.builder.SimpleEntityFactory;
 import org.sopeco.webui.shared.helper.ExtensionTypes;
 import org.sopeco.webui.shared.helper.Metering;
+import org.sopeco.webui.shared.rpc.RPC;
+
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * Contains all necessary methods for Experiment manipulation to quickly access
@@ -67,29 +70,6 @@ public class ExperimentModul {
 
 	ExperimentModul(ScenarioManager scenarioManager) {
 		manager = scenarioManager;
-
-		// EventControl.get().addHandler(ExperimentChangedEvent.TYPE,
-		// getExperimentChangedEventHandler());
-	}
-
-	/**
-	 * Handler which listens to the ExperimentChangedEvent.
-	 */
-	// private ExperimentChangedEventHandler getExperimentChangedEventHandler()
-	// {
-	// return new ExperimentChangedEventHandler() {
-	// @Override
-	// public void onExperimentChanged(ExperimentChangedEvent event) {
-	// setCurrentExperiment(event.getExperimentName());
-	// }
-	// };
-	// }
-
-	/**
-	 * @return the currentExperiment
-	 */
-	public String getCurrentExperimentName() {
-		return currentExperiment;
 	}
 
 	/**
@@ -97,9 +77,10 @@ public class ExperimentModul {
 	 * definition.
 	 */
 	public void removeCurrentExperimentSeries() {
-		MeasurementSpecification ms = manager.getBuilder().getMeasurementSpecification(
+		MeasurementSpecification ms = manager.getScenarioDefinitionBuilder().getMeasurementSpecification(
 				Manager.get().getCurrentScenarioDetails().getSelectedSpecification());
-
+		
+		
 		ms.getExperimentSeriesDefinitions().remove(getCurrentExperiment());
 
 		manager.storeScenario();
@@ -192,7 +173,7 @@ public class ExperimentModul {
 			return new ArrayList<ExperimentSeriesDefinition>();
 		}
 
-		return manager.getBuilder()
+		return manager.getScenarioDefinitionBuilder()
 				.getMeasurementSpecification(Manager.get().getCurrentScenarioDetails().getSelectedSpecification())
 				.getExperimentSeriesDefinitions();
 	}
@@ -207,7 +188,7 @@ public class ExperimentModul {
 
 		ExperimentSeriesDefinition experiment = getNewExperimentSeries(name);
 
-		manager.getBuilder().getSpecificationBuilder().addExperimentSeries(experiment);
+		manager.getScenarioDefinitionBuilder().getSpecificationBuilder().addExperimentSeries(experiment);
 
 		MainLayoutPanel.get().refreshNavigation();
 		MainLayoutPanel.get().switchToExperiment(name);
@@ -488,7 +469,7 @@ public class ExperimentModul {
 	}
 
 	public void cloneCurrentExperiment(String targetName) {
-		ExperimentSeriesDefinition source = ScenarioManager.get().experiment().getCurrentExperiment();
+		ExperimentSeriesDefinition source = ScenarioManager.get().getExperimentModul().getCurrentExperiment();
 
 		ExperimentSeriesDefinition clone = Duplicator.cloneExperiment(source);
 		clone.setName(targetName);

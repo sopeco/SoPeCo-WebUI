@@ -66,7 +66,7 @@ public class SpecificationEnvironmentTree extends EnvironmentTree {
 
 	@Override
 	public boolean isFirstChecked(ParameterDefinition parameter) {
-		return ScenarioManager.get().getBuilder().getSpecificationBuilder().containsInitialAssignment(parameter);
+		return ScenarioManager.get().getScenarioDefinitionBuilder().getSpecificationBuilder().containsInitialAssignment(parameter);
 	}
 
 	@Override

@@ -70,7 +70,7 @@ public class AddScenario extends Composite implements ValueChangeHandler<Boolean
 	}
 
 	public void createScenario() {
-		ExperimentSeriesDefinition experiment = ScenarioManager.get().experiment()
+		ExperimentSeriesDefinition experiment = ScenarioManager.get().getExperimentModul()
 				.getNewExperimentSeries("MyExperiment");
 
 		ScenarioManager.get().createScenario(tbAccount.getText(), "MySpecification", experiment, this);

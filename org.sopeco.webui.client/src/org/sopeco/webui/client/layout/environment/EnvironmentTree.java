@@ -116,7 +116,7 @@ public abstract class EnvironmentTree implements ClickHandler, ValueChangeHandle
 
 		if (!showInitAssignments) {
 			for (EnvTreeItem x : allTreeItemsList) {
-				boolean isIA = ScenarioManager.get().getBuilder().getSpecificationBuilder()
+				boolean isIA = ScenarioManager.get().getScenarioDefinitionBuilder().getSpecificationBuilder()
 						.containsInitialAssignment(x.getParameter());
 
 				if (isIA) {
@@ -170,7 +170,7 @@ public abstract class EnvironmentTree implements ClickHandler, ValueChangeHandle
 	public void generateTree() {
 		double metering = Metering.start();
 
-		ParameterNamespace root = ScenarioManager.get().getBuilder().getMEDefinition().getRoot();
+		ParameterNamespace root = ScenarioManager.get().getScenarioDefinitionBuilder().getMEDefinition().getRoot();
 
 		TreeItem rootItem = new TreeItem("", true);
 
