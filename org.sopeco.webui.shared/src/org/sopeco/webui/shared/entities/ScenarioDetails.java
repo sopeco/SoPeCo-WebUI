@@ -159,13 +159,9 @@ public class ScenarioDetails implements Serializable {
 	 *            the selectedSpecification to set
 	 */
 	public void setSelectedSpecification(String pSelectedSpecification) {
+		
+		
+		
 		this.selectedSpecification = pSelectedSpecification;
 	}
-
-	// public List<RawScheduledExperiment> getScheduledExperimentsList() {
-	// if (scheduledExperimentsList == null) {
-	// scheduledExperimentsList = new ArrayList<RawScheduledExperiment>();
-	// }
-	// return scheduledExperimentsList;
-	// }
 }
