@@ -50,6 +50,8 @@ import org.sopeco.webui.shared.entities.RunningControllerStatus;
 import org.sopeco.webui.shared.helper.MECLogEntry;
 import org.sopeco.webui.shared.rpc.ExecuteRPC;
 
+import com.google.gwt.core.shared.GWT;
+
 /**
  * 
  * @author Marius Oehler
@@ -147,7 +149,7 @@ public class ExecuteRPCImpl extends SPCRemoteServlet implements ExecuteRPC {
 	public List<ExecutedExperimentDetails> getExecutedExperimentDetails() {
 		requiredLoggedIn();
 
-		System.out.println("Fetching list of ExecutedExperimentDetails.");
+		GWT.log("Fetching list of ExecutedExperimentDetails.");
 		
 		// first fetch the current selected scenario name
 		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_ACCOUNT,
@@ -175,16 +177,24 @@ public class ExecuteRPCImpl extends SPCRemoteServlet implements ExecuteRPC {
 		List<org.sopeco.service.persistence.entities.ExecutedExperimentDetails> list =
 				r.readEntity(new GenericType<List<org.sopeco.service.persistence.entities.ExecutedExperimentDetails>>() { });
 		
-		if (list != null) {
+		GWT.log("List of ExecutedExperimentDetails size: " + list.size());
+		
+		if (r.getStatus() == Status.OK.getStatusCode()) {
 			
 			List<ExecutedExperimentDetails> eedlist = new ArrayList<ExecutedExperimentDetails>();
-			for (org.sopeco.service.persistence.entities.ExecutedExperimentDetails eed : list) {
-				eedlist.add(ServiceConverter.convertToExecutedExperimentDetails(eed));
-			}
 			
+			if (list != null) {
+				
+				for (org.sopeco.service.persistence.entities.ExecutedExperimentDetails eed : list) {
+					eedlist.add(ServiceConverter.convertToExecutedExperimentDetails(eed));
+				}
+				
+			}
+
+			return eedlist;
 		}
 
-		System.out.println("Returning null, when fetching ExecutedExperimentDetails.");
+		GWT.log("Returning null, when fetching ExecutedExperimentDetails.");
 		
 		return null;
 	}
