@@ -130,6 +130,20 @@ public class MEControllerRPCImpl extends SPCRemoteServlet implements MEControlle
 
 		return r.readEntity(MeasurementEnvironmentDefinition.class);
 	}
+	
+	@Override
+	public boolean setMEDefinition(MeasurementEnvironmentDefinition med) {
+		requiredLoggedIn();
+		
+		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_MED,
+															 ServiceConfiguration.SVC_MED_SET);
+		
+		wt = wt.queryParam(ServiceConfiguration.SVCP_MEC_TOKEN, getToken());
+		
+		Response r = wt.request(MediaType.APPLICATION_JSON).post(Entity.entity(med, MediaType.APPLICATION_JSON));
+		
+		return r.getStatus() != Status.OK.getStatusCode();
+	}
 
 	@Override
 	public MeasurementEnvironmentDefinition getCurrentMEDefinition() {
