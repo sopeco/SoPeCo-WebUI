@@ -254,6 +254,7 @@ public class SpecificationController implements ICenterController, ClickHandler,
 			return;
 		}
 
+		// TODO NULLPOINTER
 		for (ConstantValueAssignment cva : ScenarioManager.get().getScenarioDefinitionBuilder()
 				.getMeasurementSpecification(specificationName).getInitializationAssignemts()) {
 

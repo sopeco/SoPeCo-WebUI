@@ -161,20 +161,19 @@ public class ScenarioManagerRPCImpl extends SPCRemoteServlet implements Scenario
 	}
 
 	/**
-	 * SVC: method ARCHIVE does the service. The scenario is not switched in the service.
-	 * 
-	 * SVC does NOT switch anything here, just stores. Maybe has side effects when migrating!
+	 * The name is irritating: The scenario is updated in the SPC SL. Storing like archiving
+	 * is NOT done in this method
 	 */
 	@Override
 	public boolean storeScenarioDefinition(ScenarioDefinition definition) {
 		requiredLoggedIn();
 		
 		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_SCENARIO,
-					     									 ServiceConfiguration.SVC_SCENARIO_STORE);
+					     									 ServiceConfiguration.SVC_SCENARIO_UPDATE);
 		
 		wt = wt.queryParam(ServiceConfiguration.SVCP_SCENARIO_TOKEN, getToken());
 		
-		Response r = wt.request(MediaType.APPLICATION_JSON).put(Entity.entity(definition, MediaType.APPLICATION_JSON));
+		Response r = wt.request(MediaType.APPLICATION_JSON).post(Entity.entity(definition, MediaType.APPLICATION_JSON));
 		
 		if (r.getStatus() != Status.OK.getStatusCode()) {
 			LOGGER.debug("Failed to store the scenario definiton.");

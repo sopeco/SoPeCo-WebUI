@@ -98,7 +98,6 @@ public final class ScenarioManager {
 
 	/**
 	 * Changes the value of the given InitAssignment Parameter.
-	 * TODO REST interface manipulation!
 	 * 
 	 * @param path
 	 * @param name
@@ -106,14 +105,14 @@ public final class ScenarioManager {
 	 * @return
 	 */
 	public boolean changeInitAssignmentValue(String path, String name, String newValue) {
-		ParameterNamespace namespace = getScenarioDefinitionBuilder().getEnvironmentBuilder().getNamespace(path, "\\.");
-		ParameterDefinition parameter = getScenarioDefinitionBuilder().getEnvironmentBuilder().getParameter(name, namespace);
+		ParameterNamespace namespace = getScenarioDefinitionBuilder().getMeasurementEnvironmentBuilder().getNamespace(path, "\\.");
+		ParameterDefinition parameter = getScenarioDefinitionBuilder().getMeasurementEnvironmentBuilder().getParameter(name, namespace);
 
 		if (parameter == null) {
 			return false;
 		}
 
-		for (ConstantValueAssignment cva : getScenarioDefinitionBuilder().getSpecificationBuilder().getBuiltSpecification()
+		for (ConstantValueAssignment cva : getScenarioDefinitionBuilder().getMeasurementSpecificationBuilder().getBuiltSpecification()
 				.getInitializationAssignemts()) {
 			if (cva.getParameter().getFullName().equals(parameter.getFullName())) {
 				cva.setValue(newValue);
@@ -121,6 +120,9 @@ public final class ScenarioManager {
 			}
 		}
 
+		// TODO correct REST update?
+		storeScenario();
+		
 		return false;
 	}
 
@@ -129,7 +131,7 @@ public final class ScenarioManager {
 	 * the given name. The new scenario will be set as the working scenario.
 	 */
 	public void cloneCurrentScenario(final String targetName) {
-		ScenarioDefinition clone = Duplicator.cloneScenario(builder.getBuiltScenario());
+		ScenarioDefinition clone = Duplicator.cloneScenario(builder.getScenarioDefinition());
 		clone.setScenarioName(Utilities.cleanString(targetName));
 		RPC.getScenarioManager().addScenario(clone, new AsyncCallback<Boolean>() {
 			@Override
@@ -259,6 +261,8 @@ public final class ScenarioManager {
 	 * server and stored it at the client.
 	 */
 	public void loadCurrentScenarioFromServer() {
+		GWT.log("Loading scenario from Server.");
+		
 		RPC.getScenarioManager().getCurrentScenarioDefinition(new AsyncCallback<ScenarioDefinition>() {
 			@Override
 			public void onFailure(Throwable caught) {
@@ -267,6 +271,8 @@ public final class ScenarioManager {
 
 			@Override
 			public void onSuccess(ScenarioDefinition result) {
+				GWT.log("Loaded scenario from Server.");
+				
 				if (result == null) {
 					LOGGER.severe("Error while loading scenario definition.");
 					return;
@@ -280,9 +286,10 @@ public final class ScenarioManager {
 					if (specification == null || !specification().existSpecification(specification)) {
 						specification = builder.getScenarioDefinition().getMeasurementSpecifications().get(0).getName();
 					}
-					MainLayoutPanel.get().reloadPanels();
-
+					// change specficaition officaly before updating UI
 					specification().changeSpecification(specification);
+					
+					MainLayoutPanel.get().reloadPanels();
 				}
 
 				MainLayoutPanel.get().switchView(SpecificationController.class);
@@ -347,7 +354,7 @@ public final class ScenarioManager {
 	 *            new me-definition
 	 */
 	public void setMeasurementDefinition(MeasurementEnvironmentDefinition environment) {
-		builder.getBuiltScenario().setMeasurementEnvironmentDefinition(environment);
+		builder.getScenarioDefinition().setMeasurementEnvironmentDefinition(environment);
 
 		RPC.getMEControllerRPC().setMEDefinition(environment, new AsyncCallback<Boolean>() {
 			@Override
@@ -386,7 +393,9 @@ public final class ScenarioManager {
 	 */
 	public void storeScenario() {
 		Helper.whoCalledMe();
-
+		
+		LOGGER.fine("Storing scenario. Sending it to RPC.");
+		
 		RPC.getScenarioManager().storeScenarioDefinition(getCurrentScenarioDefinition(), new AsyncCallback<Boolean>() {
 			@Override
 			public void onFailure(Throwable caught) {
@@ -442,14 +451,14 @@ public final class ScenarioManager {
 	public boolean updateParameter(String path, String oldName, String newName, String type, ParameterRole role) {
 		LOGGER.info("rpc: updateParameter: " + oldName + " from '" + path + "'");
 
-		ParameterNamespace ns = getScenarioDefinitionBuilder().getEnvironmentBuilder().getNamespace(path);
+		ParameterNamespace ns = getScenarioDefinitionBuilder().getMeasurementEnvironmentBuilder().getNamespace(path);
 
 		if (ns == null) {
 			LOGGER.info("no namespace '" + ns + "' found");
 			return false;
 		}
 
-		ParameterDefinition parameter = getScenarioDefinitionBuilder().getEnvironmentBuilder().getParameter(oldName, ns);
+		ParameterDefinition parameter = getScenarioDefinitionBuilder().getMeasurementEnvironmentBuilder().getParameter(oldName, ns);
 
 		if (parameter == null) {
 			LOGGER.info("no parameter '" + oldName + "' found");
@@ -457,7 +466,7 @@ public final class ScenarioManager {
 		}
 
 		ConstantValueAssignment initialAssignmentParameter = null;
-		for (ConstantValueAssignment cva : getScenarioDefinitionBuilder().getSpecificationBuilder().getBuiltSpecification()
+		for (ConstantValueAssignment cva : getScenarioDefinitionBuilder().getMeasurementSpecificationBuilder().getBuiltSpecification()
 				.getInitializationAssignemts()) {
 			if (cva.getParameter().getFullName().equals(parameter.getFullName())) {
 				initialAssignmentParameter = cva;

@@ -62,6 +62,8 @@ public class SpecificationModul {
 	}
 
 	/**
+	 * This is the offical call to the REST interface at the SPC SL.
+	 * 
 	 * Changing the current working specification. Sequence:<br>
 	 * 1. Setting new SpecificationName in the ScenarioDetails<br>
 	 * 2. Create new MeasurementSpecificationBuilder with new specification<br>
@@ -81,9 +83,10 @@ public class SpecificationModul {
 				Manager.get().storeAccountDetails();
 
 				MeasurementSpecificationBuilder specificationBuilder = new MeasurementSpecificationBuilder(getSpecification());
-				// TODO SET call!
-				manager.getScenarioDefinitionBuilder().setSpecificationBuilder(specificationBuilder);
-
+				
+				manager.getScenarioDefinitionBuilder().setMeasurementSpecificationBuilder(specificationBuilder);
+				manager.storeScenario();
+				
 				MainLayoutPanel.get().setSpecification(workingSpecificationName);
 			
 			}
@@ -97,7 +100,6 @@ public class SpecificationModul {
 	/**
 	 * Adding a new specification to the scenario and set it to the working
 	 * specification.
-	 * TODO REST call
 	 * 
 	 * @param name
 	 */
@@ -107,7 +109,7 @@ public class SpecificationModul {
 			return;
 		}
 		
-		MeasurementSpecificationBuilder newBuilder = manager.getScenarioDefinitionBuilder().addNewMeasurementSpecification();
+		MeasurementSpecificationBuilder newBuilder = manager.getScenarioDefinitionBuilder().getNewMeasurementSpecification();
 		if (newBuilder == null) {
 			return;
 		}
@@ -128,7 +130,7 @@ public class SpecificationModul {
 	 * @return specification exists
 	 */
 	public boolean existSpecification(String specification) {
-		for (MeasurementSpecification ms : manager.getScenarioDefinitionBuilder().getBuiltScenario().getMeasurementSpecifications()) {
+		for (MeasurementSpecification ms : manager.getScenarioDefinitionBuilder().getScenarioDefinition().getMeasurementSpecifications()) {
 			if (specification.equals(ms.getName())) {
 				return true;
 			}
@@ -162,13 +164,12 @@ public class SpecificationModul {
 			return false;
 		}
 		
-		// TODO The manager should not easily remove items!
+		String selectedMesSpec = getSpecification().getName();
+		String newSelectedMesSpec = "";
+		
 		manager.getCurrentScenarioDefinition().getMeasurementSpecifications().remove(getSpecification());
 
 		manager.storeScenario();
-
-		String selectedMesSpec = getSpecification().getName();
-		String newSelectedMesSpec = "";
 		
 		for (MeasurementSpecification ms : manager.getCurrentScenarioDefinition().getMeasurementSpecifications()) {
 			if (!ms.getName().equals(selectedMesSpec)) {
@@ -207,7 +208,7 @@ public class SpecificationModul {
 	 * Renames the current workingSpecification to the given name.
 	 */
 	public void renameWorkingSpecification(String newName, INotifyHandler<Boolean> handler) {
-		manager.getScenarioDefinitionBuilder().getSpecificationBuilder().setName(newName);
+		manager.getScenarioDefinitionBuilder().getMeasurementSpecificationBuilder().setName(newName);
 
 		MainLayoutPanel.get().getNaviController().refreshSpecificationPopup();
 		changeSpecification(newName);
@@ -218,15 +219,6 @@ public class SpecificationModul {
 			Result<Boolean> callResult = new Result<Boolean>(true, true);
 			handler.call(callResult);
 		}
-	}
-
-	/**
-	 * @param newSpecification
-	 *            the workingSpecification to set
-	 */
-	@Deprecated
-	public void setSpecification(String newSpecification) {
-		Manager.get().getCurrentScenarioDetails().setSelectedSpecification(newSpecification);
 	}
 
 }

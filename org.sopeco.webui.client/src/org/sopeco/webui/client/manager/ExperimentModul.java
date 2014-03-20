@@ -49,6 +49,8 @@ import org.sopeco.webui.client.manager.helper.Duplicator;
 import org.sopeco.webui.shared.helper.ExtensionTypes;
 import org.sopeco.webui.shared.helper.Metering;
 
+import com.google.gwt.core.client.GWT;
+
 /**
  * Contains all necessary methods for Experiment manipulation to quickly access
  * them.
@@ -72,11 +74,11 @@ public class ExperimentModul {
 	/**
 	 * Removes the current selected experiment series from the specification
 	 * definition.
+	 * TODO REST
 	 */
 	public void removeCurrentExperimentSeries() {
 		MeasurementSpecification ms = manager.getScenarioDefinitionBuilder().getMeasurementSpecification(
 				Manager.get().getCurrentScenarioDetails().getSelectedSpecification());
-		
 		
 		ms.getExperimentSeriesDefinitions().remove(getCurrentExperiment());
 
@@ -106,6 +108,7 @@ public class ExperimentModul {
 	/**
 	 * @param currentExperiment
 	 *            the currentExperiment to set
+	 * TODO REST
 	 */
 	public void setCurrentExperiment(String newExperiment) {
 		LOGGER.fine("Switch experiment to '" + newExperiment + "'");
@@ -130,16 +133,9 @@ public class ExperimentModul {
 			return;
 		}
 
-		// String terminationName =
-		// experimentController.getTerminationExtController().getSelectedExtensionName();
-		// Map<String, String> terminationConfig =
-		// experimentController.getTerminationExtController().getConfigMap();
-
 		String explorationName = experimentController.getExplorationExtController().getCurrentExtensionName();
 		Map<String, String> explorationConfig = experimentController.getExplorationExtController().getConfigMap();
 
-		// experiment.setExperimentTerminationCondition(SimpleEntityFactory.createTerminationCondition(terminationName,
-		// terminationConfig));
 		if (experimentController.isAnalysisRequired()) {
 			String analysisName = experimentController.getAnalysisController().getCurrentExtensionName();
 			Map<String, String> analysisConfig = experimentController.getAnalysisController().getConfigMap();
@@ -170,6 +166,10 @@ public class ExperimentModul {
 			return new ArrayList<ExperimentSeriesDefinition>();
 		}
 
+		GWT.log("++++++++++++++++++++++++++");
+		GWT.log("" + manager.getScenarioDefinitionBuilder());
+		GWT.log("" + manager.getScenarioDefinitionBuilder().getMeasurementSpecification(Manager.get().getCurrentScenarioDetails().getSelectedSpecification()));
+		
 		return manager.getScenarioDefinitionBuilder()
 				.getMeasurementSpecification(Manager.get().getCurrentScenarioDetails().getSelectedSpecification())
 				.getExperimentSeriesDefinitions();
@@ -185,7 +185,7 @@ public class ExperimentModul {
 
 		ExperimentSeriesDefinition experiment = getNewExperimentSeries(name);
 
-		manager.getScenarioDefinitionBuilder().getSpecificationBuilder().addExperimentSeries(experiment);
+		manager.getScenarioDefinitionBuilder().getMeasurementSpecificationBuilder().addExperimentSeries(experiment);
 
 		MainLayoutPanel.get().refreshNavigation();
 		MainLayoutPanel.get().switchToExperiment(name);
@@ -366,7 +366,7 @@ public class ExperimentModul {
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public void setExperimentAssignment(ParameterValueAssignment pva) {
 		if (isExperimentAssignment(pva.getParameter())) {
@@ -385,7 +385,7 @@ public class ExperimentModul {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param termination
 	 */
 	public void addTermination(ExperimentTerminationCondition termination) {
@@ -400,7 +400,7 @@ public class ExperimentModul {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param termination
 	 */
 	public boolean isSetTermination(ExperimentTerminationCondition termination) {
@@ -413,7 +413,7 @@ public class ExperimentModul {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param termination
 	 * @return
 	 */
@@ -427,7 +427,7 @@ public class ExperimentModul {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param termination
 	 */
 	public void removeTermination(ExperimentTerminationCondition termination) {
@@ -449,7 +449,7 @@ public class ExperimentModul {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param newName
 	 */
 	public void renameCurrentExpSeries(String newName) {
