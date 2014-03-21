@@ -38,6 +38,7 @@ import javax.ws.rs.core.Response.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
+import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.entities.definition.ParameterRole;
 import org.sopeco.service.configuration.ServiceConfiguration;
 import org.sopeco.service.rest.exchange.MECStatus;
@@ -45,6 +46,8 @@ import org.sopeco.webui.server.rest.ClientFactory;
 import org.sopeco.webui.server.rpc.servlet.SPCRemoteServlet;
 import org.sopeco.webui.shared.helper.MEControllerProtocol;
 import org.sopeco.webui.shared.rpc.MEControllerRPC;
+
+import com.google.gwt.core.shared.GWT;
 
 /**
  * 
@@ -99,6 +102,8 @@ public class MEControllerRPCImpl extends SPCRemoteServlet implements MEControlle
 		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_MEC,
 						 									 ServiceConfiguration.SVC_MEC_MED);
 
+		LOGGER.debug("Trying to acces controller on URL: " + controllerUrl);
+		
 		wt = wt.queryParam(ServiceConfiguration.SVCP_MEC_TOKEN, getToken());
 		wt = wt.queryParam(ServiceConfiguration.SVCP_MEC_URL, controllerUrl);
 		
@@ -108,7 +113,13 @@ public class MEControllerRPCImpl extends SPCRemoteServlet implements MEControlle
 			throw new IllegalStateException("Fetching MED from MEC failed.");
 		}
 		
-		return r.readEntity(MeasurementEnvironmentDefinition.class);
+		MeasurementEnvironmentDefinition med = r.readEntity(MeasurementEnvironmentDefinition.class);
+
+		for (ParameterDefinition pd : med.getRoot().getAllParameters()) {
+			LOGGER.debug(pd.getFullName());
+		}
+		
+		return med;
 	}
 
 	@Override

@@ -170,8 +170,12 @@ public abstract class EnvironmentTree implements ClickHandler, ValueChangeHandle
 	public void generateTree() {
 		double metering = Metering.start();
 
-		ParameterNamespace root = ScenarioManager.get().getScenarioDefinitionBuilder().getMEDefinition().getRoot();
+		ParameterNamespace root = ScenarioManager.get().getScenarioDefinitionBuilder().getMeasurementEnvironmentDefinition().getRoot();
 
+		for (ParameterDefinition pd : root.getAllParameters()) {
+			GWT.log("2: " + pd.getFullName());
+		}
+		 
 		TreeItem rootItem = new TreeItem("", true);
 
 		recursiveAddTreeItems(root, rootItem);

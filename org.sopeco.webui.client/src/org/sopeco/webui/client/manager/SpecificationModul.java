@@ -71,20 +71,25 @@ public class SpecificationModul {
 	 * 4. Update SpecificationView
 	 */
 	public void changeSpecification(String newWorkingSpecification) {
-		LOGGER.fine("Change specification to: " + newWorkingSpecification);
-
+		GWT.log("Change specification to: " + newWorkingSpecification);
+		
 		final String workingSpecificationName = newWorkingSpecification;
 		
 		RPC.getMSpecificationRPC().setWorkingSpecification(newWorkingSpecification, new AsyncCallback<Boolean>() {
 			@Override
 			public void onSuccess(Boolean result) {
+
+				GWT.log("Change specification at REST interface successful.");
 				
 				Manager.get().getCurrentScenarioDetails().setSelectedSpecification(workingSpecificationName);
 				Manager.get().storeAccountDetails();
-
-				MeasurementSpecificationBuilder specificationBuilder = new MeasurementSpecificationBuilder(getSpecification());
 				
-				manager.getScenarioDefinitionBuilder().setMeasurementSpecificationBuilder(specificationBuilder);
+				GWT.log("Current selected specification in WebUI: " + getSpecification().getName());
+				
+				@SuppressWarnings("unused")
+				MeasurementSpecification ms = manager.getScenarioDefinitionBuilder().getMeasurementSpecificationBuilder().getBuiltSpecification();
+				ms = getSpecification();
+				
 				manager.storeScenario();
 				
 				MainLayoutPanel.get().setSpecification(workingSpecificationName);
@@ -109,12 +114,12 @@ public class SpecificationModul {
 			return;
 		}
 		
-		MeasurementSpecificationBuilder newBuilder = manager.getScenarioDefinitionBuilder().getNewMeasurementSpecification();
+		MeasurementSpecificationBuilder newBuilder = manager.getScenarioDefinitionBuilder().getNewMeasurementSpecificationBuilder();
 		if (newBuilder == null) {
 			return;
 		}
 
-		newBuilder.setName(name);
+		newBuilder.renameSelectedMeasurementSpecification(name);
 		manager.storeScenario();
 
 		MainLayoutPanel.get().getNaviController().refreshSpecificationPopup();
@@ -167,16 +172,21 @@ public class SpecificationModul {
 		String selectedMesSpec = getSpecification().getName();
 		String newSelectedMesSpec = "";
 		
-		manager.getCurrentScenarioDefinition().getMeasurementSpecifications().remove(getSpecification());
-
-		manager.storeScenario();
-		
 		for (MeasurementSpecification ms : manager.getCurrentScenarioDefinition().getMeasurementSpecifications()) {
 			if (!ms.getName().equals(selectedMesSpec)) {
 				newSelectedMesSpec = ms.getName();
 				break;
 			}
 		}
+		
+		// maybe no spec with another name was found
+		if (newSelectedMesSpec.equals("")) {
+			return false;
+		}
+		
+		manager.getCurrentScenarioDefinition().getMeasurementSpecifications().remove(getSpecification());
+
+		manager.storeScenario();
 
 		MainLayoutPanel.get().getNaviController().refreshSpecificationPopup();
 		changeSpecification(newSelectedMesSpec);
@@ -208,7 +218,7 @@ public class SpecificationModul {
 	 * Renames the current workingSpecification to the given name.
 	 */
 	public void renameWorkingSpecification(String newName, INotifyHandler<Boolean> handler) {
-		manager.getScenarioDefinitionBuilder().getMeasurementSpecificationBuilder().setName(newName);
+		manager.getScenarioDefinitionBuilder().getMeasurementSpecificationBuilder().renameSelectedMeasurementSpecification(newName);
 
 		MainLayoutPanel.get().getNaviController().refreshSpecificationPopup();
 		changeSpecification(newName);

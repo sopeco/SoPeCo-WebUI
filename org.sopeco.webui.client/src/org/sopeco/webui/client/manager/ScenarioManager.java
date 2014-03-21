@@ -112,6 +112,7 @@ public final class ScenarioManager {
 			return false;
 		}
 
+		// TODO direct access via MSB
 		for (ConstantValueAssignment cva : getScenarioDefinitionBuilder().getMeasurementSpecificationBuilder().getBuiltSpecification()
 				.getInitializationAssignemts()) {
 			if (cva.getParameter().getFullName().equals(parameter.getFullName())) {
@@ -310,6 +311,10 @@ public final class ScenarioManager {
 
 					@Override
 					public void onSuccess(MeasurementEnvironmentDefinition result) {
+						for (ParameterDefinition pd : result.getRoot().getAllParameters()) {
+							GWT.log("0: " + pd.getFullName());
+						}
+						
 						setMeasurementDefinition(result);
 					}
 				});
@@ -354,8 +359,12 @@ public final class ScenarioManager {
 	 *            new me-definition
 	 */
 	public void setMeasurementDefinition(MeasurementEnvironmentDefinition environment) {
-		builder.getScenarioDefinition().setMeasurementEnvironmentDefinition(environment);
-
+		builder.setMeasurementEnvironmentDefinition(environment);
+		
+		for (ParameterDefinition pd : environment.getRoot().getAllParameters()) {
+			GWT.log("1: " + pd.getFullName());
+		}
+		
 		RPC.getMEControllerRPC().setMEDefinition(environment, new AsyncCallback<Boolean>() {
 			@Override
 			public void onFailure(Throwable caught) {
