@@ -171,10 +171,27 @@ public class TabControllerOne extends TabController implements ClickHandler, MEC
 		} else {
 			scheduledExperiment.setRepeating(false);
 		}
+		
+		// final converting only for inner RPC
+		final FrontendScheduledExperiment fse = scheduledExperiment;
 
-		RPC.getExecuteRPC().scheduleExperiment(scheduledExperiment, new AsyncCallback<Void>() {
+		// first store the ScenarioDefiniton
+		RPC.getScenarioManager().storeScenarioDefinition(scheduledExperiment.getScenarioDefinition(), new AsyncCallback<Boolean>() {
 			@Override
-			public void onSuccess(Void result) {
+			public void onSuccess(Boolean result) {
+				
+				// after storing ScenarioDefinition execute the scenario
+				RPC.getExecuteRPC().scheduleExperiment(fse, new AsyncCallback<Void>() {
+					@Override
+					public void onSuccess(Void result) {
+					}
+
+					@Override
+					public void onFailure(Throwable caught) {
+						Message.error(caught.getMessage());
+					}
+				});
+				
 			}
 
 			@Override
