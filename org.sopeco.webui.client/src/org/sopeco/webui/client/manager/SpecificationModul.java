@@ -73,33 +73,14 @@ public class SpecificationModul {
 	public void changeSpecification(String newWorkingSpecification) {
 		GWT.log("Change specification to: " + newWorkingSpecification);
 		
-		final String workingSpecificationName = newWorkingSpecification;
-		
-		RPC.getMSpecificationRPC().setWorkingSpecification(newWorkingSpecification, new AsyncCallback<Boolean>() {
-			@Override
-			public void onSuccess(Boolean result) {
+		// TODO  no RPC to setWorkingSpecification any more
+		Manager.get().getCurrentScenarioDetails().setSelectedSpecification(newWorkingSpecification);
+		Manager.get().storeAccountDetails();
 
-				GWT.log("Change specification at REST interface successful.");
-				
-				Manager.get().getCurrentScenarioDetails().setSelectedSpecification(workingSpecificationName);
-				Manager.get().storeAccountDetails();
-				
-				GWT.log("Current selected specification in WebUI: " + getSpecification().getName());
-				
-				@SuppressWarnings("unused")
-				MeasurementSpecification ms = manager.getScenarioDefinitionBuilder().getSpecificationBuilder().getBuiltSpecification();
-				ms = getSpecification();
-				
-				manager.storeScenario();
-				
-				MainLayoutPanel.get().setSpecification(workingSpecificationName);
-			
-			}
+		MeasurementSpecificationBuilder specificationBuilder = new MeasurementSpecificationBuilder(getSpecification());
+		manager.getScenarioDefinitionBuilder().setSpecificationBuilder(specificationBuilder);
 
-			@Override
-			public void onFailure(Throwable caught) {
-			}
-		});
+		MainLayoutPanel.get().setSpecification(newWorkingSpecification);
 	}
 
 	/**
@@ -192,6 +173,7 @@ public class SpecificationModul {
 		changeSpecification(newSelectedMesSpec);
 		
 		// now the "old" specification can be removed
+		// TODO REST call only for consistency (not really needed)
 		RPC.getMSpecificationRPC().removeWorkingSpecification(new AsyncCallback<Boolean>() {
 			@Override
 			public void onSuccess(Boolean result) {
@@ -231,4 +213,7 @@ public class SpecificationModul {
 		}
 	}
 
+	public void setSpecification(String newSpecification) {
+		Manager.get().getCurrentScenarioDetails().setSelectedSpecification(newSpecification);
+	}
 }
