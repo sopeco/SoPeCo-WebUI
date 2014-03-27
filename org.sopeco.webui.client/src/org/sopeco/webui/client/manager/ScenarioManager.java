@@ -121,7 +121,7 @@ public final class ScenarioManager {
 		}
 
 		// TODO correct REST update?
-		storeScenario();
+		//storeScenario();
 		
 		return false;
 	}
@@ -286,10 +286,10 @@ public final class ScenarioManager {
 					if (specification == null || !specification().existSpecification(specification)) {
 						specification = builder.getBuiltScenario().getMeasurementSpecifications().get(0).getName();
 					}
-					// change specficaition officaly before updating UI
-					specification().changeSpecification(specification);
-					
+
 					MainLayoutPanel.get().reloadPanels();
+					
+					specification().changeSpecification(specification);
 				}
 
 				MainLayoutPanel.get().switchView(SpecificationController.class);
@@ -358,8 +358,9 @@ public final class ScenarioManager {
 	 *            new me-definition
 	 */
 	public void setMeasurementDefinition(MeasurementEnvironmentDefinition environment) {
-		builder.setMEDefinition(environment);
+		builder.getBuiltScenario().setMeasurementEnvironmentDefinition(environment);
 		
+		// TODO why not UI update??
 		for (ParameterDefinition pd : environment.getRoot().getAllParameters()) {
 			GWT.log("1: " + pd.getFullName());
 		}
