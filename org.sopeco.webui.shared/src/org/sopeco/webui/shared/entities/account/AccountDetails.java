@@ -39,6 +39,8 @@ import javax.persistence.NamedQuery;
 
 import org.sopeco.webui.shared.entities.ScenarioDetails;
 
+import com.google.gwt.core.shared.GWT;
+
 /**
  * 
  * @author Marius Oehler
@@ -104,7 +106,7 @@ public class AccountDetails implements Serializable {
 	 * 
 	 * @param experimentKey	the experiment key
 	 */
-	public void setExperimentKey(int experimentKey) {
+	public void setExperimentKeyForSelectedScenario(long experimentKey) {
 		
 		if (selectedScenario == null || selectedScenario.isEmpty()) {
 			return;
@@ -118,10 +120,13 @@ public class AccountDetails implements Serializable {
 	 * 
 	 * @return the experiment key for the current selected scenario
 	 */
-	public int getExperimentKeyOfSelectedScenario() {
+	public long getExperimentKeyOfSelectedScenario() {
 		
 		for (ScenarioDetails detail : scenarioDetails) {
 			if (detail.getScenarioName().equals(selectedScenario)) {
+				
+				GWT.log("Experiment key: " + detail.getExperimentKey());
+				
 				return detail.getExperimentKey();
 			}
 		}
