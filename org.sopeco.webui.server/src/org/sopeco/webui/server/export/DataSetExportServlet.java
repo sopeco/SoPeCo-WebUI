@@ -45,7 +45,7 @@ import org.sopeco.persistence.util.DataSetCsvHandler;
 import org.sopeco.service.configuration.ServiceConfiguration;
 import org.sopeco.webui.server.rest.ClientFactory;
 import org.sopeco.webui.server.security.Security;
-import org.sopeco.webui.server.user.TokenManager;
+import org.sopeco.webui.server.user.UserManager;
 
 /**
  * 
@@ -139,7 +139,7 @@ public class DataSetExportServlet extends HttpServlet {
 		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_SCENARIO,
 						 									 ServiceConfiguration.SVC_SCENARIO_INSTANCE);
 		
-		wt = wt.queryParam(ServiceConfiguration.SVCP_SCENARIO_TOKEN, TokenManager.instance().getToken(sId));
+		wt = wt.queryParam(ServiceConfiguration.SVCP_SCENARIO_TOKEN, UserManager.instance().getToken(sId));
 		wt = wt.queryParam(ServiceConfiguration.SVCP_SCENARIO_NAME, scenarioName);
 		wt = wt.queryParam(ServiceConfiguration.SVCP_SCENARIO_URL, url);
 		

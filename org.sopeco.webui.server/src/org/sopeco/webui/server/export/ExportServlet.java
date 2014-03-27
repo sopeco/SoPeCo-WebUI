@@ -43,7 +43,7 @@ import org.sopeco.service.configuration.ServiceConfiguration;
 import org.sopeco.webui.server.persistence.UiPersistenceProvider;
 import org.sopeco.webui.server.rest.ClientFactory;
 import org.sopeco.webui.server.security.Security;
-import org.sopeco.webui.server.user.TokenManager;
+import org.sopeco.webui.server.user.UserManager;
 import org.sopeco.webui.shared.entities.account.AccountDetails;
 
 /**
@@ -79,8 +79,8 @@ public class ExportServlet extends HttpServlet {
 	 */
 	private void sendScenarioAsXML(HttpServletResponse resp, String sessionId) throws IOException {
 		
-		String token 		= TokenManager.instance().getToken(sessionId);
-		long accountID 		= TokenManager.instance().getAccountID(token);
+		String token 		= UserManager.instance().getToken(sessionId);
+		long accountID 		= UserManager.instance().getAccountID(token);
 		AccountDetails ad 	= UiPersistenceProvider.getInstance().loadAccountDetails(accountID);
 		
 		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_SCENARIO,

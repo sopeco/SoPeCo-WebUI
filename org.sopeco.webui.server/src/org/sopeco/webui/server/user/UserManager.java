@@ -47,39 +47,31 @@ import org.sopeco.webui.server.rest.ClientFactory;
  * 
  * @author Peter Merkert
  */
-public final class TokenManager {
+public final class UserManager {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(TokenManager.class);
-
-	/**
-	 * Actually this map could be bidirectional, as both session id and
-	 * token are unique. But as we don't want to import a whole new library for this case,
-	 * we stay at a normal Java map.
-	 */
-	private Map<String, String> tokenMap = new HashMap<String, String>();
+	private static final Logger LOGGER = LoggerFactory.getLogger(UserManager.class);
 
 	/**
-	 * This map is used to map a token to an account ID. This is used very often and
-	 * just stored once for the user lifecycle in this map.
+	 * The Map to map a Session ID to a User.
 	 */
-	private Map<String, Long> tokenAccountIDMap = new HashMap<String, Long>();
+	private Map<String, User> sessionID2UserMap = new HashMap<String, User>();
 	
-	private static TokenManager singleton;
+	private static UserManager singleton;
 
 	/**
 	 * Private constructor for singleton.
 	 */
-	private TokenManager() {
+	private UserManager() {
 	}
 	
 	/**
 	 * Singleton constructor.
 	 * 
-	 * @return the instance of {@link TokenManager}
+	 * @return the instance of {@link UserManager}
 	 */
-	public static TokenManager instance() {
+	public static UserManager instance() {
 		if (singleton == null) {
-			singleton = new TokenManager();
+			singleton = new UserManager();
 		}
 		return singleton;
 	}
@@ -92,7 +84,7 @@ public final class TokenManager {
 	 * @return 			true, if a token to the given session ID exists
 	 */
 	public boolean existToken(String sessionId) {
-		return tokenMap.get(sessionId) != null;
+		return sessionID2UserMap.get(sessionId) != null;
 	}
 	
 	/**
@@ -119,8 +111,7 @@ public final class TokenManager {
 
 		wr = wr.queryParam(ServiceConfiguration.SVCP_ACCOUNT_TOKEN, token);
 		
-		Response r = wr.request(MediaType.APPLICATION_JSON)
-					   .get();
+		Response r = wr.request(MediaType.APPLICATION_JSON).get();
 		
 		return r.getStatus() == Status.OK.getStatusCode();
 	}
@@ -137,9 +128,10 @@ public final class TokenManager {
 	public boolean registerToken(String sessionId, String token, long accountId) {
 		LOGGER.debug("New token '{}' registered to session id '{}'.", token, sessionId);
 		
-		synchronized (tokenMap) {	
-			tokenAccountIDMap.put(token, accountId);
-			return tokenMap.put(sessionId, token) != null;
+		User u = new User(token, accountId);
+		
+		synchronized (sessionID2UserMap) {	
+			return sessionID2UserMap.put(sessionId, u) != null;
 		}
 	}
 
@@ -151,9 +143,14 @@ public final class TokenManager {
 	 * @return 			token (<code>null</code> possible)
 	 */
 	public String getToken(String sessionId) {
-		synchronized (tokenMap) {
-			return tokenMap.get(sessionId);
+		
+		User u = sessionID2UserMap.get(sessionId);
+		
+		if (u != null) {
+			return u.getToken();
 		}
+		
+		return "";
 	}
 
 	/**
@@ -166,18 +163,16 @@ public final class TokenManager {
 	 */
 	public void deleteToken(String token) {
 		
-		for (String sessionId : tokenMap.keySet()) {
+		for (String sessionId : sessionID2UserMap.keySet()) {
 			
 			if (token.equals(getToken(sessionId))) {
-				tokenMap.remove(sessionId);
+				sessionID2UserMap.remove(sessionId);
 				// break can be done, because the token is unique (at least it should be)
 				break;
 			}
 			
 		}
 		
-		// remove the mapping to the account ID, too
-		tokenAccountIDMap.remove(token);
 	}
 	
 	/**
@@ -187,7 +182,33 @@ public final class TokenManager {
 	 * @return		the account ID, this user is related to
 	 */
 	public long getAccountID(String token) {
-		return tokenAccountIDMap.get(token);
+		
+		User u =  UserManager.instance().getUser(token);
+		
+		if (u != null) {
+			return u.getAccountID();
+		}
+		
+		return -1;
+	}
+	
+	/**
+	 * Returns the account ID corresponding to this token.
+	 * 
+	 * @param token	the token of the current user
+	 * @return		the account ID, this user is related to
+	 */
+	public User getUser(String token) {
+		
+		for (User u : sessionID2UserMap.values()) {
+			
+			if (u.getToken().equals(token)) {
+				return u;
+			}
+			
+		}
+	
+		return null;
 	}
 
 	/**
@@ -195,7 +216,7 @@ public final class TokenManager {
 	 * 
 	 * @return list with all tokens
 	 */
-	public List<String> getAllToken() {
+	/*public List<String> getAllToken() {
 		
 		List<String> tokenList = new ArrayList<String>();
 		for (String token : tokenMap.values()) {
@@ -204,6 +225,6 @@ public final class TokenManager {
 		
 		return tokenList;
 		
-	}
+	}*/
 
 }

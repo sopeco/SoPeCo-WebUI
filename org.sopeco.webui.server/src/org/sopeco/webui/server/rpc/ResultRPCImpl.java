@@ -47,7 +47,7 @@ import org.sopeco.persistence.exceptions.DataNotFoundException;
 import org.sopeco.service.configuration.ServiceConfiguration;
 import org.sopeco.webui.server.rest.ClientFactory;
 import org.sopeco.webui.server.rpc.servlet.SPCRemoteServlet;
-import org.sopeco.webui.server.user.TokenManager;
+import org.sopeco.webui.server.user.UserManager;
 import org.sopeco.webui.shared.definitions.result.SharedExperimentRuns;
 import org.sopeco.webui.shared.definitions.result.SharedExperimentSeries;
 import org.sopeco.webui.shared.definitions.result.SharedScenarioInstance;
@@ -234,7 +234,7 @@ public class ResultRPCImpl extends SPCRemoteServlet implements ResultRPC {
 		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_SCENARIO,
 					 										 ServiceConfiguration.SVC_SCENARIO_INSTANCE);
 		
-		wt = wt.queryParam(ServiceConfiguration.SVCP_SCENARIO_TOKEN, TokenManager.instance().getToken(sId));
+		wt = wt.queryParam(ServiceConfiguration.SVCP_SCENARIO_TOKEN, UserManager.instance().getToken(sId));
 		wt = wt.queryParam(ServiceConfiguration.SVCP_SCENARIO_NAME, scenarioName);
 		wt = wt.queryParam(ServiceConfiguration.SVCP_SCENARIO_URL, url);
 		

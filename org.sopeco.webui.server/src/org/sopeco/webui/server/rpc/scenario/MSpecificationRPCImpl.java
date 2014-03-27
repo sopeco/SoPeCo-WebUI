@@ -27,6 +27,7 @@
 package org.sopeco.webui.server.rpc.scenario;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.validation.constraints.Null;
 import javax.ws.rs.client.Entity;
@@ -36,11 +37,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import java.util.logging.Logger;
-
 import org.sopeco.persistence.entities.definition.MeasurementSpecification;
 import org.sopeco.service.configuration.ServiceConfiguration;
-import org.sopeco.webui.server.persistence.UiPersistenceProvider;
 import org.sopeco.webui.server.rest.ClientFactory;
 import org.sopeco.webui.server.rpc.servlet.SPCRemoteServlet;
 import org.sopeco.webui.shared.entities.ScenarioDetails;
@@ -93,7 +91,6 @@ public class MSpecificationRPCImpl extends SPCRemoteServlet implements MSpecific
 		return list;
 	}
 
-	// TODO
 	@Override
 	public boolean setWorkingSpecification(String specificationName) {
 		requiredLoggedIn();
@@ -101,22 +98,12 @@ public class MSpecificationRPCImpl extends SPCRemoteServlet implements MSpecific
 		LOGGER.finer("Set working specification on: " + specificationName);
 
 		if (!existSpecification(specificationName)) {
-			LOGGER.debug("Can't set working specification to '{}' because it doesn't exists. ", specificationName);
+			LOGGER.finer("Can't set working specification to '" + specificationName + "' because it doesn't exists. ");
 			return false;
 		}
 
 		getUser().setWorkingSpecification(specificationName);
 		return true;
-		
-		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_MEASUREMENT,
-						 									 ServiceConfiguration.SVC_MEASUREMENT_SWITCH);
-		
-		wt = wt.queryParam(ServiceConfiguration.SVCP_MEASUREMENT_TOKEN, getToken());
-		wt = wt.queryParam(ServiceConfiguration.SVCP_MEASUREMENT_SPECNAME, specificationName);
-		
-		Response r = wt.request(MediaType.APPLICATION_JSON).put(Entity.entity(Null.class, MediaType.APPLICATION_JSON));
-		
-		return r.getStatus() == Status.OK.getStatusCode();
 	}
 
 	/**

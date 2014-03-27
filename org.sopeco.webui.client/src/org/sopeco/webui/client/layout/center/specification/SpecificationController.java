@@ -106,8 +106,8 @@ public class SpecificationController implements ICenterController, ClickHandler,
 		String name = splitted[splitted.length - 1];
 		String path = event.getFullParameterName().substring(0, event.getFullParameterName().length() - name.length());
 
-		ParameterNamespace namespace = ScenarioManager.get().getScenarioDefinitionBuilder().getMeasurementEnvironmentBuilder().getNamespace(path);
-		ParameterDefinition parameter = ScenarioManager.get().getScenarioDefinitionBuilder().getMeasurementEnvironmentBuilder()
+		ParameterNamespace namespace = ScenarioManager.get().getScenarioDefinitionBuilder().getEnvironmentBuilder().getNamespace(path);
+		ParameterDefinition parameter = ScenarioManager.get().getScenarioDefinitionBuilder().getEnvironmentBuilder()
 				.getParameter(name, namespace);
 
 		path = namespace.getFullName();
@@ -132,7 +132,7 @@ public class SpecificationController implements ICenterController, ClickHandler,
 		EditGridItem item = new EditGridItem(parameter, "");
 		assignmentController.addAssignment(item);
 		assignmentController.refreshUI();
-		ScenarioManager.get().getScenarioDefinitionBuilder().getMeasurementSpecificationBuilder().addInitAssignment(parameter, "");
+		ScenarioManager.get().getScenarioDefinitionBuilder().getSpecificationBuilder().addInitAssignment(parameter, "");
 	}
 
 	/**
@@ -144,7 +144,7 @@ public class SpecificationController implements ICenterController, ClickHandler,
 		EditGridItem item = new EditGridItem(parameter, "");
 		assignmentController.removeAssignment(item);
 		assignmentController.refreshUI();
-		ScenarioManager.get().getScenarioDefinitionBuilder().getMeasurementSpecificationBuilder().removeInitialAssignment(parameter);
+		ScenarioManager.get().getScenarioDefinitionBuilder().getSpecificationBuilder().removeInitialAssignment(parameter);
 	}
 
 	@Override

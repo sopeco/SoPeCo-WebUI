@@ -49,5 +49,5 @@ public interface MSpecificationRPCAsync {
 
 	void renameWorkingSpecification(String newName, AsyncCallback<Boolean> callback);
 
-	void removeWorkingSpecification(String selectedMesSpec, AsyncCallback<Boolean> asyncCallback);
+	void removeWorkingSpecification(AsyncCallback<Boolean> asyncCallback);
 }

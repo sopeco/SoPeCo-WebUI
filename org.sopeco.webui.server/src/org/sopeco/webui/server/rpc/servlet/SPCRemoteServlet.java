@@ -30,7 +30,8 @@ import javax.servlet.http.HttpSession;
 
 import org.sopeco.webui.server.persistence.UiPersistenceProvider;
 import org.sopeco.webui.server.security.Security;
-import org.sopeco.webui.server.user.TokenManager;
+import org.sopeco.webui.server.user.UserManager;
+import org.sopeco.webui.server.user.User;
 import org.sopeco.webui.shared.entities.account.AccountDetails;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -74,7 +75,7 @@ public class SPCRemoteServlet extends RemoteServiceServlet {
 	 * @return the token
 	 */
 	protected String getToken() {
-		return TokenManager.instance().getToken(getSessionId());
+		return UserManager.instance().getToken(getSessionId());
 	}
 	
 	/**
@@ -83,8 +84,17 @@ public class SPCRemoteServlet extends RemoteServiceServlet {
 	 * @return the {@link AccountDetails}
 	 */
 	protected AccountDetails getAccountDetails() {
-		long accountID = TokenManager.instance().getAccountID(getToken());
+		long accountID = UserManager.instance().getAccountID(getToken());
 		return UiPersistenceProvider.getInstance().loadAccountDetails(accountID);
+	}
+
+	/**
+	 * Returns the corresponding {@link User} to the current user.
+	 * 
+	 * @return the {@link User}
+	 */
+	protected User getUser() {
+		return UserManager.instance().getUser(getToken());
 	}
 	
 	/**

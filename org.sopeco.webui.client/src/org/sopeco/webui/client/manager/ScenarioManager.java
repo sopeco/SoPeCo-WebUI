@@ -35,14 +35,14 @@ import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.entities.definition.ParameterNamespace;
 import org.sopeco.persistence.entities.definition.ParameterRole;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
-import org.sopeco.service.builder.ScenarioDefinitionBuilder;
-import org.sopeco.service.persistence.entities.ScenarioDetails;
 import org.sopeco.webui.client.SoPeCoUI;
 import org.sopeco.webui.client.helper.SimpleCallback;
 import org.sopeco.webui.client.layout.MainLayoutPanel;
 import org.sopeco.webui.client.layout.center.experiment.ExperimentController;
 import org.sopeco.webui.client.layout.center.specification.SpecificationController;
 import org.sopeco.webui.client.manager.helper.Duplicator;
+import org.sopeco.webui.shared.builder.ScenarioDefinitionBuilder;
+import org.sopeco.webui.shared.entities.ScenarioDetails;
 import org.sopeco.webui.shared.helper.Helper;
 import org.sopeco.webui.shared.helper.Utilities;
 import org.sopeco.webui.shared.rpc.RPC;
@@ -105,15 +105,14 @@ public final class ScenarioManager {
 	 * @return
 	 */
 	public boolean changeInitAssignmentValue(String path, String name, String newValue) {
-		ParameterNamespace namespace = getScenarioDefinitionBuilder().getMeasurementEnvironmentBuilder().getNamespace(path, "\\.");
-		ParameterDefinition parameter = getScenarioDefinitionBuilder().getMeasurementEnvironmentBuilder().getParameter(name, namespace);
+		ParameterNamespace namespace = getScenarioDefinitionBuilder().getEnvironmentBuilder().getNamespace(path, "\\.");
+		ParameterDefinition parameter = getScenarioDefinitionBuilder().getEnvironmentBuilder().getParameter(name, namespace);
 
 		if (parameter == null) {
 			return false;
 		}
 
-		// TODO direct access via MSB
-		for (ConstantValueAssignment cva : getScenarioDefinitionBuilder().getMeasurementSpecificationBuilder().getBuiltSpecification()
+		for (ConstantValueAssignment cva : getScenarioDefinitionBuilder().getSpecificationBuilder().getBuiltSpecification()
 				.getInitializationAssignemts()) {
 			if (cva.getParameter().getFullName().equals(parameter.getFullName())) {
 				cva.setValue(newValue);
@@ -132,7 +131,7 @@ public final class ScenarioManager {
 	 * the given name. The new scenario will be set as the working scenario.
 	 */
 	public void cloneCurrentScenario(final String targetName) {
-		ScenarioDefinition clone = Duplicator.cloneScenario(builder.getScenarioDefinition());
+		ScenarioDefinition clone = Duplicator.cloneScenario(builder.getBuiltScenario());
 		clone.setScenarioName(Utilities.cleanString(targetName));
 		RPC.getScenarioManager().addScenario(clone, new AsyncCallback<Boolean>() {
 			@Override
@@ -236,7 +235,7 @@ public final class ScenarioManager {
 	 * @return ScenarioDefinition
 	 */
 	public ScenarioDefinition getCurrentScenarioDefinition() {
-		return builder.getScenarioDefinition();
+		return builder.getBuiltScenario();
 	}
 
 	/**
@@ -279,13 +278,13 @@ public final class ScenarioManager {
 					return;
 				}
 
-				builder = new ScenarioDefinitionBuilder(result);
+				builder = ScenarioDefinitionBuilder.load(result);
 				scenarioLoaded = true;
 
 				if (Manager.get().getCurrentScenarioDetails() != null) {
 					String specification = Manager.get().getCurrentScenarioDetails().getSelectedSpecification();
 					if (specification == null || !specification().existSpecification(specification)) {
-						specification = builder.getScenarioDefinition().getMeasurementSpecifications().get(0).getName();
+						specification = builder.getBuiltScenario().getMeasurementSpecifications().get(0).getName();
 					}
 					// change specficaition officaly before updating UI
 					specification().changeSpecification(specification);
@@ -359,7 +358,7 @@ public final class ScenarioManager {
 	 *            new me-definition
 	 */
 	public void setMeasurementDefinition(MeasurementEnvironmentDefinition environment) {
-		builder.setMeasurementEnvironmentDefinition(environment);
+		builder.setMEDefinition(environment);
 		
 		for (ParameterDefinition pd : environment.getRoot().getAllParameters()) {
 			GWT.log("1: " + pd.getFullName());
@@ -460,14 +459,14 @@ public final class ScenarioManager {
 	public boolean updateParameter(String path, String oldName, String newName, String type, ParameterRole role) {
 		LOGGER.info("rpc: updateParameter: " + oldName + " from '" + path + "'");
 
-		ParameterNamespace ns = getScenarioDefinitionBuilder().getMeasurementEnvironmentBuilder().getNamespace(path);
+		ParameterNamespace ns = getScenarioDefinitionBuilder().getEnvironmentBuilder().getNamespace(path);
 
 		if (ns == null) {
 			LOGGER.info("no namespace '" + ns + "' found");
 			return false;
 		}
 
-		ParameterDefinition parameter = getScenarioDefinitionBuilder().getMeasurementEnvironmentBuilder().getParameter(oldName, ns);
+		ParameterDefinition parameter = getScenarioDefinitionBuilder().getEnvironmentBuilder().getParameter(oldName, ns);
 
 		if (parameter == null) {
 			LOGGER.info("no parameter '" + oldName + "' found");
@@ -475,7 +474,7 @@ public final class ScenarioManager {
 		}
 
 		ConstantValueAssignment initialAssignmentParameter = null;
-		for (ConstantValueAssignment cva : getScenarioDefinitionBuilder().getMeasurementSpecificationBuilder().getBuiltSpecification()
+		for (ConstantValueAssignment cva : getScenarioDefinitionBuilder().getSpecificationBuilder().getBuiltSpecification()
 				.getInitializationAssignemts()) {
 			if (cva.getParameter().getFullName().equals(parameter.getFullName())) {
 				initialAssignmentParameter = cva;

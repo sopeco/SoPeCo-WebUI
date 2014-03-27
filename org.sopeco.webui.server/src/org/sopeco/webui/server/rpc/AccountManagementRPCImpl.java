@@ -14,7 +14,7 @@ import org.sopeco.service.persistence.entities.Account;
 import org.sopeco.webui.server.persistence.UiPersistenceProvider;
 import org.sopeco.webui.server.rest.ClientFactory;
 import org.sopeco.webui.server.rpc.servlet.SPCRemoteServlet;
-import org.sopeco.webui.server.user.TokenManager;
+import org.sopeco.webui.server.user.UserManager;
 import org.sopeco.webui.shared.entities.account.AccountDetails;
 import org.sopeco.webui.shared.helper.LoginResponse;
 import org.sopeco.webui.shared.rpc.AccountManagementRPC;
@@ -91,9 +91,10 @@ public class AccountManagementRPCImpl extends SPCRemoteServlet implements Accoun
 			return false;
 		}
 		
-		Account account = getAccount(getToken());
+		Account account = r.readEntity(Account.class);
 		
 		if (account == null) {
+			LOGGER.error("Account created, but return value is invalid. This is suspicous.");
 			return false;
 		}
 
@@ -172,7 +173,7 @@ public class AccountManagementRPCImpl extends SPCRemoteServlet implements Accoun
 		}
 		
 		// add the token to the tokenmanager
-		TokenManager.instance().registerToken(getSessionId(), token, account.getId());
+		UserManager.instance().registerToken(getSessionId(), token, account.getId());
 		
 		return new LoginResponse(true, token);
 	}
@@ -207,7 +208,7 @@ public class AccountManagementRPCImpl extends SPCRemoteServlet implements Accoun
 		}
 		
 		// when the token was not in the tokenmanagaer, it's now added
-		TokenManager.instance().registerToken(getSessionId(), rememberMeToken, account.getId());
+		UserManager.instance().registerToken(getSessionId(), rememberMeToken, account.getId());
 		
 		return new LoginResponse(true, rememberMeToken);
 	}
@@ -252,7 +253,7 @@ public class AccountManagementRPCImpl extends SPCRemoteServlet implements Accoun
 		if (r.getStatus() == Status.OK.getStatusCode()) {
 
 			// deregister the token in the TokenManager
-			TokenManager.instance().deleteToken(getToken());
+			UserManager.instance().deleteToken(getToken());
 			
 		}
 	}

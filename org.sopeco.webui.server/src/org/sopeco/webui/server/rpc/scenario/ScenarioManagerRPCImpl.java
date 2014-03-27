@@ -131,20 +131,11 @@ public class ScenarioManagerRPCImpl extends SPCRemoteServlet implements Scenario
 		return r.getStatus() == Status.OK.getStatusCode();
 	}
 
-	// TODO
 	@Override
 	public boolean switchScenario(String name) {
 		requiredLoggedIn();
 		
-		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_SCENARIO,
-															 name,
-														     ServiceConfiguration.SVC_SCENARIO_DEFINITON);
-
-		wt = wt.queryParam(ServiceConfiguration.SVCP_SCENARIO_TOKEN, getToken());
-		
-		Response r = wt.request(MediaType.APPLICATION_JSON).get();
-		
-		ScenarioDefinition definition = r.readEntity(ScenarioDefinition.class);
+		ScenarioDefinition definition = loadScenarioDefinition(name);
 		
 		if (definition == null) {
 			return false;
@@ -155,24 +146,27 @@ public class ScenarioManagerRPCImpl extends SPCRemoteServlet implements Scenario
 
 		return true;
 	}
-
-	private ScenarioDefinition loadScenarioDefinition(String sceName) {
-		try {
-			ScenarioDefinition definition = getUser().getCurrentPersistenceProvider().loadScenarioDefinition(sceName);
-
-			return definition;
-		} catch (DataNotFoundException e) {
-			LOGGER.warn("Scenario '{}' not found.", sceName);
-			return null;
-		}
-	}
 	
 	@Override
 	public ScenarioDefinition getCurrentScenarioDefinition() {
 		requiredLoggedIn();
+
+		System.out.println("+++++++++++++++++++++++++++++++");
+		System.out.println(getAccountDetails());
+		System.out.println(getAccountDetails().getAccountName());
 		
+		return loadScenarioDefinition(getAccountDetails().getSelectedScenario());
+	}
+
+	/**
+	 * Requests the {@link ScenarioDefinition} with the given name in the Service Layer.
+	 * 
+	 * @param sceName	the scenario name
+	 * @return			the {@link ScenarioDefinition}, null possible
+	 */
+	private ScenarioDefinition loadScenarioDefinition(String sceName) {
 		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_SCENARIO,
-															 getAccountDetails().getSelectedScenario(),
+															 sceName,
 														     ServiceConfiguration.SVC_SCENARIO_DEFINITON);
 		
 		wt = wt.queryParam(ServiceConfiguration.SVCP_SCENARIO_TOKEN, getToken());
@@ -181,10 +175,9 @@ public class ScenarioManagerRPCImpl extends SPCRemoteServlet implements Scenario
 
 		return r.readEntity(ScenarioDefinition.class);
 	}
-
+	
 	/**
-	 * The name is irritating: The scenario is updated in the SPC SL. Storing like archiving
-	 * is NOT done in this method
+	 * The scenario is updated in the SPC SL.
 	 */
 	@Override
 	public boolean storeScenarioDefinition(ScenarioDefinition definition) {

@@ -3,7 +3,7 @@ package org.sopeco.webui.server.security;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.sopeco.webui.server.user.TokenManager;
+import org.sopeco.webui.server.user.UserManager;
 
 public class Security {
 
@@ -35,7 +35,7 @@ public class Security {
 	 */
 	public static void requiredLoggedIn(String sessionId) {
 		
-		if (!TokenManager.instance().hasValidToken(sessionId)) {
+		if (!UserManager.instance().hasValidToken(sessionId)) {
 
 			throw new IllegalAccessError("Access denied. You have to be logged in.");
 			
