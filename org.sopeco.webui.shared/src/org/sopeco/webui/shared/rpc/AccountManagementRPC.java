@@ -1,6 +1,6 @@
 package org.sopeco.webui.shared.rpc;
 
-import org.sopeco.service.persistence.entities.AccountDetails;
+import org.sopeco.webui.shared.entities.account.AccountDetails;
 import org.sopeco.webui.shared.helper.LoginResponse;
 
 import com.google.gwt.user.client.rpc.RemoteService;

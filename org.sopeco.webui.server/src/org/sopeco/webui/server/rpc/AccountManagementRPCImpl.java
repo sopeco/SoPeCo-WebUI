@@ -10,10 +10,12 @@ import javax.ws.rs.core.Response.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sopeco.service.configuration.ServiceConfiguration;
-import org.sopeco.service.persistence.entities.AccountDetails;
+import org.sopeco.service.persistence.entities.Account;
+import org.sopeco.webui.server.persistence.UiPersistenceProvider;
 import org.sopeco.webui.server.rest.ClientFactory;
 import org.sopeco.webui.server.rpc.servlet.SPCRemoteServlet;
 import org.sopeco.webui.server.user.TokenManager;
+import org.sopeco.webui.shared.entities.account.AccountDetails;
 import org.sopeco.webui.shared.helper.LoginResponse;
 import org.sopeco.webui.shared.rpc.AccountManagementRPC;
 
@@ -24,7 +26,6 @@ import org.sopeco.webui.shared.rpc.AccountManagementRPC;
  */
 public class AccountManagementRPCImpl extends SPCRemoteServlet implements AccountManagementRPC {
 
-	@SuppressWarnings("unused")
 	private static final Logger LOGGER = LoggerFactory.getLogger(AccountManagementRPCImpl.class);
 
 	private static final long serialVersionUID = 1337009456998146393L;
@@ -40,6 +41,28 @@ public class AccountManagementRPCImpl extends SPCRemoteServlet implements Accoun
 		
 		Response r = wt.request(MediaType.APPLICATION_JSON)
 					   .post(Entity.entity(Null.class, MediaType.APPLICATION_JSON));
+		
+		if (r.getStatus() != Status.OK.getStatusCode()) {
+			LOGGER.warn("Creating account failed.");
+			return false;
+		}
+		
+		Account account = getAccount(getToken());
+		
+		if (account == null) {
+			return false;
+		}
+		
+		LOGGER.info("Creating AccountDetails for new Account.");
+		
+		// Create AccountDetails for own database
+		AccountDetails details = UiPersistenceProvider.getInstance().loadAccountDetails(account.getId());
+		if (details == null) {
+			details = new AccountDetails();
+			details.setId(account.getId());
+			details.setAccountName(account.getName());
+			UiPersistenceProvider.getInstance().storeAccountDetails(details);
+		}
 		
 		return r.getStatus() == Status.OK.getStatusCode();
 	}
@@ -63,7 +86,29 @@ public class AccountManagementRPCImpl extends SPCRemoteServlet implements Accoun
 		Response r = wt.request(MediaType.APPLICATION_JSON)
 				       .post(Entity.entity(Null.class, MediaType.APPLICATION_JSON));
 
-		return r.getStatus() == Status.OK.getStatusCode();
+		if (r.getStatus() != Status.OK.getStatusCode()) {
+			LOGGER.warn("Creating account failed.");
+			return false;
+		}
+		
+		Account account = getAccount(getToken());
+		
+		if (account == null) {
+			return false;
+		}
+
+		LOGGER.info("Creating AccountDetails for new Account.");
+		
+		// Create AccountDetails for own database
+		AccountDetails details = UiPersistenceProvider.getInstance().loadAccountDetails(account.getId());
+		if (details == null) {
+			details = new AccountDetails();
+			details.setId(account.getId());
+			details.setAccountName(account.getName());
+			UiPersistenceProvider.getInstance().storeAccountDetails(details);
+		}
+		
+		return true;
 	}
 
 	@Override
@@ -104,7 +149,7 @@ public class AccountManagementRPCImpl extends SPCRemoteServlet implements Accoun
 	public LoginResponse loginWithPassword(String accountName, String password) {
 		
 		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_ACCOUNT,
-				       										   ServiceConfiguration.SVC_ACCOUNT_LOGIN);
+				       										 ServiceConfiguration.SVC_ACCOUNT_LOGIN);
 		
 		wt = wt.queryParam(ServiceConfiguration.SVCP_ACCOUNT_NAME, accountName);
 		wt = wt.queryParam(ServiceConfiguration.SVCP_ACCOUNT_PASSWORD, password);
@@ -119,8 +164,15 @@ public class AccountManagementRPCImpl extends SPCRemoteServlet implements Accoun
 
 		String token = r.readEntity(String.class);
 		
+		Account account = getAccount(token);
+		
+		if (account == null) {
+			LOGGER.warn("No Account to the the token '{}' exists!", token);
+			return new LoginResponse(false, null);
+		}
+		
 		// add the token to the tokenmanager
-		TokenManager.instance().registerToken(getSessionId(), token);
+		TokenManager.instance().registerToken(getSessionId(), token, account.getId());
 		
 		return new LoginResponse(true, token);
 	}
@@ -144,12 +196,18 @@ public class AccountManagementRPCImpl extends SPCRemoteServlet implements Accoun
 		
 		// if the status is not OK, then something has failed
 		if (r.getStatus() != Status.OK.getStatusCode()) {
-			
+			return new LoginResponse(false, null);
+		}
+		
+		Account account = getAccount(rememberMeToken);
+		
+		if (account == null) {
+			LOGGER.warn("No Account to the the token '{}' exists!", rememberMeToken);
 			return new LoginResponse(false, null);
 		}
 		
 		// when the token was not in the tokenmanagaer, it's now added
-		TokenManager.instance().registerToken(getSessionId(), rememberMeToken);
+		TokenManager.instance().registerToken(getSessionId(), rememberMeToken, account.getId());
 		
 		return new LoginResponse(true, rememberMeToken);
 	}
@@ -158,39 +216,25 @@ public class AccountManagementRPCImpl extends SPCRemoteServlet implements Accoun
 	public AccountDetails getAccountDetails() {
 		requiredLoggedIn();
 
-		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_ACCOUNT,
-															 ServiceConfiguration.SVC_ACCOUNT_INFO);
+		Account account = getAccount(getToken());
 		
-		wt = wt.queryParam(ServiceConfiguration.SVCP_ACCOUNT_TOKEN, getToken());
-
-		Response r = wt.request(MediaType.APPLICATION_JSON).get();
-
-		if (r.getStatus() != Status.OK.getStatusCode()) {
+		if (account == null) {
+			LOGGER.warn("Unable to fetch Account from Service Layer.");
 			return null;
 		}
-
-		org.sopeco.service.persistence.entities.AccountDetails ad = r.readEntity(org.sopeco.service.persistence.entities.AccountDetails.class);
 		
-		return ad;
+		return UiPersistenceProvider.getInstance().loadAccountDetails(account.getId());
 	}
 
 	@Override
 	public void storeAccountDetails(AccountDetails accountDetails) {
 		requiredLoggedIn();
-
+		
 		if (accountDetails == null) {
 			return;
 		}
-		
-		org.sopeco.service.persistence.entities.AccountDetails ad = accountDetails;
-		
-		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_ACCOUNT,
-				   										     ServiceConfiguration.SVC_ACCOUNT_INFO);
 
-		wt = wt.queryParam(ServiceConfiguration.SVCP_ACCOUNT_TOKEN, getToken());
-		
-		wt.request(MediaType.APPLICATION_JSON)
-		  .put(Entity.entity(ad, MediaType.APPLICATION_JSON));
+		UiPersistenceProvider.getInstance().storeAccountDetails(accountDetails);
 	}
 
 	@Override
@@ -211,5 +255,26 @@ public class AccountManagementRPCImpl extends SPCRemoteServlet implements Accoun
 			TokenManager.instance().deleteToken(getToken());
 			
 		}
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////// HELPER /////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	/**
+	 * Fetches the Account from the Service Layer.
+	 * 
+	 * @param token	the token to identifiy the user, whose account is queried
+	 * @return		the Account
+	 */
+	private Account getAccount(String token) {
+		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_ACCOUNT,
+				     										 ServiceConfiguration.SVC_ACCOUNT_CONNECTED);
+		
+		wt = wt.queryParam(ServiceConfiguration.SVCP_ACCOUNT_TOKEN, token);
+		
+		Response r = wt.request(MediaType.APPLICATION_JSON).get();
+		
+		return r.readEntity(Account.class);
 	}
 }

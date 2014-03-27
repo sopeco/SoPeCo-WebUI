@@ -28,8 +28,10 @@ package org.sopeco.webui.server.rpc.servlet;
 
 import javax.servlet.http.HttpSession;
 
+import org.sopeco.webui.server.persistence.UiPersistenceProvider;
 import org.sopeco.webui.server.security.Security;
 import org.sopeco.webui.server.user.TokenManager;
+import org.sopeco.webui.shared.entities.account.AccountDetails;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
@@ -74,7 +76,17 @@ public class SPCRemoteServlet extends RemoteServiceServlet {
 	protected String getToken() {
 		return TokenManager.instance().getToken(getSessionId());
 	}
-
+	
+	/**
+	 * Returns the corresponding {@link AccountDetails} to the current user.
+	 * 
+	 * @return the {@link AccountDetails}
+	 */
+	protected AccountDetails getAccountDetails() {
+		long accountID = TokenManager.instance().getAccountID(getToken());
+		return UiPersistenceProvider.getInstance().loadAccountDetails(accountID);
+	}
+	
 	/**
 	 * Checks if the current session ID has a valid token (and therefore
 	 * is logged in).

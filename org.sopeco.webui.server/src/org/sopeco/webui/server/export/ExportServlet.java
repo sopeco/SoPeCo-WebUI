@@ -40,9 +40,11 @@ import javax.ws.rs.core.Response.Status;
 
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 import org.sopeco.service.configuration.ServiceConfiguration;
+import org.sopeco.webui.server.persistence.UiPersistenceProvider;
 import org.sopeco.webui.server.rest.ClientFactory;
 import org.sopeco.webui.server.security.Security;
 import org.sopeco.webui.server.user.TokenManager;
+import org.sopeco.webui.shared.entities.account.AccountDetails;
 
 /**
  * 
@@ -77,36 +79,26 @@ public class ExportServlet extends HttpServlet {
 	 */
 	private void sendScenarioAsXML(HttpServletResponse resp, String sessionId) throws IOException {
 		
-
+		String token 		= TokenManager.instance().getToken(sessionId);
+		long accountID 		= TokenManager.instance().getAccountID(token);
+		AccountDetails ad 	= UiPersistenceProvider.getInstance().loadAccountDetails(accountID);
+		
 		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_SCENARIO,
-				     										 ServiceConfiguration.SVC_SCENARIO_CURRENT);
+															 ad.getSelectedScenario(),
+				     										 ServiceConfiguration.SVC_SCENARIO_XML);
 
-		wt = wt.queryParam(ServiceConfiguration.SVCP_SCENARIO_TOKEN, TokenManager.instance().getToken(sessionId));
+		wt = wt.queryParam(ServiceConfiguration.SVCP_SCENARIO_TOKEN, token);
 		
 		Response r = wt.request(MediaType.APPLICATION_JSON).get();
 		
-		ScenarioDefinition sd = r.readEntity(ScenarioDefinition.class);
-		
-		if (sd == null) {
-			resp.sendError(204);
-			return;
-		}
-		
-		wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_SCENARIO,
-				     										 ServiceConfiguration.SVC_SCENARIO_XML);
-
-		wt = wt.queryParam(ServiceConfiguration.SVCP_SCENARIO_TOKEN, TokenManager.instance().getToken(sessionId));
-		
-		r = wt.request(MediaType.APPLICATION_JSON).get();
-		
-		if (r.getStatus() != Status.OK.getStatusCode()) {
-			resp.sendError(204);
-			return;
-		}
-		
 		String definitionXML = r.readEntity(String.class);
+		
+		if (definitionXML == null) {
+			resp.sendError(204);
+			return;
+		}
 
-		String fileName = "scenario-" + sd.getScenarioName() + ".xml";
+		String fileName = "scenario-" + ad.getSelectedScenario() + ".xml";
 
 		sendXML(resp, definitionXML, fileName);
 

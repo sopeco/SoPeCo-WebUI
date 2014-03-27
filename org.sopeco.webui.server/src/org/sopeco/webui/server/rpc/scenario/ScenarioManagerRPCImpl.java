@@ -40,6 +40,7 @@ import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 import org.sopeco.service.configuration.ServiceConfiguration;
 import org.sopeco.webui.server.rest.ClientFactory;
 import org.sopeco.webui.server.rpc.servlet.SPCRemoteServlet;
+import org.sopeco.webui.shared.builder.ScenarioDefinitionBuilder;
 import org.sopeco.webui.shared.rpc.ScenarioManagerRPC;
 
 /**
@@ -130,27 +131,48 @@ public class ScenarioManagerRPCImpl extends SPCRemoteServlet implements Scenario
 		return r.getStatus() == Status.OK.getStatusCode();
 	}
 
+	// TODO
 	@Override
 	public boolean switchScenario(String name) {
 		requiredLoggedIn();
 		
 		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_SCENARIO,
-														     ServiceConfiguration.SVC_SCENARIO_SWITCH,
-														     ServiceConfiguration.SVC_SCENARIO_SWITCH_NAME);
-		
-		wt = wt.queryParam(ServiceConfiguration.SVCP_SCENARIO_TOKEN, getToken());
-		wt = wt.queryParam(ServiceConfiguration.SVCP_SCENARIO_NAME, name);
-		
-		Response r = wt.request(MediaType.APPLICATION_JSON).put(Entity.entity(Null.class, MediaType.APPLICATION_JSON));
+															 name,
+														     ServiceConfiguration.SVC_SCENARIO_DEFINITON);
 
-		return r.getStatus() == Status.OK.getStatusCode();
+		wt = wt.queryParam(ServiceConfiguration.SVCP_SCENARIO_TOKEN, getToken());
+		
+		Response r = wt.request(MediaType.APPLICATION_JSON).get();
+		
+		ScenarioDefinition definition = r.readEntity(ScenarioDefinition.class);
+		
+		if (definition == null) {
+			return false;
+		}
+		
+		ScenarioDefinitionBuilder builder = ScenarioDefinitionBuilder.load(definition);
+		getUser().setCurrentScenarioDefinitionBuilder(builder);
+
+		return true;
 	}
 
+	private ScenarioDefinition loadScenarioDefinition(String sceName) {
+		try {
+			ScenarioDefinition definition = getUser().getCurrentPersistenceProvider().loadScenarioDefinition(sceName);
+
+			return definition;
+		} catch (DataNotFoundException e) {
+			LOGGER.warn("Scenario '{}' not found.", sceName);
+			return null;
+		}
+	}
+	
 	@Override
 	public ScenarioDefinition getCurrentScenarioDefinition() {
 		requiredLoggedIn();
 		
 		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_SCENARIO,
+															 getAccountDetails().getSelectedScenario(),
 														     ServiceConfiguration.SVC_SCENARIO_DEFINITON);
 		
 		wt = wt.queryParam(ServiceConfiguration.SVCP_SCENARIO_TOKEN, getToken());
@@ -180,6 +202,7 @@ public class ScenarioManagerRPCImpl extends SPCRemoteServlet implements Scenario
 			return false;
 		}
 		
+		// TODO correct switch?
 		Boolean b = switchScenario(definition.getScenarioName());
 		
 		if (!b) {
@@ -195,6 +218,7 @@ public class ScenarioManagerRPCImpl extends SPCRemoteServlet implements Scenario
 		requiredLoggedIn();
 		
 		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_SCENARIO,
+															 getAccountDetails().getSelectedScenario(),
 														     ServiceConfiguration.SVC_SCENARIO_XML);
 		
 		wt = wt.queryParam(ServiceConfiguration.SVCP_SCENARIO_TOKEN, getToken());

@@ -47,12 +47,10 @@ import org.sopeco.webui.server.rpc.servlet.SPCRemoteServlet;
 import org.sopeco.webui.shared.helper.MEControllerProtocol;
 import org.sopeco.webui.shared.rpc.MEControllerRPC;
 
-import com.google.gwt.core.shared.GWT;
-
 /**
  * 
  * @author Marius Oehler
- * 
+ * @author Peter Merkert
  */
 public class MEControllerRPCImpl extends SPCRemoteServlet implements MEControllerRPC {
 
@@ -81,7 +79,6 @@ public class MEControllerRPCImpl extends SPCRemoteServlet implements MEControlle
 
 	@Override
 	public String[] getValidUrlPattern() {
-		requiredLoggedIn(); // why log in is needed?
 		
 		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_MEC,
 						 									 ServiceConfiguration.SVC_MEC_VALIDATE);
@@ -127,6 +124,7 @@ public class MEControllerRPCImpl extends SPCRemoteServlet implements MEControlle
 		requiredLoggedIn();
 		
 		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_MED,
+															 getAccountDetails().getSelectedScenario(),
 															 ServiceConfiguration.SVC_MED_SET,
 															 ServiceConfiguration.SVC_MED_SET_BLANK);
 		
@@ -147,6 +145,7 @@ public class MEControllerRPCImpl extends SPCRemoteServlet implements MEControlle
 		requiredLoggedIn();
 		
 		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_MED,
+															 getAccountDetails().getSelectedScenario(),
 															 ServiceConfiguration.SVC_MED_SET);
 		
 		wt = wt.queryParam(ServiceConfiguration.SVCP_MEC_TOKEN, getToken());
@@ -161,13 +160,13 @@ public class MEControllerRPCImpl extends SPCRemoteServlet implements MEControlle
 		requiredLoggedIn();
 		
 		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_MED,
-						 									 ServiceConfiguration.SVC_MED_CURRENT);
+															 getAccountDetails().getSelectedScenario());
 		
 		wt = wt.queryParam(ServiceConfiguration.SVCP_MEC_TOKEN, getToken());
 		
 		Response r = wt.request(MediaType.APPLICATION_JSON).get();
 
-		LOGGER.debug("getCurrentMEDefinition");
+		LOGGER.debug("getCurrentMEDefinition fetched MED for Scenario '{}' from Service Layer.", getAccountDetails().getSelectedScenario());
 		
 		return r.readEntity(MeasurementEnvironmentDefinition.class);
 	}
@@ -179,6 +178,7 @@ public class MEControllerRPCImpl extends SPCRemoteServlet implements MEControlle
 		LOGGER.debug("getCurrentMEDefinition");
 		
 		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_MED,
+															 getAccountDetails().getSelectedScenario(),
 						 									 ServiceConfiguration.SVC_MED_NAMESPACE,
 						 									 ServiceConfiguration.SVC_MED_NAMESPACE_ADD);
 		
@@ -195,6 +195,7 @@ public class MEControllerRPCImpl extends SPCRemoteServlet implements MEControlle
 		requiredLoggedIn();
 		
 		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_MED,
+				 											 getAccountDetails().getSelectedScenario(),
 															 ServiceConfiguration.SVC_MED_NAMESPACE,
 															 ServiceConfiguration.SVC_MED_NAMESPACE_REMOVE);
 		
@@ -218,6 +219,7 @@ public class MEControllerRPCImpl extends SPCRemoteServlet implements MEControlle
 		LOGGER.debug("rpc: renameNamespace: {}", namespacePath);
 
 		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_MED,
+															 getAccountDetails().getSelectedScenario(),
 															 ServiceConfiguration.SVC_MED_NAMESPACE,
 															 ServiceConfiguration.SVC_MED_NAMESPACE_RENAME);
 		
@@ -242,6 +244,7 @@ public class MEControllerRPCImpl extends SPCRemoteServlet implements MEControlle
 		LOGGER.debug("rpc: addParameter: {} to '{}'", name, path);
 
 		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_MED,
+															 getAccountDetails().getSelectedScenario(),
 				 											 ServiceConfiguration.SVC_MED_PARAM,
 				 											 ServiceConfiguration.SVC_MED_PARAM_ADD);
 		
@@ -264,6 +267,7 @@ public class MEControllerRPCImpl extends SPCRemoteServlet implements MEControlle
 		requiredLoggedIn();
 		
 		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_MED,
+				 											 getAccountDetails().getSelectedScenario(),
 															 ServiceConfiguration.SVC_MED_PARAM,
 															 ServiceConfiguration.SVC_MED_PARAM_REMOVE);
 		
@@ -286,6 +290,7 @@ public class MEControllerRPCImpl extends SPCRemoteServlet implements MEControlle
 		requiredLoggedIn();
 
 		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_MED,
+				 											 getAccountDetails().getSelectedScenario(),
 															 ServiceConfiguration.SVC_MED_PARAM,
 															 ServiceConfiguration.SVC_MED_PARAM_UPDATE);
 		

@@ -55,7 +55,7 @@ import com.google.gwt.core.shared.GWT;
 /**
  * 
  * @author Marius Oehler
- * 
+ * @author Peter Merkert
  */
 public class ExecuteRPCImpl extends SPCRemoteServlet implements ExecuteRPC {
 
@@ -64,10 +64,6 @@ public class ExecuteRPCImpl extends SPCRemoteServlet implements ExecuteRPC {
 	
 	private static final Logger LOGGER = Logger.getLogger(ExecuteRPCImpl.class.getName());
 
-	/*
-	 * service /execution/schedule (POST)
-	 * In the RESTful serivce, the scheduled experiment is NOT set active!
-	 */
 	@Override
 	public void scheduleExperiment(FrontendScheduledExperiment rawScheduledExperiment) {
 		requiredLoggedIn();
@@ -84,7 +80,7 @@ public class ExecuteRPCImpl extends SPCRemoteServlet implements ExecuteRPC {
 		
 		if (r.getStatus() != Status.OK.getStatusCode()) {
 			LOGGER.info("The experiment could not be set to execution state. Most likely the "
-						+ "ScheduledExperiment cannot be has the status 'active'.");
+						+ "ScheduledExperiment has the status 'active'. Please first insert the experiment as inactive.");
 		}
 	}
 
@@ -151,29 +147,16 @@ public class ExecuteRPCImpl extends SPCRemoteServlet implements ExecuteRPC {
 
 		GWT.log("Fetching list of ExecutedExperimentDetails.");
 		
-		// first fetch the current selected scenario name
-		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_ACCOUNT,
-				 											 ServiceConfiguration.SVC_ACCOUNT_INFO);
+		// now request the executedExperimentDetails corresponding to the current selected scenario
+		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_EXECUTE,
+			     								   			 ServiceConfiguration.SVC_EXECUTE_DETAILS);
 		
-		wt = wt.queryParam(ServiceConfiguration.SVCP_ACCOUNT_TOKEN, getToken());
+		wt = wt.queryParam(ServiceConfiguration.SVCP_EXECUTE_TOKEN, getToken());
+		wt = wt.queryParam(ServiceConfiguration.SVCP_EXECUTE_SCENARIONAME, getAccountDetails().getSelectedScenario());
 		
 		Response r = wt.request(MediaType.APPLICATION_JSON).get();
 		
-		org.sopeco.service.persistence.entities.AccountDetails ad = r.readEntity(org.sopeco.service.persistence.entities.AccountDetails.class);
-		
-		if (ad == null) {
-			return new ArrayList<ExecutedExperimentDetails>();
-		}
-		
-		// now request the executedExperimentDetails corresponding to the current selected scenario
-		wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_EXECUTE,
-			     								   ServiceConfiguration.SVC_EXECUTE_DETAILS);
-		
-		wt = wt.queryParam(ServiceConfiguration.SVCP_EXECUTE_TOKEN, getToken());
-		wt = wt.queryParam(ServiceConfiguration.SVCP_EXECUTE_SCENARIONAME, ad.getSelectedScenario());
-		
-		r = wt.request(MediaType.APPLICATION_JSON).get();
-		
+		// ridiculous converting for GWT must be done
 		List<org.sopeco.service.persistence.entities.ExecutedExperimentDetails> list =
 				r.readEntity(new GenericType<List<org.sopeco.service.persistence.entities.ExecutedExperimentDetails>>() { });
 		
@@ -218,27 +201,13 @@ public class ExecuteRPCImpl extends SPCRemoteServlet implements ExecuteRPC {
 	public RunningControllerStatus getControllerLog() {
 		requiredLoggedIn();
 		
-		// first fetch the current experiment key
-		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_ACCOUNT,
-				 											 ServiceConfiguration.SVC_ACCOUNT_INFO);
+		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_EXECUTE,
+															 ServiceConfiguration.SVC_EXECUTE_STATUS);
 		
 		wt = wt.queryParam(ServiceConfiguration.SVCP_ACCOUNT_TOKEN, getToken());
+		wt = wt.queryParam(ServiceConfiguration.SVCP_EXECUTE_KEY, getAccountDetails().getExperimentKeyOfSelectedScenario());
 		
 		Response r = wt.request(MediaType.APPLICATION_JSON).get();
-		
-		org.sopeco.service.persistence.entities.AccountDetails ad = r.readEntity(org.sopeco.service.persistence.entities.AccountDetails.class);
-		
-		if (ad == null) {
-			return null;
-		}
-		
-		wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_EXECUTE,
-												   ServiceConfiguration.SVC_EXECUTE_STATUS);
-		
-		wt = wt.queryParam(ServiceConfiguration.SVCP_ACCOUNT_TOKEN, getToken());
-		wt = wt.queryParam(ServiceConfiguration.SVCP_EXECUTE_KEY, ad.getExperimentKeyOfSelectedScenario());
-		
-		r = wt.request(MediaType.APPLICATION_JSON).get();
 		
 		ExperimentStatus es = r.readEntity(ExperimentStatus.class);
 
@@ -268,26 +237,12 @@ public class ExecuteRPCImpl extends SPCRemoteServlet implements ExecuteRPC {
 	public void abortCurrentExperiment() {
 		requiredLoggedIn();
 		
-		// first fetch the current experiment key
-		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_ACCOUNT,
-				 											 ServiceConfiguration.SVC_ACCOUNT_INFO);
+		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_EXECUTE,
+												   			 ServiceConfiguration.SVC_EXECUTE_ABORT);
 		
 		wt = wt.queryParam(ServiceConfiguration.SVCP_ACCOUNT_TOKEN, getToken());
+		wt = wt.queryParam(ServiceConfiguration.SVCP_EXECUTE_KEY, getAccountDetails().getExperimentKeyOfSelectedScenario());
 		
-		Response r = wt.request(MediaType.APPLICATION_JSON).get();
-		
-		org.sopeco.service.persistence.entities.AccountDetails ad = r.readEntity(org.sopeco.service.persistence.entities.AccountDetails.class);
-		
-		if (ad == null) {
-			return;
-		}
-		
-		wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_EXECUTE,
-												   ServiceConfiguration.SVC_EXECUTE_ABORT);
-		
-		wt = wt.queryParam(ServiceConfiguration.SVCP_ACCOUNT_TOKEN, getToken());
-		wt = wt.queryParam(ServiceConfiguration.SVCP_EXECUTE_KEY, ad.getExperimentKeyOfSelectedScenario());
-		
-		r = wt.request(MediaType.APPLICATION_JSON).put(Entity.entity(Null.class, MediaType.APPLICATION_JSON));
+		wt.request(MediaType.APPLICATION_JSON).put(Entity.entity(Null.class, MediaType.APPLICATION_JSON));
 	}
 }

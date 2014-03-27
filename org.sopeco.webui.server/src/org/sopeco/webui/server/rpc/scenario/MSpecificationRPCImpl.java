@@ -40,8 +40,10 @@ import java.util.logging.Logger;
 
 import org.sopeco.persistence.entities.definition.MeasurementSpecification;
 import org.sopeco.service.configuration.ServiceConfiguration;
+import org.sopeco.webui.server.persistence.UiPersistenceProvider;
 import org.sopeco.webui.server.rest.ClientFactory;
 import org.sopeco.webui.server.rpc.servlet.SPCRemoteServlet;
+import org.sopeco.webui.shared.entities.ScenarioDetails;
 import org.sopeco.webui.shared.rpc.MSpecificationRPC;
 
 /**
@@ -61,6 +63,7 @@ public class MSpecificationRPCImpl extends SPCRemoteServlet implements MSpecific
 		LOGGER.finer("Try to fetch all measurement specification names from SPC SL.");
 		
 		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_MEASUREMENT,
+															 getAccountDetails().getSelectedScenario(),
 					     									 ServiceConfiguration.SVC_MEASUREMENT_LIST);
 		
 		
@@ -78,6 +81,7 @@ public class MSpecificationRPCImpl extends SPCRemoteServlet implements MSpecific
 		requiredLoggedIn();
 		
 		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_MEASUREMENT,
+				 											 getAccountDetails().getSelectedScenario(),
 															 ServiceConfiguration.SVC_MEASUREMENT_LISTSPECS);
 		
 		wt = wt.queryParam(ServiceConfiguration.SVCP_MEASUREMENT_TOKEN, getToken());
@@ -89,9 +93,20 @@ public class MSpecificationRPCImpl extends SPCRemoteServlet implements MSpecific
 		return list;
 	}
 
+	// TODO
 	@Override
 	public boolean setWorkingSpecification(String specificationName) {
 		requiredLoggedIn();
+
+		LOGGER.finer("Set working specification on: " + specificationName);
+
+		if (!existSpecification(specificationName)) {
+			LOGGER.debug("Can't set working specification to '{}' because it doesn't exists. ", specificationName);
+			return false;
+		}
+
+		getUser().setWorkingSpecification(specificationName);
+		return true;
 		
 		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_MEASUREMENT,
 						 									 ServiceConfiguration.SVC_MEASUREMENT_SWITCH);
@@ -104,11 +119,34 @@ public class MSpecificationRPCImpl extends SPCRemoteServlet implements MSpecific
 		return r.getStatus() == Status.OK.getStatusCode();
 	}
 
+	/**
+	 * Returns whether a specification with the given name exists.
+	 * 
+	 * @param specification
+	 *            specififcation name
+	 * @return specification exists
+	 */
+	private boolean existSpecification(String specification) {
+
+		for (MeasurementSpecification ms : getUser().getCurrentScenarioDefinitionBuilder()
+													.getBuiltScenario()
+													.getMeasurementSpecifications()) {
+			
+			if (specification.equals(ms.getName())) {
+				return true;
+			}
+			
+		}
+		
+		return false;
+	}
+	
 	@Override
 	public boolean createSpecification(String name) {
 		requiredLoggedIn();
 		
 		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_MEASUREMENT,
+				 											 getAccountDetails().getSelectedScenario(),
 						 									 ServiceConfiguration.SVC_MEASUREMENT_CREATE);
 		
 		wt = wt.queryParam(ServiceConfiguration.SVCP_MEASUREMENT_TOKEN, getToken());
@@ -123,7 +161,11 @@ public class MSpecificationRPCImpl extends SPCRemoteServlet implements MSpecific
 	public boolean renameWorkingSpecification(String newName) {
 		requiredLoggedIn();
 		
+		ScenarioDetails sd = getAccountDetails().getScenarioDetail(getAccountDetails().getSelectedScenario());
+		
 		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_MEASUREMENT,
+															 getAccountDetails().getSelectedScenario(),
+															 sd.getSelectedSpecification(),
 						 									 ServiceConfiguration.SVC_MEASUREMENT_RENAME);
 		
 		wt = wt.queryParam(ServiceConfiguration.SVCP_MEASUREMENT_TOKEN, getToken());
@@ -135,13 +177,16 @@ public class MSpecificationRPCImpl extends SPCRemoteServlet implements MSpecific
 	}
 
 	@Override
-	public boolean removeWorkingSpecification(String selectedMesSpec) {
+	public boolean removeWorkingSpecification() {
 		requiredLoggedIn();
+
+		ScenarioDetails sd = getAccountDetails().getScenarioDetail(getAccountDetails().getSelectedScenario());
 		
-		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_MEASUREMENT);
+		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_MEASUREMENT,
+															 getAccountDetails().getSelectedScenario(),
+															 sd.getSelectedSpecification());
 		
 		wt = wt.queryParam(ServiceConfiguration.SVCP_MEASUREMENT_TOKEN, getToken());
-		wt = wt.queryParam(ServiceConfiguration.SVCP_MEASUREMENT_SPECNAME, selectedMesSpec);
 		
 		Response r = wt.request(MediaType.APPLICATION_JSON).delete();
 

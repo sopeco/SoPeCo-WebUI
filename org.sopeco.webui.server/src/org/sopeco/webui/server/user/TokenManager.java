@@ -57,6 +57,12 @@ public final class TokenManager {
 	 * we stay at a normal Java map.
 	 */
 	private Map<String, String> tokenMap = new HashMap<String, String>();
+
+	/**
+	 * This map is used to map a token to an account ID. This is used very often and
+	 * just stored once for the user lifecycle in this map.
+	 */
+	private Map<String, Long> tokenAccountIDMap = new HashMap<String, Long>();
 	
 	private static TokenManager singleton;
 
@@ -124,12 +130,15 @@ public final class TokenManager {
 	 * the userMap.
 	 * 
 	 * @param sessionId	the session ID
+	 * @param token		the users token
+	 * @param accountId	the account ID related to the user
 	 * @return 			true, if a token to the given session ID exists
 	 */
-	public boolean registerToken(String sessionId, String token) {
+	public boolean registerToken(String sessionId, String token, long accountId) {
 		LOGGER.debug("New token '{}' registered to session id '{}'.", token, sessionId);
 		
 		synchronized (tokenMap) {	
+			tokenAccountIDMap.put(token, accountId);
 			return tokenMap.put(sessionId, token) != null;
 		}
 	}
@@ -150,7 +159,8 @@ public final class TokenManager {
 	/**
 	 * Removes the given token out of the map. As (session id, token) are both sides unique values
 	 * the map is iterated on the session ids.<br />
-	 * The time estimation is O(n)! 
+	 * The time estimation is O(n)! <br />
+	 * The parallel mapping in to the account ID is removed, too.
 	 * 
 	 * @param token	the token to delete
 	 */
@@ -166,6 +176,18 @@ public final class TokenManager {
 			
 		}
 		
+		// remove the mapping to the account ID, too
+		tokenAccountIDMap.remove(token);
+	}
+	
+	/**
+	 * Returns the account ID corresponding to this token.
+	 * 
+	 * @param token	the token of the current user
+	 * @return		the account ID, this user is related to
+	 */
+	public long getAccountID(String token) {
+		return tokenAccountIDMap.get(token);
 	}
 
 	/**

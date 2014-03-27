@@ -32,6 +32,16 @@ package org.sopeco.webui.server;
  * 
  */
 public abstract class UiConfiguration {
+	
+
+	// settings for JPA database
+	public static final String PERSISTENCE_HOST 	= "localhost";
+	public static final int PERSISTENCE_PORT 		= 1527;
+	public static final String PERSISTENCE_NAME 	= "sopeco-webui";
+	public static final String PERSISTENCE_USER 	= "sopeco_webui";
+	public static final String PERSISTENCE_PASSWORD = "sopeco_webui";
+	
+	
 	public static final String USER_TIMEOUT = "sopeco.ui.userTimeout";
 	public static final String TIMEOUT_CHECK_INTERVAL = "sopeco.ui.timeoutCheckInterval";
 
