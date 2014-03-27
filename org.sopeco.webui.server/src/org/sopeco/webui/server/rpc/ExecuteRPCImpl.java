@@ -74,6 +74,10 @@ public class ExecuteRPCImpl extends SPCRemoteServlet implements ExecuteRPC {
 		wt = wt.queryParam(ServiceConfiguration.SVCP_ACCOUNT_TOKEN, getToken());
 		
 		ScheduledExperiment scheduledExperiment = ServiceConverter.convertFrontendScheduledExperiment(rawScheduledExperiment);
+		
+		/*
+		 * IMPORTANT: The experiment is always directly set to true in the WebUI.
+		 */
 		scheduledExperiment.setActive(true);
 		
 		Response r = wt.request(MediaType.APPLICATION_JSON).post(Entity.entity(scheduledExperiment, MediaType.APPLICATION_JSON));
@@ -82,6 +86,11 @@ public class ExecuteRPCImpl extends SPCRemoteServlet implements ExecuteRPC {
 			LOGGER.info("The experiment could not be set to execution state. Most likely the "
 						+ "ScheduledExperiment has the status 'active'. Please first insert the experiment as inactive.");
 		}
+		
+		// As the experiment status is active, the experiment key is returned from the REST Service Layer
+		// store the experiment key
+		Long experimentKey = r.readEntity(Long.class);
+		this.getAccountDetails().setExperimentKeyForSelectedScenario(experimentKey);
 	}
 
 	@Override
@@ -203,6 +212,8 @@ public class ExecuteRPCImpl extends SPCRemoteServlet implements ExecuteRPC {
 		
 		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_EXECUTE,
 															 ServiceConfiguration.SVC_EXECUTE_STATUS);
+		
+		LOGGER.fine("Experiment key for current selected experiment: " + getAccountDetails().getExperimentKeyOfSelectedScenario());
 		
 		wt = wt.queryParam(ServiceConfiguration.SVCP_ACCOUNT_TOKEN, getToken());
 		wt = wt.queryParam(ServiceConfiguration.SVCP_EXECUTE_KEY, getAccountDetails().getExperimentKeyOfSelectedScenario());
