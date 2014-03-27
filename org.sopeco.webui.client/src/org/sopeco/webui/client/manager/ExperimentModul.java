@@ -71,6 +71,10 @@ public class ExperimentModul {
 		manager = scenarioManager;
 	}
 
+	public String getCurrentExperimentName() {
+		return currentExperiment;
+	}
+	
 	/**
 	 * Removes the current selected experiment series from the specification
 	 * definition.
@@ -84,7 +88,6 @@ public class ExperimentModul {
 
 		manager.storeScenario();
 
-		// MainLayoutPanel.get().getNavigationController().loadExperiments();
 		MainLayoutPanel.get().refreshNavigation();
 	}
 
@@ -166,10 +169,6 @@ public class ExperimentModul {
 			return new ArrayList<ExperimentSeriesDefinition>();
 		}
 
-		GWT.log("++++++++++++++++++++++++++");
-		GWT.log("" + manager.getScenarioDefinitionBuilder());
-		GWT.log("" + manager.getScenarioDefinitionBuilder().getMeasurementSpecification(Manager.get().getCurrentScenarioDetails().getSelectedSpecification()));
-		
 		return manager.getScenarioDefinitionBuilder()
 				.getMeasurementSpecification(Manager.get().getCurrentScenarioDetails().getSelectedSpecification())
 				.getExperimentSeriesDefinitions();
@@ -457,9 +456,7 @@ public class ExperimentModul {
 		setCurrentExperiment(newName);
 
 		MainLayoutPanel.get().refreshNavigation();
-		// MainLayoutPanel.get().getNavigationController().loadExperiments();
-
-		// EventControl.get().fireEvent(new ExperimentChangedEvent(newName));
+		
 		setCurrentExperiment(newName);
 
 		manager.storeScenario();
