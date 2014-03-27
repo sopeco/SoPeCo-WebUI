@@ -64,7 +64,7 @@ public class ScenarioDetails implements Serializable {
 
 	private String selectedExperiment;
 	
-	private int experimentKey;
+	private long experimentKey;
 
 	/**
 	 * Empty constructor for JSON converting.
@@ -181,7 +181,7 @@ public class ScenarioDetails implements Serializable {
 	/**
 	 * @return the experimentKey
 	 */
-	public int getExperimentKey() {
+	public long getExperimentKey() {
 		return experimentKey;
 	}
 
@@ -189,7 +189,7 @@ public class ScenarioDetails implements Serializable {
 	 * @param experimentKey
 	 *            the epxeriment key to set
 	 */
-	public void setExperimentKey(int experimentKey) {
+	public void setExperimentKey(long experimentKey) {
 		this.experimentKey = experimentKey;
 	}
 }
