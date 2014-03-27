@@ -85,6 +85,7 @@ public class ExecuteRPCImpl extends SPCRemoteServlet implements ExecuteRPC {
 		if (r.getStatus() != Status.OK.getStatusCode()) {
 			LOGGER.info("The experiment could not be set to execution state. Most likely the "
 						+ "ScheduledExperiment has the status 'active'. Please first insert the experiment as inactive.");
+			return;
 		}
 		
 		// As the experiment status is active, the experiment key is returned from the REST Service Layer
