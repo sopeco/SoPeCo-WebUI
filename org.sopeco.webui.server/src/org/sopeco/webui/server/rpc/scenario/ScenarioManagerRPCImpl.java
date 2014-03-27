@@ -150,10 +150,6 @@ public class ScenarioManagerRPCImpl extends SPCRemoteServlet implements Scenario
 	@Override
 	public ScenarioDefinition getCurrentScenarioDefinition() {
 		requiredLoggedIn();
-
-		System.out.println("+++++++++++++++++++++++++++++++");
-		System.out.println(getAccountDetails());
-		System.out.println(getAccountDetails().getAccountName());
 		
 		return loadScenarioDefinition(getAccountDetails().getSelectedScenario());
 	}
@@ -183,27 +179,32 @@ public class ScenarioManagerRPCImpl extends SPCRemoteServlet implements Scenario
 	public boolean storeScenarioDefinition(ScenarioDefinition definition) {
 		requiredLoggedIn();
 		
+		// first archive old entries
 		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_SCENARIO,
-					     									 ServiceConfiguration.SVC_SCENARIO_UPDATE);
+															 getAccountDetails().getSelectedScenario(),
+						 									 ServiceConfiguration.SVC_SCENARIO_ARCHIVE);
+		
+		wt = wt.queryParam(ServiceConfiguration.SVCP_ACCOUNT_TOKEN, getToken());
+		
+		Response r = wt.request(MediaType.APPLICATION_JSON).put(Entity.entity(Null.class, MediaType.APPLICATION_JSON));
+		
+		
+		// now update the ScenarioDefinition
+		wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_SCENARIO,
+					     						   ServiceConfiguration.SVC_SCENARIO_UPDATE);
 		
 		wt = wt.queryParam(ServiceConfiguration.SVCP_SCENARIO_TOKEN, getToken());
 		
-		Response r = wt.request(MediaType.APPLICATION_JSON).post(Entity.entity(definition, MediaType.APPLICATION_JSON));
+		r = wt.request(MediaType.APPLICATION_JSON).post(Entity.entity(definition, MediaType.APPLICATION_JSON));
 		
 		if (r.getStatus() != Status.OK.getStatusCode()) {
 			LOGGER.debug("Failed to store the scenario definiton.");
 			return false;
 		}
 		
-		// TODO correct switch?
-		Boolean b = switchScenario(definition.getScenarioName());
-		
-		if (!b) {
-			LOGGER.debug("Could not switch scenario to the given one.");
-			return false;
-		}
-		
-		return b;
+		switchScenario(definition.getScenarioName());
+
+		return true;
 	}
 
 	@Override
