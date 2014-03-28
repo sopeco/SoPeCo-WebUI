@@ -47,6 +47,7 @@ import org.sopeco.webui.shared.helper.Helper;
 import org.sopeco.webui.shared.helper.Utilities;
 import org.sopeco.webui.shared.rpc.RPC;
 
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -104,14 +105,14 @@ public final class ScenarioManager {
 	 * @return
 	 */
 	public boolean changeInitAssignmentValue(String path, String name, String newValue) {
-		ParameterNamespace namespace = getBuilder().getEnvironmentBuilder().getNamespace(path, "\\.");
-		ParameterDefinition parameter = getBuilder().getEnvironmentBuilder().getParameter(name, namespace);
+		ParameterNamespace namespace = getScenarioDefinitionBuilder().getEnvironmentBuilder().getNamespace(path, "\\.");
+		ParameterDefinition parameter = getScenarioDefinitionBuilder().getEnvironmentBuilder().getParameter(name, namespace);
 
 		if (parameter == null) {
 			return false;
 		}
 
-		for (ConstantValueAssignment cva : getBuilder().getSpecificationBuilder().getBuiltSpecification()
+		for (ConstantValueAssignment cva : getScenarioDefinitionBuilder().getSpecificationBuilder().getBuiltSpecification()
 				.getInitializationAssignemts()) {
 			if (cva.getParameter().getFullName().equals(parameter.getFullName())) {
 				cva.setValue(newValue);
@@ -119,6 +120,9 @@ public final class ScenarioManager {
 			}
 		}
 
+		// TODO correct REST update?
+		//storeScenario();
+		
 		return false;
 	}
 
@@ -208,7 +212,7 @@ public final class ScenarioManager {
 	 * 
 	 * @return experimentModul
 	 */
-	public ExperimentModul experiment() {
+	public ExperimentModul getExperimentModul() {
 		if (experimentModul == null) {
 			experimentModul = new ExperimentModul(this);
 		}
@@ -221,7 +225,7 @@ public final class ScenarioManager {
 	 * 
 	 * @return ScenarioDefinitionBuilder
 	 */
-	public ScenarioDefinitionBuilder getBuilder() {
+	public ScenarioDefinitionBuilder getScenarioDefinitionBuilder() {
 		return builder;
 	}
 
@@ -257,6 +261,8 @@ public final class ScenarioManager {
 	 * server and stored it at the client.
 	 */
 	public void loadCurrentScenarioFromServer() {
+		GWT.log("Loading scenario from Server.");
+		
 		RPC.getScenarioManager().getCurrentScenarioDefinition(new AsyncCallback<ScenarioDefinition>() {
 			@Override
 			public void onFailure(Throwable caught) {
@@ -265,6 +271,8 @@ public final class ScenarioManager {
 
 			@Override
 			public void onSuccess(ScenarioDefinition result) {
+				GWT.log("Loaded scenario from Server.");
+				
 				if (result == null) {
 					LOGGER.severe("Error while loading scenario definition.");
 					return;
@@ -278,8 +286,9 @@ public final class ScenarioManager {
 					if (specification == null || !specification().existSpecification(specification)) {
 						specification = builder.getBuiltScenario().getMeasurementSpecifications().get(0).getName();
 					}
-					MainLayoutPanel.get().reloadPanels();
 
+					MainLayoutPanel.get().reloadPanels();
+					
 					specification().changeSpecification(specification);
 				}
 
@@ -301,6 +310,10 @@ public final class ScenarioManager {
 
 					@Override
 					public void onSuccess(MeasurementEnvironmentDefinition result) {
+						for (ParameterDefinition pd : result.getRoot().getAllParameters()) {
+							GWT.log("0: " + pd.getFullName());
+						}
+						
 						setMeasurementDefinition(result);
 					}
 				});
@@ -346,13 +359,23 @@ public final class ScenarioManager {
 	 */
 	public void setMeasurementDefinition(MeasurementEnvironmentDefinition environment) {
 		builder.getBuiltScenario().setMeasurementEnvironmentDefinition(environment);
+		
+		RPC.getMEControllerRPC().setMEDefinition(environment, new AsyncCallback<Boolean>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				SoPeCoUI.get().onUncaughtException(caught);
+			}
 
-		if (MainLayoutPanel.get().getController(SpecificationController.class).getEnvironmentTree() != null) {
-			MainLayoutPanel.get().getController(SpecificationController.class).getEnvironmentTree().generateTree();
-		}
-		if (MainLayoutPanel.get().getController(ExperimentController.class).getEnvironmentTree() != null) {
-			MainLayoutPanel.get().getController(ExperimentController.class).getEnvironmentTree().generateTree();
-		}
+			@Override
+			public void onSuccess(Boolean result) {
+				if (MainLayoutPanel.get().getController(SpecificationController.class).getEnvironmentTree() != null) {
+					MainLayoutPanel.get().getController(SpecificationController.class).getEnvironmentTree().generateTree();
+				}
+				if (MainLayoutPanel.get().getController(ExperimentController.class).getEnvironmentTree() != null) {
+					MainLayoutPanel.get().getController(ExperimentController.class).getEnvironmentTree().generateTree();
+				}
+			}
+		});
 	}
 
 	/**
@@ -374,7 +397,9 @@ public final class ScenarioManager {
 	 */
 	public void storeScenario() {
 		Helper.whoCalledMe();
-
+		
+		LOGGER.fine("Storing scenario. Sending it to RPC.");
+		
 		RPC.getScenarioManager().storeScenarioDefinition(getCurrentScenarioDefinition(), new AsyncCallback<Boolean>() {
 			@Override
 			public void onFailure(Throwable caught) {
@@ -430,14 +455,14 @@ public final class ScenarioManager {
 	public boolean updateParameter(String path, String oldName, String newName, String type, ParameterRole role) {
 		LOGGER.info("rpc: updateParameter: " + oldName + " from '" + path + "'");
 
-		ParameterNamespace ns = getBuilder().getEnvironmentBuilder().getNamespace(path);
+		ParameterNamespace ns = getScenarioDefinitionBuilder().getEnvironmentBuilder().getNamespace(path);
 
 		if (ns == null) {
 			LOGGER.info("no namespace '" + ns + "' found");
 			return false;
 		}
 
-		ParameterDefinition parameter = getBuilder().getEnvironmentBuilder().getParameter(oldName, ns);
+		ParameterDefinition parameter = getScenarioDefinitionBuilder().getEnvironmentBuilder().getParameter(oldName, ns);
 
 		if (parameter == null) {
 			LOGGER.info("no parameter '" + oldName + "' found");
@@ -445,7 +470,7 @@ public final class ScenarioManager {
 		}
 
 		ConstantValueAssignment initialAssignmentParameter = null;
-		for (ConstantValueAssignment cva : getBuilder().getSpecificationBuilder().getBuiltSpecification()
+		for (ConstantValueAssignment cva : getScenarioDefinitionBuilder().getSpecificationBuilder().getBuiltSpecification()
 				.getInitializationAssignemts()) {
 			if (cva.getParameter().getFullName().equals(parameter.getFullName())) {
 				initialAssignmentParameter = cva;

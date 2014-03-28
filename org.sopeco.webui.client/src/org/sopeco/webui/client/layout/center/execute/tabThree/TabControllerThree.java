@@ -29,6 +29,7 @@ package org.sopeco.webui.client.layout.center.execute.tabThree;
 import java.util.Date;
 import java.util.List;
 
+import org.sopeco.service.execute.MECLogEntry;
 import org.sopeco.webui.client.helper.push.PushListener;
 import org.sopeco.webui.client.helper.push.ServerPush;
 import org.sopeco.webui.client.layout.center.execute.ExecuteController;
@@ -38,7 +39,6 @@ import org.sopeco.webui.client.layout.popups.Message;
 import org.sopeco.webui.client.resources.R;
 import org.sopeco.webui.shared.entities.FrontendScheduledExperiment;
 import org.sopeco.webui.shared.entities.RunningControllerStatus;
-import org.sopeco.webui.shared.helper.MECLogEntry;
 import org.sopeco.webui.shared.helper.Metering;
 import org.sopeco.webui.shared.push.PushDomain;
 import org.sopeco.webui.shared.push.PushPackage;
@@ -147,8 +147,40 @@ public class TabControllerThree extends TabController implements ClickHandler, P
 		// TODO
 		tabView.getStatusPanel().setExperiments("n/a");
 
-		DateTimeFormat dft = DateTimeFormat.getFormat("HH:mm:ss");
+		updateStatusPanel(experiment);
 
+		// start the timer to always refresh the view
+		elapsedTimeTimer.scheduleRepeating(50);
+		tabView.getStatusPanel().getBtnAbort().setEnabled(true);
+		tabView.getStatusPanel().getBtnAbort().setText(R.lang.abortExperiment());
+		tabView.getStatusPanel().getProgressBar().setValue(0, false);
+		
+		DateTimeFormat dtf = DateTimeFormat.getFormat("hh:mm aa / dd.MM.yyyy");
+
+		tabView.getStatusPanel().setTimeStart(dtf.format(new Date(experiment.getTimeStart())));
+		updateTimes();
+
+		if (experiment.isFinished()) {
+			elapsedTimeTimer.cancel();
+			tabView.getStatusPanel().getBtnAbort().setText(R.lang.aborted());
+			tabView.getStatusPanel().getProgressBar().setValue(100);
+			tabView.getStatusPanel().setTimeRemaining("-");
+		}
+
+		Metering.stop(meter);
+	}
+
+	/**
+	 * Always rewrites the whole status panel.
+	 * 
+	 * @param experiment
+	 */
+	private void updateStatusPanel(RunningControllerStatus experiment) {
+		
+		System.out.println("++Updating panel!");
+		
+		DateTimeFormat dft = DateTimeFormat.getFormat("HH:mm:ss");
+		
 		tabView.getStatusPanel().clearLog();
 
 		tabView.getStatusPanel().addLogText(new HTML("<b>Executing '" + experiment.getLabel() + "'</b>"));
@@ -163,35 +195,6 @@ public class TabControllerThree extends TabController implements ClickHandler, P
 			}
 			tabView.getStatusPanel().addLogText(html);
 		}
-
-		if (experiment.getEventLogList().size() == 1) {
-			// Start
-			tabView.getStatusPanel().getBtnAbort().setEnabled(true);
-			tabView.getStatusPanel().getBtnAbort().setText(R.lang.abortExperiment());
-			elapsedTimeTimer.scheduleRepeating(1000);
-			tabView.getStatusPanel().getProgressBar().setValue(0, false);
-		}
-
-		// tabView.getStatusPanel().setTimeRemaining("n/a");
-		// tabView.getStatusPanel().getProgressBar().setValue(0);
-
-		DateTimeFormat dtf = DateTimeFormat.getFormat("hh:mm aa / dd.MM.yyyy");
-
-		tabView.getStatusPanel().setTimeStart(dtf.format(new Date(experiment.getTimeStart())));
-		updateTimes();
-
-		if (experiment.isFinished()) {
-			elapsedTimeTimer.cancel();
-			tabView.getStatusPanel().getBtnAbort().setText(R.lang.aborted());
-			tabView.getStatusPanel().getProgressBar().setValue(100);
-			tabView.getStatusPanel().setTimeRemaining("-");
-		}
-		// else if (experiment.getStatus() == EStatus.START_MEASUREMENT) {
-		// elapsedTimeTimer.scheduleRepeating(1000);
-		// tabView.getStatusPanel().getProgressBar().setValue(0, false);
-		// }
-
-		Metering.stop(meter);
 	}
 
 	public void startingMessage() {
@@ -235,6 +238,20 @@ public class TabControllerThree extends TabController implements ClickHandler, P
 
 		tabView.getStatusPanel().setTimeElapsed(elapsed);
 		tabView.getStatusPanel().setTimeRemaining(remaining);
+		
+		// do a call to the REST service to update the status
+		RPC.getExecuteRPC().getControllerLog(new AsyncCallback<RunningControllerStatus>() {
+			@Override
+			public void onSuccess(RunningControllerStatus result) {
+				controllerExperiment = result;
+				updateStatusPanel(controllerExperiment);
+			}
+
+			@Override
+			public void onFailure(Throwable caught) {
+				Message.error(caught.getMessage());
+			}
+		});
 	}
 
 	@Override

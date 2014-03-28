@@ -1,202 +1,281 @@
 package org.sopeco.webui.server.rpc;
 
+import javax.validation.constraints.Null;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sopeco.config.Configuration;
-import org.sopeco.persistence.IPersistenceProvider;
-import org.sopeco.persistence.config.PersistenceConfiguration;
-import org.sopeco.persistence.exceptions.WrongCredentialsException;
-import org.sopeco.webui.server.persistence.FlexiblePersistenceProviderFactory;
-import org.sopeco.webui.server.persistence.UiPersistence;
+import org.sopeco.service.configuration.ServiceConfiguration;
+import org.sopeco.service.persistence.entities.Account;
+import org.sopeco.webui.server.persistence.UiPersistenceProvider;
+import org.sopeco.webui.server.rest.ClientFactory;
 import org.sopeco.webui.server.rpc.servlet.SPCRemoteServlet;
-import org.sopeco.webui.server.security.Crypto;
 import org.sopeco.webui.server.user.UserManager;
-import org.sopeco.webui.shared.entities.account.Account;
 import org.sopeco.webui.shared.entities.account.AccountDetails;
-import org.sopeco.webui.shared.entities.account.RememberMeToken;
 import org.sopeco.webui.shared.helper.LoginResponse;
 import org.sopeco.webui.shared.rpc.AccountManagementRPC;
 
 /**
  * 
  * @author Marius Oehler
- * 
+ * @author Peter Merkert
  */
 public class AccountManagementRPCImpl extends SPCRemoteServlet implements AccountManagementRPC {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AccountManagementRPCImpl.class);
 
-	/** */
 	private static final long serialVersionUID = 1337009456998146393L;
 
 	@Override
 	public boolean createAccount(String accountName, String password) {
-		PersistenceConfiguration c = PersistenceConfiguration.getSessionSingleton(Configuration.getGlobalSessionId());
-		return createAccount(accountName, password, c.getMetaDataHost(), Integer.parseInt(c.getMetaDataPort()));
+		
+		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_ACCOUNT,
+				   										     ServiceConfiguration.SVC_ACCOUNT_CREATE);
+
+		wt = wt.queryParam(ServiceConfiguration.SVCP_ACCOUNT_NAME, accountName);
+		wt = wt.queryParam(ServiceConfiguration.SVCP_ACCOUNT_PASSWORD, password);
+		
+		Response r = wt.request(MediaType.APPLICATION_JSON)
+					   .post(Entity.entity(Null.class, MediaType.APPLICATION_JSON));
+		
+		if (r.getStatus() != Status.OK.getStatusCode()) {
+			LOGGER.warn("Creating account failed.");
+			return false;
+		}
+		
+		Account account = getAccount(getToken());
+		
+		if (account == null) {
+			return false;
+		}
+		
+		LOGGER.info("Creating AccountDetails for new Account.");
+		
+		// Create AccountDetails for own database
+		AccountDetails details = UiPersistenceProvider.getInstance().loadAccountDetails(account.getId());
+		if (details == null) {
+			details = new AccountDetails();
+			details.setId(account.getId());
+			details.setAccountName(account.getName());
+			UiPersistenceProvider.getInstance().storeAccountDetails(details);
+		}
+		
+		return r.getStatus() == Status.OK.getStatusCode();
 	}
 
 	@Override
 	public boolean createAccount(String accountName, String password, String dbHost, int dbPort) {
+		
 		if (accountExist(accountName)) {
-			LOGGER.info("It already exists an account named '{}'", accountName);
+			return false;
+		}
+		
+		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_ACCOUNT,
+					       									 ServiceConfiguration.SVC_ACCOUNT_CREATE,
+					       									 ServiceConfiguration.SVC_ACCOUNT_CUSTOMIZE);
+		
+		wt = wt.queryParam(ServiceConfiguration.SVCP_ACCOUNT_NAME, accountName);
+		wt = wt.queryParam(ServiceConfiguration.SVCP_ACCOUNT_PASSWORD, password);
+		wt = wt.queryParam(ServiceConfiguration.SVCP_ACCOUNT_DATABASENAME, dbHost);
+		wt = wt.queryParam(ServiceConfiguration.SVCP_ACCOUNT_DATABASEPORT, String.valueOf(dbPort));
+		
+		Response r = wt.request(MediaType.APPLICATION_JSON)
+				       .post(Entity.entity(Null.class, MediaType.APPLICATION_JSON));
+
+		if (r.getStatus() != Status.OK.getStatusCode()) {
+			LOGGER.warn("Creating account failed.");
+			return false;
+		}
+		
+		Account account = r.readEntity(Account.class);
+		
+		if (account == null) {
+			LOGGER.error("Account created, but return value is invalid. This is suspicous.");
 			return false;
 		}
 
-		Account account = new Account();
-		account.setName(accountName);
-		account.setPaswordHash(Crypto.sha256(password));
-
-		account.setDbHost(dbHost);
-		account.setDbPort(dbPort);
-		account.setDbName(accountName);
-		account.setDbPassword(Crypto.encrypt(password, password));
-
-		account.setLastInteraction(-1);
-
-		account = UiPersistence.getUiProvider().storeAccount(account);
-
-		LOGGER.debug("Account created with id {}", account.getId());
-
+		LOGGER.info("Creating AccountDetails for new Account.");
+		
+		// Create AccountDetails for own database
+		AccountDetails details = UiPersistenceProvider.getInstance().loadAccountDetails(account.getId());
+		if (details == null) {
+			details = new AccountDetails();
+			details.setId(account.getId());
+			details.setAccountName(account.getName());
+			UiPersistenceProvider.getInstance().storeAccountDetails(details);
+		}
+		
 		return true;
 	}
 
 	@Override
 	public boolean accountExist(String accountName) {
-		Account testIfExist = UiPersistence.getUiProvider().loadAccount(accountName);
+		
+		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_ACCOUNT,
+															 ServiceConfiguration.SVC_ACCOUNT_EXISTS);
 
-		if (testIfExist == null) {
+		wt = wt.queryParam(ServiceConfiguration.SVCP_ACCOUNT_NAME, accountName);
+		
+		Response r = wt.request(MediaType.APPLICATION_JSON).get();
+		
+		if (r.getStatus() != Status.OK.getStatusCode()) {
 			return false;
-		} else {
-			return true;
 		}
+		
+		boolean b = r.readEntity(Boolean.class);
+		
+		return b;
 	}
 
 	@Override
 	public boolean checkPassword(String accountName, String password) {
-		Account account = UiPersistence.getUiProvider().loadAccount(accountName);
+		
+		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_ACCOUNT,
+														     ServiceConfiguration.SVC_ACCOUNT_CHECK,
+														     ServiceConfiguration.SVC_ACCOUNT_PASSWORD);
+		
+		wt = wt.queryParam(ServiceConfiguration.SVCP_ACCOUNT_NAME, accountName);
+		wt = wt.queryParam(ServiceConfiguration.SVCP_ACCOUNT_PASSWORD, password);
+		
+		Response r = wt.request(MediaType.APPLICATION_JSON).get();
 
-		if (account == null) {
-			LOGGER.debug("Account '{}' doesn't exist.", accountName);
-			return false;
-		}
-
-		String hash = Crypto.sha256(password);
-		if (account.getPaswordHash().equals(hash)) {
-			return true;
-		} else {
-			LOGGER.debug("Password hashes are not equal! ");
-			return false;
-		}
+		return r.getStatus() == Status.OK.getStatusCode();
 	}
 
 	@Override
 	public LoginResponse loginWithPassword(String accountName, String password) {
-		LoginResponse response = new LoginResponse(false, null);
-		Account account = UiPersistence.getUiProvider().loadAccount(accountName);
+		
+		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_ACCOUNT,
+				       										 ServiceConfiguration.SVC_ACCOUNT_LOGIN);
+		
+		wt = wt.queryParam(ServiceConfiguration.SVCP_ACCOUNT_NAME, accountName);
+		wt = wt.queryParam(ServiceConfiguration.SVCP_ACCOUNT_PASSWORD, password);
 
+		Response r = wt.request(MediaType.APPLICATION_JSON).get();
+		
+		// if the status is not OK, then something has failed
+		if (r.getStatus() != Status.OK.getStatusCode()) {
+			
+			return new LoginResponse(false, null);
+		}
+
+		String token = r.readEntity(String.class);
+		
+		Account account = getAccount(token);
+		
 		if (account == null) {
-			LOGGER.debug("Account '{}' doesn't exist.", accountName);
-			return response;
+			LOGGER.warn("No Account to the the token '{}' exists!", token);
+			return new LoginResponse(false, null);
 		}
-		if (!account.getPaswordHash().equals(Crypto.sha256(password))) {
-			LOGGER.debug("Wrong password. Password hashes are not equal!");
-			return response;
-		}
-
-		IPersistenceProvider persistence = null;
-		try {
-			String databasePassword = Crypto.decrypt(password, account.getDbPassword());
-			if (databasePassword.isEmpty()) {
-				persistence = FlexiblePersistenceProviderFactory.createPersistenceProvider(getSession(),
-						account.getDbHost(), account.getDbPort() + "", account.getDbName());
-			} else {
-				persistence = FlexiblePersistenceProviderFactory.createPersistenceProvider(getSession(),
-						account.getDbHost(), account.getDbPort() + "", account.getDbName(), databasePassword);
-			}
-		} catch (WrongCredentialsException e) {
-			LOGGER.warn("Wrong password database credentials!");
-			return response;
-		}
-
-		if (persistence == null) {
-			LOGGER.warn("Connection to the database failed.");
-			return response;
-		}
-
-		// Login successfull
-		response.setSuccessful(true);
-
-		// Create token to remeber login for later sessions
-		String secretToken = Crypto.sha256(System.currentTimeMillis() + getSessionId() + accountName);
-		response.setRememberMeToken(secretToken);
-
-		RememberMeToken rememberMeToken = new RememberMeToken();
-		rememberMeToken.setTokenHash(Crypto.sha256(secretToken));
-		rememberMeToken.setAccountId(account.getId());
-		rememberMeToken.setExpireTimestamp(System.currentTimeMillis() + 1000 * 3600 * 24 * 7);
-		rememberMeToken.setEncrypted(Crypto.encrypt(secretToken, password));
-
-		UiPersistence.getUiProvider().storeRememberMeToken(rememberMeToken);
-
-		// store loged in user
-		UserManager.instance().getAllUsers();
-		UserManager.instance().registerUser(getSessionId());
-
-		getUser().setCurrentAccount(account);
-		getUser().setCurrentPersistenceProvider(persistence);
-
-		AccountDetails details = UiPersistence.getUiProvider().loadAccountDetails(account.getId());
-		if (details == null) {
-			details = new AccountDetails();
-			details.setId(account.getId());
-			details.setAccountName(account.getName());
-			UiPersistence.getUiProvider().storeAccountDetails(details);
-		}
-
-		return response;
+		
+		// add the token to the tokenmanager
+		UserManager.instance().registerToken(getSessionId(), token, account.getId());
+		
+		return new LoginResponse(true, token);
 	}
 
+	/**
+	 * The original idea of this method is not implemented. It's replaced with checking
+	 * if the given token is valid.
+	 * 
+	 * The original idea was to have the user password encrypted into the given token.
+	 */
 	@Override
 	public LoginResponse loginWithToken(String accountName, String rememberMeToken) {
-		UiPersistence.getUiProvider().deleteExpiredRememberMeToken();
-		LoginResponse response = new LoginResponse(false, null);
+		
+		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_ACCOUNT,
+				   											 ServiceConfiguration.SVC_ACCOUNT_CHECK,
+				   											 ServiceConfiguration.SVC_ACCOUNT_TOKEN);
 
-		String tokenHash = Crypto.sha256(rememberMeToken);
-		RememberMeToken rmToken = UiPersistence.getUiProvider().loadRememberMeToken(tokenHash);
+		wt = wt.queryParam(ServiceConfiguration.SVCP_ACCOUNT_TOKEN, rememberMeToken);
 
-		if (rmToken == null) {
-			return response;
+		Response r = wt.request(MediaType.APPLICATION_JSON).get();
+		
+		// if the status is not OK, then something has failed
+		if (r.getStatus() != Status.OK.getStatusCode()) {
+			return new LoginResponse(false, null);
 		}
-
-		UiPersistence.getUiProvider().removeRememberMeToken(rmToken);
-
-		try {
-			String password = Crypto.decrypt(rememberMeToken, rmToken.getEncrypted());
-
-			return loginWithPassword(accountName, password);
-		} catch (Exception e) {
-			return response;
+		
+		Account account = getAccount(rememberMeToken);
+		
+		if (account == null) {
+			LOGGER.warn("No Account to the the token '{}' exists!", rememberMeToken);
+			return new LoginResponse(false, null);
 		}
+		
+		// when the token was not in the tokenmanagaer, it's now added
+		UserManager.instance().registerToken(getSessionId(), rememberMeToken, account.getId());
+		
+		return new LoginResponse(true, rememberMeToken);
 	}
 
 	@Override
 	public AccountDetails getAccountDetails() {
 		requiredLoggedIn();
-
-		return getUser().getAccountDetails();
+		
+		Account account = getAccount(getToken());
+		
+		if (account == null) {
+			LOGGER.warn("Unable to fetch Account from Service Layer.");
+			return null;
+		}
+		
+		return UiPersistenceProvider.getInstance().loadAccountDetails(account.getId());
 	}
 
 	@Override
 	public void storeAccountDetails(AccountDetails accountDetails) {
 		requiredLoggedIn();
+		
+		if (accountDetails == null) {
+			return;
+		}
 
-		UiPersistence.getUiProvider().storeAccountDetails(accountDetails);
+		UiPersistenceProvider.getInstance().storeAccountDetails(accountDetails);
 	}
 
 	@Override
 	public void logout() {
 		requiredLoggedIn();
+		
+		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_ACCOUNT,
+			   												 ServiceConfiguration.SVC_ACCOUNT_LOGOUT);
 
-		UserManager.instance().destroyUser(getUser());
+		wt = wt.queryParam(ServiceConfiguration.SVCP_ACCOUNT_TOKEN, getToken());
+		
+		Response r = wt.request(MediaType.APPLICATION_JSON)
+					   .put(Entity.entity(Null.class, MediaType.APPLICATION_JSON));
+		
+		if (r.getStatus() == Status.OK.getStatusCode()) {
+
+			// deregister the token in the TokenManager
+			UserManager.instance().deleteToken(getToken());
+			
+		}
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////// HELPER /////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	/**
+	 * Fetches the Account from the Service Layer.
+	 * 
+	 * @param token	the token to identifiy the user, whose account is queried
+	 * @return		the Account
+	 */
+	private Account getAccount(String token) {
+		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_ACCOUNT,
+				     										 ServiceConfiguration.SVC_ACCOUNT_CONNECTED);
+		
+		wt = wt.queryParam(ServiceConfiguration.SVCP_ACCOUNT_TOKEN, token);
+		
+		Response r = wt.request(MediaType.APPLICATION_JSON).get();
+		
+		return r.readEntity(Account.class);
 	}
 }

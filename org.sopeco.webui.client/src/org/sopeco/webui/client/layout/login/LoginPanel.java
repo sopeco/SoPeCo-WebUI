@@ -143,6 +143,7 @@ public class LoginPanel extends FlowPanel implements SimpleCallback<Boolean> {
 
 				@Override
 				public void onFailure(Throwable caught) {
+					GWT.log("Problem loggin in with available token. Most times, the SPC SL is not started.");
 					throw new IllegalStateException(caught);
 				}
 			});

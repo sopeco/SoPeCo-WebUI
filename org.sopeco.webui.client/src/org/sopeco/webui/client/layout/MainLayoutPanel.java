@@ -35,7 +35,6 @@ import org.sopeco.webui.client.layout.center.execute.ExecuteController;
 import org.sopeco.webui.client.layout.center.experiment.ExperimentController;
 import org.sopeco.webui.client.layout.center.result.ResultController;
 import org.sopeco.webui.client.layout.center.specification.SpecificationController;
-import org.sopeco.webui.client.layout.center.visualization.VisualizationController;
 import org.sopeco.webui.client.layout.navigation.NaviController;
 import org.sopeco.webui.client.layout.navigation.NaviItem;
 import org.sopeco.webui.client.manager.Manager;
@@ -202,7 +201,6 @@ public final class MainLayoutPanel extends DockLayoutPanel {
 		// Execution, Results and Visualization Item
 		addCenterController(ExecuteController.class, "Execute");
 		addCenterController(ResultController.class, "Result");
-		addCenterController(VisualizationController.class, "Visualization");
 
 		// Refresh "change-specification" popup
 		naviController.refreshSpecificationPopup();
@@ -264,7 +262,7 @@ public final class MainLayoutPanel extends DockLayoutPanel {
 	 *            of the next experiment
 	 */
 	public void switchToExperiment(String experimentName) {
-		ScenarioManager.get().experiment().setCurrentExperiment(experimentName);
+		ScenarioManager.get().getExperimentModul().setCurrentExperiment(experimentName);
 		switchView(ExperimentController.class);
 	}
 
@@ -299,8 +297,7 @@ public final class MainLayoutPanel extends DockLayoutPanel {
 		registerCenterController(new ExperimentController());
 		registerCenterController(new ExecuteController());
 		registerCenterController(new ResultController());
-		registerCenterController(new VisualizationController());
-
+		
 		refreshView();
 
 	}

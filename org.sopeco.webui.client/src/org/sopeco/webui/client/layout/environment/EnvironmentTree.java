@@ -116,7 +116,7 @@ public abstract class EnvironmentTree implements ClickHandler, ValueChangeHandle
 
 		if (!showInitAssignments) {
 			for (EnvTreeItem x : allTreeItemsList) {
-				boolean isIA = ScenarioManager.get().getBuilder().getSpecificationBuilder()
+				boolean isIA = ScenarioManager.get().getScenarioDefinitionBuilder().getSpecificationBuilder()
 						.containsInitialAssignment(x.getParameter());
 
 				if (isIA) {
@@ -170,8 +170,12 @@ public abstract class EnvironmentTree implements ClickHandler, ValueChangeHandle
 	public void generateTree() {
 		double metering = Metering.start();
 
-		ParameterNamespace root = ScenarioManager.get().getBuilder().getMEDefinition().getRoot();
+		ParameterNamespace root = ScenarioManager.get().getScenarioDefinitionBuilder().getMEDefinition().getRoot();
 
+		for (ParameterDefinition pd : root.getAllParameters()) {
+			GWT.log("2: " + pd.getFullName());
+		}
+		 
 		TreeItem rootItem = new TreeItem("", true);
 
 		recursiveAddTreeItems(root, rootItem);
@@ -184,8 +188,21 @@ public abstract class EnvironmentTree implements ClickHandler, ValueChangeHandle
 	}
 
 	private boolean recursiveAddTreeItems(ParameterNamespace namespace, TreeItem treeItem) {
+
+		System.out.println("ParameterNamespace name " + namespace.getName());
+		
+ 		for (ParameterDefinition pd : namespace.getAllParameters()) {
+			System.out.println("3: " + pd.getName());
+		}
+		
 		boolean hasChildrenWithLeafs = false;
+
+		System.out.println("4: #children " + namespace.getChildren().size());
+		
 		for (ParameterNamespace pns : namespace.getChildren()) {
+
+			System.out.println("5: " + pns.getName());
+			
 			boolean addedLeafs = false;
 			TreeItem newItem = new TreeItem(pns.getName());
 

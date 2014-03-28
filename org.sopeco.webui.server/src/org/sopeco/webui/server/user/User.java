@@ -28,17 +28,9 @@ package org.sopeco.webui.server.user;
 
 import java.util.logging.Logger;
 
-import org.sopeco.config.Configuration;
-import org.sopeco.config.IConfiguration;
-import org.sopeco.persistence.IPersistenceProvider;
 import org.sopeco.persistence.entities.definition.MeasurementSpecification;
-import org.sopeco.persistence.entities.definition.ScenarioDefinition;
-import org.sopeco.webui.server.UiConfiguration;
-import org.sopeco.webui.server.persistence.UiPersistence;
 import org.sopeco.webui.shared.builder.MeasurementSpecificationBuilder;
 import org.sopeco.webui.shared.builder.ScenarioDefinitionBuilder;
-import org.sopeco.webui.shared.entities.account.Account;
-import org.sopeco.webui.shared.entities.account.AccountDetails;
 
 /**
  * 
@@ -47,29 +39,27 @@ import org.sopeco.webui.shared.entities.account.AccountDetails;
  */
 public class User {
 
-	private String sessionId;
+	@SuppressWarnings("unused")
+	private static final Logger LOGGER = Logger.getLogger(User.class.getName());
 
 	private ScenarioDefinitionBuilder currentScenarioDefinitionBuilder;
 
 	private String workingSpecification;
-	private Account currentAccount;
-	private IPersistenceProvider currentPersistenceProvider;
-	private static final Logger LOGGER = Logger.getLogger(User.class.getName());
+	
+	private String token;
+
+	private long experimentKey;
+	
+	private long accountID;
+	
 	private long lastRequestTime;
 
-	public User(String sId) {
-		sessionId = sId;
-		lastRequestTime = System.currentTimeMillis();
+	public User(String token, long accountID) {
+		this.token 			= token;
+		this.accountID 		= accountID;
+		lastRequestTime 	= System.currentTimeMillis();
 
 		currentScenarioDefinitionBuilder = new ScenarioDefinitionBuilder();
-	}
-
-	public IPersistenceProvider getCurrentPersistenceProvider() {
-		return currentPersistenceProvider;
-	}
-
-	public void setCurrentPersistenceProvider(IPersistenceProvider persistenceProvider) {
-		this.currentPersistenceProvider = persistenceProvider;
 	}
 
 	public long getLastRequestTime() {
@@ -80,18 +70,22 @@ public class User {
 		this.lastRequestTime = pLastRequestTime;
 	}
 
-	public void setCurrentAccount(Account currentAccount) {
-		this.currentAccount = currentAccount;
+	public void setToken(String token) {
+		this.token = token;
 	}
-
-	public Account getCurrentAccount() {
-		return currentAccount;
+	
+	public String getToken() {
+		return token;
 	}
-
-	public String getSessionId() {
-		return sessionId;
+	
+	public void setAccountID(long accountID) {
+		this.accountID = accountID;
 	}
-
+	
+	public long getAccountID() {
+		return accountID;
+	}
+	
 	public ScenarioDefinitionBuilder getCurrentScenarioDefinitionBuilder() {
 		return currentScenarioDefinitionBuilder;
 	}
@@ -100,21 +94,22 @@ public class User {
 		this.currentScenarioDefinitionBuilder = scenarioDefinitionBuilder;
 	}
 
-	public AccountDetails getAccountDetails() {
-		return UiPersistence.getUiProvider().loadAccountDetails(currentAccount.getId());
+	/**
+	 * @return the experimentKey
+	 */
+	public long getExperimentKey() {
+		return experimentKey;
 	}
 
+	/**
+	 * @param experimentKey
+	 *            the epxeriment key to set
+	 */
+	public void setExperimentKey(long experimentKey) {
+		this.experimentKey = experimentKey;
+	}
+	
 	// *******************************************************************************************************
-
-	public boolean isExpired() {
-		IConfiguration config = Configuration.getSessionSingleton(Configuration.getGlobalSessionId());
-		int userTimeout = config.getPropertyAsInteger(UiConfiguration.USER_TIMEOUT, 0);
-		if (userTimeout == 0 || System.currentTimeMillis() < lastRequestTime + userTimeout) {
-			return false;
-		} else {
-			return true;
-		}
-	}
 
 	public String getWorkingSpecification() {
 		return workingSpecification;
@@ -135,14 +130,4 @@ public class User {
 		getCurrentScenarioDefinitionBuilder().setSpecificationBuilder(specificationBuilder);
 	}
 
-	/**
-	 * 
-	 */
-	public void storeCurrentScenarioDefinition() {
-		LOGGER.info("store current ScenarioDefinition");
-
-		ScenarioDefinition scenarioDef = currentScenarioDefinitionBuilder.getBuiltScenario();
-
-		currentPersistenceProvider.store(scenarioDef);
-	}
 }

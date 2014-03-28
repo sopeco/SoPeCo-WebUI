@@ -42,16 +42,13 @@ import org.sopeco.webui.shared.entities.ScenarioDetails;
 /**
  * 
  * @author Marius Oehler
- * 
+ * @author Peter Merkert
  */
 @Entity
 @NamedQueries({ @NamedQuery(name = "getAllAccountDetails", query = "SELECT u FROM AccountDetails u") })
 public class AccountDetails implements Serializable {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -7307533980593091796L;
 
 	@Id
 	@Column(name = "id")
@@ -190,6 +187,15 @@ public class AccountDetails implements Serializable {
 	/**
 	 * @return the csvCommentSeparator
 	 */
+	public String getCsvCommentSeparator() {
+		return csvCommentSeparator;
+	}
+
+	/**
+	 * @return the csvCommentSeparator
+	 * @deprecated use {@link #getCsvCommentSeparator()}
+	 */
+	@Deprecated
 	public String getCsvQuoteChar() {
 		return csvCommentSeparator;
 	}
@@ -246,5 +252,14 @@ public class AccountDetails implements Serializable {
 			names[i] = scenarioDetails.get(i).getScenarioName();
 		}
 		return names;
+	}
+	
+	@Override
+	public String toString() {
+		return "====      AccountDetails     ====" + "\n"
+				+ "ID: " + id  + "\n"
+				+ "Name: " + accountName  + "\n"
+				+ "SelectedScenario: " + selectedScenario  + "\n"
+				+ "#ScenarioDetails: " + scenarioDetails.size();
 	}
 }

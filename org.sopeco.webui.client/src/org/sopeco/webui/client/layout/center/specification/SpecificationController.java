@@ -70,16 +70,6 @@ public class SpecificationController implements ICenterController, ClickHandler,
 			reload();
 		}
 
-		// EventControl.get().addHandler(SpecificationChangedEvent.TYPE, new
-		// SpecificationChangedEventHandler() {
-		// @Override
-		// public void onSpecificationChangedEvent(SpecificationChangedEvent
-		// event) {
-		// setCurrentSpecificationName(event.getSelectedSpecification());
-		// addExistingAssignments(event.getSelectedSpecification());
-		// }
-		// });
-
 		EventControl.get().addHandler(InitialAssignmentChangedEvent.TYPE, new InitialAssignmentChangedEventHandler() {
 			@Override
 			public void onInitialAssignmentChanged(InitialAssignmentChangedEvent event) {
@@ -116,8 +106,8 @@ public class SpecificationController implements ICenterController, ClickHandler,
 		String name = splitted[splitted.length - 1];
 		String path = event.getFullParameterName().substring(0, event.getFullParameterName().length() - name.length());
 
-		ParameterNamespace namespace = ScenarioManager.get().getBuilder().getEnvironmentBuilder().getNamespace(path);
-		ParameterDefinition parameter = ScenarioManager.get().getBuilder().getEnvironmentBuilder()
+		ParameterNamespace namespace = ScenarioManager.get().getScenarioDefinitionBuilder().getEnvironmentBuilder().getNamespace(path);
+		ParameterDefinition parameter = ScenarioManager.get().getScenarioDefinitionBuilder().getEnvironmentBuilder()
 				.getParameter(name, namespace);
 
 		path = namespace.getFullName();
@@ -142,7 +132,7 @@ public class SpecificationController implements ICenterController, ClickHandler,
 		EditGridItem item = new EditGridItem(parameter, "");
 		assignmentController.addAssignment(item);
 		assignmentController.refreshUI();
-		ScenarioManager.get().getBuilder().getSpecificationBuilder().addInitAssignment(parameter, "");
+		ScenarioManager.get().getScenarioDefinitionBuilder().getSpecificationBuilder().addInitAssignment(parameter, "");
 	}
 
 	/**
@@ -154,7 +144,7 @@ public class SpecificationController implements ICenterController, ClickHandler,
 		EditGridItem item = new EditGridItem(parameter, "");
 		assignmentController.removeAssignment(item);
 		assignmentController.refreshUI();
-		ScenarioManager.get().getBuilder().getSpecificationBuilder().removeInitialAssignment(parameter);
+		ScenarioManager.get().getScenarioDefinitionBuilder().getSpecificationBuilder().removeInitialAssignment(parameter);
 	}
 
 	@Override
@@ -165,11 +155,6 @@ public class SpecificationController implements ICenterController, ClickHandler,
 			assignmentController.reset();
 		}
 
-		// if (selectionController == null) {
-		// selectionController = new SelectionController();
-		// } else {
-		// selectionController.reset();
-		// }
 		envTree = new SpecificationEnvironmentTree();
 		envTree.getView().addStyleName(TREE_CSS_CLASS);
 
@@ -179,7 +164,6 @@ public class SpecificationController implements ICenterController, ClickHandler,
 		view.getImgRemove().addClickHandler(this);
 
 		addExistingAssignments();
-		// addRenameSpecificationHandler();
 		changeSpecification(Manager.get().getCurrentScenarioDetails().getSelectedSpecification());
 	}
 
@@ -221,7 +205,7 @@ public class SpecificationController implements ICenterController, ClickHandler,
 			source.showWarning("The name of an Specification must not be empty.");
 			return false;
 		}
-		if (ScenarioManager.get().getBuilder().getMeasurementSpecification(text) != null) {
+		if (ScenarioManager.get().getScenarioDefinitionBuilder().getMeasurementSpecification(text) != null) {
 			source.showWarning("There is already a Specification with this name.");
 			return false;
 		}
@@ -270,7 +254,7 @@ public class SpecificationController implements ICenterController, ClickHandler,
 			return;
 		}
 
-		for (ConstantValueAssignment cva : ScenarioManager.get().getBuilder()
+		for (ConstantValueAssignment cva : ScenarioManager.get().getScenarioDefinitionBuilder()
 				.getMeasurementSpecification(specificationName).getInitializationAssignemts()) {
 
 			EditGridItem item = new EditGridItem(cva);

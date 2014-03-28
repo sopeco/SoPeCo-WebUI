@@ -197,9 +197,9 @@ public class ExperimentController implements ICenterController, ValueChangeHandl
 	@Override
 	public void onInput(InputDialog source, String value) {
 		if (source == inputClone) {
-			ScenarioManager.get().experiment().cloneCurrentExperiment(value);
+			ScenarioManager.get().getExperimentModul().cloneCurrentExperiment(value);
 		} else if (source == inputRename) {
-			ScenarioManager.get().experiment().renameCurrentExpSeries(value);
+			ScenarioManager.get().getExperimentModul().renameCurrentExpSeries(value);
 		}
 	}
 
@@ -226,9 +226,9 @@ public class ExperimentController implements ICenterController, ValueChangeHandl
 		Confirmation.confirm(R.lang.removeTihsExp(), new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				ScenarioManager.get().experiment().removeCurrentExperimentSeries();
+				ScenarioManager.get().getExperimentModul().removeCurrentExperimentSeries();
 
-				List<ExperimentSeriesDefinition> expList = ScenarioManager.get().experiment()
+				List<ExperimentSeriesDefinition> expList = ScenarioManager.get().getExperimentModul()
 						.getExperimentsOfCurrentSpecififcation();
 
 				if (expList.isEmpty()) {
@@ -276,17 +276,17 @@ public class ExperimentController implements ICenterController, ValueChangeHandl
 	public void experimentChanged(String experimentName) {
 		LOGGER.fine("Change experiment to '" + experimentName + "'");
 
-		ExperimentSeriesDefinition experiment = ScenarioManager.get().getBuilder().getSpecificationBuilder()
+		ExperimentSeriesDefinition experiment = ScenarioManager.get().getScenarioDefinitionBuilder().getSpecificationBuilder()
 				.getExperimentSeries(experimentName);
 
 		getSettingsView().setExperimentName(experiment.getName());
 
-		String explorationName = ScenarioManager.get().experiment().getCurrentExperiment().getExplorationStrategy()
+		String explorationName = ScenarioManager.get().getExperimentModul().getCurrentExperiment().getExplorationStrategy()
 				.getName();
-		Map<String, String> explorationConfig = ScenarioManager.get().experiment().getCurrentExperiment()
+		Map<String, String> explorationConfig = ScenarioManager.get().getExperimentModul().getCurrentExperiment()
 				.getExplorationStrategy().getConfiguration();
 
-		List<AnalysisConfiguration> analysisConfigs = ScenarioManager.get().experiment().getCurrentExperiment()
+		List<AnalysisConfiguration> analysisConfigs = ScenarioManager.get().getExperimentModul().getCurrentExperiment()
 				.getExplorationStrategy().getAnalysisConfigurations();
 		if (!analysisConfigs.isEmpty()) {
 			analysisController.updateParameterSelectionWidgets();

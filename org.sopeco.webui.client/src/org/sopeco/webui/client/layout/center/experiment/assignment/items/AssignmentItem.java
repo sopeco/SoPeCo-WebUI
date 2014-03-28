@@ -219,6 +219,6 @@ public class AssignmentItem implements ValueChangeHandler<String> {
 	}
 
 	public void storeAssignment() {
-		ScenarioManager.get().experiment().setExperimentAssignment(parameterPanel.getValueAssignment());
+		ScenarioManager.get().getExperimentModul().setExperimentAssignment(parameterPanel.getValueAssignment());
 	}
 }

@@ -48,4 +48,6 @@ public interface MSpecificationRPCAsync {
 	void createSpecification(String name, AsyncCallback<Boolean> callback);
 
 	void renameWorkingSpecification(String newName, AsyncCallback<Boolean> callback);
+
+	void removeWorkingSpecification(AsyncCallback<Boolean> asyncCallback);
 }

@@ -23,7 +23,7 @@ public class AnalysisDefinitionTree extends EnvironmentTree {
 
 	@Override
 	public boolean isFirstChecked(ParameterDefinition parameter) {
-		List<AnalysisConfiguration> analysisConfigs = ScenarioManager.get().experiment().getCurrentExperiment()
+		List<AnalysisConfiguration> analysisConfigs = ScenarioManager.get().getExperimentModul().getCurrentExperiment()
 				.getExplorationStrategy().getAnalysisConfigurations();
 		if (!analysisConfigs.isEmpty()) {
 			for (ParameterDefinition pDef : analysisConfigs.get(0).getIndependentParameters()) {
@@ -48,7 +48,7 @@ public class AnalysisDefinitionTree extends EnvironmentTree {
 		} else {
 			getAnalysisController().getIndependentParameters().removeAll(getParameters(item));
 		}
-		ScenarioManager.get().experiment().saveExperimentConfig(getAnalysisController().getParentController());
+		ScenarioManager.get().getExperimentModul().saveExperimentConfig(getAnalysisController().getParentController());
 	}
 
 	private List<ParameterDefinition> getParameters(TreeItem item) {

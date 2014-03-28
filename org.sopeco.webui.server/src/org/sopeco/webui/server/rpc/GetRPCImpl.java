@@ -26,14 +26,17 @@
  */
 package org.sopeco.webui.server.rpc;
 
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.sopeco.engine.measurementenvironment.socket.SocketAppWrapper;
-import org.sopeco.engine.measurementenvironment.socket.SocketManager;
-import org.sopeco.webui.server.helper.ServerCheck;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
+import org.sopeco.service.configuration.ServiceConfiguration;
+import org.sopeco.webui.server.rest.ClientFactory;
 import org.sopeco.webui.server.rpc.servlet.SPCRemoteServlet;
 import org.sopeco.webui.shared.helper.MEControllerProtocol;
 import org.sopeco.webui.shared.rpc.GetRPC;
@@ -41,44 +44,55 @@ import org.sopeco.webui.shared.rpc.GetRPC;
 /**
  * 
  * @author Marius Oehler
- * 
+ * @author Peter Merkert
  */
 public class GetRPCImpl extends SPCRemoteServlet implements GetRPC {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Always returns null.
+	 * 
+	 * @deprecated Method is not used in current build and not implemented in RESTful
+	 * service interface for SoPeCo.
+	 */
 	@Override
+	@Deprecated
 	public Map<String, String[]> getConnectedSocketController() {
-		requiredLoggedIn();
-		
-		Map<String, String[]> map = new HashMap<String, String[]>();
-		for (SocketAppWrapper app : SocketManager.getAllSocketApps()) {
-			String address = app.getSocket().getInetAddress().getHostAddress();
-			map.put(address, app.getAvailableController());
-		}
-		return map;
+		return null;
 	}
 
+	/**
+	 * This method is just stuffed with a call to get connected Socket controllers. Actually
+	 * this method does not support REST or RMI.
+	 * 
+	 * @param protocol the protocol
+	 * @param host		the host, it's actually the ID of the mec (because only sockets are supported)
+	 */
 	@Override
 	public List<String> getControllerFromMEC(MEControllerProtocol protocol, String host, int port) {
 		requiredLoggedIn();
 		
-		if (protocol == MEControllerProtocol.SOCKET) {
-			SocketAppWrapper app = SocketManager.getSocketApp(host);
-			if (app == null) {
-				return null;
-			} else {
-				return Arrays.asList(app.getAvailableController());
-			}
-		} else {
-			if (ServerCheck.isPortReachable(host, port)) {
-				return ServerCheck.getController(protocol, host, port);
-			} else {
-				return null;
-			}
+		// TODO: remove suppoprt for old protocols!
+		if (protocol != MEControllerProtocol.SOCKET) {
+			return null;
 		}
+		
+		String mec_id = host; // just to make clear, that host MUST be the mec_id here
+		
+		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_MEC,
+							 								 ServiceConfiguration.SVC_MEC_LIST);
+		
+		wt = wt.queryParam(ServiceConfiguration.SVCP_ACCOUNT_TOKEN, getToken());
+		wt = wt.queryParam(ServiceConfiguration.SVCP_MEC_ID, mec_id);
+		
+		Response r = wt.request(MediaType.APPLICATION_JSON).get();
+		
+		if (r.getStatus() != Status.OK.getStatusCode()) {
+				
+			return null;
+		}
+		
+		return r.readEntity(new GenericType<List<String>>() { });
 	}
 }

@@ -30,6 +30,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
 import org.sopeco.persistence.dataset.DataSetAggregated;
 import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.dataset.SimpleDataSet;
@@ -39,9 +44,9 @@ import org.sopeco.persistence.entities.ExperimentSeries;
 import org.sopeco.persistence.entities.ExperimentSeriesRun;
 import org.sopeco.persistence.entities.ScenarioInstance;
 import org.sopeco.persistence.exceptions.DataNotFoundException;
-import org.sopeco.persistence.util.DataSetCsvHandler;
+import org.sopeco.service.configuration.ServiceConfiguration;
+import org.sopeco.webui.server.rest.ClientFactory;
 import org.sopeco.webui.server.rpc.servlet.SPCRemoteServlet;
-import org.sopeco.webui.server.user.User;
 import org.sopeco.webui.server.user.UserManager;
 import org.sopeco.webui.shared.definitions.result.SharedExperimentRuns;
 import org.sopeco.webui.shared.definitions.result.SharedExperimentSeries;
@@ -55,79 +60,34 @@ import org.sopeco.webui.shared.rpc.ResultRPC;
  */
 public class ResultRPCImpl extends SPCRemoteServlet implements ResultRPC {
 
-	/**	 */
 	private static final long serialVersionUID = 1L;
-
-	@Override
-	public void getResults() {
-		requiredLoggedIn();
-
-		try {
-			List<ScenarioInstance> instances = getUser().getCurrentPersistenceProvider().loadAllScenarioInstances();
-
-			System.out.println("");
-
-			DataSetAggregated d = new DataSetAggregated();
-
-			SimpleDataSet sd = d.convertToSimpleDataSet();
-
-			DataSetCsvHandler handler = new DataSetCsvHandler(';', '#', true);
-			// handler.store(dataset, fileName)
-			// handler.
-		} catch (DataNotFoundException e) {
-			throw new RuntimeException(e);
-		}
-	}
 
 	@Override
 	public List<SharedScenarioInstance> getInstances(String scenarioName) {
 		requiredLoggedIn();
 		
-		try {
-			List<ScenarioInstance> scenarioList = getUser().getCurrentPersistenceProvider().loadScenarioInstances(
-					scenarioName);
+		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_SCENARIO,
+						 									 ServiceConfiguration.SVC_SCENARIO_INSTANCES);
+		
+		wt = wt.queryParam(ServiceConfiguration.SVCP_SCENARIO_TOKEN, scenarioName);
+		wt = wt.queryParam(ServiceConfiguration.SVCP_SCENARIO_NAME, getToken());
+		
+		Response r = wt.request(MediaType.APPLICATION_JSON).get();
+			
+		// now convert the scenario instances to the appropriate type
+		List<ScenarioInstance> scenarioList = r.readEntity(new GenericType<List<ScenarioInstance>>() { });
 
-			List<SharedScenarioInstance> retList = new ArrayList<SharedScenarioInstance>();
+		List<SharedScenarioInstance> retList = new ArrayList<SharedScenarioInstance>();
+		
+		if (scenarioList != null) {
+			
 			for (ScenarioInstance instance : scenarioList) {
 				retList.add(convertInstance(instance));
 			}
-			return retList;
-		} catch (DataNotFoundException e) {
-			return new ArrayList<SharedScenarioInstance>();
+			
 		}
-	}
-
-	/**
-	 * Creates a SharedScenarioInstance out of a ScenarioInstance which can send
-	 * to the FrontEnd.
-	 * 
-	 * @param instance
-	 * @return
-	 */
-	private SharedScenarioInstance convertInstance(ScenarioInstance instance) {
-		requiredLoggedIn();
 		
-		SharedScenarioInstance retInstance = new SharedScenarioInstance();
-
-		retInstance.setScenarioName(instance.getName());
-		retInstance.setControllerUrl(instance.getMeasurementEnvironmentUrl());
-
-		for (ExperimentSeries series : instance.getExperimentSeriesList()) {
-			SharedExperimentSeries sharedSeries = new SharedExperimentSeries();
-			sharedSeries.setExperimentName(series.getName());
-
-			for (ExperimentSeriesRun run : series.getExperimentSeriesRuns()) {
-				SharedExperimentRuns sharedRun = new SharedExperimentRuns();
-				sharedRun.setTimestamp(run.getTimestamp());
-				sharedRun.setLabel(run.getLabel());
-
-				sharedSeries.addExperimentRun(sharedRun);
-			}
-
-			retInstance.addExperimentSeries(sharedSeries);
-		}
-
-		return retInstance;
+		return retList;
 	}
 
 	@Override
@@ -194,6 +154,45 @@ public class ResultRPCImpl extends SPCRemoteServlet implements ResultRPC {
 		}
 	}
 
+	
+	
+	//////////////////////////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////// HELPER /////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////////////////////////////	
+
+	/**
+	 * Creates a SharedScenarioInstance out of a ScenarioInstance which can send
+	 * to the FrontEnd.
+	 * 
+	 * @param instance
+	 * @return
+	 */
+	private SharedScenarioInstance convertInstance(ScenarioInstance instance) {
+		requiredLoggedIn();
+		
+		SharedScenarioInstance retInstance = new SharedScenarioInstance();
+
+		retInstance.setScenarioName(instance.getName());
+		retInstance.setControllerUrl(instance.getMeasurementEnvironmentUrl());
+
+		for (ExperimentSeries series : instance.getExperimentSeriesList()) {
+			SharedExperimentSeries sharedSeries = new SharedExperimentSeries();
+			sharedSeries.setExperimentName(series.getName());
+
+			for (ExperimentSeriesRun run : series.getExperimentSeriesRuns()) {
+				SharedExperimentRuns sharedRun = new SharedExperimentRuns();
+				sharedRun.setTimestamp(run.getTimestamp());
+				sharedRun.setLabel(run.getLabel());
+
+				sharedSeries.addExperimentRun(sharedRun);
+			}
+
+			retInstance.addExperimentSeries(sharedSeries);
+		}
+
+		return retInstance;
+	}
+	
 	/**
 	 *
 	 */
@@ -226,17 +225,21 @@ public class ResultRPCImpl extends SPCRemoteServlet implements ResultRPC {
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	private ScenarioInstance getScenarioInstance(String sId, String scenarioName, String url)
 			throws DataNotFoundException {
 		requiredLoggedIn();
 		
-		User user = UserManager.instance().getUser(sId);
-		if (user == null) {
-			throw new DataNotFoundException("No user at session '" + sId + "' found..");
-		}
-		ScenarioInstance instance = user.getCurrentPersistenceProvider().loadScenarioInstance(scenarioName, url);
-		return instance;
+		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_SCENARIO,
+					 										 ServiceConfiguration.SVC_SCENARIO_INSTANCE);
+		
+		wt = wt.queryParam(ServiceConfiguration.SVCP_SCENARIO_TOKEN, UserManager.instance().getToken(sId));
+		wt = wt.queryParam(ServiceConfiguration.SVCP_SCENARIO_NAME, scenarioName);
+		wt = wt.queryParam(ServiceConfiguration.SVCP_SCENARIO_URL, url);
+		
+		Response r = wt.request(MediaType.APPLICATION_JSON).get();
+		
+		return r.readEntity(ScenarioInstance.class);
 	}
 }

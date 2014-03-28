@@ -33,11 +33,18 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
-import org.sopeco.engine.model.ScenarioDefinitionWriter;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
+import org.sopeco.service.configuration.ServiceConfiguration;
+import org.sopeco.webui.server.persistence.UiPersistenceProvider;
+import org.sopeco.webui.server.rest.ClientFactory;
 import org.sopeco.webui.server.security.Security;
 import org.sopeco.webui.server.user.UserManager;
+import org.sopeco.webui.shared.entities.account.AccountDetails;
 
 /**
  * 
@@ -46,9 +53,6 @@ import org.sopeco.webui.server.user.UserManager;
  */
 public class ExportServlet extends HttpServlet {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	private static final String SCNEARIO_EXPORT = "scenario";
@@ -74,23 +78,30 @@ public class ExportServlet extends HttpServlet {
 	 * @throws IOException
 	 */
 	private void sendScenarioAsXML(HttpServletResponse resp, String sessionId) throws IOException {
-		if (!UserManager.instance().existUser(session.getId())) {
+		
+		String token 		= UserManager.instance().getToken(sessionId);
+		long accountID 		= UserManager.instance().getAccountID(token);
+		AccountDetails ad 	= UiPersistenceProvider.getInstance().loadAccountDetails(accountID);
+		
+		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_SCENARIO,
+															 ad.getSelectedScenario(),
+				     										 ServiceConfiguration.SVC_SCENARIO_XML);
+
+		wt = wt.queryParam(ServiceConfiguration.SVCP_SCENARIO_TOKEN, token);
+		
+		Response r = wt.request(MediaType.APPLICATION_JSON).get();
+		
+		String definitionXML = r.readEntity(String.class);
+		
+		if (definitionXML == null) {
 			resp.sendError(204);
 			return;
 		}
 
-		ScenarioDefinition definition = UserManager.instance().getUser(session.getId())
-				.getCurrentScenarioDefinitionBuilder().getBuiltScenario();
+		String fileName = "scenario-" + ad.getSelectedScenario() + ".xml";
 
-		if (definition != null) {
-			ScenarioDefinitionWriter writer = new ScenarioDefinitionWriter(sessionId);
-			String definitionXML = writer.convertToXMLString(definition);
-			String fileName = "scenario-" + definition.getScenarioName() + ".xml";
+		sendXML(resp, definitionXML, fileName);
 
-			sendXML(resp, definitionXML, fileName);
-		} else {
-			resp.sendError(204);
-		}
 	}
 
 	/**

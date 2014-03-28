@@ -64,8 +64,8 @@ public class TerminationController implements ValueChangeHandler<Boolean> {
 		for (ExperimentTerminationCondition termination : med.getSupportedTerminationConditions()) {
 			Condition addedCondition = view.addCondition(termination);
 
-			if (ScenarioManager.get().experiment().isSetTermination(termination)) {
-				addedCondition.setConfiguration(ScenarioManager.get().experiment().getTerminationCondition(termination)
+			if (ScenarioManager.get().getExperimentModul().isSetTermination(termination)) {
+				addedCondition.setConfiguration(ScenarioManager.get().getExperimentModul().getTerminationCondition(termination)
 						.getParametersValues());
 
 				addedCondition.setConditionVisibility(true);
@@ -92,10 +92,10 @@ public class TerminationController implements ValueChangeHandler<Boolean> {
 		if (event.getValue()) {
 			GWT.log("user con: " + source.getCondition().getName());
 			GWT.log("    conf: " + source.getConfig());
-			ScenarioManager.get().experiment().addTermination(source.getCondition());
+			ScenarioManager.get().getExperimentModul().addTermination(source.getCondition());
 		} else {
 			GWT.log("remove con: " + source.getCondition().getName());
-			ScenarioManager.get().experiment().removeTermination(source.getCondition());
+			ScenarioManager.get().getExperimentModul().removeTermination(source.getCondition());
 		}
 	}
 }

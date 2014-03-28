@@ -32,6 +32,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.sopeco.persistence.dataset.DataSetAggregated;
 import org.sopeco.persistence.entities.ExperimentSeries;
@@ -39,8 +42,9 @@ import org.sopeco.persistence.entities.ExperimentSeriesRun;
 import org.sopeco.persistence.entities.ScenarioInstance;
 import org.sopeco.persistence.exceptions.DataNotFoundException;
 import org.sopeco.persistence.util.DataSetCsvHandler;
+import org.sopeco.service.configuration.ServiceConfiguration;
+import org.sopeco.webui.server.rest.ClientFactory;
 import org.sopeco.webui.server.security.Security;
-import org.sopeco.webui.server.user.User;
 import org.sopeco.webui.server.user.UserManager;
 
 /**
@@ -131,11 +135,16 @@ public class DataSetExportServlet extends HttpServlet {
 	 */
 	private ScenarioInstance getScenarioInstance(String sId, String scenarioName, String url)
 			throws DataNotFoundException {
-		User user = UserManager.instance().getUser(sId);
-		if (user == null) {
-			throw new DataNotFoundException("No user at session '" + sId + "' found..");
-		}
-		ScenarioInstance instance = user.getCurrentPersistenceProvider().loadScenarioInstance(scenarioName, url);
-		return instance;
+		
+		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_SCENARIO,
+						 									 ServiceConfiguration.SVC_SCENARIO_INSTANCE);
+		
+		wt = wt.queryParam(ServiceConfiguration.SVCP_SCENARIO_TOKEN, UserManager.instance().getToken(sId));
+		wt = wt.queryParam(ServiceConfiguration.SVCP_SCENARIO_NAME, scenarioName);
+		wt = wt.queryParam(ServiceConfiguration.SVCP_SCENARIO_URL, url);
+		
+		Response r = wt.request(MediaType.APPLICATION_JSON).get();
+		
+		return r.readEntity(ScenarioInstance.class);
 	}
 }
