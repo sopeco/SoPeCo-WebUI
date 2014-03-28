@@ -39,8 +39,6 @@ import javax.persistence.NamedQuery;
 
 import org.sopeco.webui.shared.entities.ScenarioDetails;
 
-import com.google.gwt.core.shared.GWT;
-
 /**
  * 
  * @author Marius Oehler
@@ -98,40 +96,6 @@ public class AccountDetails implements Serializable {
 		url += "/" + getScenarioDetail(selectedScenario).getControllerName();
 
 		return url;
-	}
-	
-	/**
-	 * Sets the experiment key for the current selected scenario. The key is only set, when
-	 * the Account has a selected scenario.
-	 * 
-	 * @param experimentKey	the experiment key
-	 */
-	public void setExperimentKeyForSelectedScenario(long experimentKey) {
-		
-		if (selectedScenario == null || selectedScenario.isEmpty()) {
-			return;
-		}
-
-		getScenarioDetail(selectedScenario).setExperimentKey(experimentKey);
-	}
-	
-	/**
-	 * Returns the experiment key of the current selected scenario.
-	 * 
-	 * @return the experiment key for the current selected scenario
-	 */
-	public long getExperimentKeyOfSelectedScenario() {
-		
-		for (ScenarioDetails detail : scenarioDetails) {
-			if (detail.getScenarioName().equals(selectedScenario)) {
-				
-				GWT.log("Experiment key: " + detail.getExperimentKey());
-				
-				return detail.getExperimentKey();
-			}
-		}
-
-		return -1;
 	}
 
 	/**

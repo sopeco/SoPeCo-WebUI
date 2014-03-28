@@ -40,6 +40,7 @@ import org.sopeco.webui.client.layout.center.execute.TabController;
 import org.sopeco.webui.client.layout.popups.Message;
 import org.sopeco.webui.client.manager.Manager;
 import org.sopeco.webui.client.manager.ScenarioManager;
+import org.sopeco.webui.client.widget.ExceptionDialog;
 import org.sopeco.webui.shared.entities.FrontendScheduledExperiment;
 import org.sopeco.webui.shared.rpc.RPC;
 
@@ -184,11 +185,18 @@ public class TabControllerOne extends TabController implements ClickHandler, MEC
 				RPC.getExecuteRPC().scheduleExperiment(fse, new AsyncCallback<Void>() {
 					@Override
 					public void onSuccess(Void result) {
+						
+						if (view.isExecutingImmediately()) {
+							LOGGER.fine("Execute NOW");
+							((ExecuteTabPanel) getParentController().getView()).selectTab(2);
+							getParentController().getTabControllerThree().startingMessage();
+						}
+						
 					}
 
 					@Override
 					public void onFailure(Throwable caught) {
-						Message.error(caught.getMessage());
+						ExceptionDialog.show(caught);
 					}
 				});
 				
@@ -196,15 +204,9 @@ public class TabControllerOne extends TabController implements ClickHandler, MEC
 
 			@Override
 			public void onFailure(Throwable caught) {
-				Message.error(caught.getMessage());
+				ExceptionDialog.show(caught);
 			}
 		});
-
-		if (view.isExecutingImmediately()) {
-			LOGGER.fine("Execute NOW");
-			((ExecuteTabPanel) getParentController().getView()).selectTab(2);
-			getParentController().getTabControllerThree().startingMessage();
-		}
 
 		getParentController().getTabControllerTwo().loadScheduledExperiments();
 	}

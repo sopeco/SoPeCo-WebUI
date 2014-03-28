@@ -360,11 +360,6 @@ public final class ScenarioManager {
 	public void setMeasurementDefinition(MeasurementEnvironmentDefinition environment) {
 		builder.getBuiltScenario().setMeasurementEnvironmentDefinition(environment);
 		
-		// TODO why not UI update??
-		for (ParameterDefinition pd : environment.getRoot().getAllParameters()) {
-			GWT.log("1: " + pd.getFullName());
-		}
-		
 		RPC.getMEControllerRPC().setMEDefinition(environment, new AsyncCallback<Boolean>() {
 			@Override
 			public void onFailure(Throwable caught) {

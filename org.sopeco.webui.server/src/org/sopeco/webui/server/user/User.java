@@ -47,6 +47,8 @@ public class User {
 	private String workingSpecification;
 	
 	private String token;
+
+	private long experimentKey;
 	
 	private long accountID;
 	
@@ -92,6 +94,21 @@ public class User {
 		this.currentScenarioDefinitionBuilder = scenarioDefinitionBuilder;
 	}
 
+	/**
+	 * @return the experimentKey
+	 */
+	public long getExperimentKey() {
+		return experimentKey;
+	}
+
+	/**
+	 * @param experimentKey
+	 *            the epxeriment key to set
+	 */
+	public void setExperimentKey(long experimentKey) {
+		this.experimentKey = experimentKey;
+	}
+	
 	// *******************************************************************************************************
 
 	public String getWorkingSpecification() {

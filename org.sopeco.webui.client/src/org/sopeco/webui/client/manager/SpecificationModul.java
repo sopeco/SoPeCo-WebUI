@@ -95,7 +95,7 @@ public class SpecificationModul {
 			return;
 		}
 		
-		MeasurementSpecificationBuilder newBuilder = manager.getScenarioDefinitionBuilder().getSpecificationBuilder();
+		MeasurementSpecificationBuilder newBuilder = manager.getScenarioDefinitionBuilder().addNewMeasurementSpecification();
 		if (newBuilder == null) {
 			return;
 		}

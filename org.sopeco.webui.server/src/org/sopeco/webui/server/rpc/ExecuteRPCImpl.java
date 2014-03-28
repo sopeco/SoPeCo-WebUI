@@ -44,6 +44,7 @@ import org.sopeco.service.persistence.entities.ExecutedExperimentDetails;
 import org.sopeco.service.persistence.entities.MECLog;
 import org.sopeco.service.persistence.entities.ScheduledExperiment;
 import org.sopeco.service.rest.exchange.ExperimentStatus;
+import org.sopeco.webui.server.persistence.UiPersistenceProvider;
 import org.sopeco.webui.server.rest.ClientFactory;
 import org.sopeco.webui.server.rpc.servlet.SPCRemoteServlet;
 import org.sopeco.webui.shared.entities.FrontendScheduledExperiment;
@@ -67,7 +68,9 @@ public class ExecuteRPCImpl extends SPCRemoteServlet implements ExecuteRPC {
 	@Override
 	public void scheduleExperiment(FrontendScheduledExperiment rawScheduledExperiment) {
 		requiredLoggedIn();
-				
+
+		System.out.println("SCHEDULE");
+		
 		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_EXECUTE,
 															 ServiceConfiguration.SVC_EXECUTE_SCHEDULE);
 		
@@ -79,10 +82,13 @@ public class ExecuteRPCImpl extends SPCRemoteServlet implements ExecuteRPC {
 		 * IMPORTANT: The experiment is always directly set to true in the WebUI.
 		 */
 		scheduledExperiment.setActive(true);
+
+		System.out.println("Trying to scheduled the experiment on SL.");
 		
 		Response r = wt.request(MediaType.APPLICATION_JSON).post(Entity.entity(scheduledExperiment, MediaType.APPLICATION_JSON));
 		
 		if (r.getStatus() != Status.OK.getStatusCode()) {
+			System.out.println("Failed to scheduled experiment on SL.");
 			LOGGER.info("The experiment could not be set to execution state. Most likely the "
 						+ "ScheduledExperiment has the status 'active'. Please first insert the experiment as inactive.");
 			return;
@@ -91,7 +97,12 @@ public class ExecuteRPCImpl extends SPCRemoteServlet implements ExecuteRPC {
 		// As the experiment status is active, the experiment key is returned from the REST Service Layer
 		// store the experiment key
 		Long experimentKey = r.readEntity(Long.class);
-		this.getAccountDetails().setExperimentKeyForSelectedScenario(experimentKey);
+		
+		System.out.println("Experiment key for ScheduledExperiment: " + experimentKey);
+		
+		getUser().setExperimentKey(experimentKey);
+		
+		System.out.println("Stored experiment key is: " + getUser().getExperimentKey());
 	}
 
 	@Override
@@ -211,13 +222,17 @@ public class ExecuteRPCImpl extends SPCRemoteServlet implements ExecuteRPC {
 	public RunningControllerStatus getControllerLog() {
 		requiredLoggedIn();
 		
+		System.out.println("GET LOG");
+		
 		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_EXECUTE,
 															 ServiceConfiguration.SVC_EXECUTE_STATUS);
 		
-		LOGGER.fine("Experiment key for current selected experiment: " + getAccountDetails().getExperimentKeyOfSelectedScenario());
+		long experimentKey = getUser().getExperimentKey();
+		
+		System.out.println("Experiment key for current selected experiment: " + experimentKey);
 		
 		wt = wt.queryParam(ServiceConfiguration.SVCP_ACCOUNT_TOKEN, getToken());
-		wt = wt.queryParam(ServiceConfiguration.SVCP_EXECUTE_KEY, getAccountDetails().getExperimentKeyOfSelectedScenario());
+		wt = wt.queryParam(ServiceConfiguration.SVCP_EXECUTE_KEY, experimentKey);
 		
 		Response r = wt.request(MediaType.APPLICATION_JSON).get();
 		
@@ -253,7 +268,7 @@ public class ExecuteRPCImpl extends SPCRemoteServlet implements ExecuteRPC {
 												   			 ServiceConfiguration.SVC_EXECUTE_ABORT);
 		
 		wt = wt.queryParam(ServiceConfiguration.SVCP_ACCOUNT_TOKEN, getToken());
-		wt = wt.queryParam(ServiceConfiguration.SVCP_EXECUTE_KEY, getAccountDetails().getExperimentKeyOfSelectedScenario());
+		wt = wt.queryParam(ServiceConfiguration.SVCP_EXECUTE_KEY, getUser().getExperimentKey());
 		
 		wt.request(MediaType.APPLICATION_JSON).put(Entity.entity(Null.class, MediaType.APPLICATION_JSON));
 	}

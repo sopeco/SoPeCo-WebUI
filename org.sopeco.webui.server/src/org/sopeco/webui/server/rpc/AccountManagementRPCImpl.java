@@ -216,9 +216,6 @@ public class AccountManagementRPCImpl extends SPCRemoteServlet implements Accoun
 	@Override
 	public AccountDetails getAccountDetails() {
 		requiredLoggedIn();
-
-		System.out.println("++++++++++++");
-		System.out.println(getToken());
 		
 		Account account = getAccount(getToken());
 		
