@@ -150,7 +150,7 @@ public class TabControllerThree extends TabController implements ClickHandler, P
 		updateStatusPanel(experiment);
 
 		// start the timer to always refresh the view
-		elapsedTimeTimer.scheduleRepeating(50);
+		elapsedTimeTimer.scheduleRepeating(500);
 		tabView.getStatusPanel().getBtnAbort().setEnabled(true);
 		tabView.getStatusPanel().getBtnAbort().setText(R.lang.abortExperiment());
 		tabView.getStatusPanel().getProgressBar().setValue(0, false);
@@ -177,7 +177,12 @@ public class TabControllerThree extends TabController implements ClickHandler, P
 	 */
 	private void updateStatusPanel(RunningControllerStatus experiment) {
 		
-		System.out.println("++Updating panel!");
+		if (experiment.isFinished()) {
+			elapsedTimeTimer.cancel();
+			tabView.getStatusPanel().getBtnAbort().setEnabled(false);
+			tabView.getStatusPanel().getProgressBar().setValue(100);
+			tabView.getStatusPanel().setTimeRemaining("-");
+		}
 		
 		DateTimeFormat dft = DateTimeFormat.getFormat("HH:mm:ss");
 		
@@ -201,7 +206,9 @@ public class TabControllerThree extends TabController implements ClickHandler, P
 		tabView.getStatusPanel().addLogText(new HTML("starting.."));
 	}
 
-	// TODO
+	/**
+	 * Called by the timer.
+	 */
 	private void updateTimes() {
 		String elapsed = "";
 		String remaining = "";
@@ -243,8 +250,15 @@ public class TabControllerThree extends TabController implements ClickHandler, P
 		RPC.getExecuteRPC().getControllerLog(new AsyncCallback<RunningControllerStatus>() {
 			@Override
 			public void onSuccess(RunningControllerStatus result) {
-				controllerExperiment = result;
-				updateStatusPanel(controllerExperiment);
+				
+				// result can be null, when there is no result yet
+				if (result != null) {
+
+					controllerExperiment = result;
+					updateStatusPanel(controllerExperiment);
+					
+				}
+				
 			}
 
 			@Override
@@ -256,11 +270,16 @@ public class TabControllerThree extends TabController implements ClickHandler, P
 
 	@Override
 	public void onClick(ClickEvent event) {
-		tabView.getStatusPanel().getBtnAbort().setEnabled(false);
-		tabView.getStatusPanel().getBtnAbort().setText(R.lang.aborting());
+		
 		RPC.getExecuteRPC().abortCurrentExperiment(new AsyncCallback<Void>() {
 			@Override
 			public void onSuccess(Void result) {
+				
+				tabView.getStatusPanel().getBtnAbort().setEnabled(false);
+				tabView.getStatusPanel().getBtnAbort().setText(R.lang.aborted());
+				tabView.getStatusPanel().setTimeRemaining("-");
+				elapsedTimeTimer.cancel();
+				
 			}
 
 			@Override
