@@ -69,11 +69,11 @@ public class ResultRPCImpl extends SPCRemoteServlet implements ResultRPC {
 		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_SCENARIO,
 						 									 ServiceConfiguration.SVC_SCENARIO_INSTANCES);
 		
-		wt = wt.queryParam(ServiceConfiguration.SVCP_SCENARIO_TOKEN, scenarioName);
-		wt = wt.queryParam(ServiceConfiguration.SVCP_SCENARIO_NAME, getToken());
+		wt = wt.queryParam(ServiceConfiguration.SVCP_SCENARIO_TOKEN, getToken());
+		wt = wt.queryParam(ServiceConfiguration.SVCP_SCENARIO_NAME, scenarioName);
 		
 		Response r = wt.request(MediaType.APPLICATION_JSON).get();
-			
+		
 		// now convert the scenario instances to the appropriate type
 		List<ScenarioInstance> scenarioList = r.readEntity(new GenericType<List<ScenarioInstance>>() { });
 
@@ -173,26 +173,38 @@ public class ResultRPCImpl extends SPCRemoteServlet implements ResultRPC {
 		SharedScenarioInstance retInstance = new SharedScenarioInstance();
 
 		retInstance.setScenarioName(instance.getName());
-		retInstance.setControllerUrl(instance.getMeasurementEnvironmentUrl());
+		retInstance.setControllerUrl(instance.getPrimaryKey().getMeasurementEnvironmentUrl());
 
 		for (ExperimentSeries series : instance.getExperimentSeriesList()) {
-			SharedExperimentSeries sharedSeries = new SharedExperimentSeries();
-			sharedSeries.setExperimentName(series.getName());
-
-			for (ExperimentSeriesRun run : series.getExperimentSeriesRuns()) {
-				SharedExperimentRuns sharedRun = new SharedExperimentRuns();
-				sharedRun.setTimestamp(run.getTimestamp());
-				sharedRun.setLabel(run.getLabel());
-
-				sharedSeries.addExperimentRun(sharedRun);
-			}
-
-			retInstance.addExperimentSeries(sharedSeries);
+			
+			retInstance.addExperimentSeries(convertExperimentSeries(series));
+			
 		}
 
 		return retInstance;
 	}
 	
+	/**
+	 * Converts a single {@link ExperimentSeries} to an {@link SharedExperimentSeries}.
+	 * 
+	 * @param series 	the {@link ExperimentSeries}
+	 * @return			the {@link SharedExperimentSeries}
+	 */
+	private SharedExperimentSeries convertExperimentSeries(ExperimentSeries series) {
+		SharedExperimentSeries sharedSeries = new SharedExperimentSeries();
+		sharedSeries.setExperimentName(series.getName());
+
+		for (ExperimentSeriesRun run : series.getExperimentSeriesRuns()) {
+			SharedExperimentRuns sharedRun = new SharedExperimentRuns();
+			sharedRun.setTimestamp(run.getTimestamp());
+			sharedRun.setLabel(run.getLabel());
+
+			sharedSeries.addExperimentRun(sharedRun);
+		}
+		
+		return sharedSeries;
+	}
+
 	/**
 	 *
 	 */
