@@ -235,10 +235,11 @@ public class ExecuteRPCImpl extends SPCRemoteServlet implements ExecuteRPC {
 		wt = wt.queryParam(ServiceConfiguration.SVCP_EXECUTE_KEY, experimentKey);
 		
 		Response r = wt.request(MediaType.APPLICATION_JSON).get();
-		
-		ExperimentStatus es = r.readEntity(ExperimentStatus.class);
 
 		if (r.getStatus() == Status.OK.getStatusCode()) {
+			
+			ExperimentStatus es = r.readEntity(ExperimentStatus.class);
+			
 			// now convert the ExperimentStatus object into a RunningControllerStatus object
 			RunningControllerStatus rcs = new RunningControllerStatus();
 			rcs.setAccount(es.getAccountId());
