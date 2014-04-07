@@ -188,21 +188,11 @@ public abstract class EnvironmentTree implements ClickHandler, ValueChangeHandle
 	}
 
 	private boolean recursiveAddTreeItems(ParameterNamespace namespace, TreeItem treeItem) {
-
-		System.out.println("ParameterNamespace name " + namespace.getName());
-		
- 		for (ParameterDefinition pd : namespace.getAllParameters()) {
-			System.out.println("3: " + pd.getName());
-		}
 		
 		boolean hasChildrenWithLeafs = false;
 
-		System.out.println("4: #children " + namespace.getChildren().size());
-		
 		for (ParameterNamespace pns : namespace.getChildren()) {
 
-			System.out.println("5: " + pns.getName());
-			
 			boolean addedLeafs = false;
 			TreeItem newItem = new TreeItem(pns.getName());
 

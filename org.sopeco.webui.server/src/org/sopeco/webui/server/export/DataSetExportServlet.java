@@ -108,7 +108,6 @@ public class DataSetExportServlet extends HttpServlet {
 	 */
 	private ExperimentSeriesRun getRun(ExperimentSeries series, Long timestamp) throws DataNotFoundException {
 		for (ExperimentSeriesRun run : series.getExperimentSeriesRuns()) {
-			System.out.println(run.getTimestamp() + " " + timestamp);
 			if (timestamp.equals(run.getTimestamp())) {
 				return run;
 			}

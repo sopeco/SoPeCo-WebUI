@@ -29,6 +29,7 @@ package org.sopeco.webui.server.rpc;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.GenericType;
@@ -62,6 +63,8 @@ public class ResultRPCImpl extends SPCRemoteServlet implements ResultRPC {
 
 	private static final long serialVersionUID = 1L;
 
+	private static final Logger LOGGER = Logger.getLogger(ResultRPCImpl.class.getName());
+	
 	@Override
 	public List<SharedScenarioInstance> getInstances(String scenarioName) {
 		requiredLoggedIn();
@@ -212,7 +215,7 @@ public class ResultRPCImpl extends SPCRemoteServlet implements ResultRPC {
 		requiredLoggedIn();
 		
 		for (ExperimentSeriesRun run : series.getExperimentSeriesRuns()) {
-			System.out.println(run.getTimestamp() + " " + timestamp);
+			LOGGER.finer("Current ExperimentSeriesRun timestamp: " + timestamp);
 			if (timestamp.equals(run.getTimestamp())) {
 				return run;
 			}

@@ -34,6 +34,8 @@ import java.io.IOException;
 
 import javax.servlet.ServletContext;
 
+import com.google.gwt.core.shared.GWT;
+
 /**
  * 
  * @author Marius Oehler
@@ -87,7 +89,7 @@ public final class MavenInfos {
 
 				reader.close();
 			} catch (FileNotFoundException e) {
-				System.out.println("No maven build information found.");
+				GWT.log("No maven build information found.");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

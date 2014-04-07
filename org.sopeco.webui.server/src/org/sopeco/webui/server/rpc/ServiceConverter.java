@@ -52,7 +52,6 @@ public final class ServiceConverter {
 		ScheduledExperiment se = new ScheduledExperiment();
 		se.setAccountId(fse.getAccount());
 		se.setControllerUrl(fse.getControllerUrl());
-		System.out.println("+++++++++" + fse.getLabel());
 		se.setLabel(fse.getLabel());
 		se.setRepeatDays(fse.getRepeatDays());
 		se.setRepeatHours(fse.getRepeatHours());
