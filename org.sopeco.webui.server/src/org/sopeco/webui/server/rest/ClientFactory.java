@@ -10,9 +10,9 @@ import org.sopeco.service.rest.json.CustomObjectMapper;
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 
 /**
- * This class is used to create {@link WebResource} with the Jersey {@link Client}.
- * As we don't want always to create a new {@link Client}, it's once created and
- * with a given URL the corresponding {@link WebResource} returned.
+ * This class is used to create a {@link WebTarget} with the Jersey {@link Client}.
+ * As we don't want always to create a new {@link Client}, it's once created (singleton)
+ * and reinitialized with {@link #getClient(String...)} with a given URL.
  * 
  * @author Peter Merkert
  */
@@ -47,7 +47,7 @@ public class ClientFactory {
 	}
 	
 	/**
-	 * Returns the {@link WebResource} to do requests. Already sticks the prefix 
+	 * Returns the {@link WebTarget} to do requests. Already sticks the prefix 
 	 * <code>http://localhost:8080/</code> to the URL.
 	 * 
 	 * @param URL 	the URL where the service is
