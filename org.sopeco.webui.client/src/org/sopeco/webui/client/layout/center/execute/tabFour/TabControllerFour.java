@@ -31,14 +31,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.ListIterator;
 
+import org.sopeco.service.execute.MECLogEntry;
+import org.sopeco.service.persistence.entities.ExecutedExperimentDetails;
+import org.sopeco.service.persistence.entities.MECLog;
 import org.sopeco.webui.client.layout.center.execute.ExecuteController;
 import org.sopeco.webui.client.layout.center.execute.TabController;
 import org.sopeco.webui.client.layout.popups.Message;
 import org.sopeco.webui.client.manager.Manager;
 import org.sopeco.webui.client.resources.R;
-import org.sopeco.webui.shared.entities.ExecutedExperimentDetails;
-import org.sopeco.webui.shared.entities.MECLog;
-import org.sopeco.webui.shared.helper.MECLogEntry;
 import org.sopeco.webui.shared.rpc.RPC;
 
 import com.google.gwt.i18n.client.DateTimeFormat;

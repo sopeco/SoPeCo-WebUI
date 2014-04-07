@@ -114,4 +114,6 @@ public interface MEControllerRPC extends RemoteService {
 	boolean isPortReachable(String host, int port);
 
 	List<String> getController(MEControllerProtocol protocol, String host, int port);
+
+	boolean setMEDefinition(MeasurementEnvironmentDefinition med);
 }

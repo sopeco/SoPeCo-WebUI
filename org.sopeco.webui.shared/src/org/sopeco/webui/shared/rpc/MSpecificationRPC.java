@@ -36,7 +36,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 /**
  * 
  * @author Marius Oehler
- * 
+ * @author Peter Merkert
  */
 @RemoteServiceRelativePath("mSpecificationRPC")
 public interface MSpecificationRPC extends RemoteService {
@@ -79,4 +79,11 @@ public interface MSpecificationRPC extends RemoteService {
 	 * @return
 	 */
 	boolean renameWorkingSpecification(String newName);
+	
+	/**
+	 * Removes the current selected working specification of the given name.
+	 * 
+	 * @return true, if successful
+	 */
+	boolean removeWorkingSpecification();
 }

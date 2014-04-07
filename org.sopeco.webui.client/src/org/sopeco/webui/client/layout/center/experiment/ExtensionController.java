@@ -78,7 +78,7 @@ public class ExtensionController implements ValueChangeHandler<String> {
 
 				updateConfigTable();
 				getParentController().updateAnalysisView();
-				ScenarioManager.get().experiment().saveExperimentConfig(getParentController());
+				ScenarioManager.get().getExperimentModul().saveExperimentConfig(getParentController());
 
 				Metering.stop(metering);
 			}
@@ -184,7 +184,7 @@ public class ExtensionController implements ValueChangeHandler<String> {
 
 		currentConfig.put(key, event.getValue());
 
-		ScenarioManager.get().experiment().saveExperimentConfig(getParentController());
+		ScenarioManager.get().getExperimentModul().saveExperimentConfig(getParentController());
 
 		Metering.stop(metering);
 	}

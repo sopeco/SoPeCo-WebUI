@@ -29,7 +29,6 @@ package org.sopeco.webui.client.layout.center.result;
 import java.util.logging.Logger;
 
 import org.sopeco.gwt.widgets.ImageHover;
-import org.sopeco.webui.client.layout.center.visualization.wizard.VisualizationWizard;
 import org.sopeco.webui.client.layout.dialog.ExportCsvDialog;
 import org.sopeco.webui.client.layout.dialog.ExportToRDialog;
 import org.sopeco.webui.client.resources.R;
@@ -121,7 +120,7 @@ public class TreeLeaf extends TreeItem implements /* HasClickHandlers, */ClickHa
 			ExportCsvDialog.show(timestamp, experimentName, controllerURL, scenarioName);
 
 		} else if (event.getSource() == chartImage) {
-			new VisualizationWizard(experimentRun);
+			//new VisualizationWizard(experimentRun);
 		} else {
 			RPC.getResultRPC().getResultAsR(experimentRun.getParentSeries().getParentInstance().getScenarioName(),
 					experimentRun.getParentSeries().getExperimentName(),

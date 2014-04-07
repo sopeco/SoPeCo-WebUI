@@ -28,7 +28,6 @@ package org.sopeco.webui.client.manager;
 
 import java.util.logging.Logger;
 
-import org.sopeco.persistence.metadata.entities.DatabaseInstance;
 import org.sopeco.webui.shared.entities.ScenarioDetails;
 import org.sopeco.webui.shared.entities.account.AccountDetails;
 import org.sopeco.webui.shared.rpc.RPC;
@@ -61,8 +60,6 @@ public final class Manager {
 	private ControllerStatus controllerLastStatus = ControllerStatus.UNKNOWN;
 	private AccountDetails accountDetails = null;
 	private String selectedExperiment;
-	private DatabaseInstance currentDatabaseInstance;
-	private int selectedDatabaseIndex = -1;
 
 	public void reset() {
 		selectedExperiment = null;
@@ -100,10 +97,6 @@ public final class Manager {
 		}
 
 		return accountDetails.getScenarioDetail(accountDetails.getSelectedScenario());
-	}
-
-	public void setSelectedDatabaseIndex(int selectedDatabaseIndex) {
-		this.selectedDatabaseIndex = selectedDatabaseIndex;
 	}
 
 	/**

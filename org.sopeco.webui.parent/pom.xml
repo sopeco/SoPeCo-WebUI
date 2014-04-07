@@ -7,11 +7,15 @@
 	<packaging>pom</packaging>
 	<name>SoPeCo Web-UI</name>
 
+	<!-- ================PROPERTIES================= -->
 	<properties>
+		<sopeco.service.version>0.0.1-SNAPSHOT</sopeco.service.version>
+		<com.jersey.client.version>1.8</com.jersey.client.version>
 		<sopeco.dependency>5.0.2-SNAPSHOT</sopeco.dependency>
 		<gwt.version>2.5.1</gwt.version>
 	</properties>
 
+	
 	<modules>
 		<module>../org.sopeco.webui.shared</module>
 		<module>../org.sopeco.webui.server</module>
@@ -19,13 +23,13 @@
 		<module>../org.sopeco.webui.client</module>
 	</modules>
 
-
+	
 	<repositories>
 
 		<repository>
 			<id>Eclipse</id>
 			<name>Eclipse</name>
-			<url>http://maven.eclipse.org/nexus/content/groups/build/</url>
+			<url>http://repo.eclipse.org/nexus/content/groups/build/</url>
 		</repository>
 		<repository>
 			<id>LPE Releases</id>
@@ -53,6 +57,7 @@
 	</repositories>
 
 
+	<!-- ================DEPENDENCIES================= -->
 	<dependencies>
 		<dependency>
 			<groupId>com.google.gwt</groupId>
@@ -173,6 +178,18 @@
 		  <artifactId>gwt-test-utils</artifactId>
 		  <version>0.44</version>
 		</dependency>
+	
+		<dependency>
+			<groupId>org.sopeco.service</groupId>
+			<artifactId>org.sopeco.service</artifactId>
+			<version>${sopeco.service.version}</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>org.glassfish.jersey.core</groupId>
+		    <artifactId>jersey-client</artifactId>
+		    <version>2.6</version>
+		</dependency>
 		
 	</dependencies>
 
@@ -222,6 +239,14 @@
 				<configuration>
 					<webXml>war/WEB-INF/web.xml</webXml>
 					<webResources>
+					    
+					    <resource>
+							<directory>rsc</directory>
+							<includes>
+								<include>**/*.txt</include>
+							</includes>
+						</resource>
+					    
 						<resource>
 							<directory>war</directory>
 
@@ -231,8 +256,10 @@
 								<include>**/*.html</include>
 								<include>**/*.jsp</include>
 								<include>**/*.ico</include>
+								<include>**/*.txt</include>
 							</includes>
 						</resource>
+						
 						<resource>
 							<directory>persistence</directory>
 							<targetPath>/</targetPath>
@@ -243,7 +270,7 @@
 					</webResources>
 				</configuration>
 			</plugin>
-
+			
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>gwt-maven-plugin</artifactId>

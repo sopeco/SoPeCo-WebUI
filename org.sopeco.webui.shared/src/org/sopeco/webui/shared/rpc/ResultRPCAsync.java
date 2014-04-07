@@ -38,7 +38,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  */
 public interface ResultRPCAsync {
-	void getResults(AsyncCallback<Void> callback);
 
 	void getInstances(String scenarioName, AsyncCallback<List<SharedScenarioInstance>> callback);
 

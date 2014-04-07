@@ -32,8 +32,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.sopeco.webui.server.rpc.servlet.SPCRemoteServlet;
-import org.sopeco.webui.server.user.User;
-import org.sopeco.webui.server.user.UserManager;
 import org.sopeco.webui.shared.push.PushPackage;
 import org.sopeco.webui.shared.rpc.PushRPC;
 
@@ -102,61 +100,4 @@ public class PushRPCImpl extends SPCRemoteServlet implements PushRPC {
 		}
 	}
 
-	public static void pushToAllOnController(String controllerUrl, PushPackage pushPackage) {
-		for (User user : UserManager.instance().getAllUsers() ) {
-			try {
-				String cUrl = user.getAccountDetails().getControllerUrl();
-				if (cUrl != null && cUrl.equals(controllerUrl)) {
-					PushRPCImpl.push(user.getSessionId(), pushPackage);
-				}
-			} catch (NullPointerException x) {
-				// TODO
-				System.out.println("TODO");
-			}
-		}
-	}
-
-	/**
-	 * Sends the package to all users, which are connected to the given
-	 * database.
-	 * 
-	 * @param pushPackage
-	 */
-	// public static void pushToCODB(String databaseId, PushPackage pushPackage)
-	// {
-	// for (User u : UserManager.getAllUserOnDatabase(databaseId)) {
-	//
-	// synchronized (waitingMap.get(u.getSessionId())) {
-	// packageListMap.put(u.getSessionId(), pushPackage);
-	// waitingMap.get(u.getSessionId()).notify();
-	// }
-	// }
-	// }
-
-	/**
-	 * Sends a pushPackage to the frontend (to the client with the given session
-	 * id).
-	 * 
-	 * @param sessionId
-	 *            session of the client
-	 * @param pushPackage
-	 *            object, which will be send
-	 */
-	// public static void push(String sessionId, PushPackage pushPackage) {
-	// synchronized (waitingMap.get(sessionId)) {
-	// packageListMap.put(sessionId, pushPackage);
-	// waitingMap.get(sessionId).notify();
-	// }
-	// }
-
-	/**
-	 * Sending Pushpackage with the Type MESSAGE to the client.
-	 * 
-	 * @param message
-	 */
-	// public static void pushMessage(String sessionId, String message) {
-	// PushPackage pushPackage = new PushPackage(Type.MESSAGE);
-	// pushPackage.setPiggyback(message);
-	// push(sessionId, pushPackage);
-	// }
 }

@@ -31,20 +31,44 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.sopeco.service.configuration.ServiceConfiguration;
+import org.sopeco.webui.server.rest.ClientFactory;
 
 /**
+ * Maps session ID to token.<br />
+ * The class is a Singleton.
  * 
- * @author Marius Oehler
- * 
+ * @author Peter Merkert
  */
 public final class UserManager {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(UserManager.class);
 
+	/**
+	 * The Map to map a Session ID to a User.
+	 */
+	private Map<String, User> sessionID2UserMap = new HashMap<String, User>();
+	
 	private static UserManager singleton;
 
+	/**
+	 * Private constructor for singleton.
+	 */
+	private UserManager() {
+	}
+	
+	/**
+	 * Singleton constructor.
+	 * 
+	 * @return the instance of {@link UserManager}
+	 */
 	public static UserManager instance() {
 		if (singleton == null) {
 			singleton = new UserManager();
@@ -52,98 +76,155 @@ public final class UserManager {
 		return singleton;
 	}
 
-	private Map<String, User> userMap = new HashMap<String, User>();
-
-	private UserManager() {
-	}
-
 	/**
 	 * Returns whether a (not expired) user with the given session id exists in
 	 * the userMap.
 	 * 
-	 * @param sessionId
-	 * @return user with the given session exists
+	 * @param sessionId	the session ID
+	 * @return 			true, if a token to the given session ID exists
 	 */
-	public boolean existUser(String sessionId) {
-		synchronized (userMap) {
-			return getUser(sessionId) != null;
-		}
+	public boolean existToken(String sessionId) {
+		return sessionID2UserMap.get(sessionId) != null;
 	}
-
+	
 	/**
-	 * Returns a List with all users which are connected to the given account.
+	 * Returns whether a token to the given session ID exsists and
+	 * if the token is still valid in the RESTful service.
 	 * 
-	 * @param databaseId
-	 * @return
+	 * @param sessionId	the session ID
+	 * @return 			true, if a token to the given session ID
+	 * 					exists and is valid
 	 */
-	public List<User> getAllUserOnAccount(long accountId) {
-		List<User> userList = new ArrayList<User>();
-		for (User u : userMap.values()) {
-			if (u.isExpired()) {
-				destroyUser(u);
-			} else if (u.getCurrentAccount().getId() == accountId) {
-				userList.add(u);
-			}
+	public boolean hasValidToken(String sessionId) {
+		String token = getToken(sessionId);
+		
+		if (token == null) {
+			return false;
 		}
-		return userList;
-	}
 
+		LOGGER.debug("Checking token '{}' on SPC SL for validity.", token, sessionId);
+			
+		// now check if the token is still valid at the service interface
+		WebTarget wr = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_ACCOUNT,
+														     ServiceConfiguration.SVC_ACCOUNT_CHECK,
+															 ServiceConfiguration.SVC_ACCOUNT_TOKEN);
+
+		wr = wr.queryParam(ServiceConfiguration.SVCP_ACCOUNT_TOKEN, token);
+		
+		Response r = wr.request(MediaType.APPLICATION_JSON).get();
+		
+		return r.getStatus() == Status.OK.getStatusCode();
+	}
+	
 	/**
-	 * Returns a list with all valid users.
+	 * Returns whether a (not expired) user with the given session id exists in
+	 * the userMap.
 	 * 
-	 * @return
+	 * @param sessionId	the session ID
+	 * @param token		the users token
+	 * @param accountId	the account ID related to the user
+	 * @return 			true, if a token to the given session ID exists
 	 */
-	public List<User> getAllUsers() {
-		List<User> userList = new ArrayList<User>();
-		for (User u : userMap.values()) {
-			if (u.isExpired()) {
-				destroyUser(u);
-			} else {
-				userList.add(u);
-			}
+	public boolean registerToken(String sessionId, String token, long accountId) {
+		LOGGER.debug("New token '{}' registered to session id '{}'.", token, sessionId);
+		
+		User u = new User(token, accountId);
+		
+		synchronized (sessionID2UserMap) {	
+			return sessionID2UserMap.put(sessionId, u) != null;
 		}
-		return userList;
 	}
 
 	/**
-	 * Returns the user, which has the given session id. If there is no user
+	 * Returns the token, which has the given session id. If there is no token
 	 * with the given session key, it returns null.
 	 * 
-	 * @param sessionId
-	 * @return user
+	 * @param sessionId	the session ID
+	 * @return 			token (<code>null</code> possible)
 	 */
-	public User getUser(String sessionId) {
-		synchronized (userMap) {
-			User user = userMap.get(sessionId);
-			if (user != null && user.isExpired()) {
-				destroyUser(user);
-				user = null;
-			}
-			return user;
+	public String getToken(String sessionId) {
+		
+		User u = sessionID2UserMap.get(sessionId);
+		
+		if (u != null) {
+			return u.getToken();
 		}
-	}
-
-	public User registerUser(String sessionId) {
-		LOGGER.debug("Store new user with the session id '{}'", sessionId);
-		User newUser = new User(sessionId);
-		userMap.put(sessionId, newUser);
-		return newUser;
+		
+		return "";
 	}
 
 	/**
-	 * Destroys the given user.
+	 * Removes the given token out of the map. As (session id, token) are both sides unique values
+	 * the map is iterated on the session ids.<br />
+	 * The time estimation is O(n)! <br />
+	 * The parallel mapping in to the account ID is removed, too.
 	 * 
-	 * @param user
-	 *            to destroy
+	 * @param token	the token to delete
 	 */
-	public void destroyUser(User u) {
-		LOGGER.debug("Destroy user with the session id '{}'", u.getSessionId());
-
-		userMap.remove(u.getSessionId());
-
-		if (u.getCurrentPersistenceProvider() != null) {
-			u.getCurrentPersistenceProvider().closeProvider();
-			u.setCurrentPersistenceProvider(null);
+	public void deleteToken(String token) {
+		
+		for (String sessionId : sessionID2UserMap.keySet()) {
+			
+			if (token.equals(getToken(sessionId))) {
+				sessionID2UserMap.remove(sessionId);
+				// break can be done, because the token is unique (at least it should be)
+				break;
+			}
+			
 		}
+		
 	}
+	
+	/**
+	 * Returns the account ID corresponding to this token.
+	 * 
+	 * @param token	the token of the current user
+	 * @return		the account ID, this user is related to
+	 */
+	public long getAccountID(String token) {
+		
+		User u =  UserManager.instance().getUser(token);
+		
+		if (u != null) {
+			return u.getAccountID();
+		}
+		
+		return -1;
+	}
+	
+	/**
+	 * Returns the account ID corresponding to this token.
+	 * 
+	 * @param token	the token of the current user
+	 * @return		the account ID, this user is related to
+	 */
+	public User getUser(String token) {
+		
+		for (User u : sessionID2UserMap.values()) {
+			
+			if (u.getToken().equals(token)) {
+				return u;
+			}
+			
+		}
+	
+		return null;
+	}
+
+	/**
+	 * Returns a list with all tokens currently registered.
+	 * 
+	 * @return list with all tokens
+	 */
+	/*public List<String> getAllToken() {
+		
+		List<String> tokenList = new ArrayList<String>();
+		for (String token : tokenMap.values()) {
+			tokenList.add(token);
+		}
+		
+		return tokenList;
+		
+	}*/
+
 }

@@ -40,6 +40,7 @@ import org.sopeco.webui.client.layout.center.execute.TabController;
 import org.sopeco.webui.client.layout.popups.Message;
 import org.sopeco.webui.client.manager.Manager;
 import org.sopeco.webui.client.manager.ScenarioManager;
+import org.sopeco.webui.client.widget.ExceptionDialog;
 import org.sopeco.webui.shared.entities.FrontendScheduledExperiment;
 import org.sopeco.webui.shared.rpc.RPC;
 
@@ -171,23 +172,41 @@ public class TabControllerOne extends TabController implements ClickHandler, MEC
 		} else {
 			scheduledExperiment.setRepeating(false);
 		}
+		
+		// final converting only for inner RPC
+		final FrontendScheduledExperiment fse = scheduledExperiment;
 
-		RPC.getExecuteRPC().scheduleExperiment(scheduledExperiment, new AsyncCallback<Void>() {
+		// first store the ScenarioDefiniton
+		RPC.getScenarioManager().storeScenarioDefinition(scheduledExperiment.getScenarioDefinition(), new AsyncCallback<Boolean>() {
 			@Override
-			public void onSuccess(Void result) {
+			public void onSuccess(Boolean result) {
+				
+				// after storing ScenarioDefinition execute the scenario
+				RPC.getExecuteRPC().scheduleExperiment(fse, new AsyncCallback<Void>() {
+					@Override
+					public void onSuccess(Void result) {
+						
+						if (view.isExecutingImmediately()) {
+							LOGGER.fine("Execute NOW");
+							((ExecuteTabPanel) getParentController().getView()).selectTab(2);
+							getParentController().getTabControllerThree().startingMessage();
+						}
+						
+					}
+
+					@Override
+					public void onFailure(Throwable caught) {
+						ExceptionDialog.show(caught);
+					}
+				});
+				
 			}
 
 			@Override
 			public void onFailure(Throwable caught) {
-				Message.error(caught.getMessage());
+				ExceptionDialog.show(caught);
 			}
 		});
-
-		if (view.isExecutingImmediately()) {
-			LOGGER.fine("Execute NOW");
-			((ExecuteTabPanel) getParentController().getView()).selectTab(2);
-			getParentController().getTabControllerThree().startingMessage();
-		}
 
 		getParentController().getTabControllerTwo().loadScheduledExperiments();
 	}

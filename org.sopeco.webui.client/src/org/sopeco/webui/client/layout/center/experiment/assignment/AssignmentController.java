@@ -103,13 +103,13 @@ public class AssignmentController {
 	 * Adds all existing prepreration assignments to the list.
 	 */
 	public void addExisitngAssignments() {
-		if (ScenarioManager.get().experiment().getCurrentExperiment() == null) {
+		if (ScenarioManager.get().getExperimentModul().getCurrentExperiment() == null) {
 			return;
 		}
 
 		Map<String, ParameterValueAssignment> sortedMap = new TreeMap<String, ParameterValueAssignment>();
 
-		for (ParameterValueAssignment pva : ScenarioManager.get().experiment().getCurrentExperiment()
+		for (ParameterValueAssignment pva : ScenarioManager.get().getExperimentModul().getCurrentExperiment()
 				.getExperimentAssignments()) {
 			sortedMap.put(pva.getParameter().getFullName(), pva);
 		}

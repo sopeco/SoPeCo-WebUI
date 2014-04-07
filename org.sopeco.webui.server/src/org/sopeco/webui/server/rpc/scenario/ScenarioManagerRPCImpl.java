@@ -26,21 +26,19 @@
  */
 package org.sopeco.webui.server.rpc.scenario;
 
-import java.util.List;
+import javax.validation.constraints.Null;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sopeco.config.Configuration;
-import org.sopeco.config.IConfiguration;
-import org.sopeco.engine.model.ScenarioDefinitionWriter;
-import org.sopeco.persistence.IPersistenceProvider;
-import org.sopeco.persistence.entities.ArchiveEntry;
-import org.sopeco.persistence.entities.ExperimentSeries;
-import org.sopeco.persistence.entities.ExperimentSeriesRun;
-import org.sopeco.persistence.entities.ScenarioInstance;
 import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
-import org.sopeco.persistence.exceptions.DataNotFoundException;
+import org.sopeco.service.configuration.ServiceConfiguration;
+import org.sopeco.webui.server.rest.ClientFactory;
 import org.sopeco.webui.server.rpc.servlet.SPCRemoteServlet;
 import org.sopeco.webui.shared.builder.ScenarioDefinitionBuilder;
 import org.sopeco.webui.shared.rpc.ScenarioManagerRPC;
@@ -61,94 +59,76 @@ public class ScenarioManagerRPCImpl extends SPCRemoteServlet implements Scenario
 	public String[] getScenarioNames() {
 		requiredLoggedIn();
 
-		IPersistenceProvider dbCon = getUser().getCurrentPersistenceProvider();
-
-		if (dbCon == null) {
-			LOGGER.warn("No database connection found.");
-			return null;
-		}
-
-		try {
-			List<ScenarioDefinition> scenarioList = dbCon.loadAllScenarioDefinitions();
-
-			String[] retValues = new String[scenarioList.size()];
-
-			for (int i = 0; i < scenarioList.size(); i++) {
-				ScenarioDefinition sd = scenarioList.get(i);
-				retValues[i] = sd.getScenarioName();
-			}
-
-			return retValues;
-		} catch (DataNotFoundException e) {
-			return null;
-		}
+		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_SCENARIO,
+				     									     ServiceConfiguration.SVC_SCENARIO_LIST);
+		
+		wt = wt.queryParam(ServiceConfiguration.SVCP_SCENARIO_TOKEN, getToken());
+		
+		Response r = wt.request(MediaType.APPLICATION_JSON).post(Entity.entity(Null.class, MediaType.APPLICATION_JSON));
+		
+		return r.readEntity(String[].class);
 	}
 
+	/**
+	 * Adds and switches the scenario immediatly.
+	 */
 	@Override
 	public boolean addScenario(String scenarioName, String specificationName, ExperimentSeriesDefinition experiment) {
 		requiredLoggedIn();
 		
-		scenarioName = scenarioName.replaceAll("[^a-zA-Z0-9_]", "_");
-
-		ScenarioDefinition emptyScenario = ScenarioDefinitionBuilder.buildEmptyScenario(scenarioName);
-
-		if (specificationName != null) {
-			emptyScenario.getMeasurementSpecifications().get(0).setName(specificationName);
-			if (experiment != null) {
-				emptyScenario.getMeasurementSpecifications().get(0).getExperimentSeriesDefinitions().add(experiment);
-			}
-		}
-
-		IPersistenceProvider dbCon = getUser().getCurrentPersistenceProvider();
-
-		if (dbCon == null) {
-			LOGGER.warn("No database connection found.");
+		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_SCENARIO,
+					     									 ServiceConfiguration.SVC_SCENARIO_ADD,
+					     									 scenarioName);
+		
+		wt = wt.queryParam(ServiceConfiguration.SVCP_SCENARIO_TOKEN, getToken());
+		wt = wt.queryParam(ServiceConfiguration.SVCP_SCENARIO_SPECNAME, specificationName);
+		
+		Response r = wt.request(MediaType.APPLICATION_JSON).post(Entity.entity(experiment, MediaType.APPLICATION_JSON));
+		
+		if (r.getStatus() != Status.OK.getStatusCode()) {
 			return false;
 		}
-
-		dbCon.store(emptyScenario);
-
+		
 		switchScenario(scenarioName);
-		return true;
+
+		return r.getStatus() == Status.OK.getStatusCode();
 	}
 
+	/**
+	 * Adds and switches the scenario immediatly.
+	 */
 	@Override
 	public boolean addScenario(ScenarioDefinition scenario) {
 		requiredLoggedIn();
 		
-		IPersistenceProvider dbCon = getUser().getCurrentPersistenceProvider();
-
-		if (dbCon == null) {
-			LOGGER.warn("No database connection found.");
+		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_SCENARIO,
+															 ServiceConfiguration.SVC_SCENARIO_ADD);
+											
+		wt = wt.queryParam(ServiceConfiguration.SVCP_SCENARIO_TOKEN, getToken());
+		
+		Response r = wt.request(MediaType.APPLICATION_JSON).post(Entity.entity(scenario, MediaType.APPLICATION_JSON));
+		
+		if (r.getStatus() != Status.OK.getStatusCode()) {
 			return false;
 		}
-
-		dbCon.store(scenario);
-
+		
 		switchScenario(scenario.getScenarioName());
-		return true;
+		
+		return r.getStatus() == Status.OK.getStatusCode();
 	}
 
 	@Override
 	public boolean removeScenario(String name) {
 		requiredLoggedIn();
 		
-		if (!name.matches("[a-zA-Z0-9_]+")) {
-			return false;
-		}
+		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_SCENARIO,
+															 name);
 
-		IPersistenceProvider dbCon = getUser().getCurrentPersistenceProvider();
-
-		try {
-			ScenarioDefinition definition = dbCon.loadScenarioDefinition(name);
-
-			dbCon.remove(definition);
-
-			return true;
-		} catch (DataNotFoundException e) {
-			LOGGER.warn("Scenario '{}' not found.", name);
-			return false;
-		}
+		wt = wt.queryParam(ServiceConfiguration.SVCP_SCENARIO_TOKEN, getToken());
+		
+		Response r = wt.request(MediaType.APPLICATION_JSON).delete();
+		
+		return r.getStatus() == Status.OK.getStatusCode();
 	}
 
 	@Override
@@ -156,62 +136,74 @@ public class ScenarioManagerRPCImpl extends SPCRemoteServlet implements Scenario
 		requiredLoggedIn();
 		
 		ScenarioDefinition definition = loadScenarioDefinition(name);
+		
 		if (definition == null) {
 			return false;
 		}
-
+		
 		ScenarioDefinitionBuilder builder = ScenarioDefinitionBuilder.load(definition);
 		getUser().setCurrentScenarioDefinitionBuilder(builder);
 
 		return true;
-
 	}
-
-	private ScenarioDefinition loadScenarioDefinition(String sceName) {
-		try {
-			ScenarioDefinition definition = getUser().getCurrentPersistenceProvider().loadScenarioDefinition(sceName);
-
-			return definition;
-		} catch (DataNotFoundException e) {
-			LOGGER.warn("Scenario '{}' not found.", sceName);
-			return null;
-		}
-	}
-
+	
 	@Override
 	public ScenarioDefinition getCurrentScenarioDefinition() {
 		requiredLoggedIn();
 		
-		return getUser().getCurrentScenarioDefinitionBuilder().getBuiltScenario();
+		return loadScenarioDefinition(getAccountDetails().getSelectedScenario());
 	}
 
+	/**
+	 * Requests the {@link ScenarioDefinition} with the given name in the Service Layer.
+	 * 
+	 * @param sceName	the scenario name
+	 * @return			the {@link ScenarioDefinition}, null possible
+	 */
+	private ScenarioDefinition loadScenarioDefinition(String sceName) {
+		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_SCENARIO,
+															 sceName,
+														     ServiceConfiguration.SVC_SCENARIO_DEFINITON);
+		
+		wt = wt.queryParam(ServiceConfiguration.SVCP_SCENARIO_TOKEN, getToken());
+		
+		Response r = wt.request(MediaType.APPLICATION_JSON).get();
+
+		return r.readEntity(ScenarioDefinition.class);
+	}
+	
+	/**
+	 * The scenario is updated in the SPC SL.
+	 */
 	@Override
 	public boolean storeScenarioDefinition(ScenarioDefinition definition) {
 		requiredLoggedIn();
 		
-		ScenarioDefinition current = getUser().getCurrentScenarioDefinitionBuilder().getBuiltScenario();
-		try {
-			for (ScenarioInstance instance : getUser().getCurrentPersistenceProvider().loadScenarioInstances(
-					current.getScenarioName())) {
-				if (!definition.equals(current)) {
-					String changeHandlingMode = Configuration.getSessionSingleton(getSessionId()).getPropertyAsStr(
-							IConfiguration.CONF_DEFINITION_CHANGE_HANDLING_MODE);
-					if (changeHandlingMode.equals(IConfiguration.DCHM_ARCHIVE)) {
-
-						archiveOldResults(instance);
-					}
-
-					getUser().getCurrentPersistenceProvider().removeScenarioInstanceKeepResults(instance);
-				}
-			}
-		} catch (DataNotFoundException e) {
-			LOGGER.debug("No scenario instance with name {} available. Skip archiving old results!",
-					current.getScenarioName());
+		// first archive old entries
+		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_SCENARIO,
+															 getAccountDetails().getSelectedScenario(),
+						 									 ServiceConfiguration.SVC_SCENARIO_ARCHIVE);
+		
+		wt = wt.queryParam(ServiceConfiguration.SVCP_ACCOUNT_TOKEN, getToken());
+		
+		Response r = wt.request(MediaType.APPLICATION_JSON).put(Entity.entity(Null.class, MediaType.APPLICATION_JSON));
+		
+		
+		// now update the ScenarioDefinition
+		wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_SCENARIO,
+					     						   ServiceConfiguration.SVC_SCENARIO_UPDATE);
+		
+		wt = wt.queryParam(ServiceConfiguration.SVCP_SCENARIO_TOKEN, getToken());
+		
+		r = wt.request(MediaType.APPLICATION_JSON).post(Entity.entity(definition, MediaType.APPLICATION_JSON));
+		
+		if (r.getStatus() != Status.OK.getStatusCode()) {
+			LOGGER.debug("Failed to store the scenario definiton.");
+			return false;
 		}
+		
+		switchScenario(definition.getScenarioName());
 
-		getUser().setCurrentScenarioDefinitionBuilder(ScenarioDefinitionBuilder.load(definition));
-
-		getUser().storeCurrentScenarioDefinition();
 		return true;
 	}
 
@@ -219,25 +211,20 @@ public class ScenarioManagerRPCImpl extends SPCRemoteServlet implements Scenario
 	public String getScenarioAsXML() {
 		requiredLoggedIn();
 		
-		ScenarioDefinition definition = getUser().getCurrentScenarioDefinitionBuilder().getBuiltScenario();
-
-		if (definition != null) {
-			ScenarioDefinitionWriter writer = new ScenarioDefinitionWriter(getSessionId());
-			return writer.convertToXMLString(definition);
+		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_SCENARIO,
+															 getAccountDetails().getSelectedScenario(),
+														     ServiceConfiguration.SVC_SCENARIO_XML);
+		
+		wt = wt.queryParam(ServiceConfiguration.SVCP_SCENARIO_TOKEN, getToken());
+		
+		Response r = wt.request(MediaType.APPLICATION_JSON).get();
+		
+		String xml = r.readEntity(String.class);
+		
+		if (xml == null) {
+			return "";
 		}
-		return "";
-	}
-
-	private void archiveOldResults(ScenarioInstance scenarioInstance) {
-		ScenarioDefinitionWriter writer = new ScenarioDefinitionWriter(getSessionId());
-		String scenarioDefinitionXML = writer.convertToXMLString(scenarioInstance.getScenarioDefinition());
-		for (ExperimentSeries es : scenarioInstance.getExperimentSeriesList()) {
-			for (ExperimentSeriesRun run : es.getExperimentSeriesRuns()) {
-				ArchiveEntry entry = new ArchiveEntry(getUser().getCurrentPersistenceProvider(), run.getTimestamp(),
-						scenarioInstance.getName(), scenarioInstance.getMeasurementEnvironmentUrl(), es.getName(),
-						run.getLabel(), scenarioDefinitionXML, run.getDatasetId());
-				getUser().getCurrentPersistenceProvider().store(entry);
-			}
-		}
+		
+		return xml;
 	}
 }

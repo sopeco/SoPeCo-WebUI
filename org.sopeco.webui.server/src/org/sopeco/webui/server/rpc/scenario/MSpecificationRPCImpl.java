@@ -26,15 +26,22 @@
  */
 package org.sopeco.webui.server.rpc.scenario;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import javax.validation.constraints.Null;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
 import org.sopeco.persistence.entities.definition.MeasurementSpecification;
+import org.sopeco.service.configuration.ServiceConfiguration;
+import org.sopeco.webui.server.rest.ClientFactory;
 import org.sopeco.webui.server.rpc.servlet.SPCRemoteServlet;
-import org.sopeco.webui.shared.builder.MeasurementSpecificationBuilder;
-import org.sopeco.webui.shared.helper.Metering;
+import org.sopeco.webui.shared.entities.ScenarioDetails;
 import org.sopeco.webui.shared.rpc.MSpecificationRPC;
 
 /**
@@ -44,58 +51,58 @@ import org.sopeco.webui.shared.rpc.MSpecificationRPC;
  */
 public class MSpecificationRPCImpl extends SPCRemoteServlet implements MSpecificationRPC {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(MSpecificationRPCImpl.class);
+	private static final Logger LOGGER = Logger.getLogger(MSpecificationRPCImpl.class.getName());
 	private static final long serialVersionUID = 1L;
 
 	@Override
 	public List<String> getAllSpecificationNames() {
 		requiredLoggedIn();
 		
-		double metering = Metering.start();
-
-		List<String> returnList = new ArrayList<String>();
-		for (MeasurementSpecification ms : getUser().getCurrentScenarioDefinitionBuilder().getBuiltScenario()
-				.getMeasurementSpecifications()) {
-
-			returnList.add(ms.getName());
-
-		}
-
-		Metering.stop(metering);
-		return returnList;
+		LOGGER.finer("Try to fetch all measurement specification names from SPC SL.");
+		
+		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_MEASUREMENT,
+															 getAccountDetails().getSelectedScenario(),
+					     									 ServiceConfiguration.SVC_MEASUREMENT_LIST);
+		
+		
+		wt = wt.queryParam(ServiceConfiguration.SVCP_MEASUREMENT_TOKEN, getToken());
+		
+		Response r = wt.request(MediaType.APPLICATION_JSON).get();
+		
+		List<String> list = r.readEntity(new GenericType<List<String>>() { });
+		
+		return list;
 	}
 
 	@Override
 	public List<MeasurementSpecification> getAllSpecifications() {
 		requiredLoggedIn();
 		
-		double metering = Metering.start();
-
-		List<MeasurementSpecification> returnList = new ArrayList<MeasurementSpecification>();
-		for (MeasurementSpecification ms : getUser().getCurrentScenarioDefinitionBuilder().getBuiltScenario()
-				.getMeasurementSpecifications()) {
-			returnList.add(ms);
-		}
-
-		Metering.stop(metering);
-		return returnList;
+		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_MEASUREMENT,
+				 											 getAccountDetails().getSelectedScenario(),
+															 ServiceConfiguration.SVC_MEASUREMENT_LISTSPECS);
+		
+		wt = wt.queryParam(ServiceConfiguration.SVCP_MEASUREMENT_TOKEN, getToken());
+		
+		Response r = wt.request(MediaType.APPLICATION_JSON).get();
+		
+		List<MeasurementSpecification> list = r.readEntity(new GenericType<List<MeasurementSpecification>>() { });
+		
+		return list;
 	}
 
 	@Override
 	public boolean setWorkingSpecification(String specificationName) {
 		requiredLoggedIn();
-		
-		double metering = Metering.start();
 
-		LOGGER.debug("Set working specification on: " + specificationName);
+		LOGGER.finer("Set working specification on: " + specificationName);
 
 		if (!existSpecification(specificationName)) {
-			LOGGER.debug("Can't set working specification to '{}' because it doesn't exists. ", specificationName);
+			LOGGER.finer("Can't set working specification to '" + specificationName + "' because it doesn't exists. ");
 			return false;
 		}
 
 		getUser().setWorkingSpecification(specificationName);
-		Metering.stop(metering);
 		return true;
 	}
 
@@ -107,58 +114,69 @@ public class MSpecificationRPCImpl extends SPCRemoteServlet implements MSpecific
 	 * @return specification exists
 	 */
 	private boolean existSpecification(String specification) {
-		double metering = Metering.start();
 
-		for (MeasurementSpecification ms : getUser().getCurrentScenarioDefinitionBuilder().getBuiltScenario()
-				.getMeasurementSpecifications()) {
+		for (MeasurementSpecification ms : getUser().getCurrentScenarioDefinitionBuilder()
+													.getBuiltScenario()
+													.getMeasurementSpecifications()) {
+			
 			if (specification.equals(ms.getName())) {
 				return true;
 			}
+			
 		}
-		Metering.stop(metering);
+		
 		return false;
 	}
-
+	
 	@Override
 	public boolean createSpecification(String name) {
 		requiredLoggedIn();
 		
-		double metering = Metering.start();
+		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_MEASUREMENT,
+				 											 getAccountDetails().getSelectedScenario(),
+						 									 ServiceConfiguration.SVC_MEASUREMENT_CREATE);
+		
+		wt = wt.queryParam(ServiceConfiguration.SVCP_MEASUREMENT_TOKEN, getToken());
+		wt = wt.queryParam(ServiceConfiguration.SVCP_MEASUREMENT_SPECNAME, name);
+		
+		Response r = wt.request(MediaType.APPLICATION_JSON).post(Entity.entity(Null.class, MediaType.APPLICATION_JSON));
 
-		if (existSpecification(name)) {
-			LOGGER.warn("Specification with the name '{}' already exists.", name);
-			return false;
-		}
-
-		MeasurementSpecificationBuilder newBuilder = getUser().getCurrentScenarioDefinitionBuilder()
-				.addNewMeasurementSpecification();
-		if (newBuilder == null) {
-			LOGGER.warn("Error at adding new specification '{}'", name);
-			return false;
-		}
-
-		newBuilder.setName(name);
-		getUser().storeCurrentScenarioDefinition();
-
-		Metering.stop(metering);
-		return true;
+		return r.getStatus() == Status.OK.getStatusCode();
 	}
 
 	@Override
 	public boolean renameWorkingSpecification(String newName) {
 		requiredLoggedIn();
 		
-		double metering = Metering.start();
+		ScenarioDetails sd = getAccountDetails().getScenarioDetail(getAccountDetails().getSelectedScenario());
+		
+		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_MEASUREMENT,
+															 getAccountDetails().getSelectedScenario(),
+															 sd.getSelectedSpecification(),
+						 									 ServiceConfiguration.SVC_MEASUREMENT_RENAME);
+		
+		wt = wt.queryParam(ServiceConfiguration.SVCP_MEASUREMENT_TOKEN, getToken());
+		wt = wt.queryParam(ServiceConfiguration.SVCP_MEASUREMENT_SPECNAME, newName);
+		
+		Response r = wt.request(MediaType.APPLICATION_JSON).put(Entity.entity(Null.class, MediaType.APPLICATION_JSON));
 
-		if (existSpecification(newName)) {
-			LOGGER.warn("Can't rename, because specification with the name '{}' already exists.", newName);
-			return false;
-		}
+		return r.getStatus() == Status.OK.getStatusCode();
+	}
 
-		getUser().getCurrentScenarioDefinitionBuilder().getSpecificationBuilder().setName(newName);
-		getUser().storeCurrentScenarioDefinition();
+	@Override
+	public boolean removeWorkingSpecification() {
+		requiredLoggedIn();
 
-		Metering.stop(metering);
-		return true;
+		ScenarioDetails sd = getAccountDetails().getScenarioDetail(getAccountDetails().getSelectedScenario());
+		
+		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_MEASUREMENT,
+															 getAccountDetails().getSelectedScenario(),
+															 sd.getSelectedSpecification());
+		
+		wt = wt.queryParam(ServiceConfiguration.SVCP_MEASUREMENT_TOKEN, getToken());
+		
+		Response r = wt.request(MediaType.APPLICATION_JSON).delete();
+
+		return r.getStatus() == Status.OK.getStatusCode();
 	}
 }

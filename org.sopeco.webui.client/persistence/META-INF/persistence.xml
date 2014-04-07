@@ -21,17 +21,13 @@
 <persistence xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
 	version="2.0" xmlns="http://java.sun.com/xml/ns/persistence">
-	<persistence-unit name="sopeco-ui" transaction-type="RESOURCE_LOCAL">
+	<persistence-unit name="sopeco-webui" transaction-type="RESOURCE_LOCAL">
 		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
 
 		<class>org.sopeco.webui.server.persistence.entities.MEControllerUrl</class>
-		<class>org.sopeco.webui.server.persistence.entities.ScheduledExperiment</class>
 		
-		<class>org.sopeco.webui.shared.entities.ExecutedExperimentDetails</class>
 		<class>org.sopeco.webui.shared.entities.Visualization</class>
-		<class>org.sopeco.webui.shared.entities.MECLog</class>
 
-		<class>org.sopeco.webui.shared.entities.account.Account</class>
 		<class>org.sopeco.webui.shared.entities.account.AccountDetails</class>
 		<class>org.sopeco.webui.shared.entities.account.RememberMeToken</class>
 
