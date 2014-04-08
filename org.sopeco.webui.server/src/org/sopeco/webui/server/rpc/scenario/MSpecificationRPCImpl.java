@@ -60,12 +60,12 @@ public class MSpecificationRPCImpl extends SPCRemoteServlet implements MSpecific
 		
 		LOGGER.finer("Try to fetch all measurement specification names from SPC SL.");
 		
-		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_MEASUREMENT,
+		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_MEASUREMENTSPEC,
 															 getAccountDetails().getSelectedScenario(),
-					     									 ServiceConfiguration.SVC_MEASUREMENT_LIST);
+					     									 ServiceConfiguration.SVC_MEASUREMENTSPEC_LIST);
 		
 		
-		wt = wt.queryParam(ServiceConfiguration.SVCP_MEASUREMENT_TOKEN, getToken());
+		wt = wt.queryParam(ServiceConfiguration.SVCP_MEASUREMENTSPEC_TOKEN, getToken());
 		
 		Response r = wt.request(MediaType.APPLICATION_JSON).get();
 		
@@ -78,11 +78,11 @@ public class MSpecificationRPCImpl extends SPCRemoteServlet implements MSpecific
 	public List<MeasurementSpecification> getAllSpecifications() {
 		requiredLoggedIn();
 		
-		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_MEASUREMENT,
+		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_MEASUREMENTSPEC,
 				 											 getAccountDetails().getSelectedScenario(),
-															 ServiceConfiguration.SVC_MEASUREMENT_LISTSPECS);
+															 ServiceConfiguration.SVC_MEASUREMENTSPEC_LISTSPECS);
 		
-		wt = wt.queryParam(ServiceConfiguration.SVCP_MEASUREMENT_TOKEN, getToken());
+		wt = wt.queryParam(ServiceConfiguration.SVCP_MEASUREMENTSPEC_TOKEN, getToken());
 		
 		Response r = wt.request(MediaType.APPLICATION_JSON).get();
 		
@@ -132,12 +132,12 @@ public class MSpecificationRPCImpl extends SPCRemoteServlet implements MSpecific
 	public boolean createSpecification(String name) {
 		requiredLoggedIn();
 		
-		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_MEASUREMENT,
+		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_MEASUREMENTSPEC,
 				 											 getAccountDetails().getSelectedScenario(),
-						 									 ServiceConfiguration.SVC_MEASUREMENT_CREATE);
+						 									 ServiceConfiguration.SVC_MEASUREMENTSPEC_CREATE);
 		
-		wt = wt.queryParam(ServiceConfiguration.SVCP_MEASUREMENT_TOKEN, getToken());
-		wt = wt.queryParam(ServiceConfiguration.SVCP_MEASUREMENT_SPECNAME, name);
+		wt = wt.queryParam(ServiceConfiguration.SVCP_MEASUREMENTSPEC_TOKEN, getToken());
+		wt = wt.queryParam(ServiceConfiguration.SVCP_MEASUREMENTSPEC_SPECNAME, name);
 		
 		Response r = wt.request(MediaType.APPLICATION_JSON).post(Entity.entity(Null.class, MediaType.APPLICATION_JSON));
 
@@ -150,13 +150,13 @@ public class MSpecificationRPCImpl extends SPCRemoteServlet implements MSpecific
 		
 		ScenarioDetails sd = getAccountDetails().getScenarioDetail(getAccountDetails().getSelectedScenario());
 		
-		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_MEASUREMENT,
+		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_MEASUREMENTSPEC,
 															 getAccountDetails().getSelectedScenario(),
 															 sd.getSelectedSpecification(),
-						 									 ServiceConfiguration.SVC_MEASUREMENT_RENAME);
+						 									 ServiceConfiguration.SVC_MEASUREMENTSPEC_RENAME);
 		
-		wt = wt.queryParam(ServiceConfiguration.SVCP_MEASUREMENT_TOKEN, getToken());
-		wt = wt.queryParam(ServiceConfiguration.SVCP_MEASUREMENT_SPECNAME, newName);
+		wt = wt.queryParam(ServiceConfiguration.SVCP_MEASUREMENTSPEC_TOKEN, getToken());
+		wt = wt.queryParam(ServiceConfiguration.SVCP_MEASUREMENTSPEC_SPECNAME, newName);
 		
 		Response r = wt.request(MediaType.APPLICATION_JSON).put(Entity.entity(Null.class, MediaType.APPLICATION_JSON));
 
@@ -169,11 +169,11 @@ public class MSpecificationRPCImpl extends SPCRemoteServlet implements MSpecific
 
 		ScenarioDetails sd = getAccountDetails().getScenarioDetail(getAccountDetails().getSelectedScenario());
 		
-		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_MEASUREMENT,
+		WebTarget wt = ClientFactory.getInstance().getClient(ServiceConfiguration.SVC_MEASUREMENTSPEC,
 															 getAccountDetails().getSelectedScenario(),
 															 sd.getSelectedSpecification());
 		
-		wt = wt.queryParam(ServiceConfiguration.SVCP_MEASUREMENT_TOKEN, getToken());
+		wt = wt.queryParam(ServiceConfiguration.SVCP_MEASUREMENTSPEC_TOKEN, getToken());
 		
 		Response r = wt.request(MediaType.APPLICATION_JSON).delete();
 
