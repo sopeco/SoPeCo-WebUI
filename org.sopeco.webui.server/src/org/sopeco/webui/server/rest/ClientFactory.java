@@ -6,6 +6,7 @@ import javax.ws.rs.client.WebTarget;
 
 import org.glassfish.jersey.client.ClientConfig;
 import org.sopeco.service.rest.json.CustomObjectMapper;
+import org.sopeco.webui.server.UiConfiguration;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 
@@ -20,8 +21,8 @@ public class ClientFactory {
 
 	private static ClientFactory clientFactory 	= null;
 	private static Client client 				= null;
-	private static String URLprefix				= "http://localhost:8080";
-	private static String URLsplitter			= "/";
+	private static String URLprefix				= UiConfiguration.SPC_SL_URLprefix;
+	private static String URLsplitter			= UiConfiguration.URLsplitter;
 	
 	/**
 	 * Private constructor for singleton.
