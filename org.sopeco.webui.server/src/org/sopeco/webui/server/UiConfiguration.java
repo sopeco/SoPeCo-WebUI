@@ -41,6 +41,9 @@ public abstract class UiConfiguration {
 	public static final String PERSISTENCE_USER 	= "sopeco_webui";
 	public static final String PERSISTENCE_PASSWORD = "sopeco_webui";
 	
+	// setting for SPC SL
+	public static final String SPC_SL_URLprefix		= "http://localhost:8080";
+	public static final String URLsplitter			= "/";
 	
 	public static final String USER_TIMEOUT = "sopeco.ui.userTimeout";
 	public static final String TIMEOUT_CHECK_INTERVAL = "sopeco.ui.timeoutCheckInterval";
