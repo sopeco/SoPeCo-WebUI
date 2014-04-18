@@ -198,7 +198,6 @@
 		<outputDirectory>war/WEB-INF/classes</outputDirectory>
 
 		<sourceDirectory>src</sourceDirectory>
-		<testSourceDirectory>test</testSourceDirectory>
 		<resources>
 			<resource>
 				<directory>rsc</directory>
@@ -207,6 +206,8 @@
 				<directory>persistence</directory>
 			</resource>
 		</resources>
+		
+		<testSourceDirectory>test</testSourceDirectory>
 		<testResources>
 		    <testResource>
 				<directory>src</directory>

@@ -1,0 +1,48 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>org.sopeco.webui.client</artifactId>
+	<packaging>war</packaging>
+	<name>SoPeCo Web-UI Client</name>
+
+
+	<parent>
+		<groupId>org.sopeco.webui</groupId>
+		<artifactId>org.sopeco.webui.parent</artifactId>
+		<version>1.0.0</version>
+		<relativePath>../org.sopeco.webui.parent</relativePath>
+	</parent>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.sopeco.webui</groupId>
+			<artifactId>org.sopeco.webui.shared</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.sopeco.webui</groupId>
+			<artifactId>org.sopeco.webui.shared</artifactId>
+			<version>1.0.0</version>
+			<classifier>sources</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.sopeco.webui</groupId>
+			<artifactId>org.sopeco.webui.server</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.sopeco.webui</groupId>
+			<artifactId>org.sopeco.gwt</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.sopeco.webui</groupId>
+			<artifactId>org.sopeco.gwt</artifactId>
+			<version>1.0.0</version>
+			<classifier>sources</classifier>
+		</dependency>
+	</dependencies>
+
+</project>
