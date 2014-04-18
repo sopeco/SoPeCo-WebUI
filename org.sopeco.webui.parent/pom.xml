@@ -3,16 +3,16 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.sopeco.webui</groupId>
 	<artifactId>org.sopeco.webui.parent</artifactId>
-	<version>1.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<packaging>pom</packaging>
 	<name>SoPeCo Web-UI</name>
 
 	<!-- ================PROPERTIES================= -->
 	<properties>
 		<sopeco.service.version>1.0.0</sopeco.service.version>
-		<com.jersey.client.version>1.8</com.jersey.client.version>
 		<sopeco.dependency>5.0.2</sopeco.dependency>
 		<gwt.version>2.5.1</gwt.version>
+		<jersey.version>2.7</jersey.version>
 	</properties>
 
 	
@@ -188,7 +188,7 @@
 		<dependency>
 		    <groupId>org.glassfish.jersey.core</groupId>
 		    <artifactId>jersey-client</artifactId>
-		    <version>2.6</version>
+		    <version>${jersey.version}</version>
 		</dependency>
 		
 	</dependencies>
