@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>org.sopeco.webui</groupId>
 		<artifactId>org.sopeco.webui.parent</artifactId>
-		<version>1.0.0</version>
+		<version>1.0.1-SNAPSHOT</version>
 		<relativePath>../org.sopeco.webui.parent</relativePath>
 	</parent>
 

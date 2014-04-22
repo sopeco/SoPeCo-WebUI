@@ -9,7 +9,7 @@
 	<parent>
 		<groupId>org.sopeco.webui</groupId>
 		<artifactId>org.sopeco.webui.parent</artifactId>
-		<version>1.0.0</version>
+		<version>1.0.1-SNAPSHOT</version>
 		<relativePath>../org.sopeco.webui.parent</relativePath>
 	</parent>
 
@@ -17,30 +17,30 @@
 		<dependency>
 			<groupId>org.sopeco.webui</groupId>
 			<artifactId>org.sopeco.webui.shared</artifactId>
-			<version>1.0.0</version>
+			<version>1.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.sopeco.webui</groupId>
 			<artifactId>org.sopeco.webui.shared</artifactId>
-			<version>1.0.0</version>
+			<version>1.0.1-SNAPSHOT</version>
 			<classifier>sources</classifier>
 		</dependency>
 		<dependency>
 			<groupId>org.sopeco.webui</groupId>
 			<artifactId>org.sopeco.webui.server</artifactId>
-			<version>1.0.0</version>
+			<version>1.0.1-SNAPSHOT</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>org.sopeco.webui</groupId>
 			<artifactId>org.sopeco.gwt</artifactId>
-			<version>1.0.0</version>
+			<version>1.0.1-SNAPSHOT</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>org.sopeco.webui</groupId>
 			<artifactId>org.sopeco.gwt</artifactId>
-			<version>1.0.0</version>
+			<version>1.0.1-SNAPSHOT</version>
 			<classifier>sources</classifier>
 		</dependency>
 	</dependencies>
