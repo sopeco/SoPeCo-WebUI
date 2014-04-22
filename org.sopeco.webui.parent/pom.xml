@@ -10,9 +10,9 @@
 	<!-- ================PROPERTIES================= -->
 	<properties>
 		<sopeco.service.version>1.0.0</sopeco.service.version>
-		<com.jersey.client.version>1.8</com.jersey.client.version>
 		<sopeco.dependency>5.0.2</sopeco.dependency>
 		<gwt.version>2.5.1</gwt.version>
+		<jersey.version>2.7</jersey.version>
 	</properties>
 
 	
@@ -157,7 +157,7 @@
 		<dependency>
 			<groupId>com.google.gwt.google-apis</groupId>
 			<artifactId>gwt-visualization</artifactId>
-			<version>1.1.1</version>
+			<version>1.0.2</version>
 		</dependency>
 
 		<dependency>
@@ -188,7 +188,7 @@
 		<dependency>
 		    <groupId>org.glassfish.jersey.core</groupId>
 		    <artifactId>jersey-client</artifactId>
-		    <version>2.6</version>
+		    <version>${jersey.version}</version>
 		</dependency>
 		
 	</dependencies>
@@ -198,7 +198,6 @@
 		<outputDirectory>war/WEB-INF/classes</outputDirectory>
 
 		<sourceDirectory>src</sourceDirectory>
-		<testSourceDirectory>test</testSourceDirectory>
 		<resources>
 			<resource>
 				<directory>rsc</directory>
@@ -207,6 +206,8 @@
 				<directory>persistence</directory>
 			</resource>
 		</resources>
+		
+		<testSourceDirectory>test</testSourceDirectory>
 		<testResources>
 		    <testResource>
 				<directory>src</directory>
@@ -225,8 +226,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>2.3.2</version>
 				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
+					<source>1.7</source>
+					<target>1.7</target>
 				</configuration>
 			</plugin>
 
